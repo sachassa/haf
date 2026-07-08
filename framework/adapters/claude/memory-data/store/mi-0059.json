@@ -1,0 +1,29 @@
+{
+  "id": "mi-0059",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-11",
+    "status": "Candidate",
+    "success": "v0.9 시연이 신규 프로젝트 픽스처에 scaffold-template 배치(Install)→VerifyInstall(CK-1~8 전 충족)→Bootstrap(Ready)→핵심 루프 1사이클 완주(구현/검증 주체 분리·retry_count 0·CP2 Pass)→멱등성 diff 0·기존 파일 보존·Uninstall 잔여물 0을 단일 흐름 시연 사이클로 완주했다. 설치본 문서(new-project/.claude/AGENT.md·CLAUDE.md·agents/*)를 사이클 실소비 입력으로 정독·준수해 설치 실증과 루프 실증이 한 사이클에서 성립했다.",
+    "practice": "신규 프로젝트 설치(Scaffold Install→VerifyInstall)→Bootstrap(Ready)→Loop 1사이클을 단일 흐름 시연 사이클로 완주하고, 설치본 문서를 사이클 실소비 입력으로 기록하면 설치 실증과 루프 실증이 한 사이클에서 성립한다.",
+    "applicability": "Scaffold 설치·Bootstrap·루프 구동을 한 흐름으로 시연하는 상황.",
+    "provenance": {
+      "task_ref": "v0.9 T10 (docs/v0.9-demo.md Scaffold 시연)",
+      "report_ref": "docs/v0.9-demo.md §8.1 · framework/adapters/claude/loop-data/v09-demo-scaffold.jsonl seq6 (bp-candidate:BPD-11)",
+      "origin_role": "도출 시연 Learn(Worker/Verifier)·심사 Advisor(보류 — 실무 동형 재발 시 재상정)",
+      "ordering_ref": "v0.9 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.9-T13-review",
+  "timestamp": "2026-07-05T22:20:45.602+09:00",
+  "labels": {
+    "stable_id": "BPD-11",
+    "status": "Candidate",
+    "situation": [
+      "demo-cycle-execution",
+      "scaffold-install",
+      "bootstrap",
+      "single-flow-execution"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "mi-0058",
+  "kind": "lesson",
+  "content": {
+    "id": "L-15",
+    "status": "Active",
+    "failure": "v0.9 세션에서 Advisor 위임 input의 계수 전제가 실상과 2회 어긋났다 — (a) T7 위임 input이 'docs/v0.8-demo-fixtures/ 10파일'로 계수했으나 Worker 착수 재실측 결과 32파일/7디렉터리였고, (b) T11 위임문이 '형태 B 경계 분할 4건'으로 계수하면서 실제로는 열거 라벨 5종(OQ-M5-2·OQ-VB-2·OQ-LB-2·OQ-WB-2·OQ-PB-2 — 정본 5건)을 열거했다.",
+    "cause": "위임문의 계수·규모 전제를 발신 전 실측 대조하지 않았다 — 존재 전제 대조(L-12)·본문 문안 대조(L-11)가 커버하는 실측 원칙이 계수·규모·상태 전제 값에는 미적용된 갭. 부정확한 계수가 수임자에게 재실측 부담·보고 편차를 유발했다(비차단 — 각각 Worker 재실측·open_questions 에스컬레이션으로 폐합).",
+    "lesson": "Advisor 위임문에 쓰는 계수·규모·상태 전제 값(파일 수·항목 수·집합 규모 등)은 발신 전 파일 시스템 실측으로 대조하라 — 존재 전제(L-12)·본문 문안(L-11)과 같은 깊이로. 위임 input의 부정확한 계수는 수임자의 재실측 부담과 보고 편차를 만든다.",
+    "applicability": "Advisor 위임 메시지(게이트 A) 작성·발신 상황 — input·done이 계수·규모·상태 전제 값을 담는 경우.",
+    "approval": "Advisor 승격 심사 승인 2026-07-06 (v0.9 T13 위임문 · docs/v0.9-promotion-review.md), 사용자 v0.9 계획 승인 2026-07-06 (05 INV-4, 승인 참조 자기완결).",
+    "supersedes": "mi-0057",
+    "provenance": {
+      "task_ref": "v0.9 T7·T11 (위임 input 계수 편차 2건)",
+      "report_ref": "docs/v0.9-promotion-review.md §2.1",
+      "origin_role": "승격 Advisor",
+      "ordering_ref": "v0.9 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.9-T13-review",
+  "timestamp": "2026-07-05T22:20:44.602+09:00",
+  "labels": {
+    "stable_id": "L-15",
+    "status": "Active",
+    "situation": [
+      "delegation-message-authoring",
+      "count-claim",
+      "input-premise-verification"
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "mi-0021",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "문서 개정에서 한 §만 갱신하고 동일 상태 서술 타 지점을 방치함 (L-06 유형과 매칭). 이 작업의 (수동 제공) 회수 집합에 L-06이 포함되었음에도 같은 실패 발생.",
+    "matched_lesson_id": "L-06",
+    "was_recalled": true,
+    "verdict": "Recurrence",
+    "follow_up": "Lesson 강화 또는 supersede하는 새 Lesson 생성 대상 (05 INV-7, §2.1 supersedes, lessons.md §4)."
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:20:07.602+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "matched_lesson_id": "L-06"
+  }
+}

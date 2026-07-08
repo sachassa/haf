@@ -1,0 +1,30 @@
+{
+  "id": "mi-0028",
+  "kind": "lesson",
+  "content": {
+    "id": "L-11",
+    "status": "Active",
+    "failure": "v0.5 위임(V12)의 done 문구가 특정 Adapter Binding 문서명 포인터를 산출물 본문 문안으로 지정해, Module 구현 디렉터리 문서 본문에 이식 불변(04 §4.2·C-1 — Adapter만 교체·Core/Module 무변경)을 깨는 환경 결합이 유입되었다. Worker는 지시를 이행하며 소지를 투명 보고했고, Advisor 게이트 C가 검출해 r4로 교정했다.",
+    "cause": "위임 메시지가 산출물 본문에 들어갈 문안을 지정하면서, 그 문안 자체를 대상 경계의 금지·격리 규칙으로 사전 대조하지 않았다.",
+    "lesson": "위임 메시지가 산출물 본문 문안을 지정할 때 그 문안 자체를 대상 경계의 금지·격리 규칙으로 사전 대조한다 — 위임문도 경계 검증 대상이다.",
+    "applicability": "위임 메시지에 산출물 본문 문안·포인터 표기를 지정하는 상황.",
+    "provenance": {
+      "task_ref": "v0.5 V12 r3→r4",
+      "report_ref": "본 세션 게이트 기록(V12 r4 지시 — Advisor 소관 결함 명시), framework/memory/lessons.md §9 r4 행",
+      "origin_role": "결함 Advisor(v0.5)·인지 보고 Worker(v0.5)·검출·승인 Advisor(v0.5)",
+      "ordering_ref": "v0.5 세션"
+    },
+    "approval_ref": "docs/v0.5-promotion-review.md §2 L-11 [승인] 행 (Advisor 승격 승인 — 05 INV-4)"
+  },
+  "source": "v0.5-V10-ii",
+  "timestamp": "2026-07-05T22:20:14.602+09:00",
+  "labels": {
+    "stable_id": "L-11",
+    "status": "Active",
+    "situation": [
+      "delegation-message-authoring",
+      "artifact-text-specification",
+      "pointer-notation"
+    ]
+  }
+}

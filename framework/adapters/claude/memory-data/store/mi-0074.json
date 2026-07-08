@@ -1,0 +1,28 @@
+{
+  "id": "mi-0074",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-13",
+    "status": "Candidate",
+    "success": "v1.1 T4(uaf/specs/02-discovery.md Module부 집필)에서 장시간 집필 Task의 실행이 중단(스트림 중단)된 뒤 재개 프로토콜에 따라 무결 복구했다 — 산출물 전체를 done 항목별로 실측 재확인하고, 미완 지점을 완성한 뒤, 전 검증 스캔을 재수행하고 완료 보고를 제출해 중단 후 결함 0으로 복구했다. 최종 T4 산출물(02-discovery.md Workflow부→Module부 2단계 완성)은 독립 Verifier CP2 판정(docs/v1.1-verification-report.md 최종 Pass 15/0/0)에 포함되어 결함 0으로 확인됐다.",
+    "practice": "장시간 집필 Task의 실행 중단(스트림 중단 등) 후 재개 시 재개 프로토콜을 따른다 — ① 산출물 전체 실측 재확인(done 항목별) ② 미완 지점 완성 ③ 전 검증 스캔 재수행 ④ 완료 보고 제출. v1.1 T4에서 실증(중단 후 결함 0 복구).",
+    "applicability": "장시간 집필·구현 Task의 실행이 중단(스트림 중단·세션 단절 등)된 후 재개하는 상황 — 부분 완성 산출물의 무결 복구가 필요한 경우.",
+    "provenance": {
+      "task_ref": "v1.1 T4 (uaf/specs/02-discovery.md Module부 집필 — 실행 중단 후 재개 프로토콜로 결함 0 복구)",
+      "report_ref": "docs/v1.1-promotion-review.md §2 · docs/v1.1-verification-report.md §3 item #3(02-discovery Workflow부→Module부 2단계 완성)·§4(최종 판정 Pass 15/0/0 — T4 산출물 포함)",
+      "origin_role": "도출 Worker(Execute 재개)·심사 Advisor(보류 — 1회 발생·실무 동형 재발 시 재상정)",
+      "ordering_ref": "v1.1 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.1-review",
+  "timestamp": "2026-07-05T22:21:00.602+09:00",
+  "labels": {
+    "stable_id": "BPD-13",
+    "status": "Candidate",
+    "situation": [
+      "task-resumption",
+      "interrupted-execution",
+      "cp1-self-check"
+    ]
+  }
+}

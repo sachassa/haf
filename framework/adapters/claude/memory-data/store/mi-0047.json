@@ -1,0 +1,30 @@
+{
+  "id": "mi-0047",
+  "kind": "lesson",
+  "content": {
+    "id": "L-13",
+    "status": "Active",
+    "approval_ref": "docs/v0.7-promotion-review.md §2.1 (Advisor 승인, 2026-07-06)",
+    "failure": "v0.7 Wave 1 편입 개정 3건(WF13~WF15)에서 문서 머리 상태 라인·§9 이력 행 버전 라벨의 처리가 수임자마다 갈려 재개정 라우팅 3회(r2×3)와 마일스톤 CP2 관찰 1건(r3×1)이 발생했다 — Advisor 위임문이 개정 시 상태 라인·라벨 관례의 기대 문면을 명시하지 않았다.",
+    "cause": "확립 관례라도 위임문에 기대 문면이 명시되지 않으면 수임자는 관례를 서로 다르게 해석한다 — 특히 격리 개정처럼 본문 외 표기(상태 라인·이력 라벨)가 done 목록에서 빠지기 쉬운 작업에서 (done 정밀도 결락의 한 국면).",
+    "lesson": "기존 Baseline 문서의 개정 위임에는 상태 라인·이력 행 라벨의 기대 문면을 done 또는 constraints에 명시하라 — 같은 세션 Wave 4(WF8)가 이를 선반영해 재개정 0회로 폐합됨이 예방 실증이다.",
+    "applicability": "격리 개정·Baseline 문서 개정 위임문 작성(게이트 A) 상황.",
+    "provenance": {
+      "task_ref": "v0.7 WF13~WF15 (r2×3·r3×1) ↔ WF8 (선반영·재개정 0회)",
+      "report_ref": "docs/v0.7-promotion-review.md §1-1·§2.1, docs/v0.7-verification-report.md §3.7 관찰 ⑴",
+      "origin_role": "검출·후보 제출·승격 승인 Advisor (v0.7 세션)",
+      "ordering_ref": "v0.7 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.7-L13-review",
+  "timestamp": "2026-07-05T22:20:33.602+09:00",
+  "labels": {
+    "stable_id": "L-13",
+    "status": "Active",
+    "situation": [
+      "delegation-message-authoring",
+      "document-revision",
+      "status-line-convention"
+    ]
+  }
+}

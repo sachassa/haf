@@ -1,0 +1,29 @@
+{
+  "id": "mi-0063",
+  "kind": "lesson",
+  "content": {
+    "id": "L-16",
+    "status": "Candidate",
+    "failure": "v1.0 T2 r1 산출물(docs/v1.0-dogfooding-spec.md) 파일 말미에 도구 구문 잔여물 2줄이 잔존한 채 완료 보고가 제출됐다 — Advisor 게이트 C에서 검출되어 r2에서 폐합.",
+    "cause": "산출물 파일 생성 직후 CP1 자체 점검이 done 항목 충족 여부에만 집중하고, 파일 말미·전체에 유입될 수 있는 도구 구문 잔여물(비산출 텍스트)의 실측 확인을 점검 범위에 포함하지 않았다.",
+    "lesson": "산출물 파일 생성 직후 CP1 자체 점검에 파일 말미·전체의 도구 구문 잔여물 실측 확인을 포함하라.",
+    "applicability": "완료 보고 작성(CP1 자체 점검) 상황 — 산출물 파일을 생성하고 완료 보고를 제출하기 직전.",
+    "provenance": {
+      "task_ref": "v1.0 T2 r1→r2 (산출물 파일 말미 도구 구문 잔여물 2줄)",
+      "report_ref": "docs/v1.0-promotion-review.md §2",
+      "origin_role": "도출 Worker(후보 제출)·검출 Advisor(게이트 C)·심사 Advisor(Candidate 보류)",
+      "ordering_ref": "v1.0 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.0-review",
+  "timestamp": "2026-07-05T22:20:49.602+09:00",
+  "labels": {
+    "stable_id": "L-16",
+    "status": "Candidate",
+    "situation": [
+      "completion-report-authoring",
+      "artifact-file-hygiene",
+      "cp1-self-check"
+    ]
+  }
+}

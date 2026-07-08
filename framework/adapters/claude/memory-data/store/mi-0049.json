@@ -1,0 +1,24 @@
+{
+  "id": "mi-0049",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-08",
+    "status": "Candidate",
+    "success": "v0.8 시연 사이클 v08-demo-s가 레퍼런스 Skill(F-S1 commit-message-writer)을 등록 표면에 추가만 하여 본체 diff 0으로 능력을 확장하고, 지연 로드(미선택 본문 비로드)·역할 경계/우선순위 차단(RoleBoundaryViolation·PrecedenceConflict)·결정적 발견(2-run 동일)·재사용 부분 재현(모사 컨텍스트 2종·동일 body 불변)을 관측했다 (CP2 첫 판정 Pass 11/0/0 — verify-s.md). 라이브 하네스가 배치 직후 해당 Skill을 발견 가능 능력으로 표면화해 등록 표면의 실동작이 부수 실증됐다.",
+    "practice": "능력 확장은 메타데이터/본문 로드 계층 분리로 정의하고, 위반 픽스처는 격리 경계에서 형태 A 규약 등록으로만 평가하면 라이브 표면 오염 없이 차단 계약을 시연할 수 있다.",
+    "applicability": "재사용 능력 등록·지연 로드·경계 차단 시연 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.8 PS-4 EX-DS (Work Graph: ex-ds)",
+      "report_ref": "docs/v0.8-demo-fixtures/verify-s.md (CP2 Pass)",
+      "origin_role": "도출 Loop 사이클(Learn — Verifier 입력)·기록 Advisor",
+      "ordering_ref": "v0.8 세션 시연 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.8-demo-PS4",
+  "timestamp": "2026-07-05T22:20:35.602+09:00",
+  "labels": {
+    "stable_id": "BPD-08",
+    "status": "Candidate",
+    "situation": ["demo-cycle-execution", "single-artifact-delegation", "parallel-dispatch"]
+  }
+}

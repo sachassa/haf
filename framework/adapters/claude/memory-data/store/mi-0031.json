@@ -1,0 +1,27 @@
+{
+  "id": "mi-0031",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-01",
+    "status": "Candidate",
+    "success": "v0.6 시연 사이클 ⓐ(v06-demo-a)가 Lifecycle 7단계를 사람 개입 0(actor=human 0건)·재작업 0(retry_count=0)으로 통과했다 — 위임 완전성 확인, Consult 회수(회수 집합 ref 실기록), Planner 초안·Advisor 채택, Worker 실산출(CP1), CP2 첫 판정 Pass(3/0/0), CP3 승인·완료 보고 산출.",
+    "practice": "단일 산출물 위임에서 done을 예/아니오 판정 가능하게 확정하고 검증 게이트(CP1→CP2→CP3)를 순서대로 통과시키면 재작업 없이 사이클을 완주할 수 있다.",
+    "applicability": "단일 산출물 위임의 Lifecycle 사이클 구동 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.6 L10 시연 ⓐ (cycle_id=v06-demo-a)",
+      "report_ref": "docs/v0.6-demo.md (수행 기록)·docs/v0.6-demo-fixtures/verify-a.md (CP2 Pass)",
+      "origin_role": "도출 Loop 오케스트레이션(Advisor 주관)·후보 등록 Memory Update 단계",
+      "ordering_ref": "v0.6 세션 시연 ⓐ (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.6-demo-L10",
+  "timestamp": "2026-07-05T22:20:17.602+09:00",
+  "labels": {
+    "stable_id": "BPD-01",
+    "status": "Candidate",
+    "situation": [
+      "demo-cycle-execution",
+      "single-artifact-delegation"
+    ]
+  }
+}

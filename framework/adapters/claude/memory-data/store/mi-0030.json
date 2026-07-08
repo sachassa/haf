@@ -1,0 +1,17 @@
+{
+  "id": "mi-0030",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "시연·수행 기록이 기록 필드의 timestamp(생성기 배정 순서 값)를 \"실제 수행 시각\"으로 서술 — 상태·시각 주장을 실측 대조 없이 기입한 서술↔실측 모순 (L-07 동종 부류).",
+    "matched_lesson_id": "L-07",
+    "was_recalled": true,
+    "verdict": "Recurrence",
+    "follow_up": "보다 특정한 Lesson(L-09 — timestamp 성격 구분)을 등록·승격한다 (본 문서 §2 L-09). v0.5부터 절차 요건화(v0.5-demo-procedure §3 요건 2)로 재발 방지를 규격에 내장했다."
+  },
+  "source": "v0.5-V10-ii",
+  "timestamp": "2026-07-05T22:20:16.602+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "matched_lesson_id": "L-07"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "mi-0010",
+  "kind": "lesson",
+  "content": {
+    "id": "L-02",
+    "status": "Active",
+    "failure": "운용 문서(delegation-protocol.md §2.4)가 02 §3.2-D에 없는 `location` 필드를 지시했다 — 01/13 연산 실패 구조의 필드가 혼입되었다.",
+    "cause": "여러 spec이 유사한 실패 구조를 가질 때 필드의 소속 계약을 대조하지 않고 인용했다.",
+    "lesson": "필드 목록 인용 시 소속 계약을 § 포인터로 명시하고, 검증 시 필드 소속을 대조한다.",
+    "applicability": "여러 spec의 유사 구조 필드를 다른 문서에 인용·전개하는 상황.",
+    "provenance": {
+      "task_ref": "v0.2 delegation-protocol 작성",
+      "report_ref": "docs/session-handoff-v0.2.md §1.4-1·§1.5-1",
+      "origin_role": "검출 Advisor(v0.2)·승인 Advisor(v0.4)",
+      "ordering_ref": "v0.2 세션"
+    }
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:19:56.602+09:00",
+  "labels": {
+    "stable_id": "L-02",
+    "status": "Active",
+    "situation": [
+      "field-citation",
+      "cross-spec-field-reference"
+    ]
+  }
+}

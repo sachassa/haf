@@ -1,0 +1,29 @@
+{
+  "id": "mi-0069",
+  "kind": "lesson",
+  "content": {
+    "id": "L-19",
+    "status": "Candidate",
+    "failure": "v1.0 T5 CLI(uahf-lessons)가 Windows 기본 콘솔 인코딩에서 비-ASCII 출력 시 UnicodeEncodeError를 일으켰다 — 실행 관측(독립 Verifier 재관측)이 검출, 표준 출력 UTF-8 명시 재설정으로 수정·재관측 폐합.",
+    "cause": "콘솔 출력 산출물을 대상 환경 기본 인코딩에서 실제 실행 관측하지 않고, 표준 출력 인코딩을 명시 설정하지 않은 채 '구현 완료'로 간주했다(실행 없는 구현 완료).",
+    "lesson": "콘솔 출력 산출물은 대상 환경 기본 인코딩에서 실제 실행 관측하고 출력 인코딩을 명시 설정하라 — 실행 없는 '구현 완료'는 무효.",
+    "applicability": "CLI·콘솔 출력 산출물 구현 상황 — 비-ASCII를 출력하며 대상 환경 기본 인코딩이 UTF-8이 아닐 수 있는 경우.",
+    "provenance": {
+      "task_ref": "v1.0 T5 (uahf-lessons CLI 개발 사이클 Execute — 콘솔 인코딩 결함)",
+      "report_ref": "docs/v1.0-verification-report.md §3.8-4 · docs/v1.0-promotion-review.md §2 · framework/adapters/claude/loop-data/v10-dogfooding.jsonl seq6 (lesson-candidate)",
+      "origin_role": "도출 Worker(Execute)·독립 Verifier 재관측(Learn 입력)·심사 Advisor(Candidate 보류)",
+      "ordering_ref": "v1.0 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.0-review",
+  "timestamp": "2026-07-05T22:20:55.602+09:00",
+  "labels": {
+    "stable_id": "L-19",
+    "status": "Candidate",
+    "situation": [
+      "cli-implementation",
+      "execution-observation",
+      "encoding"
+    ]
+  }
+}

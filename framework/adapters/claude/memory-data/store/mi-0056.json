@@ -1,0 +1,26 @@
+{
+  "id": "mi-0056",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-06",
+    "status": "Active",
+    "success": "v0.7 시연이 도출한 병렬 분해·디스패치·병합 패턴(계약을 분해 시점에 확정·소유 경계 파일 단위 분리 → 3 Task 한 병렬 집합 동시 디스패치·개별 검증·병합)이 v0.8에서 실무 동형 사례로 재현되었다 — v0.8 마일스톤 실행 자체가 이 패턴의 실무 소비였고(PS-1~PS-8, 시연 병렬 집합 PS-4 포함), CP2 첫 판정 Pass·병합 성립(conflicts 0 — merge-rules §4.4 생략 분기 첫 실증)으로 완결되었다.",
+    "practice": "계약을 분해 시점에 확정하고 소유 경계를 파일 단위로 분리하면 3개 이상의 Task를 한 병렬 집합으로 동시 디스패치해 각각 검증한 뒤 병합할 수 있다 — 분해 검사(계약 강제·경계 비중첩·비순환)와 병합의 충돌 처리 단계가 병렬성의 안전판이다.",
+    "applicability": "큰 작업의 병렬 분해·디스패치·병합 상황.",
+    "approval": "Advisor 재상정 승격 승인 2026-07-06 — docs/v0.8-promotion-review.md §2 (재상정 근거: v0.7-promotion-review §2.3 조건 '실무 동형 사례 발생' 충족 — v0.8 실행이 그 사례. 05 INV-4, 승인 참조 자기완결).",
+    "supersedes": "mi-0043",
+    "provenance": {
+      "task_ref": "v0.7 WF9 시연 → v0.8 마일스톤 실행 (실무 동형)",
+      "report_ref": "docs/v0.8-promotion-review.md §2 · docs/v0.8-demo.md",
+      "origin_role": "승격 Advisor",
+      "ordering_ref": "v0.8 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.8-L14-review",
+  "timestamp": "2026-07-05T22:20:42.602+09:00",
+  "labels": {
+    "stable_id": "BPD-06",
+    "status": "Active",
+    "situation": ["task-decomposition", "parallel-dispatch", "merge-execution"]
+  }
+}

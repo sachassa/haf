@@ -1,0 +1,17 @@
+{
+  "id": "mi-0061",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "Advisor 위임문 계수 오기 — v0.9 T7 위임 input 'docs/v0.8-demo-fixtures/ 10파일'(Worker 착수 재실측 32파일/7디렉터리)·T11 위임문 '형태 B 경계 분할 4건'(열거 라벨 5종). 위임 input의 계수·규모 전제가 실상과 어긋난 부류.",
+    "matched_lesson_id": null,
+    "was_recalled": null,
+    "verdict": "Novel",
+    "recall_set_ref": "본 세션 Consult 회수 집합 — L-01~L-14·BP-01~03·BPD-06 (핸드오프 §2 세션 회수 기록 수동 제공 관례).",
+    "follow_up": "본 세션 회수 집합에 L-12(위임문 존재 전제 실측 대조)가 회수되었으나, L-12의 적용 범위(존재 전제)가 계수·규모 전제를 커버하지 않아 매칭 없음 → Novel(RecallGap 아님 — L-12는 회수됐으나 이 실패 유형의 매칭 Lesson이 아님, lessons.md §4 3분류). 신규 Lesson 후보 L-15 등록(→ mi-0057) 및 Active 승격(→ mi-0058) 대상."
+  },
+  "source": "v0.9-T13-review",
+  "timestamp": "2026-07-05T22:20:47.602+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

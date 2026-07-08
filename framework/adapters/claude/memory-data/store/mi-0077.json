@@ -1,0 +1,17 @@
+{
+  "id": "mi-0077",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "v1.2 T-R r1 산출물(ROADMAP.md v1.2 절) 본문의 외부 문서 절 명칭 오지칭 1건 — 완료 조건 도입문이 승인 계획의 절 명칭을 '§검증'으로 지칭했으나 실명칭은 '완료 조건'이다. 산출물 본문에서 외부 문서(승인 계획)의 절을 그 실명칭이 아닌 잘못된 명칭으로 지칭한 사례다. Worker가 자가 에스컬레이션하고 Advisor 판정 후 r2 폐합했다. 산출물 본문의 외부 문서 절 라벨·절 명칭 지칭(artifact-authoring·section-pointer-citation·cross-document-reference) 부류.",
+    "matched_lesson_id": null,
+    "was_recalled": "N/A — 매칭 Active Lesson 부재. mi-0076과 동일 — 본 세션 회수 집합 20건에 '산출물 본문의 외부 문서 절 명칭 지칭' 국면을 커버하는 Active Lesson이 없다. 이 국면을 다루는 L-20은 Candidate(mi-0073)로 Active 회수 대상이 아니다 → 회수 여부를 물을 매칭 Active Lesson 자체가 부재하다.",
+    "verdict": "Novel",
+    "recall_set_ref": "본 세션 Consult 회수 집합 20건 — Active Lesson 15건(L-01~L-15: mi-0009·mi-0010·mi-0011·mi-0012·mi-0013·mi-0014·mi-0015·mi-0016·mi-0026·mi-0027·mi-0028·mi-0038·mi-0047·mi-0054·mi-0058) + Active Best Practice 5건(BP-01 mi-0018·BP-02 mi-0029·BP-03 mi-0039·BPD-06 mi-0056·BPD-11 mi-0070). 세션 착수 시 Advisor 실수행·detail=full (계획 Step 0 회수 기록과 정합).",
+    "follow_up": "매칭 Active Lesson 없음 → Novel(05 §3.1-C·lessons.md §4). mi-0076과 동일한 판정 논리 — 매칭 Active Lesson 자체 부재(L-20은 Candidate). 이 실패는 L-20 '절 라벨·절 명칭' 축의 동형으로 부류 3번째 발생이다(v1.1 T1 § 포인터 오기 mi-0072 → v1.2 T-C § 오귀속 mi-0076 → v1.2 T-R 절 명칭 오지칭 본 건). L-20 재상정 승격(→ mi-0079)의 근거로 함께 축적된다. Worker 자가 에스컬레이션·Advisor 판정·r2 폐합. 실패 아님."
+  },
+  "source": "v1.2-review",
+  "timestamp": "2026-07-05T22:21:03.602+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

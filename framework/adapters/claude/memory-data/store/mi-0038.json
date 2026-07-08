@@ -1,0 +1,30 @@
+{
+  "id": "mi-0038",
+  "kind": "lesson",
+  "content": {
+    "id": "L-12",
+    "status": "Active",
+    "approval_ref": "docs/v0.6-promotion-review.md §2 (Advisor 승인, 2026-07-06)",
+    "failure": "v0.6 Task L3 위임 done이 대상 문서(verification-checklist.md)에 '이력 절 append'를 요구했으나 그 문서에 이력 절이 실재하지 않았다 — 위임문 전제와 대상 실상의 불일치로 Worker가 검출·에스컬레이션, r2 재개정 라우팅 1회 발생.",
+    "cause": "위임 done이 대상 산출물의 기존 구조(절·이력 절 존재)를 실측 없이 전제했다 — 상태 서술 실측 원칙(L-07)의 위임문 작성 국면 재발.",
+    "lesson": "위임 done이 대상 산출물의 기존 구조·요소의 실재를 전제할 때, 발신 전 그 전제를 파일 시스템 실측으로 대조하라 — 위임문의 존재 전제도 실측 대상이다.",
+    "applicability": "위임 메시지 작성·발신(게이트 A) 상황 — done·input이 대상의 기존 구조를 전제하는 경우.",
+    "provenance": {
+      "task_ref": "v0.6 Task L3 (r1→r2)",
+      "report_ref": "docs/verification-checklist.md §9 (r2 개정 행)·L3 r1 완료 보고 (실측 검출)",
+      "origin_role": "검출 Worker(L3)·후보 제출 Advisor·승격 승인 Advisor(v0.6 세션)",
+      "ordering_ref": "v0.6 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.6-L12-review",
+  "timestamp": "2026-07-05T22:20:24.602+09:00",
+  "labels": {
+    "stable_id": "L-12",
+    "status": "Active",
+    "situation": [
+      "delegation-message-authoring",
+      "done-clause-specification",
+      "existence-claim-authoring"
+    ]
+  }
+}

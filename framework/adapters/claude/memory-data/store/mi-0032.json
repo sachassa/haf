@@ -1,0 +1,29 @@
+{
+  "id": "mi-0032",
+  "kind": "lesson",
+  "content": {
+    "id": "LD-01",
+    "status": "Candidate",
+    "failure": "v0.6 시연 사이클 ⓑ(v06-demo-b) 1차 Execute 산출이 사이클 done(§B ②)을 미충족했다 — 작성 지시(§A: 항목 1~4번만)와 완료 조건(§B: 5개 전건)의 불일치로 지시를 충실히 따른 산출이 완료 조건에 미달(CP2 Fail 2/1/0, 픽스처의 의도적 결함).",
+    "cause": "위임의 작성 지시와 완료 조건이 서로 다른 범위를 지정하면, 지시 준수와 done 충족이 동시에 성립할 수 없다 — 산출물 결함으로 판정되어 재작업 루프가 구동된다.",
+    "lesson": "위임 발신 전 작성 지시(input·task)와 완료 조건(done)의 범위 정합을 대조하라 — 지시를 충실히 따른 산출이 done 전 항목을 충족할 수 있는지 확인한다.",
+    "applicability": "위임 메시지 작성·검토 상황 — task 지시와 done의 범위 대조(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.6 L10 시연 ⓑ (cycle_id=v06-demo-b)",
+      "report_ref": "docs/v0.6-demo-fixtures/verify-b1.md (CP2 Fail — 재작업 지시)·docs/v0.6-demo.md",
+      "origin_role": "도출 Loop 오케스트레이션(Advisor 주관)·후보 등록 Memory Update 단계",
+      "ordering_ref": "v0.6 세션 시연 ⓑ (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.6-demo-L10",
+  "timestamp": "2026-07-05T22:20:18.602+09:00",
+  "labels": {
+    "stable_id": "LD-01",
+    "status": "Candidate",
+    "situation": [
+      "delegation-message-authoring",
+      "done-clause-specification",
+      "demo-cycle-execution"
+    ]
+  }
+}

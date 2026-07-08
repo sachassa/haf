@@ -1,0 +1,29 @@
+{
+  "id": "mi-0065",
+  "kind": "lesson",
+  "content": {
+    "id": "L-17",
+    "status": "Candidate",
+    "failure": "v1.0 T3 r1 위임문의 '~참조는 불변' 류 전칭 규칙이 값 서술에 결합된 근거 괄호까지 과잉 포섭해, 수임 Worker가 적용 범위를 OQ-W1로 에스컬레이션했다(r2 폐합·Advisor 소관 결함).",
+    "cause": "전칭 불변 규칙을 쓰면서 값 서술에 결합된 요소(근거 괄호·인용 표기)를 적용 대상에 포함할지 제외할지 구분해 명시하지 않아, 규칙의 적용 범위가 과잉 포섭으로 해석될 여지를 남겼다.",
+    "lesson": "위임문에 '~참조는 불변' 류 전칭 규칙을 쓸 때 값 서술에 결합된 요소(근거 괄호·인용 표기)를 적용/제외 대상으로 구분 명시하라.",
+    "applicability": "Advisor 위임 메시지 작성 상황 — done·constraints가 '~는 불변/유지' 류 전칭 규칙으로 적용 범위를 지정하는 경우.",
+    "provenance": {
+      "task_ref": "v1.0 T3 (위임문 전칭 불변 규칙 과잉 포섭 — OQ-W1→r2)",
+      "report_ref": "docs/v1.0-promotion-review.md §2",
+      "origin_role": "결함 Advisor(위임문)·검출 Worker(OQ-W1 에스컬레이션)·심사 Advisor(Candidate 보류)",
+      "ordering_ref": "v1.0 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.0-review",
+  "timestamp": "2026-07-05T22:20:51.602+09:00",
+  "labels": {
+    "stable_id": "L-17",
+    "status": "Candidate",
+    "situation": [
+      "delegation-message-authoring",
+      "invariance-rule-scoping",
+      "criteria-scope-specification"
+    ]
+  }
+}

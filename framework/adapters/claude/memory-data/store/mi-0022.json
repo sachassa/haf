@@ -1,0 +1,29 @@
+{
+  "id": "mi-0022",
+  "kind": "lesson",
+  "content": {
+    "id": "L-09",
+    "status": "Candidate",
+    "failure": "v0.4 시연 기록(demo.md)이 생성기 배정 순서 값인 기록 timestamp를 \"실제 수행 시각\"으로 서술했고, 실측상 물리 파일은 25ms 창 일괄 생성이어서 서술↔실측 모순으로 CP2 Fail이 났다 (r3 서술 교정으로 해소).",
+    "cause": "시각 주장을 실측 대조 없이 기입했고, 기록 필드의 timestamp(순서 값)와 물리 생성 시각(실측)의 성격을 구분하지 않았다.",
+    "lesson": "기록 필드의 timestamp(순서 값)와 물리 생성 시각(실측)을 구분 서술한다. \"실제 수행 시각\" 류 주장은 실측 대조 후에만 기입하고, 시각 주장을 넣지 않으면 넣지 않았음을 명시한다.",
+    "applicability": "시연·수행 기록에 timestamp·시각 주장을 서술하는 상황.",
+    "provenance": {
+      "task_ref": "v0.4 M7/M8·demo.md r3",
+      "report_ref": "docs/v0.4-verification-report.md §3.6·item #31, docs/session-handoff-v0.4.md §1.5-1",
+      "origin_role": "검출 Verifier(v0.4)·승인 Advisor(v0.5)",
+      "ordering_ref": "v0.4 세션 발생·v0.5 세션 등록"
+    }
+  },
+  "source": "v0.5-V10-ii",
+  "timestamp": "2026-07-05T22:20:08.602+09:00",
+  "labels": {
+    "stable_id": "L-09",
+    "status": "Candidate",
+    "situation": [
+      "execution-record-authoring",
+      "timestamp-description",
+      "time-claim"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "mi-0050",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-09",
+    "status": "Candidate",
+    "success": "v0.8 시연 사이클 v08-demo-p가 레퍼런스 Plugin(F-P1 report-exporter — 독립 Module 1 번들)의 전 수명주기(Install→Activate(Register/Resolve 경유)→Deactivate→Remove)를 실수행하고, Remove 후 잔여물 0(설치 이전 목록 전수 대조·차집합 0)과 자기완결(은닉 의존 0)·격리(IG)를 관측했다 (CP2 첫 판정 Pass 12/0/0 — verify-p.md, Verifier 직접 재열거로 잔여물 0 재확인).",
+    "practice": "배포 단위 시연은 bundle 원본(격리 경계 존치)과 설치본(정본 경계)을 분리하면 Remove 잔여물 0 판정과 산출물 존치 요건이 양립한다 — 잔여물 판정은 설치 이전 파일 목록 전수 대조로 환원한다.",
+    "applicability": "배포 단위 설치·제거 수명주기 시연 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.8 PS-4 EX-DP (Work Graph: ex-dp)",
+      "report_ref": "docs/v0.8-demo-fixtures/verify-p.md (CP2 Pass)",
+      "origin_role": "도출 Loop 사이클(Learn — Verifier 입력)·기록 Advisor",
+      "ordering_ref": "v0.8 세션 시연 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.8-demo-PS4",
+  "timestamp": "2026-07-05T22:20:36.602+09:00",
+  "labels": {
+    "stable_id": "BPD-09",
+    "status": "Candidate",
+    "situation": ["demo-cycle-execution", "single-artifact-delegation", "parallel-dispatch"]
+  }
+}

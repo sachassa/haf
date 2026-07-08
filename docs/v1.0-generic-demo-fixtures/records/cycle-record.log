@@ -1,0 +1,7 @@
+# cycle-record — Generic 바인딩 실물 (BP-13, append-only, 1행 = 1전이)
+# format: seq | stage | actor | outcome | ref
+# 핵심 루프 4단계(위임→구현→검증→승인)의 전이 이벤트를 append-only로 기록한다. 정본: 03 §3.2-A(전이 기록)·BP-13.
+1 | 위임(delegation) | Advisor | pass | channels/delegation-message.md
+2 | 구현(implementation) | Worker | pass | artifacts/core-loop-summary-note.md + channels/completion-report.md (BP-2 로드: manifests/agent-module.manifest.md entrypoint → roles/worker.md)
+3 | 검증(verification) | Verifier | pass | reports/verification-report.md (독립 판정 CP2 — final_verdict=Pass 3/3 Met; 검사도구=파일 조회·텍스트 검색 BP-15)
+4 | 승인(approval) | Advisor | pass | records/approval-record.md (조건부 사전 승인 문면 적용 — 검증 Pass 확인)

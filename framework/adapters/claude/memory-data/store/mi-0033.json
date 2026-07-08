@@ -1,0 +1,28 @@
+{
+  "id": "mi-0033",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-02",
+    "status": "Candidate",
+    "success": "v0.6 시연 사이클 ⓑ(v06-demo-b)가 CP2 Fail 후 재작업 루프 1회(retry_count=1)로 재판정 Pass·Complete에 도달했다 — 재작업 Worker가 회수된 BP-01(동종 결함 전수 대조)을 적용해 지시 범위 밖 잔여 불일치 1건(제목 표기)까지 자가 검출·교정했고, 추가 재작업 왕복 0.",
+    "practice": "재작업 이행 시 회수된 Active BP를 실제 적용하고(동종 결함 전수 대조), 재검증 기준(revalidation_criteria)을 자체 점검 범위로 삼아 재판정 1회로 폐합한다.",
+    "applicability": "재작업 루프의 재구현·재검증 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.6 L10 시연 ⓑ (cycle_id=v06-demo-b)",
+      "report_ref": "docs/v0.6-demo-fixtures/verify-b2.md (CP2 재판정 Pass)·docs/v0.6-demo.md",
+      "origin_role": "도출 Loop 오케스트레이션(Advisor 주관)·후보 등록 Memory Update 단계",
+      "ordering_ref": "v0.6 세션 시연 ⓑ (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.6-demo-L10",
+  "timestamp": "2026-07-05T22:20:19.602+09:00",
+  "labels": {
+    "stable_id": "BPD-02",
+    "status": "Candidate",
+    "situation": [
+      "rework-execution",
+      "defect-class-full-audit",
+      "demo-cycle-execution"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "mi-0014",
+  "kind": "lesson",
+  "content": {
+    "id": "L-06",
+    "status": "Active",
+    "failure": "문서 개정(r2)에서 한 §만 갱신하고 같은 상태를 서술하는 다른 3곳과 실재하지 않는 § 참조 1곳을 방치해 CP2 Fail이 났다 — Advisor 자신이 만든 결함을 Verifier가 검출했다.",
+    "cause": "개정 시 같은 상태를 서술하는 전 지점을 열거·대조하지 않았다.",
+    "lesson": "개정 시 그 상태를 서술하는 전 지점을 전수 열거·갱신·대조하고, 열거 목록을 보고에 남긴다.",
+    "applicability": "기존 문서의 상태·결정 서술을 개정하는 상황.",
+    "provenance": {
+      "task_ref": "v0.3 config-schema r2",
+      "report_ref": "docs/session-handoff-v0.3.md §1.4-2·§1.5-2",
+      "origin_role": "결함 Advisor(v0.3)·검출 Verifier(v0.3)·승인 Advisor(v0.4)",
+      "ordering_ref": "v0.3 세션"
+    }
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:20:00.602+09:00",
+  "labels": {
+    "stable_id": "L-06",
+    "status": "Active",
+    "situation": [
+      "document-revision",
+      "status-decision-description-update"
+    ]
+  }
+}

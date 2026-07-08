@@ -1,0 +1,14 @@
+# Discovery Request (Entry Resolution 산출 — 구조화 레코드)
+# 직렬화 형식 정본 = entry-binding.md §5.1 / 기록 위치 정본 = discovery-binding.md §4.2 (DP-X8)
+# Entry Resolution 실수행 기록: 2026-07-07, 주 세션(Advisor) — uaf-continue 발화(논리 Entry /continue)
+# 엔진 5단계 (01 §3.2-A): ① /continue Descriptor 매칭 ② 증거 관측(실측 — entry-binding §4 판정 수단)
+#   contract-presence: discovery-data/contracts/uahf/ 인스턴스 파일 0건 → 무
+#   repository-presence: 저장소 루트 실질 프로젝트 콘텐츠 실재(ARCHITECTURE.md·framework/·specs/·uaf/·docs/·ROADMAP.md 등) → 유 (VCS 마커 부재와 무관 — 지표 1 충족)
+# ③ 우선순위 평가: {무, 유} → 01 §3.2-D 행 6 매칭 ④ 결정성 검증: 단일 행(6)만 매칭 ⑤ 방출: 아래 레코드
+mode: brownfield
+inputs:
+  - sourceType: contract-presence
+    observed: 무
+  - sourceType: repository-presence
+    observed: 유
+policy: default-policy   # discovery-data/policy/default-policy.yaml 참조 (Policy as Data)

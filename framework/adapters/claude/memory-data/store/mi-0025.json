@@ -1,0 +1,28 @@
+{
+  "id": "mi-0025",
+  "kind": "best-practice",
+  "content": {
+    "id": "BP-02",
+    "status": "Candidate",
+    "success": "v0.5 실행 계획이 공유 인터페이스 산출물(검증 리포트 스키마 V1)을 선행 Wave에서 확정하고, 후속 병렬 3 Task(프로토콜·재작업 포맷·카탈로그)가 확정본만 소비(07 R2)하도록 배치했다 — 병렬 집합 전건이 재작업 0회로 게이트를 통과했고, v0.5는 프로젝트 최초로 CP2를 재작업 없이 첫 판정 Pass(충족 26/위반 0/판정 불가 0)로 통과했다.",
+    "practice": "병렬 집합이 공유할 인터페이스 산출물을 선행 Wave에서 확정하고, 병렬 Task는 그 확정본만 소비하게 배치한다 (미완성 상호 참조 0 — 07 R2의 적극 설계).",
+    "applicability": "작업 분해·Wave 설계에서 공유 인터페이스가 있는 병렬 집합을 배치하는 상황.",
+    "provenance": {
+      "task_ref": "v0.5 실행 계획(Planner 초안·Advisor 채택)·Wave 1~2",
+      "report_ref": "docs/v0.5-verification-report.md §4(Pass 26/0/0), docs/session-handoff-v0.5.md(예정 — 세션 요약)",
+      "origin_role": "설계 Planner·채택 Advisor·수행 Worker(v0.5)·승인 Advisor(v0.5)",
+      "ordering_ref": "v0.5 세션"
+    }
+  },
+  "source": "v0.5-V10-ii",
+  "timestamp": "2026-07-05T22:20:11.602+09:00",
+  "labels": {
+    "stable_id": "BP-02",
+    "status": "Candidate",
+    "situation": [
+      "task-decomposition",
+      "wave-design",
+      "shared-interface-sequencing"
+    ]
+  }
+}

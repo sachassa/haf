@@ -1,0 +1,17 @@
+{
+  "id": "mi-0036",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "위임문의 존재 전제(대상 문서의 이력 절)가 실측 없이 기입되어 대상 실상과 불일치 (v0.6 Task L3 r1)",
+    "matched_lesson_id": "L-07",
+    "was_recalled": true,
+    "verdict": "Recurrence",
+    "follow_up": "L-12 등록·승격(docs/v0.6-promotion-review.md §2 — L-07을 위임 발신 국면으로 확장하는 강화 Lesson, supersede 아님). 게이트 A 점검에 done 존재 전제 실측 대조 반영. 회수 이력 입력은 본 건까지 수동 제공 — 차기부터 Consult 전이 이벤트 ref(DP-L5) 도출 가능."
+  },
+  "source": "v0.6-L12-review",
+  "timestamp": "2026-07-05T22:20:22.602+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "matched_lesson_id": "L-07"
+  }
+}

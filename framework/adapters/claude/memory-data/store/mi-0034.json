@@ -1,0 +1,30 @@
+{
+  "id": "mi-0034",
+  "kind": "lesson",
+  "content": {
+    "id": "LD-02",
+    "status": "Candidate",
+    "failure": "v0.6 시연 사이클 ⓒ(v06-demo-c)가 CP2 반복 Fail 3회(1차 ② 위반 → 2차 ③ 위반 → 3차 ② 회귀 위반)로 retry.limit(2)을 초과해 에스컬레이션 종료됐다 — 각 재작업은 직전 위반을 정확히 이행했으나 반대 항목이 교대 회귀하는 ②↔③ 진동(픽스처의 의도적 done 상호 모순).",
+    "cause": "done 기준이 상호 모순이면(행 수 3 ∧ 행 수 4) 어떤 산출로도 전 항목 동시 충족이 원리적으로 불가하여 문면 대조 재작업이 수렴하지 않는다.",
+    "lesson": "재작업마다 위반 항목이 교대 회귀하는 진동 패턴은 done 기준 상호 모순의 신호다 — 추가 재작업을 반복하지 말고 재시도 한도 안에서 기준 처분(에스컬레이션)으로 전환하라.",
+    "applicability": "재작업 루프에서 위반 항목이 교대 회귀하는 상황 — done 기준 정합 점검·에스컬레이션 판단(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.6 L10 시연 ⓒ (cycle_id=v06-demo-c)",
+      "report_ref": "docs/v0.6-demo-fixtures/verify-c1.md·verify-c2.md·verify-c3.md (CP2 Fail 3회 — 누적 실패 집합)·docs/v0.6-demo.md",
+      "origin_role": "도출 Loop 오케스트레이션(Advisor 주관, 종료 전 Learn — INV-5)·후보 등록 Memory Update 단계",
+      "ordering_ref": "v0.6 세션 시연 ⓒ (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.6-demo-L10",
+  "timestamp": "2026-07-05T22:20:20.602+09:00",
+  "labels": {
+    "stable_id": "LD-02",
+    "status": "Candidate",
+    "situation": [
+      "rework-execution",
+      "done-clause-specification",
+      "escalation-judgment",
+      "demo-cycle-execution"
+    ]
+  }
+}

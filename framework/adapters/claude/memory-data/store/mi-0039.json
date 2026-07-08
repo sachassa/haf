@@ -1,0 +1,29 @@
+{
+  "id": "mi-0039",
+  "kind": "best-practice",
+  "content": {
+    "id": "BP-03",
+    "status": "Active",
+    "approval_ref": "docs/v0.6-promotion-review.md §2 (Advisor 승인, 2026-07-06)",
+    "success": "v0.6에서 Frozen 03의 미명세 지점 3건(ref 괄호 열거 한정성·에스컬레이션 종료 to_stage·한도 초과 retry_count 표기)을 정본 자신의 문면이 지정하는 값·목적지·조건의 인스턴스로 해소하고 결정 기록으로 명문화 — Frozen 개정 0회로 통합 마일스톤 완주, CP2가 3건 전부 재정의 0·정합 확인.",
+    "practice": "Frozen 정본의 미명세 지점을 만나면 새 값·해석을 창설하지 말고, 정본 자신의 문면(전이 목적지·조건식·타 spec 결정 기록)이 지정하는 값을 인스턴스로 채택해 결정 기록 절에 § 포인터와 함께 명문화한다. 한정 해석 시 Frozen 개정이 필요해지는 지점은 비한정 해석의 정본 내 근거를 먼저 찾는다.",
+    "applicability": "Frozen spec 인스턴스화 중 정본 미명세 지점(선택 필드 열거·전이 대상·조건 표기)을 만나는 상황.",
+    "provenance": {
+      "task_ref": "v0.6 DP-L5·L9 OQ-1·L9 OQ-2 (Advisor 판정 3건)",
+      "report_ref": "docs/v0.6-verification-report.md (CP2 Pass — 결정 기록 정합 확인)·framework/loop/loop-state-record.md §6·docs/v0.6-demo-procedure.md §12.2",
+      "origin_role": "판정 Advisor·승격 승인 Advisor(v0.6 세션)·정합 확인 Verifier(CP2)",
+      "ordering_ref": "v0.6 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.6-L12-review",
+  "timestamp": "2026-07-05T22:20:25.602+09:00",
+  "labels": {
+    "stable_id": "BP-03",
+    "status": "Active",
+    "situation": [
+      "frozen-spec-instantiation",
+      "underspecified-contract-resolution",
+      "decision-recording"
+    ]
+  }
+}

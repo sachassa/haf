@@ -1,0 +1,27 @@
+{
+  "id": "mi-0018",
+  "kind": "best-practice",
+  "content": {
+    "id": "BP-01",
+    "status": "Active",
+    "success": "재작업 지시를 받은 Worker가 지시된 결함만 고치지 않고 동종 결함의 전수 대조를 실제 수행하여, 지시 범위 밖 동종 결함을 자가 검출·교정·공개했다 — 추가 재작업 왕복 0, 은폐 0.",
+    "practice": "재작업 수행 시 지시된 결함의 동종 부류 전체를 전수 대조하고, 발견한 지시 범위 밖 결함도 교정·공개한다.",
+    "applicability": "재작업(rework) 지시를 수행하는 상황.",
+    "provenance": {
+      "task_ref": "v0.3 A5 r2",
+      "report_ref": "docs/session-handoff-v0.3.md §1.4-1 (모범 사례 명기)",
+      "origin_role": "수행 Worker(v0.3)·승인 Advisor(v0.4)",
+      "ordering_ref": "v0.3 세션"
+    }
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:20:04.602+09:00",
+  "labels": {
+    "stable_id": "BP-01",
+    "status": "Active",
+    "situation": [
+      "rework-execution",
+      "defect-class-full-audit"
+    ]
+  }
+}

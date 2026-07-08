@@ -1,0 +1,29 @@
+{
+  "id": "mi-0044",
+  "kind": "lesson",
+  "content": {
+    "id": "LD-03",
+    "status": "Candidate",
+    "failure": "v0.7 시연 병합에서, 개별 CP2를 전부 Pass한 두 Task(wf-t2·wf-t3)가 같은 계약 Y를 다르게 실현했다 — wf-t2는 자기 spec 지시(실현 A: 등장 순 베타→알파→감마)로, wf-t3는 확정 계약 Y 문면(가나다 순 감마→베타→알파)으로. 이 사후 불일치는 개별 검증이 잡지 못했고 병합 단계 3(충돌 검출)에서야 충돌 1건으로 검출되어 Advisor 중재로 해소됐다 (픽스처의 의도적 유도 — merge-rules §4.3 인스턴스).",
+    "cause": "개별 검증(CP2)은 각 Task 산출물을 자기 done(자기 spec)에 대해서만 판정한다 — 두 Task가 같은 계약을 서로 다르게 실현한 교차 불일치는 어느 한쪽의 개별 판정에도 나타나지 않고 병합 시점에만 드러난다.",
+    "lesson": "같은 인터페이스 계약을 산출·소비하는 Task 쌍이 있는 병렬 워크플로에서는 병합의 상호 참조 정합성 검증·충돌 검출 단계를 생략하지 말고, 그 쌍의 실현 문면을 병합 시점에 직접 대조하라 — 개별 검증 통과가 교차 정합을 보증하지 않는다.",
+    "applicability": "복수 Task가 같은 인터페이스 계약을 산출·소비하는 병렬 워크플로의 병합 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.7 WF9 시연 Merge (충돌 검출·중재 — conflicts 1건)",
+      "report_ref": "docs/v0.7-demo.md (Merge Result·arbitration 수록)",
+      "origin_role": "도출 Workflow Merge(Advisor 중재)·기록 07 §5 Record",
+      "ordering_ref": "v0.7 세션 시연 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.7-demo-WF9",
+  "timestamp": "2026-07-05T22:20:30.602+09:00",
+  "labels": {
+    "stable_id": "LD-03",
+    "status": "Candidate",
+    "situation": [
+      "merge-execution",
+      "conflict-arbitration",
+      "demo-workflow-execution"
+    ]
+  }
+}

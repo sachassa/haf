@@ -1,0 +1,29 @@
+{
+  "id": "mi-0073",
+  "kind": "lesson",
+  "content": {
+    "id": "L-20",
+    "status": "Candidate",
+    "failure": "v1.1 T1 r1 산출물(uaf/ARCHITECTURE.md) 본문이 외부 정본(UAHF Glossary)의 절을 지칭하며 '핵심 루프'를 §3.2-I로 오인용했다(정본은 §3.2-J). 계수·존재는 정확하고 § 포인터(절 라벨)만 오기 — Advisor 게이트 C가 검출, 동종 전수 재대조(BP-01) 후 r2 폐합.",
+    "cause": "산출물 본문에 외부 정본의 § 포인터·절 라벨을 기입하며 대상 정본 파일을 직접 실측 대조하지 않았고, CP1 자체 점검의 전수 스캔 범위에 § 포인터 대조가 포함되지 않았다. L-18(위임문의 § 라벨·절 번호 발신 전 실측 대조)이 다루는 축의 '산출물 본문' 대응 축이 커버되지 않았다.",
+    "lesson": "산출물 본문의 외부 정본 § 포인터·절 라벨은 기입 전 대상 정본 파일 직접 실측으로 대조하고, CP1 자체 점검의 전수 스캔 범위에 § 포인터 대조를 포함한다 (위임문 대상 L-18과 같은 깊이의 산출물 본문 축).",
+    "applicability": "산출물 본문에 외부 정본 문서의 § 포인터·절 라벨·절 번호를 인용·지칭하는 집필 상황 — 대상 정본과 산출물이 서로 다른 문서(cross-document reference)인 경우.",
+    "provenance": {
+      "task_ref": "v1.1 T1 r1 (uaf/ARCHITECTURE.md 집필 — 외부 정본 § 포인터 오기 1건, Advisor 게이트 C 검출·r2 폐합)",
+      "report_ref": "docs/v1.1-promotion-review.md §2 · docs/v1.1-verification-report.md §3 item #15 (ARCHITECTURE r2 § 포인터 오기 1건 §3.2-I→§3.2-J 정정 + 동종 전수 재대조 이력)",
+      "origin_role": "도출 Worker(Execute r1→r2)·검출 Advisor(게이트 C)·심사 Advisor(Candidate 보류)",
+      "ordering_ref": "v1.1 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.1-review",
+  "timestamp": "2026-07-05T22:20:59.602+09:00",
+  "labels": {
+    "stable_id": "L-20",
+    "status": "Candidate",
+    "situation": [
+      "artifact-authoring",
+      "section-pointer-citation",
+      "cross-document-reference"
+    ]
+  }
+}

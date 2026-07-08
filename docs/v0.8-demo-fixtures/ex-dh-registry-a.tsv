@@ -1,0 +1,1 @@
+audit-complete	lifecycle.complete	after	0	1	.claude/hooks/audit-complete/audit.sh

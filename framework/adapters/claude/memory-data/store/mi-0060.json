@@ -1,0 +1,16 @@
+{
+  "id": "mi-0060",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "v0.9 T2 r1 결함 — spec-versioning-policy.md 문서 내 자기 참조 § 포인터 오기('L-10 §3.3'으로 지칭했으나 실위치는 §3.4). 문서 내부 상호 참조 절 번호 불일치이며, 기존 Active Lesson 14건(L-01~L-14)과 매칭되는 실패 유형이 없다.",
+    "matched_lesson_id": null,
+    "was_recalled": null,
+    "verdict": "Novel",
+    "follow_up": "매칭 Active Lesson 없음 → Novel(05 §3.1-C·lessons.md §2.5·§4). 단발 § 포인터 오기로 게이트 검출·r2 교정으로 폐합했으며, 이 단건에 대해 별도 신규 Lesson 후보를 등록하지 않는다(Advisor 판정 — 재사용 가치 축적 전). 실패 아님."
+  },
+  "source": "v0.9-T13-review",
+  "timestamp": "2026-07-05T22:20:46.602+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

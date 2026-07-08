@@ -1,0 +1,28 @@
+{
+  "id": "mi-0042",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-05",
+    "status": "Candidate",
+    "success": "v0.7 시연 사이클 wf-t3(v07-demo-t3)가 병렬 집합의 일원으로 7단계를 사람 개입 0·재작업 0으로 통과했다 — 분해 시점 확정된 계약 Y 문면만 소비(R2 — 동시 진행 중 형제 실물 out-t2.md 불참조)해 색인 사용 안내를 산출(out-t3.md), CP2 첫 판정 Pass(4/0/0).",
+    "practice": "소비 전용 Task(consumes만 보유)는 산출 Task의 실물 완성을 기다리지 않고 확정 계약 문면만으로 착수·완결할 수 있다 — 계약의 분해 시점 확정이 병렬성을 만든다.",
+    "applicability": "확정 계약 소비 전용 병렬 Task의 사이클 구동 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.7 WF9 시연 wf-t3 (cycle_id=v07-demo-t3)",
+      "report_ref": "docs/v0.7-demo.md (수행 기록)·docs/v0.7-demo-fixtures/verify-t3.md (CP2 Pass)",
+      "origin_role": "도출 Loop 오케스트레이션(Advisor 주관)·후보 등록 Memory Update 단계",
+      "ordering_ref": "v0.7 세션 시연 wf-t3 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.7-demo-WF9",
+  "timestamp": "2026-07-05T22:20:28.602+09:00",
+  "labels": {
+    "stable_id": "BPD-05",
+    "status": "Candidate",
+    "situation": [
+      "demo-cycle-execution",
+      "single-artifact-delegation",
+      "parallel-dispatch"
+    ]
+  }
+}

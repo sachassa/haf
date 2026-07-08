@@ -1,0 +1,17 @@
+{
+  "id": "mi-0020",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "산출물이 미존재 파일을 \"실재\"로 서술함 (L-07 유형과 매칭). 이 작업의 (수동 제공) 회수 집합에 L-07이 포함되지 않았음.",
+    "matched_lesson_id": "L-07",
+    "was_recalled": false,
+    "verdict": "RecallGap",
+    "follow_up": "회수 규칙/적용 조건(applicability) 조정 대상 — Lesson 내용 결함 아님 (lessons.md §4)."
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:20:06.602+09:00",
+  "labels": {
+    "verdict": "RecallGap",
+    "matched_lesson_id": "L-07"
+  }
+}

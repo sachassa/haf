@@ -1,0 +1,29 @@
+{
+  "id": "mi-0067",
+  "kind": "lesson",
+  "content": {
+    "id": "L-18",
+    "status": "Candidate",
+    "failure": "v1.0 T3 r1 위임문이 대상 문서의 § 라벨을 2건 오기했다(§11 요약을 '§10'·§10 OQ 위치를 '§9'로 지칭). 계수는 정확했으나 § 라벨만 어긋나 수임자가 실측으로 폐합했다.",
+    "cause": "위임문이 대상 문서의 § 라벨·절 번호를 지칭할 때, 존재 전제(L-12)·계수 전제(L-15)에 적용하던 발신 전 실측 대조를 § 라벨 축에는 적용하지 않은 갭.",
+    "lesson": "위임문이 대상 문서의 § 라벨·절 번호를 지칭할 때 발신 전 실측 대조하라 — 존재 전제(L-12)·계수 전제(L-15)와 같은 깊이로.",
+    "applicability": "Advisor 위임 메시지 작성·발신 상황 — input·done이 대상 문서의 § 라벨·절 번호를 지칭하는 경우.",
+    "provenance": {
+      "task_ref": "v1.0 T3 r1 (위임문 § 라벨 오기 관측 2건)",
+      "report_ref": "docs/v1.0-promotion-review.md §2",
+      "origin_role": "결함 Advisor(위임문)·검출 수임자(실측)·심사 Advisor(Candidate 보류)",
+      "ordering_ref": "v1.0 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.0-review",
+  "timestamp": "2026-07-05T22:20:53.602+09:00",
+  "labels": {
+    "stable_id": "L-18",
+    "status": "Candidate",
+    "situation": [
+      "delegation-message-authoring",
+      "section-label-reference",
+      "input-premise-verification"
+    ]
+  }
+}

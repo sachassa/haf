@@ -1,0 +1,18 @@
+{
+  "id": "mi-0075",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "v1.1 T10 Advisor 위임문 done 1의 계수 전제 오기 — '심사 후 Candidate 21건'으로 명시했으나 실측은 20건이다(기존 Candidate 18 + 신규 L-20·BPD-13 2 = 20; 명시값 21은 18+2에 대한 +1 산술 슬립). 원 store 규모 계수(store 71)는 발신 전 실측됐으나, 그로부터 파생된 합산 계수(18+2)의 산술 검산이 누락됐다. 수임 Worker(T10 심사 집행)가 store 74건 최신 상태 해소(lessons.md §5.2)로 독립 재계산해 검출하고, 실측값 20을 심사 문서(docs/v1.1-promotion-review.md §4) 정본으로 기입·에스컬레이션했다(L-15 준거).",
+    "matched_lesson_id": "L-15",
+    "was_recalled": "회수됨 — 본 세션 Consult 회수 집합 20건(Active)에 L-15(mi-0058, 'L-15 Active — 위임 input 계수·규모·상태 전제 발신 전 실측 대조'; situation: delegation-message-authoring·count-claim·input-premise-verification)가 포함되어 세션 착수 시 회수됐다. L-15가 회수됐음에도 위임문 done 1의 파생 합산 계수(18+2)에서 동일 부류 결함(계수 전제 미검산)이 재발했다.",
+    "verdict": "Recurrence",
+    "recall_set_ref": "본 세션 Consult 회수 집합 20건 — Active Lesson 15건(L-01~L-15: mi-0009·mi-0010·mi-0011·mi-0012·mi-0013·mi-0014·mi-0015·mi-0016·mi-0026·mi-0027·mi-0028·mi-0038·mi-0047·mi-0054·mi-0058) + Active Best Practice 5건(BP-01 mi-0018·BP-02 mi-0029·BP-03 mi-0039·BPD-06 mi-0056·BPD-11 mi-0070). 매칭 Lesson L-15 = mi-0058(회수 확인).",
+    "follow_up": "L-15 매칭·회수됨·재발 → Recurrence(05 §3.1-C·lessons.md §4). 이번 재발의 특수성: L-15('위임 input 계수·규모·상태 전제 발신 전 실측 대조')가 회수됐음에도, 원 계수(store 71 규모)는 실측된 반면 그로부터 파생된 합산 계수(기존 Candidate 18 + 신규 2 = 20)의 산술 검산이 누락돼 '21'로 오기됐다 → L-15 적용 범위에 '파생·합산 계수의 검산' 축이 포함됨을 확인한다(단일 실측값뿐 아니라 실측값에서 파생되는 합산·차감 계수도 발신 전 검산 대상). 검출·처리: 수임 Worker(T10)가 독립 재계산으로 검출하고 실측값 20을 심사 문서 §4 정본으로 기입·에스컬레이션했다(L-15 준거). Advisor 판정(2026-07-07): 실측값 20이 정본·위임 '21'은 Advisor 산술 오기·Worker의 L-15 준거 처리 승인. 신규 Lesson 등록 없음(기존 L-15 적용 범위 축 확인으로 충분 — Advisor 판정)."
+  },
+  "source": "v1.1-review",
+  "timestamp": "2026-07-05T22:21:01.602+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "matched_lesson_id": "L-15"
+  }
+}

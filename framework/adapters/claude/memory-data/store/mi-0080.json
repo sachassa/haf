@@ -1,0 +1,30 @@
+{
+  "id": "mi-0080",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-13",
+    "status": "Active",
+    "success": "v1.1 T4(uaf/specs/02-discovery.md Module부 집필)에서 장시간 집필 Task의 실행 중단(스트림 중단) 후 재개 프로토콜로 무결 복구(결함 0)한 패턴이, v1.2에서 실무 동형으로 재현됐다 — Planner 초안 Task가 API 서버 오류로 스트림이 중단된 뒤 동일 재개 프로토콜(산출물·조사 상태 전체 실측 재확인→미완 지점 완성→전 검증 스캔 재수행→완료 보고)로 재개해 결함 0으로 완결 초안을 반환했다. 시연·1회가 아닌 서로 다른 실무 Task 2건(집필·계획)에서 중단→재개가 결함 0으로 성립했다.",
+    "practice": "장시간 집필 Task의 실행 중단(스트림 중단 등) 후 재개 시 재개 프로토콜을 따른다 — ① 산출물·조사 상태 전체 실측 재확인 ② 미완 지점 완성 ③ 전 검증 스캔 재수행 ④ 완료 보고.",
+    "applicability": "장시간 집필·계획·구현 Task의 실행이 중단(스트림 중단·API 서버 오류·세션 단절 등)된 후 재개하는 상황 — 부분 완성 산출물·조사 상태의 무결 복구가 필요한 경우.",
+    "approval": "Advisor 재상정 승격 승인 2026-07-07 — docs/v1.2-promotion-review.md (05 INV-4; mi-0074 보류 조건 '실무 동형 재발 시 재상정' 충족).",
+    "supersedes": "mi-0074",
+    "provenance": {
+      "task_ref": "v1.1 T4(최초 실증, uaf/specs/02-discovery.md Module부) → v1.2 Planner 초안 Task(실무 동형 재발 — API 서버 오류 스트림 중단 후 재개)",
+      "report_ref": "docs/v1.2-promotion-review.md §2 · docs/v1.1-promotion-review.md §2.3(BPD-13 최초 Candidate mi-0074)",
+      "origin_role": "승격 Advisor",
+      "ordering_ref": "v1.2 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.2-review",
+  "timestamp": "2026-07-05T22:21:06.602+09:00",
+  "labels": {
+    "stable_id": "BPD-13",
+    "status": "Active",
+    "situation": [
+      "task-resumption",
+      "interrupted-execution",
+      "cp1-self-check"
+    ]
+  }
+}

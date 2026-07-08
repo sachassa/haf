@@ -1,0 +1,17 @@
+{
+  "id": "mi-0076",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "v1.2 T-C r1 산출물(framework/adapters/claude/contract-binding.md) 본문의 외부 정본 § 오귀속 1건 — 복합 인용에서 01-entry(uaf/specs/01-entry.md) §4.1 불릿 말미의 교차 참조 '(§3.2-C)'를 위임 문구의 소속 절로 오독했다(위임 문구의 실소유 절 = 01 §4.1). 정의 인용과 위임/규칙 문구를 병기한 복합 인용에서 불릿 말미의 교차 참조 괄호를 병기 문구의 소속 절로 잘못 귀속한 사례다. Advisor 게이트 C가 검출하고 라이브 6지점 교정·BP-01 전수 재대조 후 r2 폐합했다. 산출물 본문의 외부 정본 § 귀속(artifact-authoring·section-pointer-citation·cross-document-reference) 부류.",
+    "matched_lesson_id": null,
+    "was_recalled": "N/A — 매칭 Active Lesson 부재. 본 세션 Consult 회수 집합 20건(recall_set_ref 참조)에 '산출물 본문의 외부 정본 § 귀속' 국면을 커버하는 Active Lesson이 없다. 이 국면을 다루는 L-20은 Candidate(mi-0073)로 status 필터상 Active가 아니어서(Active 회수에서 자연 제외) 회수 대상이 아니다 → 회수 여부를 물을 매칭 Active Lesson 자체가 부재하다.",
+    "verdict": "Novel",
+    "recall_set_ref": "본 세션 Consult 회수 집합 20건 — Active Lesson 15건(L-01~L-15: mi-0009·mi-0010·mi-0011·mi-0012·mi-0013·mi-0014·mi-0015·mi-0016·mi-0026·mi-0027·mi-0028·mi-0038·mi-0047·mi-0054·mi-0058) + Active Best Practice 5건(BP-01 mi-0018·BP-02 mi-0029·BP-03 mi-0039·BPD-06 mi-0056·BPD-11 mi-0070). 세션 착수 시 Advisor 실수행·detail=full (계획 Step 0 회수 기록과 정합).",
+    "follow_up": "매칭 Active Lesson 없음 → Novel(05 §3.1-C·lessons.md §4). RecallGap 아님 — 매칭 Active Lesson 자체가 부재하다(L-20은 Candidate mi-0073로 Active 회수 대상 아님; v1.0 mi-0066·v1.1 mi-0072 판정 논리 동형). 이 실패는 L-20 부류의 동형 2번째 발생(최초 v1.1 T1 r1 mi-0072)으로, L-20 재상정 승격(→ mi-0079)의 근거로 축적된다. Advisor 게이트 C 검출·라이브 6지점 교정·BP-01 전수 재대조 후 r2 폐합. 실패 아님."
+  },
+  "source": "v1.2-review",
+  "timestamp": "2026-07-05T22:21:02.602+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

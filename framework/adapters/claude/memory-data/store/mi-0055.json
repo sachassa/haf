@@ -1,0 +1,24 @@
+{
+  "id": "mi-0055",
+  "kind": "best-practice",
+  "content": {
+    "id": "BP-04",
+    "status": "Candidate",
+    "success": "v0.8 EX-R3 Worker가 verifier.md 편집의 권한 거부를 만나자 셸 직접 쓰기 우회를 의도적으로 시도하지 않고, 거부의 취지(에이전트 위임 권한으로 기동 설정을 자기수정하지 말 것)를 판단해 실패 보고(blocking)로 정직 반환했다 — Advisor가 정당 권한 경로(사용자 직접 지시)로 완결.",
+    "practice": "권한 시스템의 거부는 우회하지 않는다 — 거부의 취지를 판단하고 차단 보고로 반환하며, 해소는 권한 소유자(사용자·주 세션) 경로로 진행한다.",
+    "applicability": "권한 차단·경계 거부를 만난 수임 Agent의 대응 상황.",
+    "provenance": {
+      "task_ref": "v0.8 EX-R3",
+      "report_ref": "EX-R3 실패 보고(blocking)",
+      "origin_role": "도출 Worker·심사 Advisor(보류 — 실무 동형 재발 시 재상정)",
+      "ordering_ref": "v0.8 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.8-L14-review",
+  "timestamp": "2026-07-05T22:20:41.602+09:00",
+  "labels": {
+    "stable_id": "BP-04",
+    "status": "Candidate",
+    "situation": ["permission-boundary", "escalation-judgment", "delegation-authorization"]
+  }
+}

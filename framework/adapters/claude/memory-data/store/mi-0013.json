@@ -1,0 +1,28 @@
+{
+  "id": "mi-0013",
+  "kind": "lesson",
+  "content": {
+    "id": "L-05",
+    "status": "Active",
+    "failure": "어느 완료 보고에도 없는 빈 디렉터리 8개가 생성되어 있음이 Advisor 게이트 C에서 발견되었다 — 소유 경계(R4) 추적이 흐려졌다.",
+    "cause": "완료 보고 artifacts에 파일만 명시하고 생성한 디렉터리(빈 디렉터리 포함)를 명시하지 않는 관행.",
+    "lesson": "완료 보고 artifacts에는 파일뿐 아니라 생성한 디렉터리(빈 디렉터리 포함)도 전수 명시한다.",
+    "applicability": "완료 보고의 artifacts를 작성하는 상황.",
+    "provenance": {
+      "task_ref": "v0.3 Wave 실행",
+      "report_ref": "docs/session-handoff-v0.3.md §1.4 부수 발견·§1.5-1",
+      "origin_role": "검출 Advisor(v0.3)·승인 Advisor(v0.4)",
+      "ordering_ref": "v0.3 세션"
+    }
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:19:59.602+09:00",
+  "labels": {
+    "stable_id": "L-05",
+    "status": "Active",
+    "situation": [
+      "completion-report-authoring",
+      "artifacts-listing"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "mi-0009",
+  "kind": "lesson",
+  "content": {
+    "id": "L-01",
+    "status": "Active",
+    "failure": "기준선(Frozen) 확정 직후 Glossary 표에서 실제 상태와 다른 낡은 표기 2건(\"미작성\")이 발견되어 즉시 교정이 필요했다.",
+    "cause": "기준선 확정 전 최종 검증에 \"문서 내 상태 서술 ↔ 실제 상태의 전수 대조\" 절차가 없었다.",
+    "lesson": "문서를 Frozen/기준선으로 확정하기 전 최종 검증에 상태 서술 전수 대조를 포함한다.",
+    "applicability": "문서를 Frozen 또는 기준선으로 확정하려는 상황.",
+    "provenance": {
+      "task_ref": "v0.1 Frozen 전이",
+      "report_ref": "docs/session-handoff-v0.1.md §5.3 항목 4",
+      "origin_role": "제출 Advisor(v0.1)·승인 Advisor(v0.4)",
+      "ordering_ref": "v0.1 세션 (2026-07-05, v0.4 이전)"
+    }
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:19:55.602+09:00",
+  "labels": {
+    "stable_id": "L-01",
+    "status": "Active",
+    "situation": [
+      "document-finalization",
+      "frozen-transition",
+      "baseline-confirmation"
+    ]
+  }
+}

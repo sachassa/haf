@@ -1,0 +1,17 @@
+{
+  "id": "mi-0046",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "개정 위임 done이 상태 라인·이력 행 라벨 처리(관례 기대 문면)를 명시하지 않아 수임자 처리 편차 발생 (v0.7 WF13~WF15 — r2 3회·r3 1회)",
+    "matched_lesson_id": "L-08",
+    "was_recalled": true,
+    "verdict": "Recurrence",
+    "follow_up": "L-13 등록·승격(docs/v0.7-promotion-review.md §2.1 — L-08을 개정 위임의 관례 기대 문면 명시 국면으로 확장하는 강화 Lesson, supersede 아님). 게이트 A 운용에 '개정 위임 시 상태 라인·라벨 기대 문면 명시' 관행 추가. 회수 이력 입력은 세션 회수 기록(계획 파일 §2 — Active 12건 회수)에서 수동 도출 — 세션 자체는 루프 상태 기록 미구동 (handoff v0.6 §3.4 단서)."
+  },
+  "source": "v0.7-L13-review",
+  "timestamp": "2026-07-05T22:20:32.602+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "matched_lesson_id": "L-08"
+  }
+}

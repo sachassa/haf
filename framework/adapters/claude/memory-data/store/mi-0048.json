@@ -1,0 +1,24 @@
+{
+  "id": "mi-0048",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-07",
+    "status": "Candidate",
+    "success": "v0.8 시연 사이클 v08-demo-h가 레퍼런스 Hook(F-H1 audit-complete)을 확장 표면에 추가만 하여 본체 diff 0으로 동작을 확장하고, 비차단 실패(blocking=false·본 작업 계속)와 순서 결정성(08 §3.1-D 3단 기준·2-run 동일)을 형태 A Dispatch 실구동으로 관측했다 (CP2 첫 판정 Pass 8/0/0 — verify-h.md, 독립 재구동 바이트 동일 9/9).",
+    "practice": "이벤트 확장은 등록 표면 추가만으로 성립시키고, 실패 픽스처는 격리 경계에 두어 라이브 표면을 오염시키지 않으며, 순서·격리·비차단은 재구동 가능한 드라이버 기록으로 남기면 CP2가 바이트 대조로 독립 재현할 수 있다.",
+    "applicability": "이벤트 확장점 추가·비차단 부수 동작 시연 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.8 PS-4 EX-DH (Work Graph: ex-dh)",
+      "report_ref": "docs/v0.8-demo-fixtures/verify-h.md (CP2 Pass)",
+      "origin_role": "도출 Loop 사이클(Learn — Verifier 입력)·기록 Advisor",
+      "ordering_ref": "v0.8 세션 시연 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.8-demo-PS4",
+  "timestamp": "2026-07-05T22:20:34.602+09:00",
+  "labels": {
+    "stable_id": "BPD-07",
+    "status": "Candidate",
+    "situation": ["demo-cycle-execution", "single-artifact-delegation", "parallel-dispatch"]
+  }
+}

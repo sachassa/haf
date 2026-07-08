@@ -1,0 +1,29 @@
+{
+  "id": "mi-0071",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-12",
+    "status": "Candidate",
+    "success": "v1.0 T4 generic Adapter 시연이 최소 구현 Adapter의 C3(핵심 루프 통과)를 실증했다 — 바인딩 값의 파일 채널 실물화(위임 메시지·보고·기록 파일·역할 정의 문서)와 독립 검증 실위임을 한 사이클에 결합해, cycle-record.log 4전이(위임→구현→검증→승인·outcome 전건 pass·human 0)와 독립 Verifier 판정 Pass 3/3으로 핵심 루프 1회 통과가 성립했다(generic Valid(Minimal)).",
+    "practice": "최소 구현 Adapter의 C3(핵심 루프 통과) 실증은 바인딩 값의 파일 채널 실물화(위임 메시지·보고·기록 파일·역할 정의 문서)와 독립 검증 실위임을 한 사이클에 결합하면 성립한다.",
+    "applicability": "최소 구현(2nd) Adapter의 핵심 루프 통과(C3)를 파일 채널로 실증하는 상황.",
+    "provenance": {
+      "task_ref": "v1.0 T4 (docs/v1.0-generic-adapter-demo.md generic Adapter 시연)",
+      "report_ref": "docs/v1.0-promotion-review.md §2 · docs/v1.0-verification-report.md §3.5(item #4) · docs/v1.0-generic-demo-fixtures/records/cycle-record.log",
+      "origin_role": "도출 시연 Learn(Worker/Verifier)·심사 Advisor(보류 — 시연 유래·실무 동형 재발 시 재상정)",
+      "ordering_ref": "v1.0 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.0-review",
+  "timestamp": "2026-07-05T22:20:57.602+09:00",
+  "labels": {
+    "stable_id": "BPD-12",
+    "status": "Candidate",
+    "situation": [
+      "adapter-conformance",
+      "minimal-binding",
+      "core-loop-pass",
+      "demo-cycle-execution"
+    ]
+  }
+}

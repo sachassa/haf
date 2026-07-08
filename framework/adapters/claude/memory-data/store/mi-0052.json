@@ -1,0 +1,23 @@
+{
+  "id": "mi-0052",
+  "kind": "lesson",
+  "content": {
+    "id": "L-14",
+    "status": "Candidate",
+    "lesson": "Agent 기동 설정 파일(.claude/agents/ 이하 역할 정의 등)의 개정은 Worker 위임 권한만으로는 권한 시스템에 차단될 수 있다 — 승인 근거가 위임 메시지가 아니라 사용자 본인의 지시여야 하는 부류다. 이런 개정은 사용자 직접 지시를 근거로 주 세션(Advisor)이 직접 수행하거나, 착수 전 권한 경로(사용자 승인·권한 규칙)를 확보한 뒤 위임한다.",
+    "applicability": "Agent 정의·기동 설정 파일의 개정을 위임하거나 수행하는 상황.",
+    "provenance": {
+      "task_ref": "v0.8 EX-R3 (verifier.md 개정 차단 — planner.md는 통과, 판정 편차 관측 포함)",
+      "report_ref": "EX-R3 실패 보고(blocking) — Worker 우회 부작위·정직 반환, Advisor 직접 수정으로 완결",
+      "origin_role": "도출 Worker 실패 보고·판정 Advisor",
+      "ordering_ref": "v0.8 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.8-EXR3-review",
+  "timestamp": "2026-07-05T22:20:38.602+09:00",
+  "labels": {
+    "stable_id": "L-14",
+    "status": "Candidate",
+    "situation": ["agent-config-revision", "delegation-authorization", "permission-boundary"]
+  }
+}

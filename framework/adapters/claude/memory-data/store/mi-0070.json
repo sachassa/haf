@@ -1,0 +1,31 @@
+{
+  "id": "mi-0070",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-11",
+    "status": "Active",
+    "success": "v0.9 시연(BPD-11 Candidate, mi-0059)이 도출한 패턴(신규 프로젝트 설치→Bootstrap→Loop 1사이클 단일 흐름 완주·설치본 문서를 사이클 실소비 입력으로 기록)이 v1.0 T5 Dogfooding에서 실무 동형으로 재현됐다 — 시연이 아닌 실제 프로젝트(uahf-lessons CLI) 개발에 이 단일 흐름을 사용·완주했고(설치 산출물 31+Manifest·CK-1~8 전 충족·CK-6 0), 개발 사이클이 loop-data v10-dogfooding.jsonl 7 line으로 완주(구현/검증 주체 분리·retry 0·human 0)하며 독립 Verifier Pass 14/0/0·CP2 Pass로 완결됐다. 설치본 문서를 사이클 실소비 입력으로 준수해 설치 실증과 루프 실증이 한 사이클에서 성립했다.",
+    "practice": "신규 프로젝트 설치(Scaffold Install→VerifyInstall)→Bootstrap(Ready)→Loop 1사이클을 단일 흐름으로 완주하고, 설치본 문서를 사이클 실소비 입력으로 기록하면 설치 실증과 루프 실증이 한 사이클에서 성립한다.",
+    "applicability": "신규 프로젝트 설치(Scaffold Install→VerifyInstall)·Bootstrap·루프 구동을 단일 흐름으로 수행하는 상황(시연·실무 동형 공통).",
+    "approval": "Advisor 승격 승인 2026-07-07 — docs/v1.0-promotion-review.md (05 INV-4, 재상정 근거: v1.0 T5 실무 동형·CP2 Pass), 사용자 v1.0 계획 승인 2026-07-06.",
+    "supersedes": "mi-0059",
+    "provenance": {
+      "task_ref": "v0.9 T10 시연(BPD-11 Candidate, mi-0059) → v1.0 T5 Dogfooding (실무 동형)",
+      "report_ref": "docs/v1.0-promotion-review.md §2 · docs/v1.0-verification-report.md §3.5·§4(②) · framework/adapters/claude/loop-data/v10-dogfooding.jsonl seq6 (bp-candidate)",
+      "origin_role": "승격 Advisor",
+      "ordering_ref": "v1.0 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.0-review",
+  "timestamp": "2026-07-05T22:20:56.602+09:00",
+  "labels": {
+    "stable_id": "BPD-11",
+    "status": "Active",
+    "situation": [
+      "dogfooding",
+      "scaffold-install",
+      "bootstrap",
+      "single-flow-execution"
+    ]
+  }
+}

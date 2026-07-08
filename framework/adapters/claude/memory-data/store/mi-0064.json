@@ -1,0 +1,17 @@
+{
+  "id": "mi-0064",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "v1.0 T3 r1 — 위임문의 '불변 유지' 전칭 규칙이 값 결합 근거 괄호까지 과잉 포섭해 OQ-W1을 유발(r2 폐합·Advisor 소관 결함, Worker 에스컬레이션 검출). '불변 목록의 과잉 포섭' 국면이며 기존 Active Lesson 15건에 이 국면을 커버하는 매칭 Lesson이 없다.",
+    "matched_lesson_id": null,
+    "was_recalled": "L-10(재검증 기준 적용 범위)이 본 세션 Consult 회수 집합 19건(recall_set_ref 참조)에 포함되어 회수되었으나, '불변 목록의 과잉 포섭' 국면을 커버하지 않아 이 실패 유형의 매칭 Lesson이 아니다.",
+    "verdict": "Novel",
+    "recall_set_ref": "본 세션 Consult 회수 집합 19건 — L-01~L-15·BP-01·BP-02·BP-03·BPD-06 (mi-0009~0016·mi-0018·mi-0026·mi-0027·mi-0028·mi-0029·mi-0038·mi-0039·mi-0047·mi-0054·mi-0056·mi-0058; 세션 착수 시 Advisor 실수행·detail=full).",
+    "follow_up": "매칭 Lesson 부재 → Novel(RecallGap 아님 — L-10은 회수됐으나 이 실패 유형의 매칭 Lesson이 아니므로 '매칭 Lesson이 존재했으나 회수 집합에 없었다'(RecallGap) 조건에 미해당; v0.9 mi-0061 판정 논리 동형·lessons.md §4). 신규 Lesson 후보 L-17 등록(→ mi-0065). 실패 아님(r2 폐합)."
+  },
+  "source": "v1.0-review",
+  "timestamp": "2026-07-05T22:20:50.602+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

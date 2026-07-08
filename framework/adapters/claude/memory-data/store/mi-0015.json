@@ -1,0 +1,28 @@
+{
+  "id": "mi-0015",
+  "kind": "lesson",
+  "content": {
+    "id": "L-07",
+    "status": "Active",
+    "failure": "산출물(A5 runtime-binding)이 실재하지 않는 파일을 \"소스 실재\"로 서술했다 — 게이트 C 파일 시스템 전수 대조가 검출했다 (v0.1 유형 재발).",
+    "cause": "파일 시스템 확인 없이 실재를 주장했다.",
+    "lesson": "\"실재/존재\" 주장은 파일 시스템 확인 후에만 기입한다. 지원되나 미존재인 소스는 \"지원 소스 — 현 시점 미존재\"로 구분 표기한다.",
+    "applicability": "산출물에 파일·자원의 실재 여부를 서술하는 상황.",
+    "provenance": {
+      "task_ref": "v0.3 A5",
+      "report_ref": "docs/session-handoff-v0.3.md §1.4-1·§1.5-3",
+      "origin_role": "검출 Advisor(v0.3)·승인 Advisor(v0.4)",
+      "ordering_ref": "v0.3 세션"
+    }
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:20:01.602+09:00",
+  "labels": {
+    "stable_id": "L-07",
+    "status": "Active",
+    "situation": [
+      "existence-claim-authoring",
+      "file-resource-status-description"
+    ]
+  }
+}

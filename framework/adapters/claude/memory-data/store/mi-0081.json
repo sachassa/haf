@@ -1,0 +1,29 @@
+{
+  "id": "mi-0081",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-14",
+    "status": "Candidate",
+    "success": "v1.2 T-XG(Greenfield)·T-XB(Brownfield dogfooding) 실증 — 두 경로 Ready 종단 완주(30+29 Event)·CP2 전이표 전수 대조 Pass 16/0/0.",
+    "practice": "형태 A(문서·규약) Architecture의 실동작 검증 패턴 — 주 세션(Advisor)이 State Machine을 규약 절차로 구동(역할 추상)하고, 사용자 게이트(질문 답변·Ready 승인)를 실사용자와 수행하며, 전 상태 전이를 append-only Event 로그(1 line = 1 레코드·순서 값 전속·벽시계 시각 비주장)로 기록하면, 실행 코드 0으로 문서 설계의 실동작 검증이 성립하고 로그가 독립 검증(CP2)의 전수 대조 가능한 물리 증거가 된다.",
+    "applicability": "형태 A(문서·규약)로 설계된 Architecture·State Machine의 실동작 검증이 필요한 상황 — 실행 코드 없이 규약 절차 구동·사용자 게이트·append-only Event 로그로 설계의 동작을 실증하고 독립 검증(CP2)의 물리 증거를 남겨야 하는 경우.",
+    "provenance": {
+      "task_ref": "v1.2 T-XG(Greenfield)·T-XB(Brownfield dogfooding)",
+      "report_ref": "docs/v1.2-promotion-review.md §2 · docs/v1.2-verification-report.md (events.jsonl 30·29 라인 02 전이표 전수 대조·최종 Pass 16/0/0)",
+      "origin_role": "도출 Advisor·심사 Advisor(Candidate 보류 — 1회 발생·실무 동형 재발 시 재상정)",
+      "ordering_ref": "v1.2 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.2-review",
+  "timestamp": "2026-07-05T22:21:07.602+09:00",
+  "labels": {
+    "stable_id": "BPD-14",
+    "status": "Candidate",
+    "situation": [
+      "architecture-validation",
+      "protocol-driven-execution",
+      "user-gate",
+      "event-logging"
+    ]
+  }
+}

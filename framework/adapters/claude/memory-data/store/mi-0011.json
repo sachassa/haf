@@ -1,0 +1,28 @@
+{
+  "id": "mi-0011",
+  "kind": "lesson",
+  "content": {
+    "id": "L-03",
+    "status": "Active",
+    "failure": "정본 필드 인용 시 `attempted`의 \"(선택)\" 표기가 누락되어 필드 계약 재정의로 읽혔다 — CP1 정직·Advisor 정독을 모두 통과하고 Verifier CP2가 검출했다.",
+    "cause": "필드명만 복제하고 필수/선택 속성 표기를 복제하지 않았다.",
+    "lesson": "정본 필드 목록을 인용할 때 필드명뿐 아니라 (선택) 같은 속성 표기까지 복제한다.",
+    "applicability": "정본 필드 목록을 다른 문서로 인용·복제하는 상황.",
+    "provenance": {
+      "task_ref": "v0.2 roles-quick-reference 시연",
+      "report_ref": "docs/session-handoff-v0.2.md §1.4-3·§1.5-2",
+      "origin_role": "검출 Verifier(v0.2)·승인 Advisor(v0.4)",
+      "ordering_ref": "v0.2 세션"
+    }
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:19:57.602+09:00",
+  "labels": {
+    "stable_id": "L-03",
+    "status": "Active",
+    "situation": [
+      "field-citation",
+      "field-list-transcription"
+    ]
+  }
+}

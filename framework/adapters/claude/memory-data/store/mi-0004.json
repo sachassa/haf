@@ -1,0 +1,28 @@
+{
+  "id": "mi-0004",
+  "kind": "lesson",
+  "content": {
+    "id": "L-04",
+    "status": "Candidate",
+    "failure": "AI 비의존이어야 할 Core 섹션(verification-checklist §5.3)에 금지 토큰의 \"예시\"로 모델명이 잔존했다.",
+    "cause": "금지 토큰 규칙을 서술하는 문안의 예시 토큰도 누출임을 인식하지 못했다.",
+    "lesson": "금지 토큰의 예시도 Core 섹션에서는 누출이다 — 예시는 Adapter/바인딩 절에 격리한다.",
+    "applicability": "AI 비의존(Core) 문서에서 금지 토큰·경계 규칙을 서술하는 상황.",
+    "provenance": {
+      "task_ref": "v0.2 verification-checklist 작성",
+      "report_ref": "docs/session-handoff-v0.2.md §1.4-2·§1.5-3",
+      "origin_role": "검출 Advisor(v0.2)·승인 Advisor(v0.4)",
+      "ordering_ref": "v0.2 세션"
+    }
+  },
+  "source": "v0.4-demo-M7",
+  "timestamp": "2026-07-05T22:19:50.602+09:00",
+  "labels": {
+    "stable_id": "L-04",
+    "status": "Candidate",
+    "situation": [
+      "core-document-authoring",
+      "forbidden-token-rule-description"
+    ]
+  }
+}

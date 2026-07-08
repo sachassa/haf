@@ -1,0 +1,18 @@
+{
+  "id": "mi-0078",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "v1.2 T-A 위임 input의 자매 바인딩 문서 버전 상태 전제 3건이 실상과 상이했다 — hooks-binding(framework/adapters/claude/hooks-binding.md)·plugins-binding(plugins-binding.md)은 실측 v0.9인데 input은 v0.8로, scaffold-binding(scaffold-binding.md)은 실측 v1.0인데 input은 v0.9로 함의했다. 원인: input의 버전 라벨을 대상 문서(adapter-conformance.md line 12)의 stale 문면에서 인용하고, 발신 전 각 자매 문서의 머리(상태 라인)를 개별 실측하지 않았다. L-15('위임 input 계수·규모·상태 전제 발신 전 실측 대조')가 회수됐음에도 상태 전제 축에서 재발했다. Advisor 위임문에 '직접 실측' 지시를 병기한 완화로 Worker가 재실측·투명 에스컬레이션·비차단 폐합했다(재작업 0).",
+    "matched_lesson_id": "L-15",
+    "was_recalled": "회수됨 — 본 세션 Consult 회수 집합 20건(Active)에 L-15(mi-0058, 'L-15 Active — 위임 input 계수·규모·상태 전제 발신 전 실측 대조'; situation: delegation-message-authoring·count-claim·input-premise-verification)가 포함되어 세션 착수 시 회수됐다. L-15가 회수됐음에도 위임 input의 상태 전제(자매 문서 버전 라벨 3건)에서 동일 부류 결함(전제 값 미실측)이 재발했다.",
+    "verdict": "Recurrence",
+    "recall_set_ref": "본 세션 Consult 회수 집합 20건 — Active Lesson 15건(L-01~L-15: mi-0009·mi-0010·mi-0011·mi-0012·mi-0013·mi-0014·mi-0015·mi-0016·mi-0026·mi-0027·mi-0028·mi-0038·mi-0047·mi-0054·mi-0058) + Active Best Practice 5건(BP-01 mi-0018·BP-02 mi-0029·BP-03 mi-0039·BPD-06 mi-0056·BPD-11 mi-0070). 매칭 Lesson L-15 = mi-0058(회수 확인).",
+    "follow_up": "L-15 매칭·회수됨·재발 → Recurrence(05 §3.1-C·lessons.md §4). 이번 재발의 특수성: L-15가 회수됐음에도 위임 input의 '상태 전제' 축(자매 바인딩 문서 버전 라벨 3건)이 대상 문서(adapter-conformance.md line 12)의 stale 문면 인용에 의존하고 각 문서 머리를 개별 실측하지 않아 재발했다 — L-15 적용 범위에 '자매·참조 문서의 stale 문면을 그대로 인용하지 말고 각 대상 문서를 개별 실측' 축이 포함됨을 재확인한다. 완화·처리: Advisor가 위임문에 '직접 실측' 지시를 병기했고, 수임 Worker가 재실측·투명 에스컬레이션·비차단 폐합했다(재작업 0). 신규 Lesson 등록 없음(기존 L-15 적용 범위 축 재확인으로 충분 — v1.1 mi-0075 판정 관례 동형)."
+  },
+  "source": "v1.2-review",
+  "timestamp": "2026-07-05T22:21:04.602+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "matched_lesson_id": "L-15"
+  }
+}

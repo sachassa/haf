@@ -1,0 +1,28 @@
+{
+  "id": "mi-0041",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-04",
+    "status": "Candidate",
+    "success": "v0.7 시연 사이클 wf-t2(v07-demo-t2)가 병렬 집합의 일원으로 7단계를 사람 개입 0·재작업 0으로 통과했다 — 확정 계약 X 문면만 소비(R2 — 동시 진행 중 형제 실물 out-t1.md 불참조)하고 자기 spec 실현 지시(실현 A) 그대로 계약 Y를 실현(out-t2.md), CP2 첫 판정 Pass(4/0/0). 확정 계약 Y 문면과의 의도적 불일치는 자기 done 판정에 영향 없이 병합 단계로 이월됐다.",
+    "practice": "병렬 Task는 형제 실물이 아니라 분해 시점 확정된 계약 문면만 소비해야 하며(R2), 자기 spec과 교차 계약의 불일치가 있어도 개별 사이클은 자기 done 기준으로 완결하고 사후 불일치는 병합 단계에 맡긴다.",
+    "applicability": "확정 계약을 소비·산출하는 병렬 Task의 사이클 구동 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.7 WF9 시연 wf-t2 (cycle_id=v07-demo-t2)",
+      "report_ref": "docs/v0.7-demo.md (수행 기록)·docs/v0.7-demo-fixtures/verify-t2.md (CP2 Pass)",
+      "origin_role": "도출 Loop 오케스트레이션(Advisor 주관)·후보 등록 Memory Update 단계",
+      "ordering_ref": "v0.7 세션 시연 wf-t2 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.7-demo-WF9",
+  "timestamp": "2026-07-05T22:20:27.602+09:00",
+  "labels": {
+    "stable_id": "BPD-04",
+    "status": "Candidate",
+    "situation": [
+      "demo-cycle-execution",
+      "single-artifact-delegation",
+      "parallel-dispatch"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "mi-0043",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-06",
+    "status": "Candidate",
+    "success": "v0.7 시연 워크플로가 큰 작업 1건을 3-Task 한 병렬 집합으로 분해(C1~C4·D1·D2 전건 통과)하고 동시 디스패치(R1~R4)해 각 Task를 Loop 사이클로 개별 검증(CP2 3건 전부 첫 판정 Pass)한 뒤, 병합에서 상호 참조 정합성 검증(Consistent)·충돌 1건 검출·Advisor 중재 해소를 거쳐 병합을 성립시켰다 (Work Graph·Merge Result 실물 — docs/v0.7-demo.md).",
+    "practice": "계약을 분해 시점에 확정하고 소유 경계를 파일 단위로 분리하면 3개 이상의 Task를 한 병렬 집합으로 동시 디스패치해 각각 검증한 뒤 병합할 수 있다 — 분해 검사(계약 강제·경계 비중첩·비순환)와 병합의 충돌 처리 단계가 병렬성의 안전판이다.",
+    "applicability": "큰 작업의 병렬 분해·디스패치·병합 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.7 WF9 시연 워크플로 (Work Graph: wf-t1·wf-t2·wf-t3)",
+      "report_ref": "docs/v0.7-demo.md (Work Graph 인스턴스·Merge Result 수록)",
+      "origin_role": "도출 Workflow 오케스트레이션(Advisor)·기록 07 §5 Record",
+      "ordering_ref": "v0.7 세션 시연 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.7-demo-WF9",
+  "timestamp": "2026-07-05T22:20:29.602+09:00",
+  "labels": {
+    "stable_id": "BPD-06",
+    "status": "Candidate",
+    "situation": [
+      "task-decomposition",
+      "parallel-dispatch",
+      "merge-execution",
+      "demo-workflow-execution"
+    ]
+  }
+}

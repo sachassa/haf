@@ -1,0 +1,17 @@
+{
+  "id": "mi-0053",
+  "kind": "recurrence-judgment",
+  "content": {
+    "case": "v0.8 EX-H1 r1 — hooks-binding.md §6은 유지 목록을 5항으로 계수·전개했으나 §10 요약은 같은 목록을 6항으로 계수(같은 상태 서술이 문서 내 두 지점에서 갈림). Advisor 게이트 C 검출 → r2 교정.",
+    "verdict": "Recurrence",
+    "matched_lesson_id": "L-06",
+    "was_recalled": true,
+    "basis": "L-06(부분 개정 잔여 방지 — 같은 상태 서술 전 지점 전수 갱신)은 세션 Consult 회수 집합(mi-0014)에 포함되어 회수된 상태였다(세션 회수 기록 수동 도출 — v0.7 mi-0046 관례 동형). 회수되었음에도 동일 부류(계수 표기 전 지점 정합) 결함이 재발했으므로 Recurrence."
+  },
+  "source": "v0.8-L14-review",
+  "timestamp": "2026-07-05T22:20:39.602+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "matched_lesson_id": "L-06"
+  }
+}

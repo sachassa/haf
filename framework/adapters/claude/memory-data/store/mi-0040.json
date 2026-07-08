@@ -1,0 +1,28 @@
+{
+  "id": "mi-0040",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-03",
+    "status": "Candidate",
+    "success": "v0.7 시연 사이클 wf-t1(v07-demo-t1)이 병렬 집합 {wf-t1, wf-t2, wf-t3}의 일원으로 Lifecycle 7단계를 사람 개입 0(actor=human 0건)·재작업 0(retry_count=0)으로 통과했다 — 확정 계약 X 실현(out-t1.md), CP1 자체 점검, CP2 첫 판정 Pass(3/0/0), CP3 승인·완료 보고 산출.",
+    "practice": "병렬 집합의 일원이라도 확정 interfaceContract·자기 ownedBoundary·예/아니오 done이 갖춰지면 형제 산출물 참조 없이(R2) 사이클을 재작업 없이 완주할 수 있다.",
+    "applicability": "병렬 집합 내 단일 산출물 Task의 Lifecycle 사이클 구동 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.7 WF9 시연 wf-t1 (cycle_id=v07-demo-t1)",
+      "report_ref": "docs/v0.7-demo.md (수행 기록)·docs/v0.7-demo-fixtures/verify-t1.md (CP2 Pass)",
+      "origin_role": "도출 Loop 오케스트레이션(Advisor 주관)·후보 등록 Memory Update 단계",
+      "ordering_ref": "v0.7 세션 시연 wf-t1 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.7-demo-WF9",
+  "timestamp": "2026-07-05T22:20:26.602+09:00",
+  "labels": {
+    "stable_id": "BPD-03",
+    "status": "Candidate",
+    "situation": [
+      "demo-cycle-execution",
+      "single-artifact-delegation",
+      "parallel-dispatch"
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "mi-0068",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "v1.0 T5 CLI(uahf-lessons) 콘솔 인코딩 결함 — Windows 기본 콘솔 인코딩에서 비-ASCII 출력 시 UnicodeEncodeError 발생. 표준 출력 UTF-8 명시 재설정으로 수정·재관측 폐합(실행 관측이 검출, DI-INV-4 실증). 기존 Active Lesson 15건에 매칭되는 실패 유형이 없다.",
+    "matched_lesson_id": null,
+    "was_recalled": "N/A — 매칭 Lesson 부재. 본 세션 Consult 회수 집합 19건(recall_set_ref 참조)에 콘솔/실행 인코딩(execution-observation·encoding) 부류 Lesson이 없어, 회수 여부를 물을 매칭 Lesson 자체가 부재하다.",
+    "verdict": "Novel",
+    "recall_set_ref": "본 세션 Consult 회수 집합 19건 — L-01~L-15·BP-01·BP-02·BP-03·BPD-06 (mi-0009~0016·mi-0018·mi-0026·mi-0027·mi-0028·mi-0029·mi-0038·mi-0039·mi-0047·mi-0054·mi-0056·mi-0058; 세션 착수 시 Advisor 실수행·detail=full).",
+    "follow_up": "매칭 Active Lesson 없음 → Novel(05 §3.1-C·lessons.md §4). 실행 관측(독립 Verifier 재관측)이 검출하고 출력 인코딩 명시 설정 후 재관측으로 폐합. 신규 Lesson 후보 L-19 등록(→ mi-0069). 실패 아님."
+  },
+  "source": "v1.0-review",
+  "timestamp": "2026-07-05T22:20:54.602+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

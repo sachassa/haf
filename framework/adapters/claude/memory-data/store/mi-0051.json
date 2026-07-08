@@ -1,0 +1,24 @@
+{
+  "id": "mi-0051",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-10",
+    "status": "Candidate",
+    "success": "v0.8 마일스톤이 상호 독립 3 서브시스템(Hooks·Skills·Plugins)을 한 병렬 집합(PS-4)으로 동시 디스패치해 각 Task를 Loop 사이클로 개별 검증(CP2 3건 전부 첫 판정 Pass)한 뒤, 병합에서 collected 3/3·crossRefStatus Consistent·conflicts 0건으로 merge-rules §4.4의 '충돌 0건 → 단계 4 생략' 분기를 첫 실증하며 병합을 성립시켰다 — 별도 픽스처 워크플로 없이 마일스톤 실행 자체가 Workflow 계약(C1~C4·R1~R4·5단계)의 실무 소비였다.",
+    "practice": "상호 독립 서브시스템들은 확정 정본만 참조하게 분해(R2 구조 보장)하면 충돌 없는 병합이 계약적으로 따라온다 — 시연을 실무 Work Graph의 병렬 집합 그 자체로 두면 시연 비용과 실무 실증이 하나로 합쳐진다.",
+    "applicability": "상호 독립 서브시스템의 병렬 개발·병합, 실무 작업의 시연 겸용 상황(시연 유래).",
+    "provenance": {
+      "task_ref": "v0.8 PS-4 병렬 집합 {ex-dh, ex-ds, ex-dp}",
+      "report_ref": "docs/v0.8-demo.md (Work Graph 인스턴스·Merge Result 수록 예정 — EX-D2)",
+      "origin_role": "도출 Workflow 오케스트레이션(Advisor)·기록 07 §5 Record",
+      "ordering_ref": "v0.8 세션 시연 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v0.8-demo-PS4",
+  "timestamp": "2026-07-05T22:20:37.602+09:00",
+  "labels": {
+    "stable_id": "BPD-10",
+    "status": "Candidate",
+    "situation": ["task-decomposition", "parallel-dispatch", "merge-execution", "demo-workflow-execution"]
+  }
+}

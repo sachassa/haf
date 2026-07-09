@@ -2,7 +2,7 @@
 
 작성: Advisor · 2026-07-09 · v1.2-era 정리 완결 + 후속(agents 정정·완전성 규율 강제) 직후
 용도: 새 세션에서 아래를 붙여넣으면 재분석 없이 착수. (물리 발화 = `/uaf-continue`)
-상태: **다음 = Tier 2 잔여 작업(사용자 결정 2026-07-09). 세부 항목 택1 후 착수.**
+상태: **T-a 채택·계획 승인·T-D1(라우터 정합) 완료. 잔여 = Layer ARCH 4개 저술(사용량 리셋 후 재개). 계획 정본 = `~/.claude/plans/agile-bouncing-cocoa.md`.**
 
 ---
 
@@ -61,7 +61,11 @@ Advisor 승인(CP3) · 동결/append-only 바이트 보존(L-14 tr -dc 실측) �
   agents ARCHITECTURE.md 참조 정정(a6a4ccb·6곳) → 완전성·사실 주장 규율 강제(2be4cd1·
   CLAUDE.md 규율절+L-24+SessionStart 훅).
 - **커밋 체인**: …`a032c52`→`b079f22`→`a6a4ccb`→**`2be4cd1`**. 작업트리 clean.
-- **다음 = Tier 2 잔여**(사용자 2026-07-09) — [T-a]~[T-c] 중 택1. 권장=[T-a].
+- **T-a 진행 중**(사용자 채택 2026-07-09·계획 승인): 각 Layer 독립 ARCHITECTURE 완전 저술.
+  - ✅ **T-D1(라우터 정합) 완료·이번 커밋**: C1(Entry Resolution 물리 귀속 §2.1 표·§2.2 태그 → `entry/`·Project Discovery → `discovery/`; spec 01 배치·P1·§12.1 정합)·D1(라우터 `(예정)` 마커 13곳 제거·§포인터 유지·§9 append·버전 무상승). Advisor 자기검증(CR 0·단일 파일·"Entry Resolution" 18곳 전수 스윕→discovery 귀속 2곳만 정정).
+  - ⏳ **잔여(리셋 후) = Layer ARCH 4개 저술**: exemplar-first 2-Wave — W1 `entry/ARCHITECTURE.md`(파일럿)→CP2/CP3→스켈레톤 동결→W2 `discovery`·`planning`·`knowledge` 병렬. 스켈레톤 A(spec-backed: entry/discovery/planning)·B(knowledge=하위 spec 없는 1차 정본). 개관 고도(spec 복제 금지). 계획 정본=`~/.claude/plans/agile-bouncing-cocoa.md`(승인).
+  - ⚠️ **사용량 97%로 T-D1 후 보류**(예산 소유자 결정). 리셋 후 Worker/Verifier 팬아웃 재개 — 또는 저비용 직접 저술 옵션.
+- **[T-b]·[T-c]는 T-a 이후 잔여**(경로 약칭 정규화·AGENT/CLAUDE body 분할[L-14 hold]).
 - **Tier 3(북극성) 대기**: 상태 분리·Layer 오케스트레이션·uaf:<layer>·Layer별 LLM·설치형
   패키징(형태 B = Scaffold spec 12-scaffold Frozen v0.1·구현 미착수). **agents·commands·model
   override 물리 이동은 전부 형태 B(Tier 3) 소관** — 환경이 루트 .claude/만 로드하므로 그 전엔

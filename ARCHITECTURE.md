@@ -22,6 +22,7 @@
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-09 | v1.2.1 | uaf/ARCHITECTURE.md → 루트 ARCHITECTURE.md 이관(경로 참조 정합·물리 Layer 매핑 추가). 논지 무변경. | Worker(Advisor 위임, Phase 2) |
 | 2026-07-09 | v1.3 | 완전 재저술 — 라우터 모델(각 Layer 독립 ARCHITECTURE 분기·물리 Layer 매핑을 §2 본문 골격으로 승격)·§0 개념 프레이밍 재서술(uaf/ 소멸·신 물리 실재=최상위 5 Layer·UAF=상위 프레임워크/UAHF=Runtime Layer 구현체)·knowledge 횡단 Base 편입(설계 원칙 9종→10종)·.claude Global Default/override 절 신설(tier2 §2·§4 인용)·내부 stale uaf/ 정합. 불변 콘텐츠(UAF-INV ①~⑥·P1~P5·INV-3 무촉·6요소 의미론·책임 경계표·Discovery Request 추상) 논지 보존. 새 설계 결정 창설 0. | Worker(Advisor 위임) |
+| 2026-07-09 | v1.3 (정합) | 라우터 내부 정합 — (a) **Entry Resolution 물리 귀속 정정**: §2.1 지도 행·§2.2 태그를 Entry Resolution = `entry/`(정본 `entry/ARCHITECTURE.md`)·Project Discovery = `discovery/`로 정정(spec `entry/specs/01-entry.md` 배치·P1·§12.1과 정합 — 라우터 내부 불일치 해소). (b) 실재 spec(01/02/03) 대상 `(예정)` 마커 **13곳 제거**(§ 포인터 유지). 참조 정합·defect 정정 — 시맨틱 개정 아님·**버전 무상승**, 불변 콘텐츠 논지 보존. | Advisor (T-D1) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, uahf/framework/core/structure.md §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. 표 내 옛 행의 `uaf/ARCHITECTURE.md`·`§3`·`9종` 등 표기는 그 개정 시점의 정확한 이력 기록이므로 그대로 둔다.)
 
@@ -70,8 +71,8 @@
 
 | 파이프라인 요소 (§2.2) | 물리 Layer 디렉터리 | Layer 독립 정본 (분기 포인터) |
 |---|---|---|
-| Entry Layer | `entry/` | `entry/ARCHITECTURE.md` |
-| Entry Resolution · Project Discovery | `discovery/` | `discovery/ARCHITECTURE.md` |
+| Entry Layer · Entry Resolution | `entry/` | `entry/ARCHITECTURE.md` |
+| Project Discovery | `discovery/` | `discovery/ARCHITECTURE.md` |
 | Project Contract | `planning/` | `planning/ARCHITECTURE.md` |
 | UAHF | `uahf/` | `uahf/ARCHITECTURE.md` |
 | Execution | `uahf/` (실행 단계 — 별도 디렉터리 없음) | `uahf/ARCHITECTURE.md` |
@@ -88,7 +89,7 @@ UAF는 사용자 입력에서 UAHF 실행에 이르는 파이프라인을 다음
 Entry Layer          — UAF 공식 진입점 (사용자 입력 수용)                 [entry/]
       │
       ▼
-Entry Resolution     — 진입 판별 → Discovery Request 산출 (Discovery 비수행) [discovery/]
+Entry Resolution     — 진입 판별 → Discovery Request 산출 (Discovery 비수행) [entry/]
       │  (Discovery Request: {mode, inputs, policy} — §12에서 확정)
       ▼
 Project Discovery    — Discovery Request(+증거) → Project Contract 산출 (Compiler) [discovery/]
@@ -145,7 +146,7 @@ entry ──[Discovery Request]──▶ discovery ──[Project Contract]─�
 ```
 
 - **Discovery Request** — Entry Resolution의 출력이자 Project Discovery의 입력인 데이터 계약(3요소 {mode, inputs, policy}). 이 인터페이스 추상은 본 라우터 §12.2에서 확정되며, 후속 병렬 작업(`entry/specs/01-entry.md`·`discovery/specs/02-discovery.md`)의 선행 확정 인터페이스다.
-- **Project Contract** — Project Discovery의 출력이자 UAHF의 **선택 입력**인 공식 Stable Contract(Public API). UAF↔UAHF의 유일 접점이다 (P3, UAF-INV ①②). 스키마·버저닝·UAHF Interface 상세 정본: `planning/specs/03-project-contract.md`(예정).
+- **Project Contract** — Project Discovery의 출력이자 UAHF의 **선택 입력**인 공식 Stable Contract(Public API). UAF↔UAHF의 유일 접점이다 (P3, UAF-INV ①②). 스키마·버저닝·UAHF Interface 상세 정본: `planning/specs/03-project-contract.md`.
 - **연결의 성질 (라우터 수준 선언).** 연결 payload는 **타입 계약(schema)**이지 서술(narrative)이 아니다 — 그래야 LLM 교체·Layer 독립 실행 시 다음 Layer가 안정적으로 파싱·소비한다(AI-Agnostic·Layer별 LLM 선택과 직결, context-and-design §4). 계약이 파일로 남으므로 앞 Layer 없이 계약만 있으면 뒤 Layer가 실행 가능하다(독립 실행) — Contract가 UAHF의 선택 입력이라 uahf 단독 실행이 이미 설계에 내장되어 있다(UAF-INV ①).
 - **정본 위임·범위 경계.** Layer 계약 저장 위치(대상 프로젝트 `.claude/`)·호출 표면(`uaf:<layer>`)·체이닝/오케스트레이션의 **정식화**는 본 라우터가 확정하지 않는다 — 그것은 각 Layer 정본 및 후속 Layer 연결/오케스트레이션 트랙 소관이다(Non-Goals, §11; context-and-design §4·§5·§8). 라우터는 이미 확정된 두 계약의 위상만 고정한다.
 
@@ -186,7 +187,7 @@ UAF는 다음 10종 원칙을 따른다. UAHF와 동형인 원칙은 UAHF 정본
 3. **Stable Core** — UAHF 정본(Core)은 UAF 신설로 변경되지 않는다. UAF는 UAHF를 감싸되 무수정으로 감싼다. 접점은 Project Contract 하나다 (UAF-INV ①, §8).
 4. **Layer Separation** — Entry·Resolution·Discovery·Contract·UAHF·Execution은 서로 독립된 관심사로 분리된다. 한 요소의 내부 변경이 다른 요소의 규격으로 새지 않는다 (`uahf/ARCHITECTURE.md` §3.2 Modular 동형).
 5. **Dependency Direction** — 의존은 위→아래 단방향이다. 하위는 상위를 모른다 (§2.5).
-6. **Event Driven** — Discovery의 상태 전이는 Event로만 일어나고, 관측 지표(Metrics)는 그 Event에서 파생된다. (전이·이벤트·지표의 상세 정본은 `discovery/specs/02-discovery.md`(예정) 소관 — 본 문서는 원칙만 선언한다.)
+6. **Event Driven** — Discovery의 상태 전이는 Event로만 일어나고, 관측 지표(Metrics)는 그 Event에서 파생된다. (전이·이벤트·지표의 상세 정본은 `discovery/specs/02-discovery.md` 소관 — 본 문서는 원칙만 선언한다.)
 7. **Capability First** — Strategy·Entry의 확장 대상은 고정 열거가 아니라 **Capability 선언**으로 선택된다. 신규 능력은 선언을 등록하면 참여한다.
 8. **Policy as Data** — 진입 판별의 결정 테이블, Discovery의 임계값·예산·종료 규칙은 코드가 아니라 **데이터(Policy)**다. 정책 변경이 엔진 변경을 요구하지 않는다.
 9. **Future Extensibility** — 신규 Entry·Strategy·Runtime은 Layer·엔진 변경 없이 **Registry 행·Policy 데이터 추가만으로** 확장된다. Framework 전체를 다시 쓰지 않는다 (`uahf/ARCHITECTURE.md` §8 동형 지향을 UAF 레벨에 적용).
@@ -210,7 +211,7 @@ UAF는 다음 10종 원칙을 따른다. UAHF와 동형인 원칙은 UAHF 정본
 다음 2건은 후속 모든 산출물이 통과해야 하는 상시 확인 항목이다. 통과하지 못한 산출물은 승인 대상이 아니다.
 
 - **① Project Discovery는 단일 기능이 아니라 Project Contract를 생성하는 Compiler다.** 산출물은 Discovery를 **언제든 교체 가능하게** 유지해야 한다 — Strategy·Discovery 내부 개념(질문·전략·예산)이 Contract 코어 스키마나 UAHF 접점으로 새어나가서는 안 된다 (P2, UAF-INV ②③).
-- **② Project Contract는 UAF↔UAHF 공식 Stable Contract(Public API)다.** 장기 호환성 규칙(스키마 버전 규율·소비자의 관용적 읽기·필드 제거 금지)이 훼손되어서는 안 된다. 규칙의 상세 정본은 `planning/specs/03-project-contract.md`(예정)가 소유하며, 본 문서는 지위와 원칙만 선언한다 (P3, UAF-INV ①②).
+- **② Project Contract는 UAF↔UAHF 공식 Stable Contract(Public API)다.** 장기 호환성 규칙(스키마 버전 규율·소비자의 관용적 읽기·필드 제거 금지)이 훼손되어서는 안 된다. 규칙의 상세 정본은 `planning/specs/03-project-contract.md`가 소유하며, 본 문서는 지위와 원칙만 선언한다 (P3, UAF-INV ①②).
 
 ---
 
@@ -275,16 +276,16 @@ UAF 신규 용어의 **소유 지점**은 이 절(및 각 Layer의 `<layer>/spec
 
 ### §12.1 용어 정의
 
-- **Entry** — UAF 공식 진입점. 사용자 입력을 수용하는 추상 연산이다. 물리 실현(진입 명령의 형태)은 Adapter 소관이다. 상세 정본: `entry/specs/01-entry.md`(예정).
-- **Entry Resolution** — Entry가 명시 진입과 Workspace Evidence를 결정 테이블(Policy as Data)로 평가해 **Discovery Request**를 산출하는 연산. Discovery를 수행하지 않는다 (P1, UAF-INV ④). 상세 정본: `entry/specs/01-entry.md`(예정).
+- **Entry** — UAF 공식 진입점. 사용자 입력을 수용하는 추상 연산이다. 물리 실현(진입 명령의 형태)은 Adapter 소관이다. 상세 정본: `entry/specs/01-entry.md`.
+- **Entry Resolution** — Entry가 명시 진입과 Workspace Evidence를 결정 테이블(Policy as Data)로 평가해 **Discovery Request**를 산출하는 연산. Discovery를 수행하지 않는다 (P1, UAF-INV ④). 상세 정본: `entry/specs/01-entry.md`.
 - **Discovery Request** — Entry Resolution의 출력이자 Project Discovery의 입력인 데이터 계약. 3요소 구조(§12.2에서 확정).
-- **Project Discovery** — Discovery Request(+증거)를 입력으로 **Project Contract를 산출하는 Compiler**. 상세 정본: `discovery/specs/02-discovery.md`(예정).
-- **Discovery Dimension** — Discovery가 확신을 측정하는 축. 상세(차원 목록·판정)의 정본: `discovery/specs/02-discovery.md`(예정).
-- **Confidence** — Discovery Dimension별 확신도. 상세(척도·근거 등급·임계)의 정본: `discovery/specs/02-discovery.md`(예정).
-- **Question Budget** — 질문의 총량·차원별 예산. Policy as Data. 상세 정본: `discovery/specs/02-discovery.md`(예정).
-- **Execution Ready** — Discovery의 종단 판정. 계약 완결성 ∧ 확신 ∧ **사용자 승인**의 결합이다 (UAF-INV ⑤). 상세(판정식·종단 종류)의 정본: `discovery/specs/02-discovery.md`(예정).
-- **Project Contract** — UAF↔UAHF 공식 **Stable Contract(Public API)**. Project Discovery의 산출이자 UAHF의 선택 입력이다 (P3, UAF-INV ①②). 상세(스키마·버저닝·UAHF Interface)의 정본: `planning/specs/03-project-contract.md`(예정).
-- **Strategy / Strategy Provider** — 교체 가능한 증거 수집 Front-end와 그 제공자. Capability 선언 기반으로 선택된다 (Capability First). 특정 방법론은 이 Provider만이 안다 (UAF-INV ⑥). 상세 정본: `discovery/specs/02-discovery.md`(예정).
+- **Project Discovery** — Discovery Request(+증거)를 입력으로 **Project Contract를 산출하는 Compiler**. 상세 정본: `discovery/specs/02-discovery.md`.
+- **Discovery Dimension** — Discovery가 확신을 측정하는 축. 상세(차원 목록·판정)의 정본: `discovery/specs/02-discovery.md`.
+- **Confidence** — Discovery Dimension별 확신도. 상세(척도·근거 등급·임계)의 정본: `discovery/specs/02-discovery.md`.
+- **Question Budget** — 질문의 총량·차원별 예산. Policy as Data. 상세 정본: `discovery/specs/02-discovery.md`.
+- **Execution Ready** — Discovery의 종단 판정. 계약 완결성 ∧ 확신 ∧ **사용자 승인**의 결합이다 (UAF-INV ⑤). 상세(판정식·종단 종류)의 정본: `discovery/specs/02-discovery.md`.
+- **Project Contract** — UAF↔UAHF 공식 **Stable Contract(Public API)**. Project Discovery의 산출이자 UAHF의 선택 입력이다 (P3, UAF-INV ①②). 상세(스키마·버저닝·UAHF Interface)의 정본: `planning/specs/03-project-contract.md`.
+- **Strategy / Strategy Provider** — 교체 가능한 증거 수집 Front-end와 그 제공자. Capability 선언 기반으로 선택된다 (Capability First). 특정 방법론은 이 Provider만이 안다 (UAF-INV ⑥). 상세 정본: `discovery/specs/02-discovery.md`.
 - **Knowledge Base (`knowledge/`)** — 모든 Layer가 Consult하는 UAF 레벨 횡단 공용 지식 Base. 파이프라인 단계가 아니다 (§4). 상세 정본: `knowledge/ARCHITECTURE.md`.
 
 ### §12.2 Discovery Request 인터페이스 추상 (여기서 확정)
@@ -297,7 +298,7 @@ Discovery Request는 **3요소** 구조다.
 |---|---|
 | **mode** | 발견 모드. **닫힌 열거가 아니라 확장 가능한 네임스페이스**다. 초기 등재값: `greenfield` / `incremental` / `brownfield`. 신규 모드는 열거 변경 없이 네임스페이스에 등재된다 (Future Extensibility). |
 | **inputs** | Discovery가 참조할 **Evidence 참조 목록**. 초기에는 Workspace Evidence(Project Contract 유무·Repository 유무 등)를 참조로 담되, 신규 Evidence Source 타입의 등록으로 확장 가능하다 (스키마 열림). 미완성·동시 작성 중인 산출물이 아니라 **확정된 참조**만 담는다. |
-| **policy** | **Discovery Policy 참조**. 임계값·예산·종료 규칙 등 정책 데이터를 가리킨다 (Policy as Data). 정책 값의 상세 정본은 `discovery/specs/02-discovery.md`(예정) 소관이며, Discovery Request는 참조만 담는다. |
+| **policy** | **Discovery Policy 참조**. 임계값·예산·종료 규칙 등 정책 데이터를 가리킨다 (Policy as Data). 정책 값의 상세 정본은 `discovery/specs/02-discovery.md` 소관이며, Discovery Request는 참조만 담는다. |
 
 - **닫힘 없음 원칙.** mode는 확장 네임스페이스, inputs는 Evidence 참조 목록으로 일반화되어 있어, 신규 진입·신규 증거·신규 모드가 이 계약을 깨지 않고 확장된다.
 - **경계.** Discovery Request는 Entry Resolution의 산출까지의 계약이다. Contract 자체를 담지 않으며(그것은 Discovery의 산출), Discovery 내부 개념(질문·전략)을 담지 않는다 (의존 방향, §2.5).

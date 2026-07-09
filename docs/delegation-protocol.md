@@ -1,28 +1,28 @@
 # docs/delegation-protocol — UAHF 위임·보고 운용 프로토콜
 
 근거: ROADMAP.md v0.2 산출물("위임/보고 프로토콜 문서")
-정본: specs/02-agent.md §3·§4, specs/07-workflow.md §3·§4
+정본: runtime/uahf/specs/02-agent.md §3·§4, runtime/uahf/specs/07-workflow.md §3·§4
 상위 규약: AGENT.md
 
 ---
 
 # 0. 이 문서의 위치
 
-**정본은 specs/02·07이다. 이 문서는 운용 지침이다.**
+**정본은 runtime/uahf/specs/02·07이다. 이 문서는 운용 지침이다.**
 
-메시지 필드·규칙·불변 규칙의 정본은 specs/02-agent.md와 specs/07-workflow.md가 소유한다.
+메시지 필드·규칙·불변 규칙의 정본은 runtime/uahf/specs/02-agent.md와 runtime/uahf/specs/07-workflow.md가 소유한다.
 
 이 문서는 그 계약을 이 프로젝트에서 **실제로 어떻게 작성·운용하는가**만 정의한다.
 
 이 문서는 다음을 하지 않는다.
 
 - 02·07의 메시지 필드를 재정의·확장하지 않는다. § 포인터로 참조만 한다.
-- 새 용어를 만들지 않는다. 용어의 정본은 specs/00-glossary.md다.
+- 새 용어를 만들지 않는다. 용어의 정본은 runtime/uahf/specs/00-glossary.md다.
 - 역할 경계(02 §3.2-A)·Lifecycle 단계 전이(03 소관)·검증 판정 기준(06 소관)을 정의하지 않는다.
 
 충돌이 발견되면 이 문서를 정본으로 삼지 않는다. 02·07을 따르고 Advisor에게 보고한다.
 
-**하네스 상태.** 이 하네스는 현재 Bootstrap 상태다 — 위임·보고가 정식 Runtime Module이 아니라 규약 문서와 관행으로 실현된다 (specs/13-harness.md §3.2-B).
+**하네스 상태.** 이 하네스는 현재 Bootstrap 상태다 — 위임·보고가 정식 Runtime Module이 아니라 규약 문서와 관행으로 실현된다 (runtime/uahf/specs/13-harness.md §3.2-B).
 
 **구성.** §2는 AI 비의존 Core 운용 지침이다 (메시지 필드·규칙 자체 — 02 §3, 07 §3). §3은 이 프로젝트의 물리 채널 바인딩이다 (02 §4.1, 07 §4.1). Core 섹션(§2)에는 특정 AI 모델명·제품 기능명이 등장하지 않는다 (ROADMAP 2.3, 02 INV-7).
 
@@ -43,7 +43,7 @@
 
 # 2. Core 운용 지침 (AI 비의존)
 
-정본: specs/02-agent.md §3.2, specs/07-workflow.md §3.2-C. 이 섹션은 그 계약을 채우는 법이다.
+정본: runtime/uahf/specs/02-agent.md §3.2, runtime/uahf/specs/07-workflow.md §3.2-C. 이 섹션은 그 계약을 채우는 법이다.
 
 ## 2.1 위임 메시지 작성 (02 §3.2-B)
 
@@ -72,7 +72,7 @@
 ### input — 명확한 입력
 
 - 채우는 법: 작업이 대상으로 삼는 **확정된** 입력. 파일 경로·계약을 정본 § 포인터까지 지정한다.
-- 좋은 예: `input: specs/02-agent.md §3.2-B/C/D (메시지 계약 정본), specs/07-workflow.md §3.2-C (병렬 규칙)`
+- 좋은 예: `input: runtime/uahf/specs/02-agent.md §3.2-B/C/D (메시지 계약 정본), runtime/uahf/specs/07-workflow.md §3.2-C (병렬 규칙)`
 - 나쁜 예: `input: 관련 문서들` — 범위가 없으면 수임 Agent가 대상을 추측하게 되어 O4(추측 금지)를 유발한다.
 
 ### output — 명확한 출력
@@ -90,7 +90,7 @@
 ### context — 착수 전 읽어야 할 문서 목록
 
 - 채우는 법: 착수 전 정독할 파일 경로 목록 — 상위 규약, Architecture, 관련 spec, Memory 회수 범위. **확정(Frozen/실재) 문서만** 넣는다. 동시 작성 중인 산출물은 넣지 않는다 (R2 — §2.5).
-- 좋은 예: `context: specs/02-agent.md 전체, specs/07-workflow.md, AGENT.md(상위 규약), specs/00-glossary.md`
+- 좋은 예: `context: runtime/uahf/specs/02-agent.md 전체, runtime/uahf/specs/07-workflow.md, AGENT.md(상위 규약), runtime/uahf/specs/00-glossary.md`
 - 나쁜 예: `context: 알아서 참고` — 회수 범위 부재. 미완성 산출물을 나열하는 것도 나쁜 예다 — 추측·인용을 유발한다.
 
 ### constraints — 금지·경계 (선택)
@@ -157,7 +157,7 @@ Verifier도 판정 중 발견한 계약 갭·불일치를 같은 채널로 Advis
 
 # 3. Adapter 바인딩 — 이 프로젝트의 물리 채널 (Claude Code)
 
-정본: specs/02-agent.md §4.1, specs/07-workflow.md §4.1. §2의 추상 계약을 이 프로젝트 표면에 바인딩하는 지점만 명시한다. 이식 시 이 섹션만 교체된다 (02 §4.2, 07 §4.2).
+정본: runtime/uahf/specs/02-agent.md §4.1, runtime/uahf/specs/07-workflow.md §4.1. §2의 추상 계약을 이 프로젝트 표면에 바인딩하는 지점만 명시한다. 이식 시 이 섹션만 교체된다 (02 §4.2, 07 §4.2).
 
 ## 3.1 위임 디스패치
 
@@ -189,13 +189,13 @@ Verifier도 판정 중 발견한 계약 갭·불일치를 같은 채널로 Advis
 
 | 대상 | 정본 |
 |---|---|
-| 위임 메시지 8필드 | specs/02-agent.md §3.2-B |
-| 완료 보고 5필드 | specs/02-agent.md §3.2-C |
-| 실패 보고 5필드 | specs/02-agent.md §3.2-D |
-| 필수 필드 누락 반환 (INV-6) | specs/02-agent.md §3.3 INV-6 |
-| 역할 경계 | specs/02-agent.md §3.2-A |
-| 물리 위임·보고 채널 | specs/02-agent.md §4.1 |
-| 병렬 디스패치 R1~R4 | specs/07-workflow.md §3.2-C |
-| 병렬 물리 실현·충돌 중재 | specs/07-workflow.md §4.1 |
-| 용어 | specs/00-glossary.md |
+| 위임 메시지 8필드 | runtime/uahf/specs/02-agent.md §3.2-B |
+| 완료 보고 5필드 | runtime/uahf/specs/02-agent.md §3.2-C |
+| 실패 보고 5필드 | runtime/uahf/specs/02-agent.md §3.2-D |
+| 필수 필드 누락 반환 (INV-6) | runtime/uahf/specs/02-agent.md §3.3 INV-6 |
+| 역할 경계 | runtime/uahf/specs/02-agent.md §3.2-A |
+| 물리 위임·보고 채널 | runtime/uahf/specs/02-agent.md §4.1 |
+| 병렬 디스패치 R1~R4 | runtime/uahf/specs/07-workflow.md §3.2-C |
+| 병렬 물리 실현·충돌 중재 | runtime/uahf/specs/07-workflow.md §4.1 |
+| 용어 | runtime/uahf/specs/00-glossary.md |
 | 상위 규약 | AGENT.md |

@@ -3,7 +3,7 @@
 작성일: 2026-07-06
 상태: v1.0 Baseline (개정 — stale 정합·이력 절 신설 · CP2 Pass — 첫 판정 Pass · CP3 승인 · 사용자 승인 2026-07-07 · 직전 기준선: v0.9 Baseline)
 상위 규약: .claude/AGENT.md
-정본 포인터: ARCHITECTURE.md · ROADMAP.md · specs/ (Frozen) · framework/core/structure.md §8
+정본 포인터: ARCHITECTURE.md · ROADMAP.md · runtime/uahf/specs/ (Frozen) · runtime/uahf/framework/core/structure.md §8
 성격: 신규 참여자 문서 진입점 — 정본을 재정의하지 않고 포인터로만 안내한다.
 
 ---
@@ -24,7 +24,7 @@
 
 - 이 문서는 UAHF에 처음 참여하는 사람이 **가장 먼저 읽는 안내**다. 프로젝트가 무엇인지, 어디에 무엇이 있는지, 세션을 어떻게 시작하는지를 가리킨다.
 - **정본은 이 문서가 아니다.** 모든 계약·구조·절차의 정본은 아래 포인터가 가리키는 문서다. 이 문서는 요약·지도이며, 충돌 시 정본이 우선한다(재정의·확장 0). 발견되는 충돌은 Advisor에게 보고한다(상위 규약 관행 — ARCHITECTURE·Spec 충돌은 사용자 보고).
-- 용어의 정본은 specs/00-glossary.md다. 이 문서는 새 용어를 만들지 않는다.
+- 용어의 정본은 runtime/uahf/specs/00-glossary.md다. 이 문서는 새 용어를 만들지 않는다.
 
 ---
 
@@ -39,26 +39,26 @@ Universal Agentic Harness Framework(UAHF)는 AI 에이전트를 위한 범용 De
 
 ## §2. 4경계 구조 지도
 
-프로젝트는 크게 네 자리로 나뉜다. 아래는 지도이며, `framework/` 내부 경계의 정본 트리는 framework/core/structure.md §8이다.
+프로젝트는 크게 네 자리로 나뉜다. 아래는 지도이며, `runtime/uahf/framework/` 내부 경계의 정본 트리는 runtime/uahf/framework/core/structure.md §8이다.
 
 | 자리 | 무엇이 있는가 | 정본 포인터 |
 |---|---|---|
-| `specs/` | Core Contract 스펙 — Frozen 기준선. `00-glossary.md`(용어 정본)부터 `13-harness.md`까지 번호 스펙 14개 + `TEMPLATE.md` = **15개**. 계약의 최종 정본. | specs/00-glossary.md · 각 spec |
-| `framework/` | 4경계: `core/`(계약·스키마 문서)·`runtime/`(모듈 시스템·수명주기 문서)·Module 구현 디렉터리(`loop`·`memory`·`verifier`·`workflow`·`plugins/`)·`adapters/<adapter>/`(환경 의존 바인딩 격리). | framework/core/structure.md §8 (정본 트리) |
-| `docs/` | 운용 문서 — 세션 핸드오프·검증 리포트·시연 기록·프로토콜·정책. | docs/session-handoff-v0.X.md(최신본) 등 |
-| `.claude/` | Agent 정의(`agents/` 4종)·상위 규약(`AGENT.md`)·Advisor 진입점(`CLAUDE.md`)·확장 표면(`commands`·`hooks`·`skills/`) — 환경 의존(Adapter 경계). | .claude/AGENT.md · specs/11-adapters.md |
+| `runtime/uahf/specs/` | Core Contract 스펙 — Frozen 기준선. `00-glossary.md`(용어 정본)부터 `13-harness.md`까지 번호 스펙 14개 + `TEMPLATE.md` = **15개**. 계약의 최종 정본. | runtime/uahf/specs/00-glossary.md · 각 spec |
+| `runtime/uahf/framework/` | 4경계: `core/`(계약·스키마 문서)·`runtime/`(모듈 시스템·수명주기 문서)·Module 구현 디렉터리(`loop`·`memory`·`verifier`·`workflow`·`plugins/`)·`adapters/<adapter>/`(환경 의존 바인딩 격리). | runtime/uahf/framework/core/structure.md §8 (정본 트리) |
+| `docs/` | 운용 문서 — 세션 핸드오프·검증 리포트·시연 기록·프로토콜·정책. | runtime/uahf/docs/session-handoff-v0.X.md(최신본) 등 |
+| `.claude/` | Agent 정의(`agents/` 4종)·상위 규약(`AGENT.md`)·Advisor 진입점(`CLAUDE.md`)·확장 표면(`commands`·`hooks`·`skills/`) — 환경 의존(Adapter 경계). | .claude/AGENT.md · runtime/uahf/specs/11-adapters.md |
 
-- Core 경계(`framework/core`·`framework/runtime`)와 Module 구현 디렉터리의 문서 본문은 특정 AI·언어·툴체인 토큰 0건을 유지하고, 환경 의존 토큰은 `framework/adapters/`와 `.claude/`로 격리된다(structure.md §5, ARCHITECTURE §3.1 AI Agnostic).
+- Core 경계(`runtime/uahf/framework/core`·`runtime/uahf/framework/runtime`)와 Module 구현 디렉터리의 문서 본문은 특정 AI·언어·툴체인 토큰 0건을 유지하고, 환경 의존 토큰은 `runtime/uahf/framework/adapters/`와 `.claude/`로 격리된다(structure.md §5, ARCHITECTURE §3.1 AI Agnostic).
 
 ---
 
 ## §3. 세션 진입 절차
 
-새 세션은 항상 다음 순서로 착수한다(핸드오프 관행 — 최신 docs/session-handoff-v0.X.md §4 Bootstrap Prompt).
+새 세션은 항상 다음 순서로 착수한다(핸드오프 관행 — 최신 runtime/uahf/docs/session-handoff-v0.X.md §4 Bootstrap Prompt).
 
-1. **최신 핸드오프 정독** — `docs/session-handoff-v0.X.md`에서 가장 높은 N의 문서를 읽는다. 이 문서가 세션 시작 정본이며, 직전 세션의 상태·결정을 담는다.
-2. **Consult (Memory 회수)** — framework/adapters/claude/memory-binding.md §3.2 절차로 관련 Lessons·이전 결정을 목적·최소 범위로 회수한다.
-3. **정본 정독** — ARCHITECTURE.md · ROADMAP.md(해당 버전 절) · 관련 specs · framework/core/structure.md §8.
+1. **최신 핸드오프 정독** — `runtime/uahf/docs/session-handoff-v0.X.md`에서 가장 높은 N의 문서를 읽는다. 이 문서가 세션 시작 정본이며, 직전 세션의 상태·결정을 담는다.
+2. **Consult (Memory 회수)** — runtime/uahf/framework/adapters/claude/memory-binding.md §3.2 절차로 관련 Lessons·이전 결정을 목적·최소 범위로 회수한다.
+3. **정본 정독** — ARCHITECTURE.md · ROADMAP.md(해당 버전 절) · 관련 specs · runtime/uahf/framework/core/structure.md §8.
 4. **규약·프로토콜 확인** — .claude/AGENT.md · .claude/agents/ 4종 · docs/delegation-protocol.md · docs/verification-checklist.md.
 5. **계획 수립·승인** — 실행 계획을 세워 사용자 승인을 받은 뒤 착수한다(구현 전 계획 — Advisor 관행).
 
@@ -72,19 +72,19 @@ Universal Agentic Harness Framework(UAHF)는 AI 에이전트를 위한 범용 De
 |---|---|
 | 비전·설계 원칙·아키텍처 | ARCHITECTURE.md |
 | 개발 단계·버전·산출물 | ROADMAP.md |
-| Core Contract 스펙 | specs/ (00-glossary ~ 13-harness + TEMPLATE.md, 15개) |
+| Core Contract 스펙 | runtime/uahf/specs/ (00-glossary ~ 13-harness + TEMPLATE.md, 15개) |
 | 위임·보고 운용 프로토콜 | docs/delegation-protocol.md |
 | 검증 체크리스트(게이트 A~D) | docs/verification-checklist.md |
 | 역할 빠른 참조(Advisor·Planner·Worker·Verifier) | docs/roles-quick-reference.md |
-| 세션 진입·직전 상태 | docs/session-handoff-v0.X.md(최신본) |
-| framework 디렉터리 구조 | framework/core/structure.md §8 |
+| 세션 진입·직전 상태 | runtime/uahf/docs/session-handoff-v0.X.md(최신본) |
+| framework 디렉터리 구조 | runtime/uahf/framework/core/structure.md §8 |
 
 ---
 
 ## §5. 설치 안내
 
-- 신규 프로젝트 설치 가이드는 **docs/v0.9-install-guide.md**다 (v0.9 Baseline에서 확정 완료). 이 문서는 그 경로만 안내하며 내용을 인용하지 않는다.
-- 설치·초기화의 계약 정본은 specs/12-scaffold.md다.
+- 신규 프로젝트 설치 가이드는 **runtime/uahf/docs/v0.9-install-guide.md**다 (v0.9 Baseline에서 확정 완료). 이 문서는 그 경로만 안내하며 내용을 인용하지 않는다.
+- 설치·초기화의 계약 정본은 runtime/uahf/specs/12-scaffold.md다.
 
 ---
 

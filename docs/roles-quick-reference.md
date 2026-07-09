@@ -1,30 +1,30 @@
 # docs/roles-quick-reference — UAHF 역할 빠른 참조
 
-근거: specs/02-agent.md §3.2-A (역할 경계 정본), AGENT.md (Planner 조항 포함), 검증 통과 agent 역할 정의 4개
-정본: specs/02-agent.md §3 (역할 계약), 특히 §3.2-A (역할 경계 표)
+근거: runtime/uahf/specs/02-agent.md §3.2-A (역할 경계 정본), AGENT.md (Planner 조항 포함), 검증 통과 agent 역할 정의 4개
+정본: runtime/uahf/specs/02-agent.md §3 (역할 계약), 특히 §3.2-A (역할 경계 표)
 상위 규약: AGENT.md
 
 ---
 
 # 0. 이 문서의 위치
 
-**정본은 specs/02-agent.md다. 이 문서는 사람용 한 장 요약이다.**
+**정본은 runtime/uahf/specs/02-agent.md다. 이 문서는 사람용 한 장 요약이다.**
 
-역할 경계·메시지 필드·불변 규칙의 정본은 specs/02-agent.md가 소유한다.
+역할 경계·메시지 필드·불변 규칙의 정본은 runtime/uahf/specs/02-agent.md가 소유한다.
 
 이 문서는 그 계약을 요약하고, 상세는 § 포인터로 연결한다.
 
 이 문서는 다음을 하지 않는다.
 
 - 02의 역할 경계·메시지 필드를 재정의·확장하지 않는다. § 포인터로 참조만 한다.
-- 새 용어를 만들지 않는다. 용어 정본은 specs/00-glossary.md다.
+- 새 용어를 만들지 않는다. 용어 정본은 runtime/uahf/specs/00-glossary.md다.
 - 단계 전이(03 소관)·검증 판정 기준(06 소관)·작업 분해(07 소관)를 정의하지 않는다.
 
 충돌이 발견되면 이 문서를 정본으로 삼지 않는다. 02를 따르고 Advisor에게 보고한다.
 
 **구성.** §1~§3은 AI 비의존 역할 계약 요약이다 (Core Contract — 02 §3). §4는 실행 환경 바인딩이다 (02 §4.1). Core 섹션(§1~§3, §5)에는 특정 AI 모델명·제품 기능명이 등장하지 않는다 (02 INV-7, DoD-3).
 
-**포인터 표기.** 별도 표기가 없으면 `02 §…`=specs/02-agent.md, `03 §…`=specs/03-loop.md, `06 §…`=specs/06-verifier.md, `07 §…`=specs/07-workflow.md, `Glossary §…`=specs/00-glossary.md.
+**포인터 표기.** 별도 표기가 없으면 `02 §…`=runtime/uahf/specs/02-agent.md, `03 §…`=runtime/uahf/specs/03-loop.md, `06 §…`=runtime/uahf/specs/06-verifier.md, `07 §…`=runtime/uahf/specs/07-workflow.md, `Glossary §…`=runtime/uahf/specs/00-glossary.md.
 
 ---
 
@@ -104,7 +104,7 @@ Planner 초안 범위 (AGENT.md Delegation): 작업 계획 · 작업 분해 · W
 | 검증 게이트 (CP1→CP2→CP3) | 03 §3.1-A |
 | Verifier 검증 리포트 | 06 §3.2-A |
 | 작업 분해·Task·병렬 집합 | 07 §3.2 |
-| 용어 | specs/00-glossary.md |
+| 용어 | runtime/uahf/specs/00-glossary.md |
 | 상위 규약 | AGENT.md |
 
 이 문서는 요약이다. 상세·정본은 위 포인터를 따른다. 충돌 시 정본이 우선한다.

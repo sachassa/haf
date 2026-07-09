@@ -1,0 +1,17 @@
+{
+  "id": "mi-0088",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "v1.2-era 잔존물 정리(리팩토링 후 stale 참조/라벨 정정) 중 두 근접-실패 신호: (1) 라우팅 분기 — `uaf/specs/02-discovery.md`(default-policy.yaml 헤더)를 blind 접두 치환하면 `uahf/specs/`가 되지만, v1.2.1이 spec을 Layer별로 분산했으므로 정답은 `discovery/specs/`다(동형 stale 토큰이 대상 소유 Layer에 따라 서로 다른 목적지로 라우팅). (2) 열거 누락 — 1차 개념어 열거가 `entry/specs/01-entry.md:28`의 `uaf/specs/ 경계`를 놓쳤고(discovery/02·planning/03 두 곳만 포착), 독립 Verifier 재grep이 세 번째 사이트를 포착. 부류: post-refactor 참조 정합·routing-divergence·enumeration-completeness·frozen-snapshot rebaseline.",
+    "matched_lesson_id": "L-21 · L-22 (둘 다 Candidate)",
+    "was_recalled": "N/A(Active 회수 밖) — 커널을 공유하는 L-21(mi-0084, 파생 참조 표면 전수 스윕·감사 목록 불신)·L-22(mi-0087, 경로 스윕의 함정·동형 토큰)가 둘 다 status=Candidate라 세션 Active 회수 집합(22건)에 없었다. Active L-06(상태서술 개정)·L-20(§ 귀속)은 축 상이. 그러나 이번 실패 신호는 L-21/L-22 커널과 정확히 일치한다.",
+    "verdict": "Recurrence",
+    "recall_set_ref": "v1.2-era 잔존물 정리 세션 Active 회수 집합(세션 진입 Consult·Memory 자동 로드) — Active 22건(Lesson 16 + Best Practice 6). L-21·L-22는 Candidate라 회수 집합 밖.",
+    "follow_up": "L-21 커널의 3트랙 연속 발현(v1.2.1 구조 이동 → arch-v1.3 재번호 → v1.2-era 정리) 확인 → L-21 승격 근거 대폭 강화(동일 커널 반복=Candidate→Active 승격 심사 상정). 열거 누락→독립 재grep 포착은 L-21('감사/완료 목록 불신·독립 전수 재스캔')의 직접 재현. 라우팅 분기(동형 토큰의 정정 목적지가 대상 소유 Layer로 갈림)는 L-21/L-22가 커버하지 않는 신규 하위 국면 → 신규 Lesson 후보 L-23 등록(→ mi-0089). 동결 측정 스냅샷의 건설적 갱신 수단(재베이스라인)은 BPD-17 등록(→ mi-0090). 각 신호 CP2 검출·정정 후 잔여 0. 실패 아님(검증이 잡아냄)."
+  },
+  "source": "v1.2-era-cleanup-review",
+  "timestamp": "2026-07-05T22:21:14.602+09:00",
+  "labels": {
+    "verdict": "Recurrence"
+  }
+}

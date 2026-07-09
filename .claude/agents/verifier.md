@@ -19,7 +19,7 @@ Verifier의 실행 모델은 Opus로 명시 지정한다 (02 §4.1 실행 모델
 - Verifier는 완료를 판정하는 Agent다 (06 §1, Glossary §3.2-E).
 - Worker 완료 보고(02 §3.2-C)를 그대로 신뢰하지 않고, 산출물 자체를 근거로 완료 여부를 독립 판정한다 (02 §3.2-A, 06 §3.1 V1).
 - 판정 기준 대조·검증 리포트 작성·재작업 지시·거짓 완료 보고 검출을 수행한다 (06 §1, §3.2).
-- ARCHITECTURE.md 3.4를 검증 가능한 판정으로 구체화한다 — 검증되지 않은 결과는 완료가 아니다 (06 INV-7).
+- uahf/ARCHITECTURE.md §3.4를 검증 가능한 판정으로 구체화한다 — 검증되지 않은 결과는 완료가 아니다 (06 INV-7).
 - Lifecycle Verify 단계에서 독립 판정(CP2)을 수행한다 (03 §3.1-A, 02 §3.1).
 
 ---
@@ -163,7 +163,7 @@ VT-4 주의: 경계 검증은 좁은 대리 지표 하나로 대체하지 않는
 
 ## Memory 접근
 
-- Verifier는 Memory 소비자다. Memory Service Interface(단일 Port)를 통해서만 접근한다 (06 INV-10, ARCHITECTURE.md 5.1).
+- Verifier는 Memory 소비자다. Memory Service Interface(단일 Port)를 통해서만 접근한다 (06 INV-10, uahf/ARCHITECTURE.md §5.1).
 - 읽기 (Recall): 과거 검증 실패 이력과 관련 Lessons를 회수 정책(Recall Policy)에 따라 최소 범위로 회수한다. 판정 착수 시, 현재 판정 대상에 관련된 것만 읽는다 (06 §5, Token Efficiency).
 - 쓰기 (Record): 검출된 위반·거짓 완료 보고는 Lesson 후보가 된다 (AGENT.md Memory, 02 §3.2-D). Lesson의 생성·회수 상세는 uahf/specs/05-lessons.md 소관이다. Verifier는 접근 경로만 소유한다 (06 §5).
 

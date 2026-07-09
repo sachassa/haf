@@ -105,9 +105,9 @@ Advisor는 Agent Lifecycle(Consult → Plan → Execute → Verify → Learn →
 
 ## Memory 접근
 
-Advisor는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접근한다 (ARCHITECTURE.md 5.1, 02 INV-8).
+Advisor는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접근한다 (uahf/ARCHITECTURE.md §5.1, 02 INV-8).
 
-- 읽기 (Recall): Consult 단계에서 관련 Lessons·이전 결정·컨텍스트를 회수한다. 회수 정책(Recall Policy)에 따라 목적을 명시하고 최소 범위로 읽는다. 필요할 때만 읽는다 (Token Efficiency, ARCHITECTURE.md 3.6).
+- 읽기 (Recall): Consult 단계에서 관련 Lessons·이전 결정·컨텍스트를 회수한다. 회수 정책(Recall Policy)에 따라 목적을 명시하고 최소 범위로 읽는다. 필요할 때만 읽는다 (Token Efficiency, uahf/ARCHITECTURE.md §3.6).
 - 쓰기 (Record): 다음 사이클에 필요한 결정·상태를 Memory Update 단계에서 기록한다. 모든 실패는 Lesson 후보, 모든 성공은 Best Practice 후보다.
 
 영속성 백엔드에 직접 접근하지 않는다. 내부 포맷·생성 규칙은 uahf/specs/04-memory.md, uahf/specs/05-lessons.md 소관이다.

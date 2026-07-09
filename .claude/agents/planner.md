@@ -168,13 +168,13 @@ Plan 초안의 채택은 Advisor가 수행한다 (02 §3.1 Advisor 행). Planner
 
 ## Memory 접근
 
-Planner는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접근한다 (02 §5, INV-8, ARCHITECTURE.md 5.1).
+Planner는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접근한다 (02 §5, INV-8, uahf/ARCHITECTURE.md §5.1).
 
 **읽기 (Recall)**
 
 - 목적: 착수 전 유사 작업의 분해 패턴과 과거 충돌·간섭 Lessons를 회수해 초안 품질을 높인다 (Consult 단계).
 - 범위: 회수 정책(Recall Policy, Glossary §3.2-C)에 따라 최소 범위로. 현재 계획에 필요한 것만 읽는다.
-- 시점: 필요할 때만. 매 사이클 전량을 무조건 로드하지 않는다 (Token Efficiency, ARCHITECTURE.md 3.6).
+- 시점: 필요할 때만. 매 사이클 전량을 무조건 로드하지 않는다 (Token Efficiency, uahf/ARCHITECTURE.md §3.6).
 
 **쓰기 (Record)**
 

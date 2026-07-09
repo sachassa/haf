@@ -1,0 +1,17 @@
+{
+  "id": "mi-0086",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "정본 완전 재저술(절 재배치) 후 하위 §앵커 정합 미수행 — 직전 세션이 루트 ARCHITECTURE.md를 v1.3(라우터·절 재배치)로 재저술하다 크래시, 하위 스윕이 파일명 토큰(uaf/ARCHITECTURE.md→ARCHITECTURE.md)만 치환하고 §앵커는 옛 번호로 잔존(§8.2→§12.2 등 ~58건 + §3/§4/§5/§6/§7/§8 오참조). add=delete 대칭 numstat(줄 내 부분 치환)이 앵커 stale를 은닉해 표면상 '완성'으로 보임. 재정합 중 날짜 명시 '실측 대조' 동결 스냅샷(discovery-binding §13, 2026-07-07)의 앵커까지 재번호되어 시대착오 발생 — CP2 검출·CP3 HEAD 원복. 부류: canonical-rewrite·section-renumber·anchor-reconciliation·frozen-snapshot·crash-recovery.",
+    "matched_lesson_id": null,
+    "was_recalled": "N/A — 매칭 Active Lesson 부재. 인접 Lesson L-21(mi-0084)이 'post-move 참조 정합 스코프·stale-allow vs 정합 대상 구분' 커널을 공유하나 (a) status=Candidate라 세션 Active 회수 집합 밖이고, (b) 트리거가 디렉터리 경로 이동이지 정본 절 재번호가 아니다. L-06(mi-0014, 상태서술 개정 축)·L-20(mi-0079, § 귀속 축)도 트리거 상이. 정본 재번호 특유의 3facet(경로-토큰 스윕≠§앵커 정합·numstat 대칭 은닉·날짜 명시 실측 스냅샷 보존)을 커버하는 Active Lesson 자체가 부재하다.",
+    "verdict": "Novel",
+    "recall_set_ref": "Tier 2 arch-v1.3 재저술(크래시 복구) 세션 Active 회수 집합(세션 진입 Consult·Memory 자동 로드) — Active 22건(Lesson 16 + Best Practice 6). 본 트랙은 크래시 중단 복구로 BPD-13(중단 재개 프로토콜)이 Active 회수·구동됨. L-21은 Candidate라 회수 집합 밖.",
+    "follow_up": "매칭 Active Lesson 없음 → Novel(05 §3.1-C·lessons.md §4). RecallGap 아님 — 매칭 Active Lesson 자체 부재(L-06 상태서술 개정 축·L-20 § 귀속 축·L-21 Candidate/경로이동 트리거로 상이; mi-0083 판정 논리 동형). L-21의 '동결/stale-allow vs 정합 대상 구분' 커널을 재번호 트리거로 재확인·강화(동일 커널 2트랙 발현 — L-21 승격 근거 보강). 정본 재번호 특유 신규 국면(경로 스윕≠앵커 정합·numstat 대칭 은닉·날짜 명시 실측 스냅샷 HEAD 보존)으로 신규 Lesson 후보 L-22 등록(→ mi-0087)이 후속 조치. 각 건 CP2 검출·CP3 수선·재검증 잔여 0. 실패 아님(검증이 잡아냄)."
+  },
+  "source": "arch-v1.3-review",
+  "timestamp": "2026-07-05T22:21:12.602+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

@@ -8,9 +8,9 @@ model: opus
 
 Worker는 구현을 담당하는 Agent다.
 
-이 문서는 specs/02-agent.md의 계약을 Claude Code 환경에 바인딩한다 (02 §4.1).
+이 문서는 uahf/specs/02-agent.md의 계약을 Claude Code 환경에 바인딩한다 (02 §4.1).
 
-계약의 정본은 specs/02-agent.md이다. 이 문서는 계약을 재정의하지 않고 참조한다.
+계약의 정본은 uahf/specs/02-agent.md이다. 이 문서는 계약을 재정의하지 않고 참조한다.
 
 상위 규약은 .claude/AGENT.md다 (INV-1).
 
@@ -120,7 +120,7 @@ Worker는 Agent Lifecycle(Consult → Complete)에서 다음을 담당한다 (02
 - Execute 종료 시 자체 점검(CP1)을 남긴다.
 - Verify 통과 후 완료 보고를 남긴다.
 
-Worker는 단계 전이 규칙을 정의하지 않는다. 단계 전이는 Loop 소관이다 (specs/03-loop.md, INV-2).
+Worker는 단계 전이 규칙을 정의하지 않는다. 단계 전이는 Loop 소관이다 (uahf/specs/03-loop.md, INV-2).
 
 ## Memory 접근
 
@@ -132,7 +132,7 @@ Worker는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접근
 
 모든 실패는 Lesson 후보가 된다. 모든 성공은 Best Practice 후보가 된다 (02 §5, AGENT.md Memory).
 
-내부 포맷·생성 규칙은 specs/04-memory.md·specs/05-lessons.md 소관이다. Worker는 접근 경로만 따른다.
+내부 포맷·생성 규칙은 uahf/specs/04-memory.md·uahf/specs/05-lessons.md 소관이다. Worker는 접근 경로만 따른다.
 
 ## 금지 사항 (Prohibitions)
 

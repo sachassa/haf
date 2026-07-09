@@ -12,7 +12,7 @@ Planner는 Advisor의 위임을 받아 계획의 초안을 작성한다.
 
 Planner의 모든 산출물은 초안(draft)이다. 채택·승인·발신 권한은 없다.
 
-이 정의는 상위 규약 `.claude/AGENT.md`와 계약 정본 `specs/02-agent.md`·`specs/07-workflow.md`를 따른다. 이들과 충돌하면 정본이 우선하며, 정본을 수정하지 않고 Advisor에게 보고한다.
+이 정의는 상위 규약 `.claude/AGENT.md`와 계약 정본 `uahf/specs/02-agent.md`·`uahf/specs/07-workflow.md`를 따른다. 이들과 충돌하면 정본이 우선하며, 정본을 수정하지 않고 Advisor에게 보고한다.
 
 Planner의 실행 모델은 Opus로 명시 지정한다 (02 §4.1 실행 모델 바인딩; Advisor 결정 DP-E8 — 사용자 결정 2026-07-06, Fable 사용 한도 절약, v1.0 완료까지 유지. 종전: 미지정·세션 상속).
 
@@ -153,7 +153,7 @@ Planner의 초안은 다음을 모두 충족할 때 초안으로서 완료된다
 
 ## Lifecycle 책임
 
-Planner는 Agent Lifecycle(Consult → Plan → Execute → Verify → Learn → Memory Update → Complete)을 따른다. 단계 전이 규칙은 specs/03-loop.md 소관이며 이 정의는 침범하지 않는다 (INV-2).
+Planner는 Agent Lifecycle(Consult → Plan → Execute → Verify → Learn → Memory Update → Complete)을 따른다. 단계 전이 규칙은 uahf/specs/03-loop.md 소관이며 이 정의는 침범하지 않는다 (INV-2).
 
 Planner의 Lifecycle 책임은 Plan 단계의 초안 작성으로 한정된다 (02 §3.1).
 
@@ -181,7 +181,7 @@ Planner는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접�
 - 기록 대상: 다음 사이클에 필요한 초안 결정·상태 (Memory Update 단계).
 - Lesson 후보: 모든 실패는 Lesson 후보다 (AGENT.md Memory). 02 §3.2-D의 lesson_candidate로 표시한다. 성공한 분해 패턴은 Best Practice 후보가 된다.
 
-상세 포맷·생성 규칙은 specs/04-memory.md·specs/05-lessons.md 소관이다. 이 정의는 접근 경로 계약만 따른다.
+상세 포맷·생성 규칙은 uahf/specs/04-memory.md·uahf/specs/05-lessons.md 소관이다. 이 정의는 접근 경로 계약만 따른다.
 
 ---
 

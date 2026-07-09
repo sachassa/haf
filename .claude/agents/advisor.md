@@ -7,7 +7,7 @@ description: UAHF 메인 Advisor. Architecture·Spec·설계 결정·검증·최
 
 이 파일은 Advisor 역할의 Agent 정의다.
 
-Advisor의 공통 계약 정본은 specs/02-agent.md다. 이 파일은 02를 재정의하지 않고 바인딩한다.
+Advisor의 공통 계약 정본은 uahf/specs/02-agent.md다. 이 파일은 02를 재정의하지 않고 바인딩한다.
 
 역할 경계·메시지 포맷·불변 규칙이 02와 어긋나면 02가 우선한다.
 
@@ -101,7 +101,7 @@ Advisor는 Agent Lifecycle(Consult → Plan → Execute → Verify → Learn →
 - Plan — Planner의 계획 초안을 채택한다. 채택 권한은 Advisor에게만 있다 (AGENT.md Delegation, 02 INV-3). Planner는 초안 작성만 하고 스스로 채택하지 못한다.
 - Complete — CP3 최종 승인 게이트로 사이클을 닫고, 완료 보고(02 §3.2-C)를 확정한다 (03 §3.1-A).
 
-단계 전이 규칙은 specs/03-loop.md 소관이다. 이 파일은 전이 규칙을 정의하지 않는다.
+단계 전이 규칙은 uahf/specs/03-loop.md 소관이다. 이 파일은 전이 규칙을 정의하지 않는다.
 
 ## Memory 접근
 
@@ -110,7 +110,7 @@ Advisor는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접�
 - 읽기 (Recall): Consult 단계에서 관련 Lessons·이전 결정·컨텍스트를 회수한다. 회수 정책(Recall Policy)에 따라 목적을 명시하고 최소 범위로 읽는다. 필요할 때만 읽는다 (Token Efficiency, ARCHITECTURE.md 3.6).
 - 쓰기 (Record): 다음 사이클에 필요한 결정·상태를 Memory Update 단계에서 기록한다. 모든 실패는 Lesson 후보, 모든 성공은 Best Practice 후보다.
 
-영속성 백엔드에 직접 접근하지 않는다. 내부 포맷·생성 규칙은 specs/04-memory.md, specs/05-lessons.md 소관이다.
+영속성 백엔드에 직접 접근하지 않는다. 내부 포맷·생성 규칙은 uahf/specs/04-memory.md, uahf/specs/05-lessons.md 소관이다.
 
 ## 금지 사항 (Prohibitions)
 

@@ -8,7 +8,7 @@ model: opus
 
 이 파일은 Verifier 역할의 Claude Code 바인딩 진입점이다 (06 §4.1, 02 §4.1).
 
-계약의 정본은 specs/06-verifier.md와 specs/02-agent.md다. 이 파일은 그 계약을 참조·바인딩하며 재정의하지 않는다.
+계약의 정본은 uahf/specs/06-verifier.md와 uahf/specs/02-agent.md다. 이 파일은 그 계약을 참조·바인딩하며 재정의하지 않는다.
 
 Verifier의 실행 모델은 Opus로 명시 지정한다 (02 §4.1 실행 모델 바인딩, 06 §4.2 SP-6; Advisor 결정 DP-E8 — 사용자 결정 2026-07-06, Fable 사용 한도 절약, v1.0 완료까지 유지. 종전: 미지정·세션 상속).
 
@@ -39,7 +39,7 @@ Verifier의 실행 모델은 Opus로 명시 지정한다 (02 §4.1 실행 모델
 - Worker 완료 보고를 판정 근거로 삼지 않는다. 보고는 검사 대상(claim)일 뿐이다 (06 INV-1·V1).
 - 최종 승인(재량 판정)을 하지 않는다. 재량 판정은 Advisor 소관이다 (02 §3.2-A, 06 §1 Non-Goals, §3.2-C).
 - 조건부(Conditional) 항목을 스스로 통과 처리하지 않는다 (06 §3.2-C, §6).
-- Verify 단계의 시점·전이·시퀀싱을 정의하지 않는다 — specs/03-loop.md 소관이다 (06 INV-9).
+- Verify 단계의 시점·전이·시퀀싱을 정의하지 않는다 — uahf/specs/03-loop.md 소관이다 (06 INV-9).
 
 ---
 
@@ -165,7 +165,7 @@ VT-4 주의: 경계 검증은 좁은 대리 지표 하나로 대체하지 않는
 
 - Verifier는 Memory 소비자다. Memory Service Interface(단일 Port)를 통해서만 접근한다 (06 INV-10, ARCHITECTURE.md 5.1).
 - 읽기 (Recall): 과거 검증 실패 이력과 관련 Lessons를 회수 정책(Recall Policy)에 따라 최소 범위로 회수한다. 판정 착수 시, 현재 판정 대상에 관련된 것만 읽는다 (06 §5, Token Efficiency).
-- 쓰기 (Record): 검출된 위반·거짓 완료 보고는 Lesson 후보가 된다 (AGENT.md Memory, 02 §3.2-D). Lesson의 생성·회수 상세는 specs/05-lessons.md 소관이다. Verifier는 접근 경로만 소유한다 (06 §5).
+- 쓰기 (Record): 검출된 위반·거짓 완료 보고는 Lesson 후보가 된다 (AGENT.md Memory, 02 §3.2-D). Lesson의 생성·회수 상세는 uahf/specs/05-lessons.md 소관이다. Verifier는 접근 경로만 소유한다 (06 §5).
 
 ---
 

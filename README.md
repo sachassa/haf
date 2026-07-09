@@ -9,15 +9,15 @@ Universal Agentic Framework(UAF)는 에이전트 기반 프로젝트를 진입�
 - `entry/` — 진입 / Entry Resolution Layer
 - `discovery/` — Project Discovery Layer
 - `planning/` — Project Contract / 설계 Layer
-- `runtime/` — 하네스 실행 Layer (`runtime/uahf/` = UAHF 구현체, `runtime/external/` = 외부 하네스 자리)
+- `uahf/` — 하네스 실행 Layer (UAHF 구현체)
 - `knowledge/` — 공용 Knowledge Base (Layer 아님. 모든 Layer가 Consult)
 
-UAHF는 저장소 최상위 프로젝트가 아니라 Runtime Layer의 구현체다. UAHF 정본은 `runtime/uahf/`(그 하위 `runtime/uahf/framework/`·`runtime/uahf/specs/` 및 `README`·`ARCHITECTURE`·`ROADMAP`)에 있다.
+UAHF는 저장소 최상위 프로젝트가 아니라 하나의 Layer(하네스 실행)다. UAHF 정본은 `uahf/`(그 하위 `uahf/framework/`·`uahf/specs/` 및 `README`·`ARCHITECTURE`·`ROADMAP`)에 있다.
 
 ## 정본 포인터
 - 전체 구조: root `ARCHITECTURE.md`
 - 전체 로드맵: root `ROADMAP.md`
-- UAHF 하네스: `runtime/uahf/README.md`
+- UAHF 하네스: `uahf/README.md`
 
 ## 이 문서의 지위
 스텁이다. 내용은 후속 트랙에서 완전 저술된다.

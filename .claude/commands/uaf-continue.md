@@ -13,7 +13,7 @@ description: UAF 공식 진입점 /continue(기존 프로젝트 이어가기 —
 
 ## §0. 이 명령의 위치와 성격
 
-- 이 파일은 `.claude/commands/` 아래의 **UAF 진입 표면**이다 — 논리 Entry `/continue`(uaf/specs/01-entry.md §3.1 등재; §0 "논리 식별자 주의")의 **물리 발화 형태**다. `/continue`는 논리 식별자(name)이고, 그 물리 진입 형태를 어떤 명령으로 발화하는가는 Adapter 소관이다(01 §0·§4.1). 이 환경의 물리 발화 형태 = 이 `uaf-continue` 명령으로 확정되어 있다(runtime/uahf/framework/adapters/claude/entry-binding.md §3). `uaf-` 접두는 UAF 네임스페이스를 표면에 드러내고 환경 빌트인 명령과의 충돌을 피하기 위한 것이다.
+- 이 파일은 `.claude/commands/` 아래의 **UAF 진입 표면**이다 — 논리 Entry `/continue`(entry/specs/01-entry.md §3.1 등재; §0 "논리 식별자 주의")의 **물리 발화 형태**다. `/continue`는 논리 식별자(name)이고, 그 물리 진입 형태를 어떤 명령으로 발화하는가는 Adapter 소관이다(01 §0·§4.1). 이 환경의 물리 발화 형태 = 이 `uaf-continue` 명령으로 확정되어 있다(runtime/uahf/framework/adapters/claude/entry-binding.md §3). `uaf-` 접두는 UAF 네임스페이스를 표면에 드러내고 환경 빌트인 명령과의 충돌을 피하기 위한 것이다.
 - `.claude/commands/`는 환경 의존 격리 표면이므로 구체 환경 토큰의 사용이 허용된다(runtime/uahf/framework/core/structure.md §2 Adapter 경계, uahf-status.md §0 선례 동형).
 - **형태 A(문서 명령) — 실행 코드 0.** 이 명령은 실행 스크립트를 포함하지 않는다(D-v1.2-1). Entry Resolution 엔진(고정 5단계, 01 §3.2-A)은 규약 절차로 실현되며, 호출 시 **주 세션이 그 절차를 실수행**한다. (`형태 A/B`는 structure.md §4 서술 라벨이다.)
 - **정본 재정의 0.** 이 문서는 어떤 계약·판별 규칙도 스스로 확정하지 않는다. 아래 절차·결정 행·게이트는 전부 **정본 포인터**(01-entry·entry-binding)로만 안내하며 값을 하드코딩하지 않으므로, 정본이 진행돼도 이 명령은 낡지 않는다.
@@ -43,7 +43,7 @@ description: UAF 공식 진입점 /continue(기존 프로젝트 이어가기 —
 
 ### 사용자 개입 지점 (Preserve Human Authority, 01 EN-INV 6)
 
-- 이어갈 증거가 부재(Contract 무 + Repository 무, 01 §3.2-D 행 5 — P-D)하면 사용자 의도와 증거가 상충한다. 이때 Entry는 **스스로 확정하지 않고** policy에 **사용자 확인 게이트**를 표기한다(01 §3.2-D 충돌 처리·EN-INV 6). 확정 게이트(사용자 승인)는 하류에서 존중된다(uaf/ARCHITECTURE.md §5 UAF-INV ⑤).
+- 이어갈 증거가 부재(Contract 무 + Repository 무, 01 §3.2-D 행 5 — P-D)하면 사용자 의도와 증거가 상충한다. 이때 Entry는 **스스로 확정하지 않고** policy에 **사용자 확인 게이트**를 표기한다(01 §3.2-D 충돌 처리·EN-INV 6). 확정 게이트(사용자 승인)는 하류에서 존중된다(ARCHITECTURE.md §5 UAF-INV ⑤).
 
 ---
 
@@ -53,16 +53,16 @@ description: UAF 공식 진입점 /continue(기존 프로젝트 이어가기 —
 
 | 안내 항목 | 정본 (가리키기만 함) |
 |---|---|
-| Entry `/continue` 논리 정의·mode(`incremental`/`brownfield`) | `uaf/specs/01-entry.md` §3.1 |
-| Entry Descriptor 등록 모델·Resolution 엔진 고정 5단계 | `uaf/specs/01-entry.md` §3.2-A |
-| 결정 테이블(행 5~8)·판별 규칙 D3 ②·D3 ③·충돌 처리 | `uaf/specs/01-entry.md` §3.2-D |
-| mode 네임스페이스(확장 가능) | `uaf/specs/01-entry.md` §3.2-E |
+| Entry `/continue` 논리 정의·mode(`incremental`/`brownfield`) | `entry/specs/01-entry.md` §3.1 |
+| Entry Descriptor 등록 모델·Resolution 엔진 고정 5단계 | `entry/specs/01-entry.md` §3.2-A |
+| 결정 테이블(행 5~8)·판별 규칙 D3 ②·D3 ③·충돌 처리 | `entry/specs/01-entry.md` §3.2-D |
+| mode 네임스페이스(확장 가능) | `entry/specs/01-entry.md` §3.2-E |
 | Evidence 관측 물리 판정 수단(탐지 절차) | `runtime/uahf/framework/adapters/claude/entry-binding.md` §4 |
 | Contract 저장 위치·직렬화 | `runtime/uahf/framework/adapters/claude/contract-binding.md` §3·§4 |
 | Discovery Request 직렬화·전달 | `runtime/uahf/framework/adapters/claude/entry-binding.md` §5 (기록 백엔드 트리 = `discovery-binding.md` 예정) |
-| Entry 불변(EN-INV 1~6) | `uaf/specs/01-entry.md` §3.3 |
-| 논리 식별자 주의(물리 발화 형태 = Adapter 소관) | `uaf/specs/01-entry.md` §0·§4.1 · `runtime/uahf/framework/adapters/claude/entry-binding.md` §3 |
-| Discovery Request 상위 추상 {mode, inputs, policy} | `uaf/ARCHITECTURE.md` §8.2 |
+| Entry 불변(EN-INV 1~6) | `entry/specs/01-entry.md` §3.3 |
+| 논리 식별자 주의(물리 발화 형태 = Adapter 소관) | `entry/specs/01-entry.md` §0·§4.1 · `runtime/uahf/framework/adapters/claude/entry-binding.md` §3 |
+| Discovery Request 상위 추상 {mode, inputs, policy} | `ARCHITECTURE.md` §8.2 |
 | 진입 명령 골격 관례 | `.claude/commands/uahf-status.md` |
 | 상위 규약 | `.claude/AGENT.md` |
 

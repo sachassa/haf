@@ -1,0 +1,25 @@
+{
+  "id": "mi-0091",
+  "kind": "lesson",
+  "content": {
+    "id": "L-24",
+    "status": "Candidate",
+    "failure": "Advisor가 사용자 질문('루트 .claude/ 하위는?')에 답하며 좁은 grep 하나(`specs/|framework/|uaf/`)의 결과로 '루트 .claude/ 하위는 정확히 2곳'이라고 사실 단정. 그러나 그 패턴이 `ARCHITECTURE.md N.N` 클래스를 커버하지 않아 `.claude/agents/*.md` 6곳(advisor·planner·verifier의 `ARCHITECTURE.md {3.4,3.6,5.1}` → uahf/ARCHITECTURE.md §N.N)을 누락. 사용자가 'agents 밑 md는?'으로 짚어서야 드러남. 완전성 주장이 검색 패턴의 한계에 갇혔다.",
+    "cause": "완전성/사실 주장('정확히 N곳')을 단일 좁은 스캔 결과로 뒷받침하면서 (1) 관련 패턴을 전수 열거하지 않았고 (2) 검색 범위·한계를 밝히지 않았다. Worker 산출에 적용하던 '완료 보고 불신·독립 검증' 규율을 Advisor 자신의 사실 주장에는 적용하지 않았다.",
+    "lesson": "완전성·사실 주장('정확히 N·전수·잔여 0·있다/없다') 전에는 (1) 관련 패턴을 전수 열거해 스윕하고(단일 패턴 대리지표 금지), (2) 결과의 검색 범위·한계를 함께 밝힌다('이 패턴만 스캔함'). 단일 좁은 스캔을 exhaustive로 단정하지 않는다. 핵심: Worker 완료 보고 불신·독립 검증(CP2) 원칙을 Advisor 자신의 사실·완전성 주장에도 동일 적용한다 — 역할과 무관하게 완전성 주장은 검증 대상이다. 강제: `.claude/CLAUDE.md` '완전성·사실 주장 규율' 절(상시 로드) + SessionStart 리마인더 훅.",
+    "applicability": "어떤 역할이든 검색·스캔 결과에 근거해 완전성/사실을 단정하는 상황(코드베이스 스코프 주장·'잔여 0'·'정확히 N곳'·존재/부재 판정) — 특히 Advisor가 사용자 질문에 즉답하며 독립 검증 없이 단정할 위험.",
+    "provenance": {
+      "task_ref": "v1.2-era 정리 후속 — .claude/agents ARCHITECTURE.md 참조 정정(커밋 a6a4ccb) 중 사용자 지적",
+      "report_ref": "세션 대화(Advisor '정확히 2곳' 오단정 → 사용자 'agents 밑 md는?' → 6곳 포착) · CLAUDE.md '완전성·사실 주장 규율' 절",
+      "origin_role": "도출 사용자(오류 지적·명문화 지시)·기록 Advisor(자기 오류 인정·규율 codify)",
+      "ordering_ref": "v1.2-era 후속 세션 (mi 시퀀스 연속·mi-0090 다음)"
+    }
+  },
+  "source": "post-v1.2-era-cleanup",
+  "timestamp": "2026-07-05T22:21:17.602+09:00",
+  "labels": {
+    "stable_id": "L-24",
+    "status": "Candidate",
+    "situation": ["completeness-claim", "search-scope-limit", "self-claim-verification", "advisor-overclaim", "l-21-recurrence"]
+  }
+}

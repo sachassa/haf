@@ -43,7 +43,7 @@ description: UAF 공식 진입점 /continue(기존 프로젝트 이어가기 —
 
 ### 사용자 개입 지점 (Preserve Human Authority, 01 EN-INV 6)
 
-- 이어갈 증거가 부재(Contract 무 + Repository 무, 01 §3.2-D 행 5 — P-D)하면 사용자 의도와 증거가 상충한다. 이때 Entry는 **스스로 확정하지 않고** policy에 **사용자 확인 게이트**를 표기한다(01 §3.2-D 충돌 처리·EN-INV 6). 확정 게이트(사용자 승인)는 하류에서 존중된다(ARCHITECTURE.md §5 UAF-INV ⑤).
+- 이어갈 증거가 부재(Contract 무 + Repository 무, 01 §3.2-D 행 5 — P-D)하면 사용자 의도와 증거가 상충한다. 이때 Entry는 **스스로 확정하지 않고** policy에 **사용자 확인 게이트**를 표기한다(01 §3.2-D 충돌 처리·EN-INV 6). 확정 게이트(사용자 승인)는 하류에서 존중된다(ARCHITECTURE.md §8 UAF-INV ⑤).
 
 ---
 
@@ -62,7 +62,7 @@ description: UAF 공식 진입점 /continue(기존 프로젝트 이어가기 —
 | Discovery Request 직렬화·전달 | `uahf/framework/adapters/claude/entry-binding.md` §5 (기록 백엔드 트리 = `discovery-binding.md` 예정) |
 | Entry 불변(EN-INV 1~6) | `entry/specs/01-entry.md` §3.3 |
 | 논리 식별자 주의(물리 발화 형태 = Adapter 소관) | `entry/specs/01-entry.md` §0·§4.1 · `uahf/framework/adapters/claude/entry-binding.md` §3 |
-| Discovery Request 상위 추상 {mode, inputs, policy} | `ARCHITECTURE.md` §8.2 |
+| Discovery Request 상위 추상 {mode, inputs, policy} | `ARCHITECTURE.md` §12.2 |
 | 진입 명령 골격 관례 | `.claude/commands/uahf-status.md` |
 | 상위 규약 | `.claude/AGENT.md` |
 

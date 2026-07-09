@@ -1,4 +1,4 @@
-# uaf/appendix/methodology-mapping — 방법론 → Strategy Provider Capability 대응표 (비정본 부록)
+# planning/docs/appendix/methodology-mapping — 방법론 → Strategy Provider Capability 대응표 (비정본 부록)
 
 작성일: 2026-07-07
 상태: v1.1 Baseline (CP2 첫 판정 Pass 15/0/0 · CP3 승인 · 사용자 승인 2026-07-07)
@@ -7,8 +7,8 @@
 근거 정본:
 
 - 사용자 승인 v1.1 실행 계획 (Project Discovery & Entry Layer Architecture) — 본 부록의 격리 결정. 특히 결정 D2③("방법론 분석(grill-me·JTBD·Shape Up·Design Sprint·Event Storming)은 **비정본 부록** 격리, 정본은 Strategy Provider Interface만")과 §"산출물"의 `uaf/appendix/methodology-mapping.md ← 비정본` 표기.
-- `uaf/specs/02-discovery.md` v1.1 Draft — Strategy Provider Interface 정본. 특히 §3.10(Capability 선언·입출력 계약·레퍼런스 Provider·§3.10-D 방법론 대응 비정본 위임)·§3.11(Discovery Dimension 5)·§3.2(Discovery Principles 5). 본 부록은 이 정본을 **§ 포인터로만 참조하고 재정의하지 않는다**.
-- `uaf/ARCHITECTURE.md` v1.1 Draft (r2) — UAF 상위 구조 정본. 특히 §5 UAF-INV ⑥(Framework는 특정 방법론을 모른다 — 방법론은 교체 가능한 Strategy Provider만이 안다). 본 부록은 이 불변의 성립 조건(방법론 지식의 격리 지점)이다.
+- `discovery/specs/02-discovery.md` v1.1 Draft — Strategy Provider Interface 정본. 특히 §3.10(Capability 선언·입출력 계약·레퍼런스 Provider·§3.10-D 방법론 대응 비정본 위임)·§3.11(Discovery Dimension 5)·§3.2(Discovery Principles 5). 본 부록은 이 정본을 **§ 포인터로만 참조하고 재정의하지 않는다**.
+- `ARCHITECTURE.md` (v1.3) — UAF 상위 구조 정본. 특히 §8 UAF-INV ⑥(Framework는 특정 방법론을 모른다 — 방법론은 교체 가능한 Strategy Provider만이 안다). 본 부록은 이 불변의 성립 조건(방법론 지식의 격리 지점)이다.
 
 ---
 
@@ -19,17 +19,17 @@
 | 2026-07-07 | v1.1 Draft | 최초 작성 — `uaf/appendix/` 경계 최초 산출물. **비정본 부록**: 발견·설계 방법론 5종(grill-me·JTBD·Shape Up·Design Sprint·Event Storming)의 핵심 장점을 **Strategy Provider Capability 선언** 관점(`uaf/specs/02-discovery.md` §3.10-A 스키마)으로 대응시키는 참고 표. §0 비정본 선언(정본 우선·계약/용어 미확정 명시)·§2 참조 축(§3.10-A·§3.11 § 포인터·재정의 0)·§3 방법론 5종 대응표(각 방법론이 강한 Discovery Dimension·질문 산출 특징·흡수 원칙)·§4 흡수 원칙 종합·§5 UAF-INV ⑥ 정합(방법론 지식은 Provider 구현·본 부록에만·정본 청정)·§6 확정하지 않는 것 확정. 정본 재정의 0(Strategy Provider Interface·Dimension·Capability 스키마는 § 포인터만)·특정 AI 실명·모델명·제품 기능명 0(방법론 고유명은 비정본 격리 지점의 정당 보유)·자가 전수 스캔. | Worker (Advisor 위임, v1.1 W5 T6) |
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 
-(이력 절은 문서 머리에 둔다 — uaf/ 관행 동형: `uaf/ARCHITECTURE.md` §9·`uaf/specs/02-discovery.md` §9·framework/core/structure.md §9. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — uaf/ 관행 동형: `ARCHITECTURE.md` §9·`discovery/specs/02-discovery.md` §9·framework/core/structure.md §9. 이후 개정은 이 표에 append-only로 기록한다.)
 
 ---
 
 ## §0. 이 부록의 위치와 비정본 선언
 
-**비정본 선언.** 정본은 Strategy Provider Interface(`uaf/specs/02-discovery.md` §3.10)뿐이며, 본 부록은 참고 대응표다. 본 부록과 정본이 충돌하면 정본이 우선하며, 본 부록은 어떤 계약·용어도 확정하지 않는다.
+**비정본 선언.** 정본은 Strategy Provider Interface(`discovery/specs/02-discovery.md` §3.10)뿐이며, 본 부록은 참고 대응표다. 본 부록과 정본이 충돌하면 정본이 우선하며, 본 부록은 어떤 계약·용어도 확정하지 않는다.
 
-- **격리 지점.** 본 부록은 `uaf/specs/02-discovery.md` §3.10-D가 방법론 대응을 위임한 **비정본 격리 지점**이다. 정본(§3.10)은 특정 방법론 고유명을 0건으로 유지하고, 방법론 대응은 여기서만 다룬다. 따라서 본 부록에 등장하는 방법론 고유명(grill-me·JTBD·Shape Up·Design Sprint·Event Storming)은 정본으로의 누출이 아니라 **격리 지점에서의 정당 보유**다(§5, UAF-INV ⑥).
+- **격리 지점.** 본 부록은 `discovery/specs/02-discovery.md` §3.10-D가 방법론 대응을 위임한 **비정본 격리 지점**이다. 정본(§3.10)은 특정 방법론 고유명을 0건으로 유지하고, 방법론 대응은 여기서만 다룬다. 따라서 본 부록에 등장하는 방법론 고유명(grill-me·JTBD·Shape Up·Design Sprint·Event Storming)은 정본으로의 누출이 아니라 **격리 지점에서의 정당 보유**다(§5, UAF-INV ⑥).
 - **효력 없음.** 본 부록의 어떤 표·서술도 계약(Capability 스키마·입출력 계약)·용어(Dimension·Principle)를 신설·변경·확정하지 않는다. 정본이 바뀌면 본 부록이 따르며, 그 역은 성립하지 않는다.
-- **읽는 순서.** 본 부록을 읽기 전에 `uaf/specs/02-discovery.md` §3.10(Strategy Provider Interface)·§3.11(Discovery Dimension 5)·§3.2(Discovery Principles 5)를 먼저 이해해야 한다. 본 부록은 그 정본 계약에 방법론을 얹어 보이는 참고 자료다.
+- **읽는 순서.** 본 부록을 읽기 전에 `discovery/specs/02-discovery.md` §3.10(Strategy Provider Interface)·§3.11(Discovery Dimension 5)·§3.2(Discovery Principles 5)를 먼저 이해해야 한다. 본 부록은 그 정본 계약에 방법론을 얹어 보이는 참고 자료다.
 
 ---
 
@@ -50,7 +50,7 @@
 
 본 부록의 대응은 정본이 소유한 다음 축으로만 표현된다. 아래 정의는 모두 정본 소유이며, 본 부록은 재정의하지 않고 포인터만 둔다.
 
-- **Capability 선언 스키마.** `{providerId, capability, inputContract, outputContract}` — 정의는 `uaf/specs/02-discovery.md` §3.10-A 소유.
+- **Capability 선언 스키마.** `{providerId, capability, inputContract, outputContract}` — 정의는 `discovery/specs/02-discovery.md` §3.10-A 소유.
 - **입출력 계약(전 Provider 불변).** 입력 `{Evidence, Confidence Vector, 잔여 Budget}`, 출력 `{다음 질문 집합}` 또는 `{차원 포화 신호}` 택일 — 정의는 §3.10-B 소유.
 - **Discovery Dimension 5.** Intent / Requirement / Constraint / Risk / Architecture — 정의는 §3.11 소유.
 - **Discovery Principles 5.** P-D1 One Discovery Many Techniques / P-D2 Confidence Driven / P-D3 Adaptive / P-D4 Minimize Human Intervention / P-D5 Preserve Human Authority — 정의는 §3.2 소유. 관련 기제: 적응 규칙 §3.13 · Question Budget §3.14 · Discovery Policy §3.15 · Validating·사용자 승인 게이트 §3.3·§3.7.
@@ -189,11 +189,11 @@ State Machine(§3.3)·Event Model(§3.5)·Contract 완결 기준은 어느 방�
 
 ## §5. UAF-INV ⑥ 정합 (방법론 지식의 격리)
 
-`uaf/ARCHITECTURE.md` §5 UAF-INV ⑥은 다음을 규정한다 — **Framework는 특정 방법론을 모른다. 방법론은 교체 가능한 Strategy Provider만이 안다. 방법론 지식이 Framework 정본으로 새지 않는다.**
+`ARCHITECTURE.md` §8 UAF-INV ⑥은 다음을 규정한다 — **Framework는 특정 방법론을 모른다. 방법론은 교체 가능한 Strategy Provider만이 안다. 방법론 지식이 Framework 정본으로 새지 않는다.**
 
 본 부록은 이 불변을 위반하지 않으며, 오히려 그 **성립 조건**이다.
 
-- **정본 청정.** 방법론 고유명(grill-me·JTBD·Shape Up·Design Sprint·Event Storming)은 `uaf/specs/02-discovery.md` §3.10 정본에 0건이다(§3.10-D가 이를 명시하고 대응을 본 부록으로 위임했다). 방법론 지식은 (i) 각 Strategy Provider의 **구현**과 (ii) 참고용 **비정본 부록**(본 문서)에만 존재한다.
+- **정본 청정.** 방법론 고유명(grill-me·JTBD·Shape Up·Design Sprint·Event Storming)은 `discovery/specs/02-discovery.md` §3.10 정본에 0건이다(§3.10-D가 이를 명시하고 대응을 본 부록으로 위임했다). 방법론 지식은 (i) 각 Strategy Provider의 **구현**과 (ii) 참고용 **비정본 부록**(본 문서)에만 존재한다.
 - **정당 보유.** 따라서 본 부록에 방법론 고유명이 등장하는 것은 정본으로의 누출이 아니라, 정본이 지정한 **비정본 격리 지점에서의 정당한 보유**다. 정본 계약(§3.10 Interface·§3.11 Dimension·§3.10-A Capability 스키마)은 방법론 고유명 없이 순수하게 유지되고, 본 부록이 사라져도 정본은 완결적이다.
 - **교체 가능성 보존.** 방법론은 `capability` 선언과 질문 방식으로만 표현되므로, 방법론(=Provider)을 교체해도 출력 Project Contract는 불변이다(§3.8 DISC-INV-7 Strategy Invariance, §3.10-B 입출력 계약 불변). Framework는 어떤 방법론이 뒤에 있는지 알 필요가 없다 — 이것이 UAF-INV ⑥이 성립하는 방식이다.
 
@@ -203,7 +203,7 @@ State Machine(§3.3)·Event Model(§3.5)·Contract 완결 기준은 어느 방�
 
 본 부록은 참고 자료로서 다음을 **하지 않는다**.
 
-- **계약·용어 신설 없음.** Capability 스키마·입출력 계약·Discovery Dimension·Discovery Principles를 정의·변경·확장하지 않는다. 이들의 정본은 `uaf/specs/02-discovery.md` §3.10-A·§3.10-B·§3.11·§3.2가 소유한다.
+- **계약·용어 신설 없음.** Capability 스키마·입출력 계약·Discovery Dimension·Discovery Principles를 정의·변경·확장하지 않는다. 이들의 정본은 `discovery/specs/02-discovery.md` §3.10-A·§3.10-B·§3.11·§3.2가 소유한다.
 - **Provider 등록 아님.** §3의 "Capability 선언(예시)" 블록은 실제 Provider 등록이 아니라 대응 예시다. 실제 Provider 등록·선택은 Strategy Registry(§3.9)와 구현 버전 소관이다.
 - **방법론 표준·권고 아님.** 어느 방법론을 채택·권고·표준화하지 않는다. 방법론과 Dimension의 대응(강·중·보조) 판단은 예시적이며 규범이 아니다.
 - **레퍼런스 Provider 아님.** 정본이 싣는 레퍼런스 Provider는 §3.10-C의 **기본 적응 질문 Provider 1건**뿐이다. 본 부록의 방법론별 예시는 그 레퍼런스를 대체하거나 증설하지 않는다.

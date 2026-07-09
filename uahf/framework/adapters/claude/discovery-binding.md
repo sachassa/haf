@@ -5,8 +5,8 @@
 상위 규약: AGENT.md
 근거 정본:
 
-- uaf/specs/02-discovery.md §3(전문)·§4.1(### 4.1 바인딩 지점 — 표 4행 D1~D4)·§4.2(### 4.2 이식 교체 지점 — 4불릿 + "Module부 바인딩(§3.9~§3.16)" 문단 D5·D6). 특히 §3.3(State Machine 단일 정본 — 비종단 6·종단 5·전이 T1~T25)·§3.5(Event Model 15)·§3.6(Termination 4경로)·§3.7(Execution Ready 2축 판정)·§3.9(Module Structure 7모듈)·§3.10(Strategy Provider Interface·레퍼런스 Provider 1건)·§3.11(Discovery Dimension 5)·§3.12(Confidence)·§3.13(Adaptive Discovery)·§3.14(Question Budget soft/hard)·§3.15(Discovery Policy — Policy as Data)·§3.16(Metrics)·§5(Memory Access — v1.1 UAHF Memory 비활용)·DISC-INV 1~9. 본 문서가 물리 실현으로 바인딩하는 계약의 정본. **재정의·확장하지 않고 § 포인터로만 인용한다.**
-- uaf/ARCHITECTURE.md §7(확장 포인트 경계 — Discovery 실행 호스팅은 **역할 추상까지만**·Discovery의 Memory 활용은 확장 포인트로만)·§8.2(Discovery Request 인터페이스 추상 3요소 {mode, inputs, policy})·§4.6(상시 불변 확인 2건)·§5(UAF-INV — ① UAHF 정본 무수정·유일 접점 Project Contract, ②③ Discovery 교체 가능·Strategy Invariance, ⑤ 확정 게이트 = 사용자 승인, ⑥ Framework는 방법론 모름). 근거 인용용·재정의 0.
+- discovery/specs/02-discovery.md §3(전문)·§4.1(### 4.1 바인딩 지점 — 표 4행 D1~D4)·§4.2(### 4.2 이식 교체 지점 — 4불릿 + "Module부 바인딩(§3.9~§3.16)" 문단 D5·D6). 특히 §3.3(State Machine 단일 정본 — 비종단 6·종단 5·전이 T1~T25)·§3.5(Event Model 15)·§3.6(Termination 4경로)·§3.7(Execution Ready 2축 판정)·§3.9(Module Structure 7모듈)·§3.10(Strategy Provider Interface·레퍼런스 Provider 1건)·§3.11(Discovery Dimension 5)·§3.12(Confidence)·§3.13(Adaptive Discovery)·§3.14(Question Budget soft/hard)·§3.15(Discovery Policy — Policy as Data)·§3.16(Metrics)·§5(Memory Access — v1.1 UAHF Memory 비활용)·DISC-INV 1~9. 본 문서가 물리 실현으로 바인딩하는 계약의 정본. **재정의·확장하지 않고 § 포인터로만 인용한다.**
+- ARCHITECTURE.md §11(확장 포인트 경계 — Discovery 실행 호스팅은 **역할 추상까지만**·Discovery의 Memory 활용은 확장 포인트로만)·§12.2(Discovery Request 인터페이스 추상 3요소 {mode, inputs, policy})·§7.1(상시 불변 확인 2건)·§8(UAF-INV — ① UAHF 정본 무수정·유일 접점 Project Contract, ②③ Discovery 교체 가능·Strategy Invariance, ⑤ 확정 게이트 = 사용자 승인, ⑥ Framework는 방법론 모름). 근거 인용용·재정의 0.
 - framework/adapters/claude/contract-binding.md §3(Contract 직렬화 = Markdown 본문 + YAML front-matter)·§4.2(본 저장소 Contract 격리 경로 `framework/adapters/claude/discovery-data/contracts/uahf/`·파일명 `project-contract.v<N>.md`)·§6(**"Provenance 컨테이너 내부 형식은 discovery-binding.md 소관" 명시 위임 — DP-X6**). 선행 확정 인터페이스(T-C 폐합). 본 문서 §10이 그 위임(DP-X6)을 해소한다.
 - framework/adapters/claude/entry-binding.md §5.1(Discovery Request 직렬화 = {mode, inputs, policy} 자기서술 구조화 레코드)·§5.3(**"기록 백엔드 트리는 discovery-binding.md 소관" 명시 위임 — DP-X8**). 선행 확정 인터페이스(T-E 폐합). 본 문서 §4가 그 위임(DP-X8)을 해소한다.
 - framework/adapters/claude/memory-binding.md — 자매 Adapter Binding 골격 선례(백엔드 격리 트리·append-only·실측 대조·형태 A/B 정직 구분·"지원 구조 — 시연 시 생성" L-07 관례). **memory-data/(UAHF Memory 백엔드)와 discovery-data/(Discovery Evidence Store 백엔드)의 네임스페이스 구분** 근거(02 §5).
@@ -15,7 +15,7 @@
 - specs/03-loop.md §3.2-A — append-only 전이 이벤트 로그·순서 값 물리 표현 관행(loop-data 선례의 정본). Event 로그 직렬화 관행 근거(재정의 0 — Discovery Event Model은 02 §3.5 소유).
 - specs/00-glossary.md — UAHF 용어 정본. 본 문서는 새 용어를 신설하지 않는다. `형태 A/B`는 structure.md §4의 서술 라벨 인용이며 Glossary 표제어가 아니다.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core·UAF 계약을 특정 실행 환경·직렬화 형식·물리 경로에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 직렬화 형식·물리 경로·환경 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, 자매 contract-binding.md §0·entry-binding.md §0·memory-binding.md §0과 동형). 단 이 문서는 UAF 정본(uaf/specs/02-discovery.md §3·§4)과 UAHF 정본을 **재정의하지 않는다** — 계약(State Machine·Event Model·Termination·판정식·모듈 경계·Provider 계약·Policy as Data·불변)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core·UAF 계약을 특정 실행 환경·직렬화 형식·물리 경로에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 직렬화 형식·물리 경로·환경 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, 자매 contract-binding.md §0·entry-binding.md §0·memory-binding.md §0과 동형). 단 이 문서는 UAF 정본(discovery/specs/02-discovery.md §3·§4)과 UAHF 정본을 **재정의하지 않는다** — 계약(State Machine·Event Model·Termination·판정식·모듈 경계·Provider 계약·Policy as Data·불변)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -32,11 +32,11 @@
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **UAF 정본 바인딩 선언(DP-X1).** 이 문서는 `framework/adapters/claude/` 경계의 Adapter Binding 문서이되, 그 **바인딩 대상 정본은 UAHF spec이 아니라 UAF 정본 `uaf/specs/02-discovery.md` §3·§4다.** 자매 바인딩 12문서(runtime·memory·verifier·loop·workflow·hooks·skills·plugins·agent·scaffold·harness-binding + adapter-conformance)가 UAHF spec(specs/01~13)을 바인딩하는 것과 달리, 본 문서는 UAF 레벨의 Project Discovery 정본을 바인딩한다(자매 contract-binding.md·entry-binding.md와 같은 부류). 파일명·골격 관례는 자매와 동형이다(접두 없음).
+- **UAF 정본 바인딩 선언(DP-X1).** 이 문서는 `framework/adapters/claude/` 경계의 Adapter Binding 문서이되, 그 **바인딩 대상 정본은 UAHF spec이 아니라 UAF 정본 `discovery/specs/02-discovery.md` §3·§4다.** 자매 바인딩 12문서(runtime·memory·verifier·loop·workflow·hooks·skills·plugins·agent·scaffold·harness-binding + adapter-conformance)가 UAHF spec(specs/01~13)을 바인딩하는 것과 달리, 본 문서는 UAF 레벨의 Project Discovery 정본을 바인딩한다(자매 contract-binding.md·entry-binding.md와 같은 부류). 파일명·골격 관례는 자매와 동형이다(접두 없음).
 
-- **정본은 uaf/specs/02 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — Compiler 프레이밍(§3.1)·State Machine 단일 정본(§3.3 — 비종단 6·종단 5·전이 T1~T25)·Event Model 15(§3.5)·Termination 4경로(§3.6)·Execution Ready 2축 판정(§3.7)·Invariants DISC-INV 1~9(§3.8)·Module Structure 7(§3.9)·Strategy Provider Interface(§3.10)·Discovery Dimension 5(§3.11)·Confidence(§3.12)·Adaptive Discovery(§3.13)·Question Budget(§3.14)·Discovery Policy(§3.15)·Metrics(§3.16) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 02 §4.1·§4.2가 "Adapter 소관"으로 미룬 물리 실현 — **D1 Event 로그 직렬화·D2 사용자 확인/UserOverride 채널·D3 증거 스캔/프레이밍·D5 Policy 값 데이터 소스·직렬화**와, Module부 문단의 **D6 Evidence Store 물리 저장(= D1과 동일)**, 그리고 **DP-X6 Provenance 내부 형식·DP-X8 백엔드 트리** 넷이다. **D4 Strategy 실행 호스팅은 역할 추상까지만** 확정하고 물리 호스팅은 설계하지 않는다(uaf/ARCHITECTURE §7).
+- **정본은 discovery/specs/02 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — Compiler 프레이밍(§3.1)·State Machine 단일 정본(§3.3 — 비종단 6·종단 5·전이 T1~T25)·Event Model 15(§3.5)·Termination 4경로(§3.6)·Execution Ready 2축 판정(§3.7)·Invariants DISC-INV 1~9(§3.8)·Module Structure 7(§3.9)·Strategy Provider Interface(§3.10)·Discovery Dimension 5(§3.11)·Confidence(§3.12)·Adaptive Discovery(§3.13)·Question Budget(§3.14)·Discovery Policy(§3.15)·Metrics(§3.16) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 02 §4.1·§4.2가 "Adapter 소관"으로 미룬 물리 실현 — **D1 Event 로그 직렬화·D2 사용자 확인/UserOverride 채널·D3 증거 스캔/프레이밍·D5 Policy 값 데이터 소스·직렬화**와, Module부 문단의 **D6 Evidence Store 물리 저장(= D1과 동일)**, 그리고 **DP-X6 Provenance 내부 형식·DP-X8 백엔드 트리** 넷이다. **D4 Strategy 실행 호스팅은 역할 추상까지만** 확정하고 물리 호스팅은 설계하지 않는다(ARCHITECTURE §11).
 
-- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문, 그리고 UAF 정본(uaf/specs/02) 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이다(structure.md §5 C-3 확장·02 §3 도입 "§3에는 특정 AI 모델·실행 환경 의존 내용이 한 줄도 들어가지 않는다"). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식·물리 경로(`framework/adapters/claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(contract-binding.md §0·entry-binding.md §0·memory-binding.md §0과 동형). 단 **uaf/ 정본이 명명하지 않은 것을 uaf/ 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다.
+- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문, 그리고 UAF 정본(discovery/specs/02) 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이다(structure.md §5 C-3 확장·02 §3 도입 "§3에는 특정 AI 모델·실행 환경 의존 내용이 한 줄도 들어가지 않는다"). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식·물리 경로(`framework/adapters/claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(contract-binding.md §0·entry-binding.md §0·memory-binding.md §0과 동형). 단 **uaf/ 정본이 명명하지 않은 것을 uaf/ 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다.
 
 - **하네스 Bootstrap 전제(형태 A, D-v1.2-1).** 이 하네스는 현재 Bootstrap 상태다(Glossary J-13, 자매 바인딩 §0). 본 문서의 바인딩은 **실행 코드 0**이다 — Discovery의 State Machine(02 §3.3)·모듈(02 §3.9)·레퍼런스 Provider(02 §3.10-C)는 실행 스크립트가 아니라 **규약 절차·규약 역할**로 실현되며 주 세션이 실수행한다(D-v1.2-1). 따라서 매핑은 (i) 물리 실재 표면(자매 바인딩·정본 문서), (ii) 규약으로 확정된 정본 문면(형태 A — 직렬화 형식·백엔드 트리·채널·Policy 값), (iii) 실행 코드 도입 시 로딩될 지점(형태 B — Event 로거·직렬화기·관측 로더)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
 
@@ -50,7 +50,7 @@
 
 ## §1. 목적
 
-이 문서는 uaf/specs/02 "### 4.1 바인딩 지점" 표 4행(D1~D4)과 "### 4.2" 말미 "Module부 바인딩" 문단의 2지점(D5·D6)을 이 환경 위에 **v1.2 시점의 구체 물리 실현**으로 매핑한다. Discovery의 산출(Project Contract)은 UAF↔UAHF 유일 접점이므로, 본 문서가 확정하는 Discovery 백엔드·채널·Policy 물리 실현은 v1.2 E2E·후속 작업의 물리 실현 기반이다.
+이 문서는 discovery/specs/02 "### 4.1 바인딩 지점" 표 4행(D1~D4)과 "### 4.2" 말미 "Module부 바인딩" 문단의 2지점(D5·D6)을 이 환경 위에 **v1.2 시점의 구체 물리 실현**으로 매핑한다. Discovery의 산출(Project Contract)은 UAF↔UAHF 유일 접점이므로, 본 문서가 확정하는 Discovery 백엔드·채널·Policy 물리 실현은 v1.2 E2E·후속 작업의 물리 실현 기반이다.
 
 책임은 여섯이다.
 
@@ -74,7 +74,7 @@
 | **D1** | Event 로그 직렬화 (§3.5, §4.1 행1) | "append-only Event 기록의 저장 형식·위치." | Event 15종을 담는 append-only 로그 = 자기서술 구조화 레코드(1 Event = 1 레코드)·위치 `discovery-data/events/<mode>-<run-id>/`. 순서 값 ↔ 물리 생성 시각 성격 구분(L-09). 상세 §3. | 형식·위치 확정(정본, 형태 A). Event 로그 데이터·`discovery-data/` = 미존재(E2E Task 생성 예정). 로거·직렬화기 = 형태 B. |
 | **D2** | 사용자 확인·`UserOverride` 채널 (§3.3 Validating·§3.6, §4.1 행2) | "사용자 승인/수정/강제 응답을 받는 개입 채널." | 주 세션 사용자 제시·응답 수령 채널(loop-binding §5.2 동형) — G1 Eliciting 질문/답변·G2 Validating 승인/수정·UserOverride 강제 구분. 각 개입은 Event로 기록(§3.5). 상세 §5. | 채널 확정(정본, 형태 A). 무인 자동 트리거 = 형태 B. |
 | **D3** | Contextualizing 증거 스캔·프레이밍 (§3.3, §4.1 행3) | "Greenfield 프레이밍·Brownfield 증거 스캔의 물리 구현·증거 소스 접근." | Greenfield 프레이밍 / Brownfield 실 저장소 스캔(T2, 파일 시스템 실측) / Incremental 기존 Contract 결속의 형태 A 물리 절차(주 세션 수행·Evidence Store 기록). 상세 §6. | 절차 확정(정본, 형태 A). 스캔 로더 = 형태 B. |
-| **D4** | Strategy 실행 호스팅 (§3.1 Front-end, §4.1 행4) | "Discovery 실행을 어느 주체가 호스팅하는가 — **역할 추상까지만** 정의하고 물리 호스팅은 설계하지 않는다(uaf/ARCHITECTURE.md §7)." | 주 세션(Advisor)이 Orchestrator 역할(§3.9)을 규약 절차로 수행·레퍼런스 Provider(§3.10-C)를 규약 역할로 실현. **물리 호스팅(실행 코드·자동 실행)은 설계 0**(uaf/ARCHITECTURE §7 정합). 상세 §7. | 역할 추상 확정(정본, 형태 A). 물리 호스팅 = **설계 안 함**(확장 포인트). 실행 코드 = 형태 B. |
+| **D4** | Strategy 실행 호스팅 (§3.1 Front-end, §4.1 행4) | "Discovery 실행을 어느 주체가 호스팅하는가 — **역할 추상까지만** 정의하고 물리 호스팅은 설계하지 않는다(ARCHITECTURE.md §11)." | 주 세션(Advisor)이 Orchestrator 역할(§3.9)을 규약 절차로 수행·레퍼런스 Provider(§3.10-C)를 규약 역할로 실현. **물리 호스팅(실행 코드·자동 실행)은 설계 0**(ARCHITECTURE §11 정합). 상세 §7. | 역할 추상 확정(정본, 형태 A). 물리 호스팅 = **설계 안 함**(확장 포인트). 실행 코드 = 형태 B. |
 | **D5** | Question Budget 예산·Discovery Policy 정책 값 데이터 소스·직렬화 (§3.14·§3.15, §4.2 Module부 문단) | "Question Engine의 예산·Discovery Policy의 정책 값(임계값·예산·경계 수치)의 **데이터 소스·직렬화**는 Adapter 소관이다(§3.14·§3.15)." | `discovery-data/policy/` 데이터 파일 형식 + **E2E 구동용 최소 실값 1세트 정본 값 표**(차원 임계·Budget 총량/차원별·soft/hard·종료 규칙·충돌 게이트). Policy as Data — 값 조정 = 데이터 정정(엔진·계약 무변경). 상세 §8. | 형식·값 정본 문면 확정(정본, 형태 A). 물리 데이터 파일(`policy/`) = 미존재(E2E Task 생성 예정). |
 | **D6** | Evidence Store 물리 저장 (§3.9, §4.2 Module부 문단) | "Evidence Store의 물리 저장은 위 Event 로그 직렬화 바인딩과 **동일하다**(§3.9)." | Evidence Store의 물리 저장(증거 레코드 + Event 로그) = **D1과 동일 백엔드** `discovery-data/events/<mode>-<run-id>/`. 증거는 `EvidenceRecorded` Event 페이로드로 append. 상세 §3·§4. | D1과 동일(정본, 형태 A). 02 §4.2 문면 "동일하다"대로 별도 백엔드를 창설하지 않음. |
 
@@ -114,7 +114,7 @@ append-only 로그가 담는 Event는 02 §3.5의 **정확히 15종**이다(본 
 
 ### §3.4 위치 — run 단위 격리
 
-- **위치.** 한 Discovery run의 Event 로그는 `framework/adapters/claude/discovery-data/events/<mode>-<run-id>/` 아래에 둔다. `<mode>` = Discovery Request의 mode(greenfield/incremental/brownfield 등, uaf/ARCHITECTURE §8.2 확장 네임스페이스), `<run-id>` = 해당 run(= Discovery Request 결속으로 생성된 State Machine 인스턴스, 02 §3.3-A "생성은 인스턴스화")의 식별자. run 단위 디렉터리로 격리해 서로 다른 run의 로그가 섞이지 않게 한다.
+- **위치.** 한 Discovery run의 Event 로그는 `framework/adapters/claude/discovery-data/events/<mode>-<run-id>/` 아래에 둔다. `<mode>` = Discovery Request의 mode(greenfield/incremental/brownfield 등, ARCHITECTURE §12.2 확장 네임스페이스), `<run-id>` = 해당 run(= Discovery Request 결속으로 생성된 State Machine 인스턴스, 02 §3.3-A "생성은 인스턴스화")의 식별자. run 단위 디렉터리로 격리해 서로 다른 run의 로그가 섞이지 않게 한다.
 - **레코드 파일 단위·명명(Adapter 재량).** 로그를 run 디렉터리 내 단일 append-log 파일로 두는지, 레코드 단위 파일로 두는지의 세부와 명명은 Adapter 재량이며(승인 계획 위임), 어느 경우에도 §3.2 append-only·§3.3 순서 값 성격은 유지된다. 정확한 물리 명명·샤딩 등 규모 대응은 형태 B/규모 사안으로 미룬다(선취·추측 금지).
 - **D6 정합(Evidence Store = 동일 백엔드).** Evidence Store(02 §3.9 — "증거와 Event 로그를 append-only로 보관")의 물리 저장은 이 Event 로그 백엔드와 **동일**하다(02 §4.2 Module부 문단 "동일하다"). 증거는 `EvidenceRecorded` Event(§3.1)의 페이로드로 같은 run 디렉터리 로그에 append되며, 별도 증거 백엔드를 창설하지 않는다.
 
@@ -177,7 +177,7 @@ entry-binding §5.3은 Discovery Request의 물리 기록이 놓일 **백엔드 
 | **G2 — Validating 승인/수정** | 주 세션이 종합된 이해·가정·미해결 질문을 사용자에게 제시하고 승인/수정 응답을 수령한다(확정 게이트, P-D5). | `ValidationRequested`(확인 요청, T14 Synthesizing→Validating) · `AnswerReceived`[승인](T16 →Compiling) / [수정 요청](T17 →Eliciting) |
 | **UserOverride — 사용자 강제** | 주 세션이 사용자의 강제 지시(일시중단·종료·에스컬레이션)를 수령해 State Machine에 반영한다. 사용자는 임의 비종단 상태에서 강제할 수 있다(P-D5). | `UserOverride`(T21 일시중단→Suspended / T22 종료→Aborted / T23 에스컬레이션→Escalated) |
 
-- **확정 게이트 = 사용자 승인(불가침).** G2의 사용자 승인은 Execution Ready 확정 게이트다 — 사용자 승인 없이 `Ready`·`ReadyWithAssumptions` 종단에 도달하지 못한다(02 §3.7 Execution Ready 2축 판정의 사용자 승인 축·DISC-INV-6·uaf/ARCHITECTURE §5 UAF-INV ⑤). 본 채널 바인딩은 이 게이트를 물리 채널로 실현할 뿐 판정식을 재정의하지 않는다.
+- **확정 게이트 = 사용자 승인(불가침).** G2의 사용자 승인은 Execution Ready 확정 게이트다 — 사용자 승인 없이 `Ready`·`ReadyWithAssumptions` 종단에 도달하지 못한다(02 §3.7 Execution Ready 2축 판정의 사용자 승인 축·DISC-INV-6·ARCHITECTURE §8 UAF-INV ⑤). 본 채널 바인딩은 이 게이트를 물리 채널로 실현할 뿐 판정식을 재정의하지 않는다.
 - **개입 기록.** 각 사용자 개입 발생은 D1 로그(§3)에 위 대응 Event 레코드로 남는다(02 §3.5, DISC-INV-1·DISC-INV-3). 무인 자동 개입 트리거·자동 제시 UI는 형태 B다(Bootstrap에서는 주 세션 규약 절차로 실현).
 - **충돌·모호 입력 게이트 정합.** Discovery Request의 충돌·모호 입력에 대한 사용자 확인 게이트(Discovery Policy 충돌 게이트 정책, §8·02 §3.15)도 이 D2 채널(G2 계열 제시)로 실현된다 — 게이트 통과 없이 진행하지 않는다(P-D5).
 
@@ -208,17 +208,17 @@ entry-binding §5.3은 Discovery Request의 물리 기록이 놓일 **백엔드 
 
 ## §7. D4 — Strategy 실행 호스팅 (역할 추상까지만) (done 7)
 
-02 §4.1 행4의 물리 실현을 확정하되, 정본이 명시한 대로 **역할 추상까지만** 확정하고 물리 호스팅(실행 코드·자동 실행)은 **설계하지 않는다**. 02 §4.1 행4 정본: "Discovery 실행을 어느 주체가 호스팅하는가 — **역할 추상까지만** 정의하고 물리 호스팅은 설계하지 않는다(uaf/ARCHITECTURE.md §7)." Module부 문단도 "Strategy Provider 실행 호스팅은 **역할 추상까지만** 정의하고 물리 호스팅은 설계하지 않는다(§3.10, uaf/ARCHITECTURE §7)"로 동일하다.
+02 §4.1 행4의 물리 실현을 확정하되, 정본이 명시한 대로 **역할 추상까지만** 확정하고 물리 호스팅(실행 코드·자동 실행)은 **설계하지 않는다**. 02 §4.1 행4 정본: "Discovery 실행을 어느 주체가 호스팅하는가 — **역할 추상까지만** 정의하고 물리 호스팅은 설계하지 않는다(ARCHITECTURE.md §11)." Module부 문단도 "Strategy Provider 실행 호스팅은 **역할 추상까지만** 정의하고 물리 호스팅은 설계하지 않는다(§3.10, ARCHITECTURE §11)"로 동일하다.
 
 ### §7.1 역할 추상 확정 (형태 A — 규약 절차·규약 역할)
 
 - **Orchestrator 역할 = 주 세션 규약 절차.** State Machine(02 §3.3)을 구동하는 Orchestrator 모듈(02 §3.9)의 역할을 **주 세션(Advisor)이 규약 절차로 수행**한다 — Event를 받아 전이를 실행하고 현재 상태를 유지하며 종단 판정(02 §3.7)을 집행하는 것을 규약 절차로 실현한다. 전이 규칙을 새로 만들지 않는다(02 §3.3 정본 — 재정의 0).
 - **레퍼런스 Provider = 규약 역할.** 02 §3.10-C가 싣는 유일 레퍼런스 Provider인 **기본 적응 질문 Provider(Default Adaptive Question Provider)**를 **규약 역할로 실현**한다 — 가장 확신이 낮은 미포화 차원을 골라 질문 집합을 내고, 모든 차원 포화·예산 소진 시 차원 포화 신호를 내는 절차(02 §3.10-C 정본)를 주 세션이 규약 역할로 수행한다. 방법론 고유명 없이 일반형 기본값으로만 실현한다(02 §3.10-D·UAF-INV ⑥ — 정본 청정).
-- **물리 호스팅 = 설계 안 함(확장 포인트).** Discovery를 실행 코드로 자동 호스팅하는 물리 실행 주체·자동화는 **설계하지 않는다**. 물리 호스팅 설계는 uaf/ARCHITECTURE §7 확장 포인트("Discovery 실행 호스팅 — 역할 추상까지만 정의하고 물리 호스팅은 설계하지 않는다")를 침범하므로 금지된다. 실행 코드(사이클 구동 로더·자동 실행)는 형태 B로 미도입이며, 그 경계 간 분할은 형태 B 설계 시 확정한다(선취·추측 금지).
+- **물리 호스팅 = 설계 안 함(확장 포인트).** Discovery를 실행 코드로 자동 호스팅하는 물리 실행 주체·자동화는 **설계하지 않는다**. 물리 호스팅 설계는 ARCHITECTURE §11 확장 포인트("Discovery 실행 호스팅 — 역할 추상까지만 정의하고 물리 호스팅은 설계하지 않는다")를 침범하므로 금지된다. 실행 코드(사이클 구동 로더·자동 실행)는 형태 B로 미도입이며, 그 경계 간 분할은 형태 B 설계 시 확정한다(선취·추측 금지).
 
 ### §7.2 Strategy Invariance 훼손 0 (DISC-INV-7)
 
-- **교체되는 것 = Provider뿐.** 교체 가능한 것은 Strategy Registry에 등록되는 Strategy Provider뿐이며(02 §3.9·§3.10), Orchestrator·Confidence Model·Contract Compiler·Discovery Policy의 계약과 출력(Project Contract 스키마·완결 기준)은 어떤 Provider에서도 불변이다(DISC-INV-7·uaf/ARCHITECTURE §5 UAF-INV ③). 본 절의 역할 추상 바인딩은 레퍼런스 Provider 1건을 규약 역할로 실현할 뿐, State Machine·Event·Contract 완결 기준을 바꾸지 않는다(02 §3.10-B 불변). 어떤 Strategy를 쓰든 산출은 동일한 Project Contract다 — Strategy Invariance 훼손 0.
+- **교체되는 것 = Provider뿐.** 교체 가능한 것은 Strategy Registry에 등록되는 Strategy Provider뿐이며(02 §3.9·§3.10), Orchestrator·Confidence Model·Contract Compiler·Discovery Policy의 계약과 출력(Project Contract 스키마·완결 기준)은 어떤 Provider에서도 불변이다(DISC-INV-7·ARCHITECTURE §8 UAF-INV ③). 본 절의 역할 추상 바인딩은 레퍼런스 Provider 1건을 규약 역할로 실현할 뿐, State Machine·Event·Contract 완결 기준을 바꾸지 않는다(02 §3.10-B 불변). 어떤 Strategy를 쓰든 산출은 동일한 Project Contract다 — Strategy Invariance 훼손 0.
 
 ---
 
@@ -228,7 +228,7 @@ entry-binding §5.3은 Discovery Request의 물리 기록이 놓일 **백엔드 
 
 ### §8.1 데이터 소스·직렬화 형식
 
-- **데이터 소스.** Discovery Policy 정책 값은 엔진에 하드코딩되지 않고 `framework/adapters/claude/discovery-data/policy/`의 **데이터 파일**에서 온다(Policy as Data, 02 §3.15). Discovery Request의 `policy` 요소(uaf/ARCHITECTURE §8.2)가 이 정책을 참조로 담는다(entry-binding §5.1 `policy: <Discovery Policy 참조>` 정합).
+- **데이터 소스.** Discovery Policy 정책 값은 엔진에 하드코딩되지 않고 `framework/adapters/claude/discovery-data/policy/`의 **데이터 파일**에서 온다(Policy as Data, 02 §3.15). Discovery Request의 `policy` 요소(ARCHITECTURE §12.2)가 이 정책을 참조로 담는다(entry-binding §5.1 `policy: <Discovery Policy 참조>` 정합).
 - **직렬화 형식.** 정책 파일은 자기서술 구조화 데이터로 직렬화한다(자매 바인딩의 구조화 데이터 관례 동형·구체 형식은 Adapter 선택, 격리 지점 §12). 물리 정책 데이터 파일(`policy/`)의 생성은 E2E Task 소관이며, 본 문서는 **형식·값 정본 문면만** 소유한다(L-07 — 미존재 정직 구분).
 
 ### §8.2 E2E 구동용 최소 실값 1세트 (정본 값 표 — DP-X5)
@@ -276,7 +276,7 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 
 ## §10. DP-X6 해소 — Provenance 컨테이너 내부 형식 (done 9)
 
-contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스페이스 `provenance` 컨테이너의 **외형·must-ignore 경계**만 확정하고, 그 **내부 직렬화 형식·필드**를 "discovery-binding.md(예정) 소관"으로 명시 위임했다(DP-X6, uaf/specs/03 §3.2-D 불투명 부속 동형). 본 절이 그 내부 형식을 확정한다.
+contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스페이스 `provenance` 컨테이너의 **외형·must-ignore 경계**만 확정하고, 그 **내부 직렬화 형식·필드**를 "discovery-binding.md(예정) 소관"으로 명시 위임했다(DP-X6, planning/specs/03 §3.2-D 불투명 부속 동형). 본 절이 그 내부 형식을 확정한다.
 
 ### §10.1 내부 형식 = Discovery 실행 메타
 
@@ -286,37 +286,37 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 |---|---|---|
 | run 식별자 | 문자열 — 해당 Discovery run(State Machine 인스턴스, 02 §3.3-A)의 `<run-id>` | `discovery-data/events/<mode>-<run-id>/`(§4) |
 | Event 로그 참조 | 참조 — 이 run의 Event 로그 디렉터리 경로/참조(§3·§4) | D1 백엔드(§3) |
-| mode | 문자열 — greenfield / incremental / brownfield 등(uaf/ARCHITECTURE §8.2 확장 네임스페이스) | Discovery Request `mode`(entry-binding §5.1) |
+| mode | 문자열 — greenfield / incremental / brownfield 등(ARCHITECTURE §12.2 확장 네임스페이스) | Discovery Request `mode`(entry-binding §5.1) |
 | Policy 참조 | 참조 — 이 run이 사용한 Discovery Policy 참조(§8) | `discovery-data/policy/`(§8·02 §3.15) |
 
 - 위는 **최소 표면**이며, 감사·재현에 필요한 추가 Discovery 실행 메타(예: Readiness 선언 참조·Assumption Ledger 참조)를 담을 수 있다. 어느 필드도 경량 **참조**이며, Event 로그·증거 원문을 컨테이너에 중복 저장하지 않는다(loop-binding §5.3 경량 참조 관례 동형).
 
-### §10.2 uaf/specs/03 §3.2-D 불투명 계약 유지 — UAHF must-ignore 불변
+### §10.2 planning/specs/03 §3.2-D 불투명 계약 유지 — UAHF must-ignore 불변
 
-- **must-ignore 경계 불변.** UAHF tolerant reader는 `provenance` 컨테이너(및 그 하위 전체)를 **must-ignore**한다 — 존재를 오류로 취급하지 않고 소비하지 않는다(contract-binding §6·uaf/specs/03 §3.2-D·§3.3-C). 본 절이 내부 형식을 채워도 이 must-ignore 경계는 불변이다. 내부 필드는 **Discovery 측 소비 전용**(감사·재현·계보 추적)이며, UAHF는 이 컨테이너를 읽지 않는다.
+- **must-ignore 경계 불변.** UAHF tolerant reader는 `provenance` 컨테이너(및 그 하위 전체)를 **must-ignore**한다 — 존재를 오류로 취급하지 않고 소비하지 않는다(contract-binding §6·planning/specs/03 §3.2-D·§3.3-C). 본 절이 내부 형식을 채워도 이 must-ignore 경계는 불변이다. 내부 필드는 **Discovery 측 소비 전용**(감사·재현·계보 추적)이며, UAHF는 이 컨테이너를 읽지 않는다.
 - **누출 차단(DISC-INV-8).** Provenance 내부는 Contract **코어 스키마 밖**의 불투명 부속이다. Discovery 실행 메타(run 식별자·Event 로그 참조·mode·Policy 참조)는 코어 필드(Intent·Requirements·Constraints·Risks·Architecture Direction·Readiness·Assumption Ledger 등)로 새어나가지 않는다 — Discovery 내부 변경(기법·전략·예산·질문 방식)이 만드는 실행 메타는 `provenance`에만 반영되고 코어 스키마·UAHF 접점에 도달하지 못한다(contract-binding §6·PC-INV 2·10, DISC-INV-8). 이 컨테이너는 그 누출을 막는 격리 경계 뒤에 놓인다.
-- **창설 금지.** 본 절은 uaf/specs/03 §3.2-D 불투명 부속 계약을 재정의하지 않고 그 **내부 형식만** 채운다. Contract 코어 스키마·버저닝·tolerant reader 계약을 변경하지 않는다(contract-binding §3·§5·§6 소유·재정의 0). 이로써 contract-binding §11(OQ-TC-2)이 미룬 Provenance 내부 형식 지점이 해소된다.
+- **창설 금지.** 본 절은 planning/specs/03 §3.2-D 불투명 부속 계약을 재정의하지 않고 그 **내부 형식만** 채운다. Contract 코어 스키마·버저닝·tolerant reader 계약을 변경하지 않는다(contract-binding §3·§5·§6 소유·재정의 0). 이로써 contract-binding §11(OQ-TC-2)이 미룬 Provenance 내부 형식 지점이 해소된다.
 
 ---
 
 ## §11. 상시 불변 자기 점검 (done 10)
 
-본 물리 바인딩이 상시 불변(uaf/ARCHITECTURE §4.6 2건·02 DISC-INV)을 훼손하지 않음을 자가 스캔으로 점검한다. 자체 점검은 최종 승인이 아니다 — Verifier 독립 판정(CP2)·Advisor 승인(CP3)이 뒤따른다(specs/02-agent.md §3.2-A — Agent 역할 경계; 본 문서에서 "02"는 달리 명시하지 않는 한 uaf/specs/02-discovery.md를 가리킨다).
+본 물리 바인딩이 상시 불변(ARCHITECTURE §7.1 2건·02 DISC-INV)을 훼손하지 않음을 자가 스캔으로 점검한다. 자체 점검은 최종 승인이 아니다 — Verifier 독립 판정(CP2)·Advisor 승인(CP3)이 뒤따른다(specs/02-agent.md §3.2-A — Agent 역할 경계; 본 문서에서 "02"는 달리 명시하지 않는 한 discovery/specs/02-discovery.md를 가리킨다).
 
 ### §11.1 상시 불변 ① — Discovery 교체 가능 Compiler (누출 0)
 
 - **점검 대상(scope).** 본 문서가 확정하는 물리 실현부 — Event 로그(§3)·백엔드 트리(§4)·D2 채널(§5)·D3 스캔(§6)·D4 역할(§7)·Policy 값(§8)·Provenance 내부(§10) — 가 Discovery 내부 개념을 **Contract 코어 스키마·UAHF 접점**으로 누출시키는지 스캔한다.
 - **다중 패턴 자가 스캔.** Discovery 내부 개념 다중 패턴 — { 질문 · 전략(Strategy) · 예산(Budget) · Capability } — 이 **Contract 코어 스키마·UAHF 접점 정의로 쓰인 지점 0건**이다. 본 문서에서 이 어휘는 오직 (i) 02 정본 § 포인터 인용, (ii) Discovery **내부** 실현 서술(Event 로그·Policy 값·레퍼런스 Provider 역할 — 전부 Discovery 측), (iii) 불변·경계·근거 서술(본 §11·§7.2·§10.2의 누출 차단 문면)에만 등장한다. Contract 코어 필드·UAHF 소비 표면을 정의·확장하는 자리에는 0건이다 — **mention(내부 실현·불변·경계 서술)과 use(Contract 코어/UAHF 접점 정의)의 경계**를 지킨다.
-- **경계 문면 (Provenance 내부·Event 로그는 대상 아님).** Provenance 내부 형식(§10)·Event 로그(§3)·Evidence Store(§4)는 **Discovery 내부 기록**이며 must-ignore 경계·격리 경계 뒤에 있다(§10.2·02 §5). 이들은 Contract 코어 스키마·UAHF 접점이 아니므로 누출 스캔의 **대상이 아니다** — run 식별자·Event 참조·mode·Policy 참조를 담아도 그것은 Discovery 측 소비 전용 실행 메타이지 Contract 코어/UAHF로의 누출이 아니다. 이 경계 구분이 상시 불변 ①(Discovery 교체 가능·DISC-INV-7·8·uaf/ARCHITECTURE §4.6 ①)과 정합한다.
+- **경계 문면 (Provenance 내부·Event 로그는 대상 아님).** Provenance 내부 형식(§10)·Event 로그(§3)·Evidence Store(§4)는 **Discovery 내부 기록**이며 must-ignore 경계·격리 경계 뒤에 있다(§10.2·02 §5). 이들은 Contract 코어 스키마·UAHF 접점이 아니므로 누출 스캔의 **대상이 아니다** — run 식별자·Event 참조·mode·Policy 참조를 담아도 그것은 Discovery 측 소비 전용 실행 메타이지 Contract 코어/UAHF로의 누출이 아니다. 이 경계 구분이 상시 불변 ①(Discovery 교체 가능·DISC-INV-7·8·ARCHITECTURE §7.1 ①)과 정합한다.
 
 ### §11.2 상시 불변 ② — Contract Stable Contract 훼손 0
 
-- **Contract 스키마·버저닝 재정의 0.** 본 문서는 Project Contract의 스키마·필수 코어 필드·버저닝(SemVer·tolerant reader·필드 제거 금지)을 재정의하지 않는다 — 이는 uaf/specs/03·contract-binding.md 소관이며, 본 문서는 `contracts/uahf/` 경로를 **참조 인용**만 하고(§4.1), Provenance는 **내부 형식만** 채우며 외형·must-ignore 경계는 contract-binding §6 소유대로 유지한다(§10). 장기 호환성 규칙 훼손 서술 0건 — Stable Contract(Public API) 지위 불변(uaf/ARCHITECTURE §4.6 ②·§5 UAF-INV ①②).
+- **Contract 스키마·버저닝 재정의 0.** 본 문서는 Project Contract의 스키마·필수 코어 필드·버저닝(SemVer·tolerant reader·필드 제거 금지)을 재정의하지 않는다 — 이는 planning/specs/03·contract-binding.md 소관이며, 본 문서는 `contracts/uahf/` 경로를 **참조 인용**만 하고(§4.1), Provenance는 **내부 형식만** 채우며 외형·must-ignore 경계는 contract-binding §6 소유대로 유지한다(§10). 장기 호환성 규칙 훼손 서술 0건 — Stable Contract(Public API) 지위 불변(ARCHITECTURE §7.1 ②·§8 UAF-INV ①②).
 
 ### §11.3 Evidence Store ≠ UAHF Memory 네임스페이스 구분 (02 §5)
 
 - **네임스페이스 구분.** Discovery Event 로그·Evidence Store(§3·§4, `discovery-data/`)는 Discovery **내부 append-only 기록**이며 **UAHF Memory가 아니다**(02 §5 네임스페이스 구분). 물리적으로도 discovery-data/(Discovery 백엔드)와 memory-data/(UAHF Memory 백엔드, memory-binding.md)는 별개 격리 트리다 — 혼동·혼입하지 않는다.
-- **Discovery의 Memory 비활용 유지(02 §5).** Discovery는 v1.1에서 UAHF Memory를 회수·활용하지 않는다(Memory Consult 비담당, uaf/ARCHITECTURE §6 비담당 ④). 본 문서는 Discovery의 Memory 활용 경로를 설계하지 않는다 — 그것은 확장 포인트로만 열려 있고(uaf/ARCHITECTURE §7), 본 바인딩은 이를 훼손하지 않는다. 어떤 §도 Discovery가 UAHF Memory를 회수·기록하는 물리 절차를 도입하지 않는다.
+- **Discovery의 Memory 비활용 유지(02 §5).** Discovery는 v1.1에서 UAHF Memory를 회수·활용하지 않는다(Memory Consult 비담당, ARCHITECTURE §10 비담당 ④). 본 문서는 Discovery의 Memory 활용 경로를 설계하지 않는다 — 그것은 확장 포인트로만 열려 있고(ARCHITECTURE §11), 본 바인딩은 이를 훼손하지 않는다. 어떤 §도 Discovery가 UAHF Memory를 회수·기록하는 물리 절차를 도입하지 않는다.
 
 ---
 
@@ -363,10 +363,10 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 
 ## §14. 정본 경계·격리·계약 소유 (self-note)
 
-- **재정의·확장 0.** 본 문서의 모든 매핑은 uaf/specs/02 §3·§4의 물리 실현이다. 어떤 Event·상태·전이·모듈 경계·Provider 계약·Dimension·Confidence·Question Budget·Discovery Policy·불변(DISC-INV 1~9)도 이 문서에서 진위가 새로 확정되지 않는다 — 판정 기준은 02 §3이다. 새 계약 요소(Event·상태·전이·모듈·Provider 필드·Policy 항목·불변)를 창설하지 않았다. 방법론 고유명 0건(02 §3.10-D·UAF-INV ⑥ — 정본 청정).
-- **본 문서가 소유·확정하는 것.** 02 §4.1·§4.2가 "Adapter 소관"으로 미룬 지점 — ① D1 Event 로그 직렬화(§3) ② discovery-data/ 백엔드 트리(§4) ③ D2 사용자 확인/UserOverride 채널(§5) ④ D3 증거 스캔/프레이밍 절차(§6) ⑤ D4 Strategy 실행 호스팅 **역할 추상**(§7) ⑥ D5 Policy 값 데이터 소스·직렬화 + E2E 최소 실값(§8) ⑦ D6 Evidence Store 물리 저장(= D1) — 과, 선행 위임 해소 ⑧ DP-X6 Provenance 내부 형식(§10) ⑨ DP-X8 Discovery Request 기록 위치(§4.2)를 확정한다. D4 물리 호스팅은 **설계하지 않는다**(uaf/ARCHITECTURE §7 확장 포인트).
-- **격리 토큰의 단일 자리.** 구체 직렬화 형식·물리 경로(`framework/adapters/claude/discovery-data/…`)·파일 확장자·Policy 수치는 이 Adapter 경계 문서에 둔다. UAF 정본(uaf/specs/02)은 이 토큰을 "Adapter 소관" 포인터로만 미뤘고, 본 문서가 그 소관자다(structure.md §5 C-3는 이 경계에 비적용 — 격리 보유).
-- **동시 작성 문서 경계(07 R2·R4).** 본 산출은 이 1개 파일(`framework/adapters/claude/discovery-binding.md`)만 생성하며, 미완성 후속 산출물(E2E 데이터·`discovery-data/` 트리 내용)을 인용·추측하지 않았다 — 위치·구조·형식·값의 정본 문면만 소유했다(07 R2). 확정된 인터페이스 계약(uaf/specs/02 §3·§4·contract-binding §3·§4·§6·entry-binding §5.1·§5.3·uaf/ARCHITECTURE §7·§8.2)만 참조했다. uaf/ 정본·UAHF 정본·기존 바인딩(contract-binding·entry-binding 포함)·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 아래 open_questions로 에스컬레이션했다(추측 금지, specs/02-agent.md O4).
+- **재정의·확장 0.** 본 문서의 모든 매핑은 discovery/specs/02 §3·§4의 물리 실현이다. 어떤 Event·상태·전이·모듈 경계·Provider 계약·Dimension·Confidence·Question Budget·Discovery Policy·불변(DISC-INV 1~9)도 이 문서에서 진위가 새로 확정되지 않는다 — 판정 기준은 02 §3이다. 새 계약 요소(Event·상태·전이·모듈·Provider 필드·Policy 항목·불변)를 창설하지 않았다. 방법론 고유명 0건(02 §3.10-D·UAF-INV ⑥ — 정본 청정).
+- **본 문서가 소유·확정하는 것.** 02 §4.1·§4.2가 "Adapter 소관"으로 미룬 지점 — ① D1 Event 로그 직렬화(§3) ② discovery-data/ 백엔드 트리(§4) ③ D2 사용자 확인/UserOverride 채널(§5) ④ D3 증거 스캔/프레이밍 절차(§6) ⑤ D4 Strategy 실행 호스팅 **역할 추상**(§7) ⑥ D5 Policy 값 데이터 소스·직렬화 + E2E 최소 실값(§8) ⑦ D6 Evidence Store 물리 저장(= D1) — 과, 선행 위임 해소 ⑧ DP-X6 Provenance 내부 형식(§10) ⑨ DP-X8 Discovery Request 기록 위치(§4.2)를 확정한다. D4 물리 호스팅은 **설계하지 않는다**(ARCHITECTURE §11 확장 포인트).
+- **격리 토큰의 단일 자리.** 구체 직렬화 형식·물리 경로(`framework/adapters/claude/discovery-data/…`)·파일 확장자·Policy 수치는 이 Adapter 경계 문서에 둔다. UAF 정본(discovery/specs/02)은 이 토큰을 "Adapter 소관" 포인터로만 미뤘고, 본 문서가 그 소관자다(structure.md §5 C-3는 이 경계에 비적용 — 격리 보유).
+- **동시 작성 문서 경계(07 R2·R4).** 본 산출은 이 1개 파일(`framework/adapters/claude/discovery-binding.md`)만 생성하며, 미완성 후속 산출물(E2E 데이터·`discovery-data/` 트리 내용)을 인용·추측하지 않았다 — 위치·구조·형식·값의 정본 문면만 소유했다(07 R2). 확정된 인터페이스 계약(discovery/specs/02 §3·§4·contract-binding §3·§4·§6·entry-binding §5.1·§5.3·ARCHITECTURE §11·§12.2)만 참조했다. uaf/ 정본·UAHF 정본·기존 바인딩(contract-binding·entry-binding 포함)·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 아래 open_questions로 에스컬레이션했다(추측 금지, specs/02-agent.md O4).
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 
@@ -377,16 +377,16 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 
 ## §15. 요약 (한눈에 보기)
 
-- 이 문서 = `framework/adapters/claude/` 경계의 **UAF 정본(uaf/specs/02-discovery) 바인딩** 산출물(DP-X1). 정본 = 02 §3·§4(본 문서는 물리 실현, 재정의 아님 — §0). 자매 contract-binding.md·entry-binding.md와 같은 UAF 레벨 바인딩·접두 없는 동형 파일명.
+- 이 문서 = `framework/adapters/claude/` 경계의 **UAF 정본(discovery/specs/02-discovery) 바인딩** 산출물(DP-X1). 정본 = 02 §3·§4(본 문서는 물리 실현, 재정의 아님 — §0). 자매 contract-binding.md·entry-binding.md와 같은 UAF 레벨 바인딩·접두 없는 동형 파일명.
 - **§2:** 02 "### 4.1" 표 **4행(D1~D4)** + "### 4.2" Module부 문단 **2지점(D5·D6)**을 물리 실현으로 매핑(실재/규약 실현(형태 A)/형태 B 3구분). D6 = D1과 동일 백엔드(02 §4.2 문면).
 - **§3 (D1):** Event 15종(02 §3.5 재실측) append-only 로그 = 자기서술 구조화 레코드(1 Event = 1 레코드)·위치 `discovery-data/events/<mode>-<run-id>/`. 순서 값 ↔ 물리 생성 시각 성격 구분(L-09). 모든 전이는 Event로만(DISC-INV-1·3, § 포인터 인용).
 - **§4:** discovery-data/ 백엔드 트리 정본 선언(`events/`·`policy/`·`contracts/uahf/`(contract-binding §4.2 참조 인용)·`e2e-greenfield-project/`(DP-X3)) + Discovery Request 기록 위치 = run Event 로그 디렉터리(DP-X8 해소·형식은 entry-binding §5.1 소유). 트리 문면 정본만·물리 생성은 E2E Task(L-07).
 - **§5 (D2):** 주 세션 사용자 제시·응답 수령 채널(loop-binding §5.2 동형) — G1 Eliciting(QuestionAsked·AnswerReceived)·G2 Validating(ValidationRequested·AnswerReceived 승인/수정 T16·T17)·UserOverride(T21~T23) 구분. 각 개입은 Event로 기록. 사용자 승인 확정 게이트 불가침(DISC-INV-6).
 - **§6 (D3):** Greenfield 프레이밍/Brownfield 파일 시스템 스캔(T2)/Incremental 결속의 형태 A 절차(주 세션 수행·Evidence Store 기록). 증거 소스 = 파일 시스템 실측(본 저장소 dogfooding 대상 예시). Entry 유무 관측 ↔ Discovery 증거 스캔 경계.
-- **§7 (D4):** 주 세션(Advisor) Orchestrator 역할(§3.9)·레퍼런스 Provider(§3.10-C)를 **역할 추상까지만** 실현·물리 호스팅 설계 0(uaf/ARCHITECTURE §7). Strategy Invariance 훼손 0(DISC-INV-7).
+- **§7 (D4):** 주 세션(Advisor) Orchestrator 역할(§3.9)·레퍼런스 Provider(§3.10-C)를 **역할 추상까지만** 실현·물리 호스팅 설계 0(ARCHITECTURE §11). Strategy Invariance 훼손 0(DISC-INV-7).
 - **§8 (D5):** `discovery-data/policy/` 형식 + **E2E 구동용 최소 실값 1세트 정본 값 표**(차원 임계 θ·Budget 총량 40/차원별·soft 30/hard 40·보충 10·종료 규칙·충돌 게이트). Policy as Data — 값 조정 = 데이터 정정(엔진·계약 무변경, 02 §3.15).
-- **§10 (DP-X6):** Provenance 내부 = Discovery 실행 메타(run 식별자·Event 로그 참조·mode·Policy 참조). uaf/specs/03 §3.2-D 불투명 계약 유지·UAHF must-ignore 불변·Discovery 측 소비 전용·누출 차단(DISC-INV-8).
+- **§10 (DP-X6):** Provenance 내부 = Discovery 실행 메타(run 식별자·Event 로그 참조·mode·Policy 참조). planning/specs/03 §3.2-D 불투명 계약 유지·UAHF must-ignore 불변·Discovery 측 소비 전용·누출 차단(DISC-INV-8).
 - **§11:** 상시 불변 자기 점검 — Discovery 내부 개념(질문·전략·예산·Capability) Contract 코어/UAHF 접점 누출 0(다중 패턴·mention/use 경계; Provenance 내부·Event 로그는 Discovery 내부 기록이므로 대상 아님)·Stable Contract 훼손 0·Evidence Store ≠ UAHF Memory 네임스페이스 구분(02 §5).
 - **§12:** 02 "### 4.2" 이식 교체 지점(4불릿 + Module부) 대응 표 — 유지 열 = §3.3·§3.5·§3.6·§3.7·§3.8·§3.9·§3.10·§3.15(C-1 동형).
-- **§13:** 실측 대조 — `discovery-data/` 현 시점 미존재(E2E Task 생성 예정), 자매 바인딩·02·uaf/ARCHITECTURE 정본·기존 프로젝트 콘텐츠 실재, `.git` 부재. 미존재를 실재로 쓰지 않음(L-07).
+- **§13:** 실측 대조 — `discovery-data/` 현 시점 미존재(E2E Task 생성 예정), 자매 바인딩·02·ARCHITECTURE 정본·기존 프로젝트 콘텐츠 실재, `.git` 부재. 미존재를 실재로 쓰지 않음(L-07).
 - 02 §3·§4·UAHF 정본 재정의 0, Glossary 용어 신설 0, 새 계약 요소 창설 0, 방법론 고유명 0, 실행 코드 0(형태 A). 구체 직렬화 형식·물리 경로·Policy 값 토큰은 이 Adapter 경계에서 허용된다(격리 지점).

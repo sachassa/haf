@@ -229,9 +229,9 @@ framework/
    │  ├─ adapter-conformance.md  #   Adapter Interface 커버리지·Conformance 판정 인스턴스 (11 §3)
    │  ├─ harness-binding.md      #   Harness 바인딩 실현 (13 §4.1/§4.2 이식 교체 지점)
    │  ├─ scaffold-binding.md     #   Scaffold 바인딩 실현 (12 §4.1/§4.2 이식 교체 지점)
-   │  ├─ contract-binding.md     #   uaf/specs/03 §4 물리 실현 (UAF 정본 바인딩)
-   │  ├─ entry-binding.md        #   uaf/specs/01 §4 물리 실현 (UAF 정본 바인딩)
-   │  ├─ discovery-binding.md    #   uaf/specs/02 §4 물리 실현 (UAF 정본 바인딩)
+   │  ├─ contract-binding.md     #   planning/specs/03 §4 물리 실현 (UAF 정본 바인딩)
+   │  ├─ entry-binding.md        #   entry/specs/01 §4 물리 실현 (UAF 정본 바인딩)
+   │  ├─ discovery-binding.md    #   discovery/specs/02 §4 물리 실현 (UAF 정본 바인딩)
    │  ├─ scaffold-template/      #   템플릿 실물 — 구조·내용 정본은 Adapter Binding 문서 소관
    │  └─ (백엔드 격리 데이터 — 물리 이름·직렬화 형식은 Adapter Binding 문서 소관, Core 문서 비서술)
    └─ <adapter>/                 #   두 번째 Adapter 경계(최소 구현 Adapter — 11 §3.2-B) — 파일 목록·바인딩 값 정본은 그 Adapter Binding 문서 소관 (내부 파일 비열거)

@@ -5,17 +5,17 @@
 상위 규약: AGENT.md
 근거 정본:
 
-- uaf/specs/03-project-contract.md §3.1(지위·논리 스키마·입출력)·§3.2-A(필드 그룹 9종)·§3.2-B(필수 코어 필드)·§3.2-C(Dimension→필드 매핑 — 컴파일 방향)·§3.2-D(Provenance 불투명 부속)·§3.3(버저닝 A~E)·§3.4(인스턴스 거버넌스)·§3.5(UAHF Interface)·§3.6(PC-INV 1~12) — 본 문서가 물리 실현으로 바인딩하는 계약의 정본. **재정의·확장하지 않고 § 포인터로만 인용한다.**
-- uaf/specs/03-project-contract.md §4.1(### 4.1 바인딩 대상 — 표 4행)·§4.2(### 4.2 이식 교체 지점). 본 문서가 물리 실현으로 인스턴스화하는 바인딩 표와, 대응을 명시하는 교체 지점의 정본.
+- planning/specs/03-project-contract.md §3.1(지위·논리 스키마·입출력)·§3.2-A(필드 그룹 9종)·§3.2-B(필수 코어 필드)·§3.2-C(Dimension→필드 매핑 — 컴파일 방향)·§3.2-D(Provenance 불투명 부속)·§3.3(버저닝 A~E)·§3.4(인스턴스 거버넌스)·§3.5(UAHF Interface)·§3.6(PC-INV 1~12) — 본 문서가 물리 실현으로 바인딩하는 계약의 정본. **재정의·확장하지 않고 § 포인터로만 인용한다.**
+- planning/specs/03-project-contract.md §4.1(### 4.1 바인딩 대상 — 표 4행)·§4.2(### 4.2 이식 교체 지점). 본 문서가 물리 실현으로 인스턴스화하는 바인딩 표와, 대응을 명시하는 교체 지점의 정본.
 - framework/adapters/claude/memory-binding.md — 자매 Adapter Binding 문서(골격 선례). 제목 라인 → 작성일·상태·상위 규약·근거 정본 → 거버넌스 문단 → §9 이력(머리 배치) → §0 정본 경계 → §1 목적 → 바인딩 표 물리 실현(실재/규약 실현/형태 B 3구분) → 물리 절차/매핑 절 → 이식 교체 지점 표("유지되는 것" 열 = C-1 재확인) → 실측 대조 절 → 요약의 관례, 그리고 append-only 새 파일 갱신·"지원 구조 — 시연 시 생성" 정직 구분(L-07)의 선행 관례.
 - framework/adapters/claude/scaffold-binding.md §4 — 자매 바인딩. "Markdown 본문 + front-matter" 프로젝트 배치 문서 직렬화의 선행 관례.
 - framework/core/structure.md §2(4경계 배치 — `framework/adapters/<adapter>/` = 환경 의존 격리 경계)·§5(금지 토큰 규칙 C-3 — Adapter 경계는 격리 보유로 비적용). 본 문서 경계·물리 분리·격리 토큰 허용의 근거.
-- uaf/ARCHITECTURE.md §4(사용자 고정 원칙 P1~P5·§4.6 상시 불변 확인 2건)·§5(UAF-INV ①~⑥ — 특히 ① UAHF 정본 무수정·유일 접점, ② Discovery 교체 가능·Contract 교체 불가, ③ Strategy Invariance). 근거 인용용(재정의 0).
-- uaf/specs/01-entry.md §4.1(### §4.1 바인딩 대상, 불릿 2 — "contract-presence·repository-presence를 실제 환경에서 어떻게 탐지하는가(**경로 관례·직렬화 형식·존재 판정 수단**)는 Adapter 소관이다. Core Contract는 capability 선언과 유/무 값 도메인만 소유한다")·§3.2-C(Workspace Evidence & Evidence Source 확장 스키마 — contract-presence Evidence 정의·유/무 값 도메인 소유)·EN-INV 2. 본 문서 §3·§4가 §4.1이 Adapter 소관으로 미룬 물리 실현임의 근거.
+- ARCHITECTURE.md §7(사용자 고정 원칙 P1~P5·§7.1 상시 불변 확인 2건)·§8(UAF-INV ①~⑥ — 특히 ① UAHF 정본 무수정·유일 접점, ② Discovery 교체 가능·Contract 교체 불가, ③ Strategy Invariance). 근거 인용용(재정의 0).
+- entry/specs/01-entry.md §4.1(### §4.1 바인딩 대상, 불릿 2 — "contract-presence·repository-presence를 실제 환경에서 어떻게 탐지하는가(**경로 관례·직렬화 형식·존재 판정 수단**)는 Adapter 소관이다. Core Contract는 capability 선언과 유/무 값 도메인만 소유한다")·§3.2-C(Workspace Evidence & Evidence Source 확장 스키마 — contract-presence Evidence 정의·유/무 값 도메인 소유)·EN-INV 2. 본 문서 §3·§4가 §4.1이 Adapter 소관으로 미룬 물리 실현임의 근거.
 - specs/12-scaffold.md §3.2-A(Project Template) — Contract가 신규 프로젝트 설치 시 배치되는 정본 문서로 성립하는 소비 지점(03 §3.5-B (b))의 근거. § 포인터로만 참조.
 - specs/00-glossary.md — UAHF 용어 정본. 본 문서는 새 용어를 신설하지 않는다. `형태 A/B`는 structure.md §4의 서술 라벨 인용이며 Glossary 표제어가 아니다.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core·UAF 계약을 특정 실행 환경·직렬화 형식·물리 경로에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 직렬화 형식·물리 경로·환경 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, 자매 memory-binding.md §0·scaffold-binding.md §0과 동형). 단 이 문서는 UAF 정본(uaf/specs/03-project-contract.md §3·§4)과 UAHF 정본을 **재정의하지 않는다** — 계약(필드 그룹·코어 필드·버저닝·불변)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core·UAF 계약을 특정 실행 환경·직렬화 형식·물리 경로에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 직렬화 형식·물리 경로·환경 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, 자매 memory-binding.md §0·scaffold-binding.md §0과 동형). 단 이 문서는 UAF 정본(planning/specs/03-project-contract.md §3·§4)과 UAHF 정본을 **재정의하지 않는다** — 계약(필드 그룹·코어 필드·버저닝·불변)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -33,11 +33,11 @@
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **UAF 정본 바인딩 선언(DP-X1).** 이 문서는 `framework/adapters/claude/` 경계의 Adapter Binding 문서이되, 그 **바인딩 대상 정본은 UAHF spec이 아니라 UAF 정본 `uaf/specs/03-project-contract.md` §3·§4다.** 자매 바인딩 12문서(runtime·memory·verifier·loop·workflow·hooks·skills·plugins·agent·scaffold·harness-binding + adapter-conformance)가 UAHF spec(specs/01~13)을 바인딩하는 것과 달리, 본 문서는 UAF 레벨의 Project Contract 정본을 바인딩한다. 파일명·골격 관례는 자매와 동형이다(접두 없음).
+- **UAF 정본 바인딩 선언(DP-X1).** 이 문서는 `framework/adapters/claude/` 경계의 Adapter Binding 문서이되, 그 **바인딩 대상 정본은 UAHF spec이 아니라 UAF 정본 `planning/specs/03-project-contract.md` §3·§4다.** 자매 바인딩 12문서(runtime·memory·verifier·loop·workflow·hooks·skills·plugins·agent·scaffold·harness-binding + adapter-conformance)가 UAHF spec(specs/01~13)을 바인딩하는 것과 달리, 본 문서는 UAF 레벨의 Project Contract 정본을 바인딩한다. 파일명·골격 관례는 자매와 동형이다(접두 없음).
 
-- **정본은 uaf/specs/03 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — 필드 그룹 9종(§3.2-A)·필수 코어 필드(§3.2-B)·Dimension 매핑(§3.2-C)·버저닝 규율(§3.3)·인스턴스 거버넌스(§3.4)·UAHF Interface(§3.5)·불변 PC-INV 1~12(§3.6) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 03 §4.1이 "Adapter 소관"으로 미룬 **직렬화 형식·저장 위치·버전 표기·Provenance 물리 형식** 넷뿐이다(§2).
+- **정본은 planning/specs/03 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — 필드 그룹 9종(§3.2-A)·필수 코어 필드(§3.2-B)·Dimension 매핑(§3.2-C)·버저닝 규율(§3.3)·인스턴스 거버넌스(§3.4)·UAHF Interface(§3.5)·불변 PC-INV 1~12(§3.6) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 03 §4.1이 "Adapter 소관"으로 미룬 **직렬화 형식·저장 위치·버전 표기·Provenance 물리 형식** 넷뿐이다(§2).
 
-- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이어야 한다(structure.md §5 C-3 확장). UAF 정본(uaf/specs/03) 본문도 같은 AI 비의존이다(03 §3 도입·PC-INV 12). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식(문서형·구조화 데이터 형식명)·물리 경로(`framework/adapters/claude/…`·`.claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(memory-binding.md §0·scaffold-binding.md §0과 동형). 단 **uaf/ 정본이 명명하지 않은 것을 uaf/ 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다.
+- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이어야 한다(structure.md §5 C-3 확장). UAF 정본(planning/specs/03) 본문도 같은 AI 비의존이다(03 §3 도입·PC-INV 12). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식(문서형·구조화 데이터 형식명)·물리 경로(`framework/adapters/claude/…`·`.claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(memory-binding.md §0·scaffold-binding.md §0과 동형). 단 **uaf/ 정본이 명명하지 않은 것을 uaf/ 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다.
 
 - **하네스 Bootstrap 전제(형태 A, D-v1.2-1).** 이 하네스는 현재 Bootstrap 상태다(Glossary J-13, 자매 바인딩 §0). 본 문서의 바인딩은 **실행 코드 0**이다 — Contract를 컴파일·직렬화·소비하는 실행 코드는 도입되지 않았다. 따라서 매핑은 (i) 물리 실재 표면, (ii) 규약으로 확정된 정본 문면(형태 A — 경로·형식·표기 규격), (iii) 실행 코드 도입 시 로딩될 지점(형태 B — 컴파일러·tolerant reader 파서)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
 
@@ -49,7 +49,7 @@
 
 ## §1. 목적
 
-이 문서는 uaf/specs/03 "### 4.1 바인딩 대상" 표 4행을 이 환경 위에 **v1.2 시점의 구체 물리 실현**으로 매핑한다. Contract는 UAF↔UAHF 유일 접점·Stable Contract(Public API, 03 §3.1-A)이므로, 이 문서가 확정하는 물리 인터페이스는 v1.2 후속 작업의 **선행 확정 인터페이스**다.
+이 문서는 planning/specs/03 "### 4.1 바인딩 대상" 표 4행을 이 환경 위에 **v1.2 시점의 구체 물리 실현**으로 매핑한다. Contract는 UAF↔UAHF 유일 접점·Stable Contract(Public API, 03 §3.1-A)이므로, 이 문서가 확정하는 물리 인터페이스는 v1.2 후속 작업의 **선행 확정 인터페이스**다.
 
 책임은 넷이다.
 
@@ -156,7 +156,7 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 ### §4.2 본 UAHF 저장소 인스턴스 — 격리 배치 (Brownfield dogfooding)
 
 - **경로.** 본 UAHF 저장소 자신을 대상 프로젝트로 발견하는 dogfooding 인스턴스는 `framework/adapters/claude/discovery-data/contracts/uahf/`에 격리 배치한다. 파일명 관례는 §4.1과 동일(`project-contract.v<N>.md`).
-- **근거(UAF-INV ① 안전).** 본 저장소의 dogfood Contract를 라이브 `.claude/` 규약 표면(하네스 자신의 AGENT.md·CLAUDE.md 등)이나 Core 경계에 섞으면 하네스 규약과 발견 산출 데이터가 혼입된다. 이를 Adapter 경계 이하 `discovery-data/`로 격리하면 데이터 자산이 격리 지점 뒤에 놓여, UAHF 정본 무수정(uaf/ARCHITECTURE.md §5 UAF-INV ①)과 정합한다. 이는 자매 `memory-data/`·`loop-data/`가 Adapter 경계 이하로 백엔드 데이터를 격리한 선례(memory-binding.md §0·§2)와 동형이다.
+- **근거(UAF-INV ① 안전).** 본 저장소의 dogfood Contract를 라이브 `.claude/` 규약 표면(하네스 자신의 AGENT.md·CLAUDE.md 등)이나 Core 경계에 섞으면 하네스 규약과 발견 산출 데이터가 혼입된다. 이를 Adapter 경계 이하 `discovery-data/`로 격리하면 데이터 자산이 격리 지점 뒤에 놓여, UAHF 정본 무수정(ARCHITECTURE.md §8 UAF-INV ①)과 정합한다. 이는 자매 `memory-data/`·`loop-data/`가 Adapter 경계 이하로 백엔드 데이터를 격리한 선례(memory-binding.md §0·§2)와 동형이다.
 - **`discovery-data/`는 지원 구조(현 시점 미존재).** 이 경로·구조는 본 문서가 확정한 정본 문면이며, 실제 디렉터리·인스턴스 데이터 생성은 **v1.2 E2E Task(T-XG·T-XB) 소관**이다(§10 실측 대조). 본 문서는 물리 데이터 자산을 생성하지 않는다 — 경로·구조·형식의 정본만 소유한다(memory-binding.md §2 주 "지원 구조 — 시연 시 생성" 선례 동형, L-07).
 
 ---
@@ -181,7 +181,7 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 
 ### §5.3 스키마 개정 거버넌스의 물리 반영
 
-- 본 스키마(코어 필드·버저닝 규칙)의 개정은 정본 uaf/specs/03의 spec 버전 상승 + §9 Revision History append로만 이뤄지고(03 §3.3-E), 그와 별개로 **본 바인딩 문서(직렬화·경로·표기)의 개정**은 본 문서 §9 이력 append + Advisor 승인으로 이뤄진다(거버넌스 문단). 두 거버넌스는 구분된다 — 03 §3 논리 스키마 개정 ≠ 본 문서 물리 바인딩 개정. 인스턴스 갱신(§5.1 `instanceVersion`)은 또 별개의 append-only 인스턴스 거버넌스다(03 §3.4).
+- 본 스키마(코어 필드·버저닝 규칙)의 개정은 정본 planning/specs/03의 spec 버전 상승 + §9 Revision History append로만 이뤄지고(03 §3.3-E), 그와 별개로 **본 바인딩 문서(직렬화·경로·표기)의 개정**은 본 문서 §9 이력 append + Advisor 승인으로 이뤄진다(거버넌스 문단). 두 거버넌스는 구분된다 — 03 §3 논리 스키마 개정 ≠ 본 문서 물리 바인딩 개정. 인스턴스 갱신(§5.1 `instanceVersion`)은 또 별개의 append-only 인스턴스 거버넌스다(03 §3.4).
 
 ---
 
@@ -191,7 +191,7 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 
 - **외형 확정.** Provenance는 Contract 인스턴스 front-matter 내 **분리 네임스페이스 `provenance` key**(불투명 블록)로 놓인다. 코어 필드 그룹(§3.2-A 그룹 1~8)과 물리적으로 구분되는 top-level key 하나로 격리된다.
 - **must-ignore 경계 확정.** UAHF tolerant reader는 `provenance` 컨테이너(및 그 하위 전체)를 **must-ignore**한다 — 존재를 오류로 취급하지 않고 소비하지 않는다(03 §3.2-D·§3.3-C, PC-INV 3·5). 이 경계로 Discovery 내부 변경(기법·전략·예산·질문 방식)이 만드는 실행 메타는 `provenance`와 `instanceVersion`에만 반영되고 `schemaVersion`·코어 스키마에 도달하지 못한다(03 §3.4·§3.2-D, PC-INV 2·10).
-- **내부 형식 비정의 — 후속 위임.** `provenance` 컨테이너의 **내부 직렬화 형식·필드**(Event 로그 참조 등)는 본 문서가 정의하지 않는다. 03 §3.2-D가 지정한 Discovery 측 소관(uaf/specs/02-discovery.md §3.5 Event 로그·§3.16 Metrics)과 Adapter 측 후속 바인딩 **discovery-binding.md(예정)**에 포인터로만 위임한다. 본 문서가 내부 구조를 창설하면 03 §3.2-D 불투명 부속 계약을 침범하므로, 외형·경계 확정에서 멈춘다.
+- **내부 형식 비정의 — 후속 위임.** `provenance` 컨테이너의 **내부 직렬화 형식·필드**(Event 로그 참조 등)는 본 문서가 정의하지 않는다. 03 §3.2-D가 지정한 Discovery 측 소관(discovery/specs/02-discovery.md §3.5 Event 로그·§3.16 Metrics)과 Adapter 측 후속 바인딩 **discovery-binding.md(예정)**에 포인터로만 위임한다. 본 문서가 내부 구조를 창설하면 03 §3.2-D 불투명 부속 계약을 침범하므로, 외형·경계 확정에서 멈춘다.
 
 ---
 
@@ -211,7 +211,7 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 - **SemVer (PC-INV 4).** `schemaVersion` 물리 표기(§5.1)는 SemVer 점표기 문자열이며, MINOR = 후방 호환 추가·MAJOR = 원칙 금지(거버넌스 사안) 규율을 있는 그대로 담는다 — 표기가 규율을 자동 완화·훼손하지 않는다(§5.2).
 - **tolerant reader (PC-INV 5).** front-matter 자기서술 구조는 필수 코어 필드 key만 의존, 미지 필드·`provenance` must-ignore를 지원한다(§3.3 ⓑ·§6). 물리 형식이 must-ignore를 가능케 한다.
 - **필드 제거 금지 (PC-INV 6).** deprecated 마킹 후 key 유지로 표현되며, 물리 삭제는 MAJOR 거버넌스 대상이다(§5.2). 물리 표기가 제거 금지 규율을 훼손하지 않는다.
-- **판정.** 위 세 규율의 물리 훼손 서술 0건 — 본 문서의 물리 바인딩은 Public API 장기 호환성을 훼손하지 않는다(PC-INV 11, uaf/ARCHITECTURE.md §4.6 ②·§5 UAF-INV ①②).
+- **판정.** 위 세 규율의 물리 훼손 서술 0건 — 본 문서의 물리 바인딩은 Public API 장기 호환성을 훼손하지 않는다(PC-INV 11, ARCHITECTURE.md §7.1 ②·§8 UAF-INV ①②).
 
 ### §7.3 UAHF 무수정·창설 금지 (PC-INV 8·UAF-INV ①)
 
@@ -245,7 +245,7 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 | `framework/adapters/claude/contract-binding.md` | 실재 (본 문서) | 실재 (이 파일 — 신규 생성). |
 | `framework/adapters/claude/memory-binding.md` (골격 선례) | 실재 (자매 문서) | 실재 — 확인(무수정). |
 | `framework/adapters/claude/scaffold-binding.md` (직렬화 선례) | 실재 (자매 문서) | 실재 — 확인(무수정). |
-| uaf/specs/03-project-contract.md (바인딩 대상 정본) | 실재 (v1.1 Baseline) | 실재 — §3·§4 확인(무수정, § 포인터 대상). |
+| planning/specs/03-project-contract.md (바인딩 대상 정본) | 실재 (v1.1 Baseline) | 실재 — §3·§4 확인(무수정, § 포인터 대상). |
 | `framework/adapters/claude/discovery-data/` (Contract 배치 백엔드 루트) | **지원 구조 — 현 시점 미존재, v1.2 E2E Task 생성 예정** | **미존재** — `discovery-data/` 디렉터리 부재 확인(delegation 전제 정합). 경로·구조·형식은 본 문서 정본 문면. |
 | `discovery-data/contracts/uahf/` 인스턴스 데이터 | **미존재** (E2E Task 생성 예정) | **미존재** — 상위 `discovery-data/` 자체가 부재. |
 | 소비 프로젝트 `.claude/project-contract/` (일반 관례) | 경로 관례 확정(정본); 인스턴스 데이터는 설치·발견 시 배치 | 본 저장소에는 해당 경로 미존재(정상 — 일반 관례는 소비 프로젝트 배치 대상). |
@@ -258,10 +258,10 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 
 ## §11. 정본 경계·격리·계약 소유 (self-note)
 
-- **재정의·확장 0.** 본 문서의 모든 매핑은 uaf/specs/03 §3·§4의 물리 실현이다. 어떤 필드 그룹·코어 필드·버저닝 규율·인스턴스 거버넌스·불변(PC-INV 1~12)도 이 문서에서 진위가 새로 확정되지 않는다 — 판정 기준은 03 §3이다. 새 계약 요소(필드·연산·불변·kind)를 창설하지 않았다.
+- **재정의·확장 0.** 본 문서의 모든 매핑은 planning/specs/03 §3·§4의 물리 실현이다. 어떤 필드 그룹·코어 필드·버저닝 규율·인스턴스 거버넌스·불변(PC-INV 1~12)도 이 문서에서 진위가 새로 확정되지 않는다 — 판정 기준은 03 §3이다. 새 계약 요소(필드·연산·불변·kind)를 창설하지 않았다.
 - **본 문서가 소유·확정하는 것.** 03 §4.1이 "Adapter 소관"으로 미룬 넷 — ① 직렬화 형식(§3, Markdown 본문 + YAML front-matter) ② 저장 위치(§4, 이원화) ③ 버전 표기(§5) ④ Provenance 컨테이너 외형·must-ignore 경계(§6) — 만 확정한다. Provenance 내부 형식은 discovery-binding.md(예정)에, contract-presence 존재 판정 실행은 entry-binding.md(예정)에 포인터로 위임한다(추측·선취 금지).
-- **격리 토큰의 단일 자리.** 구체 직렬화 형식(문서형·구조화 데이터 형식)·물리 경로(`framework/adapters/claude/…`·`.claude/…`)·파일 확장자·버전 값 형태는 이 Adapter 경계 문서에 둔다. UAF 정본(uaf/specs/03)은 이 토큰을 "Adapter 소관" 포인터로만 미뤘고, 본 문서가 그 소관자다(structure.md §5 C-3는 이 경계에 비적용 — 격리 보유).
-- **동시 작성 문서 경계(07 R2·R4).** 본 산출은 이 1개 파일(`framework/adapters/claude/contract-binding.md`)만 생성하며, 동시 작성 중일 수 있는 병렬 Task의 미완성 산출물(예: discovery-binding.md·entry-binding.md·E2E 데이터)을 인용·추측하지 않았다(07 R2). 확정된 인터페이스 계약(uaf/specs/03 §3·§4)만 참조했다. uaf/ 정본·UAHF 정본·기존 바인딩·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 §11 open_questions로 에스컬레이션했다(추측 금지).
+- **격리 토큰의 단일 자리.** 구체 직렬화 형식(문서형·구조화 데이터 형식)·물리 경로(`framework/adapters/claude/…`·`.claude/…`)·파일 확장자·버전 값 형태는 이 Adapter 경계 문서에 둔다. UAF 정본(planning/specs/03)은 이 토큰을 "Adapter 소관" 포인터로만 미뤘고, 본 문서가 그 소관자다(structure.md §5 C-3는 이 경계에 비적용 — 격리 보유).
+- **동시 작성 문서 경계(07 R2·R4).** 본 산출은 이 1개 파일(`framework/adapters/claude/contract-binding.md`)만 생성하며, 동시 작성 중일 수 있는 병렬 Task의 미완성 산출물(예: discovery-binding.md·entry-binding.md·E2E 데이터)을 인용·추측하지 않았다(07 R2). 확정된 인터페이스 계약(planning/specs/03 §3·§4)만 참조했다. uaf/ 정본·UAHF 정본·기존 바인딩·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 §11 open_questions로 에스컬레이션했다(추측 금지).
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 
@@ -272,7 +272,7 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 
 ## §12. 요약 (한눈에 보기)
 
-- 이 문서 = `framework/adapters/claude/` 경계의 **UAF 정본(uaf/specs/03) 바인딩** 산출물(DP-X1). 정본 = 03 §3·§4(본 문서는 물리 실현, 재정의 아님 — §0). 자매 바인딩 12문서(UAHF spec 바인딩)와 구분되는 UAF 레벨 바인딩·접두 없는 동형 파일명.
+- 이 문서 = `framework/adapters/claude/` 경계의 **UAF 정본(planning/specs/03) 바인딩** 산출물(DP-X1). 정본 = 03 §3·§4(본 문서는 물리 실현, 재정의 아님 — §0). 자매 바인딩 12문서(UAHF spec 바인딩)와 구분되는 UAF 레벨 바인딩·접두 없는 동형 파일명.
 - **§2:** 03 "### 4.1 바인딩 대상" 표 **4행 전건**을 물리 실현으로 매핑(실재/규약 실현/형태 B 3구분).
 - **§3:** 직렬화 = **Markdown 본문 + YAML front-matter 단일 문서** — ⓐ 9그룹·필수 코어 필드 10 표현 ⓑ tolerant reader 정합(자기서술·미지 must-ignore) ⓒ Provenance 분리 불투명 컨테이너 ⓓ append-only 인스턴스(새 파일 + `supersedes`) 표현. scaffold-binding.md §4 관례 동형.
 - **§4:** 저장 위치 이원화(DP-X2) — 일반 관례 `.claude/project-contract/`(Advisor 정독·Scaffold 배치 정합, 03 §3.5-B) + 본 저장소 격리 `framework/adapters/claude/discovery-data/contracts/uahf/`(UAF-INV ① 안전). 01-entry §4.1 Adapter 위임의 물리 실현(§3.2-C = contract-presence Evidence 정의). `discovery-data/`는 현 시점 미존재·E2E Task 생성 예정.

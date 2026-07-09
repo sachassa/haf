@@ -516,11 +516,11 @@ v1.1은 Architecture 설계만 수행한다(구현 0).
 
 ### 산출물
 
-- uaf/ARCHITECTURE.md
-- uaf/specs/01-entry.md
-- uaf/specs/02-discovery.md
-- uaf/specs/03-project-contract.md
-- uaf/appendix/methodology-mapping.md
+- ARCHITECTURE.md
+- entry/specs/01-entry.md
+- discovery/specs/02-discovery.md
+- planning/specs/03-project-contract.md
+- planning/docs/appendix/methodology-mapping.md
 - docs/v1.1-scenario-walkthrough.md
 - docs/v1.1-verification-report.md
 - docs/v1.1-promotion-review.md

@@ -37,7 +37,7 @@
 
 - **정본은 planning/specs/03 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — 필드 그룹 9종(§3.2-A)·필수 코어 필드(§3.2-B)·Dimension 매핑(§3.2-C)·버저닝 규율(§3.3)·인스턴스 거버넌스(§3.4)·UAHF Interface(§3.5)·불변 PC-INV 1~12(§3.6) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 03 §4.1이 "Adapter 소관"으로 미룬 **직렬화 형식·저장 위치·버전 표기·Provenance 물리 형식** 넷뿐이다(§2).
 
-- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이어야 한다(structure.md §5 C-3 확장). UAF 정본(planning/specs/03) 본문도 같은 AI 비의존이다(03 §3 도입·PC-INV 12). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식(문서형·구조화 데이터 형식명)·물리 경로(`framework/adapters/claude/…`·`.claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(memory-binding.md §0·scaffold-binding.md §0과 동형). 단 **uaf/ 정본이 명명하지 않은 것을 uaf/ 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다.
+- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이어야 한다(structure.md §5 C-3 확장). UAF 정본(planning/specs/03) 본문도 같은 AI 비의존이다(03 §3 도입·PC-INV 12). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식(문서형·구조화 데이터 형식명)·물리 경로(`framework/adapters/claude/…`·`.claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(memory-binding.md §0·scaffold-binding.md §0과 동형). 단 **UAF 정본이 명명하지 않은 것을 UAF 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다.
 
 - **하네스 Bootstrap 전제(형태 A, D-v1.2-1).** 이 하네스는 현재 Bootstrap 상태다(Glossary J-13, 자매 바인딩 §0). 본 문서의 바인딩은 **실행 코드 0**이다 — Contract를 컴파일·직렬화·소비하는 실행 코드는 도입되지 않았다. 따라서 매핑은 (i) 물리 실재 표면, (ii) 규약으로 확정된 정본 문면(형태 A — 경로·형식·표기 규격), (iii) 실행 코드 도입 시 로딩될 지점(형태 B — 컴파일러·tolerant reader 파서)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
 
@@ -261,7 +261,7 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 - **재정의·확장 0.** 본 문서의 모든 매핑은 planning/specs/03 §3·§4의 물리 실현이다. 어떤 필드 그룹·코어 필드·버저닝 규율·인스턴스 거버넌스·불변(PC-INV 1~12)도 이 문서에서 진위가 새로 확정되지 않는다 — 판정 기준은 03 §3이다. 새 계약 요소(필드·연산·불변·kind)를 창설하지 않았다.
 - **본 문서가 소유·확정하는 것.** 03 §4.1이 "Adapter 소관"으로 미룬 넷 — ① 직렬화 형식(§3, Markdown 본문 + YAML front-matter) ② 저장 위치(§4, 이원화) ③ 버전 표기(§5) ④ Provenance 컨테이너 외형·must-ignore 경계(§6) — 만 확정한다. Provenance 내부 형식은 discovery-binding.md(예정)에, contract-presence 존재 판정 실행은 entry-binding.md(예정)에 포인터로 위임한다(추측·선취 금지).
 - **격리 토큰의 단일 자리.** 구체 직렬화 형식(문서형·구조화 데이터 형식)·물리 경로(`framework/adapters/claude/…`·`.claude/…`)·파일 확장자·버전 값 형태는 이 Adapter 경계 문서에 둔다. UAF 정본(planning/specs/03)은 이 토큰을 "Adapter 소관" 포인터로만 미뤘고, 본 문서가 그 소관자다(structure.md §5 C-3는 이 경계에 비적용 — 격리 보유).
-- **동시 작성 문서 경계(07 R2·R4).** 본 산출은 이 1개 파일(`framework/adapters/claude/contract-binding.md`)만 생성하며, 동시 작성 중일 수 있는 병렬 Task의 미완성 산출물(예: discovery-binding.md·entry-binding.md·E2E 데이터)을 인용·추측하지 않았다(07 R2). 확정된 인터페이스 계약(planning/specs/03 §3·§4)만 참조했다. uaf/ 정본·UAHF 정본·기존 바인딩·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 §11 open_questions로 에스컬레이션했다(추측 금지).
+- **동시 작성 문서 경계(07 R2·R4).** 본 산출은 이 1개 파일(`framework/adapters/claude/contract-binding.md`)만 생성하며, 동시 작성 중일 수 있는 병렬 Task의 미완성 산출물(예: discovery-binding.md·entry-binding.md·E2E 데이터)을 인용·추측하지 않았다(07 R2). 확정된 인터페이스 계약(planning/specs/03 §3·§4)만 참조했다. UAF 정본·UAHF 정본·기존 바인딩·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 §11 open_questions로 에스컬레이션했다(추측 금지).
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 

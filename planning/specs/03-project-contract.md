@@ -9,9 +9,9 @@
 - ARCHITECTURE.md (v1.3) — UAF 상위 구조 정본. 특히 §2.2(6요소 구조)·§2.5(의존 방향 단방향)·§6(설계 원칙 10종)·§7 P3(§7)·§7.1(상시 불변 확인 2건)·§8 UAF-INV ①②③⑤(§8)·§10(책임 경계표)·§11(Non-Goals)·§12.1·§12.2(Discovery Request 추상). **본 문서는 이 정본을 재정의·확장하지 않고 § 포인터로만 참조한다.**
 - discovery/specs/02-discovery.md (v1.1 Draft) — Project Discovery 정본. 특히 §3.1(Compiler·불완전 출력 금지)·§3.3-A(mode 분기)·§3.7(Execution Ready 2축 판정·Readiness 선언 구성·필수 코어 필드 추상 참조)·§3.11(Discovery Dimension 5·"Contract 매핑은 W4 소유" 위임). Discovery의 산출인 본 Contract의 완결 기준을 소비하는 상류 계약.
 - entry/specs/01-entry.md (v1.1 Draft) — Entry Layer & Entry Resolution 정본. 특히 §3.1·§3.2-C(contract-presence)·EN-INV 2 — Entry는 Project Contract를 **유/무 증거로만 관측**하고 스키마·내용을 다루지 않는다.
-- specs/00-glossary.md 0.2 — UAHF 용어 정본. 네임스페이스 분리의 근거. 특히 §3.2-C(Memory Service Interface)·§3.2-E(Agent 역할)·§3.2-F(Agent Lifecycle의 Consult)·§3.2-G(Spec Status: Frozen). UAHF 용어는 § 포인터로만 참조한다.
-- specs/12-scaffold.md 0.1 — Scaffold 정본. 특히 §3.2-A(Project Template) — Contract가 신규 프로젝트 설치 시 배치되는 정본 문서로 성립하는 소비 지점의 근거(§3.5-B).
-- specs/TEMPLATE.md 0.1 — spec 문서 구조(§0~§9)·품질 기준 관행.
+- uahf/specs/00-glossary.md 0.2 — UAHF 용어 정본. 네임스페이스 분리의 근거. 특히 §3.2-C(Memory Service Interface)·§3.2-E(Agent 역할)·§3.2-F(Agent Lifecycle의 Consult)·§3.2-G(Spec Status: Frozen). UAHF 용어는 § 포인터로만 참조한다.
+- uahf/specs/12-scaffold.md 0.1 — Scaffold 정본. 특히 §3.2-A(Project Template) — Contract가 신규 프로젝트 설치 시 배치되는 정본 문서로 성립하는 소비 지점의 근거(§3.5-B).
+- uahf/specs/TEMPLATE.md 0.1 — spec 문서 구조(§0~§9)·품질 기준 관행.
 
 ---
 
@@ -22,23 +22,23 @@
 | 2026-07-07 | v1.1 Draft | 최초 작성 — `uaf/specs/` 경계 Project Contract 정본 신설(설계 순서 P5의 마지막 고정 지점, W4 [Contract]). 지위 확정(UAF↔UAHF 공식 **Stable Contract·Public API**, P3·UAF-INV ①② — **논리 스키마만** 정의·직렬화/물리 포맷/저장 위치는 Adapter 소관, §3.1); 스키마 필드 그룹 **9종**(Meta·Intent·Requirements·Constraints·Risks·Architecture Direction·Assumption Ledger·Readiness·Provenance[불투명 부속], §3.2-A); **필수 코어 필드** 열거·02-discovery §3.7 Completeness 판정 대상 정합(§3.2-B); **Discovery Dimension 5 → Contract 필드 매핑**(컴파일 방향만·역방향 의존 0 — 02-discovery §3.11 위임 해소, §3.2-C); 버저닝 전략 C2(**schemaVersion/instanceVersion** 분리·SemVer 규율·**tolerant reader**·필드 제거 금지·스키마 개정 거버넌스, §3.3); 인스턴스 거버넌스(append-only 이력·supersedes 계보, §3.4); UAHF Interface(선택 입력·Consult 정독·Scaffold 배치·UAHF 무수정 근거·정식 등재는 확장 포인트, §3.5); 불변 PC-INV 11건(역참조 금지·Provenance 불투명·SemVer·tolerant reader·필드 제거 금지·Completeness 불가침·UAHF 무수정·인스턴스 이력·상시 불변 2건 반영, §3.6). 코어 필드 정의에 Discovery 내부 개념(질문·전략·예산·Strategy·Capability) 참조 0(Provenance 부속 제외·자가 전수 스캔). UAHF·UAF 상위 정본 무수정(§ 포인터만·재정의 0)·특정 AI 실명·모델명·제품 기능명·방법론 고유명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.1 W4 T5) |
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·entry/specs/01-entry.md §9·discovery/specs/02-discovery.md §9·framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·entry/specs/01-entry.md §9·discovery/specs/02-discovery.md §9·uahf/framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본 배치.** 이 문서는 `uaf/specs/` 경계의 **Project Contract 정본**이다. UAF 파이프라인 6요소 중 **Project Contract** 요소(ARCHITECTURE.md §2.2)의 상세 계약 — **논리 스키마·버저닝·UAHF Interface** — 를 소유하며 **최종 고정**한다. Project Contract는 UAF와 UAHF의 **유일한 접점**이다(ARCHITECTURE.md §8 UAF-INV ①).
+- **정본 배치.** 이 문서는 **UAF specs 경계**의 **Project Contract 정본**이다. UAF 파이프라인 6요소 중 **Project Contract** 요소(ARCHITECTURE.md §2.2)의 상세 계약 — **논리 스키마·버저닝·UAHF Interface** — 를 소유하며 **최종 고정**한다. Project Contract는 UAF와 UAHF의 **유일한 접점**이다(ARCHITECTURE.md §8 UAF-INV ①).
 
 - **논리 스키마만.** 본 문서는 Contract의 **논리 스키마**(필드 그룹·필드·의미·불변)만 정의한다. **직렬화 형식·물리 포맷·저장 위치**는 정의하지 않으며 전부 Adapter 소관이다(§4). 이 경계가 AI-Agnostic 원칙의 스키마 측 실현이다(ARCHITECTURE.md §6 원칙 1).
 
-- **UAF·UAHF 상위 정본 무수정.** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·specs/·framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. 특히 §3.5 UAHF Interface는 UAHF spec의 어떤 연산·필드·불변도 추가·변경하지 않는다(UAF-INV ①).
+- **UAF·UAHF 상위 정본 무수정.** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. 특히 §3.5 UAHF Interface는 UAHF spec의 어떤 연산·필드·불변도 추가·변경하지 않는다(UAF-INV ①).
 
 - **선행 인터페이스만 소비.** 본 문서의 상위 근거는 ARCHITECTURE.md와 discovery/specs/02-discovery.md의 **확정 계약**이다. Discovery는 이 Contract를 산출하는 상류 Compiler이며(02-discovery §3.1), 본 문서는 그 산출의 완결 기준·필수 코어 필드·Dimension 매핑을 고정하여 02-discovery §3.7·§3.11의 위임을 해소한다.
 
-- **AI 비의존.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명·방법론 고유명을 두지 않는다(specs/TEMPLATE.md §3, ARCHITECTURE.md §0 Core 문서 관행 동형). 구체 실현(직렬화 형식·저장 위치·환경 경로 관례)은 Adapter Binding 소관이며(§4), 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
+- **AI 비의존.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명·방법론 고유명을 두지 않는다(uahf/specs/TEMPLATE.md §3, ARCHITECTURE.md §0 Core 문서 관행 동형). 구체 실현(직렬화 형식·저장 위치·환경 경로 관례)은 Adapter Binding 소관이며(§4), 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
 
-- **네임스페이스 분리.** 본 문서가 소유하는 스키마 용어(필드 그룹명·`schemaVersion`·`instanceVersion`·tolerant reader·opaque annex·supersedes 등)는 본 문서 정의로만 확정한다. UAHF Glossary(specs/00-glossary.md)의 동명 용어는 정본을 § 포인터로 참조하고 재정의하지 않는다(ARCHITECTURE.md §12 동형). 새 UAHF 용어는 신설하지 않는다.
+- **네임스페이스 분리.** 본 문서가 소유하는 스키마 용어(필드 그룹명·`schemaVersion`·`instanceVersion`·tolerant reader·opaque annex·supersedes 등)는 본 문서 정의로만 확정한다. UAHF Glossary(uahf/specs/00-glossary.md)의 동명 용어는 정본을 § 포인터로 참조하고 재정의하지 않는다(ARCHITECTURE.md §12 동형). 새 UAHF 용어는 신설하지 않는다.
 
 ---
 
@@ -69,14 +69,14 @@
 
 ## §2. Position
 
-- **아키텍처 상 위치.** UAF 파이프라인의 **Project Contract** 요소다(ARCHITECTURE.md §2.2). UAHF 6-Layer 스택의 지층(Layer)이 아니라, 그 **외부·상류의 UAF 레벨 구조**이며 UAHF와 UAF의 **유일 접점**이다(ARCHITECTURE.md §2.4, specs/00-glossary.md §3.3 INV-3 무촉). Discovery의 산출이자 UAHF의 선택 입력이다.
+- **아키텍처 상 위치.** UAF 파이프라인의 **Project Contract** 요소다(ARCHITECTURE.md §2.2). UAHF 6-Layer 스택의 지층(Layer)이 아니라, 그 **외부·상류의 UAF 레벨 구조**이며 UAHF와 UAF의 **유일 접점**이다(ARCHITECTURE.md §2.4, uahf/specs/00-glossary.md §3.3 INV-3 무촉). Discovery의 산출이자 UAHF의 선택 입력이다.
 
 - **의존하는 정본 (읽기 전 이해 필요).**
   - ARCHITECTURE.md (실재, v1.3) — §2(구조·의존 방향)·§6(원칙)·§7 P3(§7)·§7.1(상시 불변)·§8 UAF-INV ①②③⑤·§10(책임 경계)·§11(Non-Goals)·§12.2(Discovery Request). 본 문서의 최상위 근거.
   - discovery/specs/02-discovery.md (실재, v1.1 Draft) — §3.1 Compiler·§3.7 Execution Ready 2축 판정·§3.11 Discovery Dimension. 본 Contract를 산출·소비하는 상류.
   - entry/specs/01-entry.md (실재, v1.1 Draft) — §3.2-C contract-presence. Entry가 Contract를 유/무 증거로만 관측함의 근거.
-  - specs/00-glossary.md (실재, Frozen 0.2) — UAHF 용어 정본·네임스페이스 분리 대조 기준. 특히 §3.2-C·§3.2-E·§3.2-F·§3.2-G·§3.2-J.
-  - specs/TEMPLATE.md (실재, Frozen 0.1) — 문서 구조·품질 기준.
+  - uahf/specs/00-glossary.md (실재, Frozen 0.2) — UAHF 용어 정본·네임스페이스 분리 대조 기준. 특히 §3.2-C·§3.2-E·§3.2-F·§3.2-G·§3.2-J.
+  - uahf/specs/TEMPLATE.md (실재, Frozen 0.1) — 문서 구조·품질 기준.
 
 - **이 문서에 의존하는 문서 (dependents).**
   - discovery/specs/02-discovery.md — 필수 코어 필드·완결 기준·Dimension 매핑을 본 문서가 확정함으로써 §3.7·§3.11의 추상 참조가 해소된다(§3.2-B·§3.2-C). Discovery의 종단 판정(Compiling)은 본 스키마를 타깃으로 컴파일한다.
@@ -206,14 +206,14 @@ UAHF는 Contract를 **tolerant reader**로 소비한다.
 
 #### 3.3-E 스키마 개정 거버넌스
 
-- **스키마 개정 = spec 버전 상승 + Revision History.** 본 스키마(코어 필드·버저닝 규칙)의 개정은 **본 문서(spec)의 버전 상승 + §9 Revision History append**로만 이뤄진다. 이는 UAHF spec 개정 관행과 동형이다(specs/00-glossary.md §3.2-G Spec Status: Frozen — "이후 변경은 spec 버전 상승과 Revision History 기록이 필수"; specs/TEMPLATE.md §5 Revision History).
+- **스키마 개정 = spec 버전 상승 + Revision History.** 본 스키마(코어 필드·버저닝 규칙)의 개정은 **본 문서(spec)의 버전 상승 + §9 Revision History append**로만 이뤄진다. 이는 UAHF spec 개정 관행과 동형이다(uahf/specs/00-glossary.md §3.2-G Spec Status: Frozen — "이후 변경은 spec 버전 상승과 Revision History 기록이 필수"; uahf/specs/TEMPLATE.md §5 Revision History).
 - **거버넌스 게이트.** 스키마 개정은 Advisor 승인·사용자 승인 게이트를 거친다(ARCHITECTURE.md §8 UAF-INV ⑤ Preserve Human Authority). MAJOR 개정은 여기에 마이그레이션 경로를 더한다(§3.3-B).
 
 ### 3.4 인스턴스 거버넌스 (Instance Governance)
 
 특정 프로젝트 Contract **인스턴스**의 갱신 거버넌스다. 스키마 개정(§3.3-E)과 구분된다.
 
-- **append-only 이력.** 인스턴스 갱신은 **append-only**다. 기존 `instanceVersion`의 문면은 **불변**이며, 갱신은 새 인스턴스 버전을 덧붙일 뿐 과거 버전을 고쳐 쓰지 않는다(§3.6 PC-INV 9; UAHF loop-data append-only 관행과 동형 — specs/03-loop.md §3.2-A).
+- **append-only 이력.** 인스턴스 갱신은 **append-only**다. 기존 `instanceVersion`의 문면은 **불변**이며, 갱신은 새 인스턴스 버전을 덧붙일 뿐 과거 버전을 고쳐 쓰지 않는다(§3.6 PC-INV 9; UAHF loop-data append-only 관행과 동형 — uahf/specs/03-loop.md §3.2-A).
 - **supersedes 계보.** 기존 Contract를 기준선으로 이어가는 새 발견 실행(예: Incremental Discovery — discovery/specs/02-discovery.md §3.3-A Contextualizing의 incremental 분기)은 **새 `instanceVersion` + Meta의 `supersedes` 계보 기록**을 남긴다. 이전 인스턴스는 계보로 보존된다.
 - **Discovery 내부 변경의 도달 한계.** Discovery 내부 변경(기법·전략·예산·질문 방식)은 `instanceVersion`·Provenance 부속에만 반영되고 **`schemaVersion`·코어 스키마에 도달하지 못한다**(§3.2-D, §3.6 PC-INV 2). 즉 인스턴스가 어떤 발견 과정을 거쳐 갱신되었든, 스키마(Public API)는 그 사실로 인해 변하지 않는다.
 
@@ -231,8 +231,8 @@ Contract가 존재하면 "프로젝트 정의의 정본 문서"로서 다음 두
 
 | 소비 지점 | 성립 방식 | UAHF 무수정 근거 |
 |---|---|---|
-| **(a) Advisor 착수 정독 (Consult 관행)** | UAHF Advisor가 착수 전 상위 규약·Architecture·컨텍스트를 정독하는 **Consult 단계**(specs/00-glossary.md §3.2-F Agent Lifecycle의 Consult; specs/02-agent.md §3.2 Advisor의 Consult 참조 주도)에서, 존재하는 Contract를 **또 하나의 프로젝트 정의 정본 문서로 정독**한다. | 문서를 정독하는 것은 UAHF spec의 연산·필드·불변을 바꾸지 않는다. Consult 관행은 이미 "착수 전 문서 정독"을 포함하며, Contract는 그 정독 대상 문서일 뿐이다. |
-| **(b) 신규 프로젝트 설치 배치** | UAHF Scaffold가 신규 프로젝트에 규약·정의 문서를 설치하는 관행(specs/12-scaffold.md §3.2-A Project Template)에서, Contract를 프로젝트에 배치되는 **정본 문서**로 함께 둔다. | 프로젝트에 문서를 배치하는 것은 UAHF Scaffold 계약(연산·필드·불변)을 바꾸지 않는다. Contract는 설치되는 프로젝트 정의 문서일 뿐이다. |
+| **(a) Advisor 착수 정독 (Consult 관행)** | UAHF Advisor가 착수 전 상위 규약·Architecture·컨텍스트를 정독하는 **Consult 단계**(uahf/specs/00-glossary.md §3.2-F Agent Lifecycle의 Consult; uahf/specs/02-agent.md §3.2 Advisor의 Consult 참조 주도)에서, 존재하는 Contract를 **또 하나의 프로젝트 정의 정본 문서로 정독**한다. | 문서를 정독하는 것은 UAHF spec의 연산·필드·불변을 바꾸지 않는다. Consult 관행은 이미 "착수 전 문서 정독"을 포함하며, Contract는 그 정독 대상 문서일 뿐이다. |
+| **(b) 신규 프로젝트 설치 배치** | UAHF Scaffold가 신규 프로젝트에 규약·정의 문서를 설치하는 관행(uahf/specs/12-scaffold.md §3.2-A Project Template)에서, Contract를 프로젝트에 배치되는 **정본 문서**로 함께 둔다. | 프로젝트에 문서를 배치하는 것은 UAHF Scaffold 계약(연산·필드·불변)을 바꾸지 않는다. Contract는 설치되는 프로젝트 정의 문서일 뿐이다. |
 
 #### 3.5-C 정식 등재는 확장 포인트
 
@@ -270,7 +270,7 @@ Project Contract는 어떤 구현·버전에서도 다음을 유지한다. PC-IN
 | `schemaVersion`·`instanceVersion` 표기 형식(§3.3·§3.4) | 버전 값의 물리 표기·직렬화. |
 | Provenance 부속 물리 형식(§3.2-D) | 불투명 부속의 물리 저장 형식 — Discovery 측·Adapter 측 소관(내부 구조 비정의). |
 
-특정 AI·모델·제품 기능·방법론·직렬화 형식·환경 경로는 여기서도 명명하지 않는다. 구체 인스턴스는 해당 Adapter Binding 문서 소관이다(framework/core/structure.md §5 C-3 동형).
+특정 AI·모델·제품 기능·방법론·직렬화 형식·환경 경로는 여기서도 명명하지 않는다. 구체 인스턴스는 해당 Adapter Binding 문서 소관이다(uahf/framework/core/structure.md §5 C-3 동형).
 
 ### 4.2 이식 교체 지점 (Portability Swap Points)
 
@@ -286,7 +286,7 @@ Project Contract는 어떤 구현·버전에서도 다음을 유지한다. PC-IN
 
 **해당 없음.** Project Contract는 **데이터 계약 스키마**의 정의이며, Memory Service를 회수·기록하는 연산 주체가 아니다. Contract를 산출하는 Discovery조차 Memory 활용은 v1.1에서 **확장 포인트로만** 열려 있고(ARCHITECTURE.md §10 비담당 ④·§11), 본 문서는 그보다 하류의 산출물 스키마이므로 Memory에 접근하지 않는다.
 
-- **확장 포인트(설계 안 함).** 향후 어떤 주체가 Contract 관련 기억을 활용한다면, 접근은 **Memory Service Interface(단일 Port)** 경유만 허용되며 영속성 백엔드에 직접 접근하지 않는다(specs/00-glossary.md §3.2-C, ARCHITECTURE.md 5.1). v1.1은 이 경로를 설계하지 않는다.
+- **확장 포인트(설계 안 함).** 향후 어떤 주체가 Contract 관련 기억을 활용한다면, 접근은 **Memory Service Interface(단일 Port)** 경유만 허용되며 영속성 백엔드에 직접 접근하지 않는다(uahf/specs/00-glossary.md §3.2-C, uahf/ARCHITECTURE.md §5.1). v1.1은 이 경로를 설계하지 않는다.
 
 ---
 
@@ -329,7 +329,7 @@ Project Contract는 어떤 구현·버전에서도 다음을 유지한다. PC-IN
 - Verifier가 §3.3 버저닝 규칙(SemVer·tolerant reader·필드 제거 금지)과 §3.4 인스턴스 거버넌스를 D6-C2 문면과 대조한다.
 - Verifier가 §3.5가 UAHF spec의 연산·필드·불변을 변경·확장하는 서술을 포함하지 않음을 확인한다(UAHF 무수정).
 - Verifier가 본문 전체를 특정 AI 실명·모델명·제품 기능명·방법론 고유명 다중 패턴으로 전수 스캔해 0건을 확인한다.
-- 판정 순서는 UAHF 검증 게이트 관행과 동형이다 — CP1 Worker 자체 점검 → CP2 Verifier 독립 판정 → CP3 Advisor 승인(specs/00-glossary.md §3.2-E·§3.2-F). 자체 점검은 최종 승인이 아니다.
+- 판정 순서는 UAHF 검증 게이트 관행과 동형이다 — CP1 Worker 자체 점검 → CP2 Verifier 독립 판정 → CP3 Advisor 승인(uahf/specs/00-glossary.md §3.2-E·§3.2-F). 자체 점검은 최종 승인이 아니다.
 
 ---
 

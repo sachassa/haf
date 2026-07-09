@@ -7,8 +7,8 @@
 
 - 사용자 승인 v1.1 실행 계획 (Project Discovery & Entry Layer Architecture) — 본 문서가 확정하는 내용(Entry 추상·Entry Descriptor 등록 모델·결정 테이블·판별 규칙·Evidence Source 확장 스키마)의 상위 정본. 특히 §"설계 골격 > uaf/specs/01-entry.md" 절과 결정 D3(Entry 판별)·D5(P1~P5)·D6-C1(Entry Resolution 확장성).
 - ARCHITECTURE.md (v1.3) — UAF 상위 구조 정본. 특히 §2(구조·의존 방향)·§6(설계 원칙 10종)·§7(P1~P5·상시 불변 확인)·§8(UAF-INV 6건)·§10(책임 경계표)·§12(용어)·§12.2(Discovery Request 인터페이스 추상). **본 문서는 이 정본을 재정의·확장하지 않고 § 포인터로만 참조한다.**
-- specs/00-glossary.md 0.2 (UAHF 용어 정본) — INV-3(Layer 정확히 6개)·용어 네임스페이스 분리의 근거. § 포인터로만 참조하며 UAHF 정본을 변경하지 않는다.
-- specs/TEMPLATE.md 0.1 — spec 문서 구조(§0~§9) 관행 참고.
+- uahf/specs/00-glossary.md 0.2 (UAHF 용어 정본) — INV-3(Layer 정확히 6개)·용어 네임스페이스 분리의 근거. § 포인터로만 참조하며 UAHF 정본을 변경하지 않는다.
+- uahf/specs/TEMPLATE.md 0.1 — spec 문서 구조(§0~§9) 관행 참고.
 
 ---
 
@@ -19,17 +19,17 @@
 | 2026-07-07 | v1.1 Draft | 최초 작성 — `uaf/specs/` 경계 최초 산출물. Entry Layer & Entry Resolution 정본 신설: Entry = 추상 연산·Entry Resolution만 담당·Discovery 비수행(P1·UAF-INV ④)·출력은 Discovery Request까지(§3.1); Entry Descriptor 등록 모델·Entry Registry·고정 Resolution 엔진(우선순위 + 결정성 검증)(D6-C1·§3.2); Workspace Evidence 2종(Contract 유무·Repository 유무)·Evidence Source 확장 스키마(Capability 선언형)(§3.2); Entry 2종 `/new`(순수 Greenfield 전용)·`/continue`(Incremental/Brownfield) 등재(§3.1·§3.2); Entry Resolution 결정 테이블 전 8조합(2종 × Contract 유무 × Repo 유무) 전수 열거·각 단일 결과(결정성 불변)(§3.2); 판별 규칙 D3 3건 문면화(§3.2); Discovery Request 정합(mode = 확장 네임스페이스·inputs = Evidence 참조 목록 — uaf/ARCHITECTURE.md §8.2 재정의 0·§ 포인터만)(§3.2·§3.3); Entry Registry 확장 포인트·가상 `/import` 등록 워크스루(변경 = Registry 행 + Policy 데이터(+ Evidence Source 선언)뿐·Layer·엔진 무변경)(§8); 상시 불변(Entry는 Discovery 비수행·Project Contract 직접 생성 안 함) 훼손 서술 0(§3.3). UAHF 정본 무수정(§ 포인터만·재정의 0)·특정 AI 실명·모델명·제품 기능명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.1 W2 T2) |
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·uahf/framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본 배치.** 이 문서는 `uaf/specs/` 경계의 최초 산출물이며, **UAF Entry Layer와 Entry Resolution의 정본**이다. 상위 구조 정본은 ARCHITECTURE.md이고, 본 문서는 그 §2.2의 요소 "Entry Layer → Entry Resolution"의 상세 계약을 소유한다. 상위 구조·원칙·불변·용어는 ARCHITECTURE.md가 소유하며, 본 문서는 그것을 **§ 포인터로만 참조**하고 재정의하지 않는다.
+- **정본 배치.** 이 문서는 **UAF specs 경계**의 최초 산출물이며, **UAF Entry Layer와 Entry Resolution의 정본**이다. 상위 구조 정본은 ARCHITECTURE.md이고, 본 문서는 그 §2.2의 요소 "Entry Layer → Entry Resolution"의 상세 계약을 소유한다. 상위 구조·원칙·불변·용어는 ARCHITECTURE.md가 소유하며, 본 문서는 그것을 **§ 포인터로만 참조**하고 재정의하지 않는다.
 
-- **UAHF 정본 무수정.** 본 문서의 신설은 UAHF 정본(ARCHITECTURE.md·specs/·framework/·상위 규약)을 변경하지 않는다. UAHF 계약 요소는 § 포인터로만 참조한다 (UAF-INV ①, ARCHITECTURE.md §8).
+- **UAHF 정본 무수정.** 본 문서의 신설은 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 변경하지 않는다. UAHF 계약 요소는 § 포인터로만 참조한다 (UAF-INV ①, ARCHITECTURE.md §8).
 
-- **INV-3 무촉 (Layer 어휘 주의).** "Entry Layer"의 "Layer"는 UAHF 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter, specs/00-glossary.md §3.2-A)의 지층(stratum)이 아니라, UAF 파이프라인의 한 **단계(stage)** 명칭이다 (ARCHITECTURE.md §0 용어 주의·§2.4). 본 문서는 UAHF Layer 수를 늘리는 어떤 서술도 두지 않으며, Glossary INV-3("Layer는 정확히 6개다", specs/00-glossary.md §3.3)는 무촉이다.
+- **INV-3 무촉 (Layer 어휘 주의).** "Entry Layer"의 "Layer"는 UAHF 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter, uahf/specs/00-glossary.md §3.2-A)의 지층(stratum)이 아니라, UAF 파이프라인의 한 **단계(stage)** 명칭이다 (ARCHITECTURE.md §0 용어 주의·§2.4). 본 문서는 UAHF Layer 수를 늘리는 어떤 서술도 두지 않으며, Glossary INV-3("Layer는 정확히 6개다", uahf/specs/00-glossary.md §3.3)는 무촉이다.
 
 - **논리 식별자 주의.** 본 문서에서 `/new`·`/continue`·`/import`는 Entry의 **논리 식별자(name)**다. 이들의 **물리 진입 형태**(어떤 진입 명령·선택·추론으로 발화되는가)는 Adapter 소관이며(§4, AI-Agnostic — ARCHITECTURE.md §6 원칙 1), 본 문서는 특정 실행 환경의 명령 구문을 지시하지 않는다.
 
@@ -69,7 +69,7 @@
 - **아키텍처 상 위치.** UAF 파이프라인의 최상류 단계다 — Entry Layer → Entry Resolution (ARCHITECTURE.md §2.2 6요소 중 첫 두 요소). UAHF 6-Layer 스택의 **외부**, 그보다 상위의 UAF 레벨 구조이며 UAHF Layer를 늘리지 않는다 (§0, ARCHITECTURE.md §2.4).
 - **의존하는 정본 (읽기 전 이해 필요).**
   - ARCHITECTURE.md — §2(구조·의존 방향)·§6(원칙)·§7(P1~P5)·§8(UAF-INV)·§12(용어)·§12.2(Discovery Request 추상). 본 문서의 상위 계약.
-  - specs/00-glossary.md — §3.2-A(UAHF 6-Layer)·§3.3(INV-3). Layer 어휘 네임스페이스 분리 근거.
+  - uahf/specs/00-glossary.md — §3.2-A(UAHF 6-Layer)·§3.3(INV-3). Layer 어휘 네임스페이스 분리 근거.
 - **이 문서에 의존하는 정본 (하류 소비자).**
   - `discovery/specs/02-discovery.md`(예정) — Entry Resolution의 출력 Discovery Request를 소비한다. **단, 두 문서의 공유 계약은 ARCHITECTURE.md §12.2 확정 추상뿐이며, 본 문서는 하류의 미완성 계약을 참조·추측하지 않는다.**
 - **순환 의존 없음.** 의존은 항상 본 문서 → ARCHITECTURE.md 방향이다 (ARCHITECTURE.md §2.5 의존 방향 단방향).
@@ -78,7 +78,7 @@
 
 ## §3. Core Contract (AI 비의존)
 
-이 절에는 특정 AI 의존 내용이 한 줄도 들어가지 않는다 (specs/TEMPLATE.md §3, ARCHITECTURE.md §0 Core 문서 관행).
+이 절에는 특정 AI 의존 내용이 한 줄도 들어가지 않는다 (uahf/specs/TEMPLATE.md §3, ARCHITECTURE.md §0 Core 문서 관행).
 
 ### §3.1 Interface — Entry & Entry Resolution 연산
 

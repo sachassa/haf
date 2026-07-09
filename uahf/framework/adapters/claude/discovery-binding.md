@@ -36,7 +36,7 @@
 
 - **정본은 discovery/specs/02 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — Compiler 프레이밍(§3.1)·State Machine 단일 정본(§3.3 — 비종단 6·종단 5·전이 T1~T25)·Event Model 15(§3.5)·Termination 4경로(§3.6)·Execution Ready 2축 판정(§3.7)·Invariants DISC-INV 1~9(§3.8)·Module Structure 7(§3.9)·Strategy Provider Interface(§3.10)·Discovery Dimension 5(§3.11)·Confidence(§3.12)·Adaptive Discovery(§3.13)·Question Budget(§3.14)·Discovery Policy(§3.15)·Metrics(§3.16) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 02 §4.1·§4.2가 "Adapter 소관"으로 미룬 물리 실현 — **D1 Event 로그 직렬화·D2 사용자 확인/UserOverride 채널·D3 증거 스캔/프레이밍·D5 Policy 값 데이터 소스·직렬화**와, Module부 문단의 **D6 Evidence Store 물리 저장(= D1과 동일)**, 그리고 **DP-X6 Provenance 내부 형식·DP-X8 백엔드 트리** 넷이다. **D4 Strategy 실행 호스팅은 역할 추상까지만** 확정하고 물리 호스팅은 설계하지 않는다(ARCHITECTURE §11).
 
-- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문, 그리고 UAF 정본(discovery/specs/02) 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이다(structure.md §5 C-3 확장·02 §3 도입 "§3에는 특정 AI 모델·실행 환경 의존 내용이 한 줄도 들어가지 않는다"). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식·물리 경로(`framework/adapters/claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(contract-binding.md §0·entry-binding.md §0·memory-binding.md §0과 동형). 단 **uaf/ 정본이 명명하지 않은 것을 uaf/ 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다.
+- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문, 그리고 UAF 정본(discovery/specs/02) 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이다(structure.md §5 C-3 확장·02 §3 도입 "§3에는 특정 AI 모델·실행 환경 의존 내용이 한 줄도 들어가지 않는다"). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식·물리 경로(`framework/adapters/claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(contract-binding.md §0·entry-binding.md §0·memory-binding.md §0과 동형). 단 **UAF 정본이 명명하지 않은 것을 UAF 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다.
 
 - **하네스 Bootstrap 전제(형태 A, D-v1.2-1).** 이 하네스는 현재 Bootstrap 상태다(Glossary J-13, 자매 바인딩 §0). 본 문서의 바인딩은 **실행 코드 0**이다 — Discovery의 State Machine(02 §3.3)·모듈(02 §3.9)·레퍼런스 Provider(02 §3.10-C)는 실행 스크립트가 아니라 **규약 절차·규약 역할**로 실현되며 주 세션이 실수행한다(D-v1.2-1). 따라서 매핑은 (i) 물리 실재 표면(자매 바인딩·정본 문서), (ii) 규약으로 확정된 정본 문면(형태 A — 직렬화 형식·백엔드 트리·채널·Policy 값), (iii) 실행 코드 도입 시 로딩될 지점(형태 B — Event 로거·직렬화기·관측 로더)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
 
@@ -359,6 +359,17 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 - **핵심 구분.** 본 문서가 확정한 Event 로그 직렬화 형식·백엔드 트리·D2 채널·D3 절차·Policy 값·Provenance 내부 형식은 **정본 문면(형태 A)**이며, 물리 데이터 자산(`discovery-data/…`)은 **현 시점 미존재**로 v1.2 E2E Task(T-XG·T-XB)가 이 정본 구조·값 그대로 생성할 예정이다. 데이터 생성 주체는 E2E Task이며, 본 문서는 구조·형식·경로·값의 정본만 소유한다(memory-binding §2·§7 선례 동형, L-07).
 - 실측과 불일치하는 서술은 0건이다 — 미존재(`discovery-data/`)를 실재로, 실재(자매 바인딩·02·uaf/ARCHITECTURE 정본·기존 프로젝트 콘텐츠)를 미존재로 쓰지 않았다.
 
+**재베이스라인 — 2026-07-09 재측정 (v1.2.1 리팩토링 후):** 위 2026-07-07 표·불릿은 작성 시점 스냅샷으로 상단에 역사 보존한다(byte 불변). 아래는 v1.2.1 Layer 중심 재구성(루트 `uaf/` 소멸·최상위 = `entry/`·`discovery/`·`planning/`·`knowledge/`·`uahf/`·`docs/`·`.claude/`·`ARCHITECTURE.md`) 이후 현시점 직접 실측 결과다(2026-07-09, HEAD `963076d` — `ls`/`test`/`git rev-parse`). 그간 상태가 바뀐 행(`discovery-data/`·하위 데이터·`.git`)만 재측정하며, 나머지 행의 계약·소유 논리는 불변이다.
+
+| 대상 (현행 경로) | 2026-07-07 서술 | 재측정 결과 (2026-07-09, 직접 실측) |
+|---|---|---|
+| `uahf/framework/adapters/claude/discovery-data/` (Discovery 백엔드 루트) | **미존재** (E2E Task 생성 예정) | **실재** — 디렉터리 확인. 정본 문면이 규정한 구조·경로·값 그대로 후속 Task가 생성함(생성 주체 = E2E Task, 본 문서는 구조·형식·경로·값의 정본만 소유 — §13 핵심 구분 유지). 2026-07-07 미존재 → 현 실재로 전환. |
+| `discovery-data/events/`·`policy/`·`e2e-greenfield-project/` 하위 데이터 | **미존재** (상위 부재) | **실재** — `events/{brownfield-r001,greenfield-r002}/{discovery-request.yaml,events.jsonl}`·`policy/default-policy.yaml`·`e2e-greenfield-project/.claude/project-contract/project-contract.v1.md` 실측. |
+| `discovery-data/contracts/uahf/` (contract-binding §4.2 참조 인용) | **미존재** (상위 부재) | **실재** — `contracts/uahf/project-contract.v1.md` 실측(경로 정본 = contract-binding §4.2와 정합). |
+| 본 저장소 VCS 마커(`.git`) | 부재 (비git 저장소) | **실재** — `.git` 존재·`git rev-parse --show-toplevel` 성공·HEAD `963076d` 확인. D3 스캔은 파일 시스템 실측(VCS 비의존)이므로 계약 무영향(entry-binding §10 재측정과 정합). |
+
+- **소유·계약 불변.** 위 상태 전환(백엔드 데이터·`.git` 실재화·루트 경로 재편)은 §3·§4 직렬화 형식·백엔드 트리 정본·DISC-INV·02 계약을 바꾸지 않는다 — 본 문서는 여전히 구조·형식·경로·값의 정본만 소유하며, 그 물리 인스턴스가 현재 실재로 채워졌을 뿐이다. 미존재를 실재로 쓰지 않는다는 L-07 규율은 재측정에도 동일 적용했다(전 행 `ls`/`test`/`git rev-parse` 직접 실측 후 기입).
+
 ---
 
 ## §14. 정본 경계·격리·계약 소유 (self-note)
@@ -366,7 +377,7 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 - **재정의·확장 0.** 본 문서의 모든 매핑은 discovery/specs/02 §3·§4의 물리 실현이다. 어떤 Event·상태·전이·모듈 경계·Provider 계약·Dimension·Confidence·Question Budget·Discovery Policy·불변(DISC-INV 1~9)도 이 문서에서 진위가 새로 확정되지 않는다 — 판정 기준은 02 §3이다. 새 계약 요소(Event·상태·전이·모듈·Provider 필드·Policy 항목·불변)를 창설하지 않았다. 방법론 고유명 0건(02 §3.10-D·UAF-INV ⑥ — 정본 청정).
 - **본 문서가 소유·확정하는 것.** 02 §4.1·§4.2가 "Adapter 소관"으로 미룬 지점 — ① D1 Event 로그 직렬화(§3) ② discovery-data/ 백엔드 트리(§4) ③ D2 사용자 확인/UserOverride 채널(§5) ④ D3 증거 스캔/프레이밍 절차(§6) ⑤ D4 Strategy 실행 호스팅 **역할 추상**(§7) ⑥ D5 Policy 값 데이터 소스·직렬화 + E2E 최소 실값(§8) ⑦ D6 Evidence Store 물리 저장(= D1) — 과, 선행 위임 해소 ⑧ DP-X6 Provenance 내부 형식(§10) ⑨ DP-X8 Discovery Request 기록 위치(§4.2)를 확정한다. D4 물리 호스팅은 **설계하지 않는다**(ARCHITECTURE §11 확장 포인트).
 - **격리 토큰의 단일 자리.** 구체 직렬화 형식·물리 경로(`framework/adapters/claude/discovery-data/…`)·파일 확장자·Policy 수치는 이 Adapter 경계 문서에 둔다. UAF 정본(discovery/specs/02)은 이 토큰을 "Adapter 소관" 포인터로만 미뤘고, 본 문서가 그 소관자다(structure.md §5 C-3는 이 경계에 비적용 — 격리 보유).
-- **동시 작성 문서 경계(07 R2·R4).** 본 산출은 이 1개 파일(`framework/adapters/claude/discovery-binding.md`)만 생성하며, 미완성 후속 산출물(E2E 데이터·`discovery-data/` 트리 내용)을 인용·추측하지 않았다 — 위치·구조·형식·값의 정본 문면만 소유했다(07 R2). 확정된 인터페이스 계약(discovery/specs/02 §3·§4·contract-binding §3·§4·§6·entry-binding §5.1·§5.3·ARCHITECTURE §11·§12.2)만 참조했다. uaf/ 정본·UAHF 정본·기존 바인딩(contract-binding·entry-binding 포함)·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 아래 open_questions로 에스컬레이션했다(추측 금지, specs/02-agent.md O4).
+- **동시 작성 문서 경계(07 R2·R4).** 본 산출은 이 1개 파일(`framework/adapters/claude/discovery-binding.md`)만 생성하며, 미완성 후속 산출물(E2E 데이터·`discovery-data/` 트리 내용)을 인용·추측하지 않았다 — 위치·구조·형식·값의 정본 문면만 소유했다(07 R2). 확정된 인터페이스 계약(discovery/specs/02 §3·§4·contract-binding §3·§4·§6·entry-binding §5.1·§5.3·ARCHITECTURE §11·§12.2)만 참조했다. UAF 정본·UAHF 정본·기존 바인딩(contract-binding·entry-binding 포함)·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 아래 open_questions로 에스컬레이션했다(추측 금지, specs/02-agent.md O4).
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 

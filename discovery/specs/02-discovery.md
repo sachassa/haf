@@ -7,8 +7,8 @@
 
 - 사용자 승인 v1.1 실행 계획 (Project Discovery & Entry Layer Architecture) — 본 문서 Workflow부가 확정하는 내용(Compiler 프레이밍·State Machine 단일 정본·파생 뷰·Event Model·Termination·Execution Ready 판정)의 정본 정의. 특히 §"설계 골격 > uaf/specs/02-discovery.md"의 [Workflow] 표기 항목과 결정 D2①·C3.
 - ARCHITECTURE.md (v1.3) — UAF 상위 구조 정본. 선행 확정 인터페이스. 특히 §12.2 Discovery Request 추상·§7 사용자 고정 원칙 P1~P5·§7.1 상시 불변 확인 2건·§8 UAF-INV 6건·§10 책임 경계표·§11 Non-Goals·§12 용어. UAF 상위 계약은 § 포인터로만 참조하고 재정의하지 않는다.
-- specs/00-glossary.md 0.2 — UAHF 용어 정본. 네임스페이스 분리(§8 UAF 용어와 별개)의 근거. 특히 §3.2-A(Layer)·§3.2-C(Memory Service Interface)·§3.2-E(Agent 역할)·§3.2-F(Agent Lifecycle 7단계). UAHF 용어는 § 포인터로만 참조한다.
-- specs/TEMPLATE.md 0.1 — spec 문서 구조(§0~§9)·품질 기준 관행.
+- uahf/specs/00-glossary.md 0.2 — UAHF 용어 정본. 네임스페이스 분리(§8 UAF 용어와 별개)의 근거. 특히 §3.2-A(Layer)·§3.2-C(Memory Service Interface)·§3.2-E(Agent 역할)·§3.2-F(Agent Lifecycle 7단계). UAHF 용어는 § 포인터로만 참조한다.
+- uahf/specs/TEMPLATE.md 0.1 — spec 문서 구조(§0~§9)·품질 기준 관행.
 
 ---
 
@@ -20,23 +20,23 @@
 | 2026-07-07 | v1.1 Draft (Module부 완성) | **Module부 완성** — §3.9 Module Structure(7모듈 책임·경계·상호 의존 표)·§3.10 Strategy Provider Interface(Capability 선언·입출력 계약·레퍼런스 Provider 1건·방법론 대응 비정본 부록 § 포인터)·§3.11 Discovery Dimension 5(Intent/Requirement/Constraint/Risk/Architecture — 차원별 Confidence)·§3.12 Confidence([0,1]·근거 등급·Policy 임계)·§3.13 Adaptive Discovery·§3.14 Question Budget(soft/hard·소진 강제 종합·T17 재진입 예산 규칙)·§3.15 Discovery Policy(Policy as Data)·§3.16 Metrics 분류(효율·품질·개입 — 전 지표 §3.5 Event 파생) 확정. §1 Non-Goals P4 비담당 5건 재기재. §3.3-A Contextualizing에 incremental mode 결속 명시(Advisor 승인 보강 2건). §4~§7 Module부 주석을 상세·§ 포인터로 해소. Workflow부(§3.1~§3.8) 문면 보존(§3.3-B 전이표 불변). 방법론 고유명·특정 AI 실명·모델명·제품 기능명 0(자가 전수 스캔)·정본 재정의 0(§ 포인터만). | Worker (Advisor 위임, v1.1 W3 T4) |
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·uahf/framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본 배치.** 이 문서는 `uaf/specs/` 경계의 **Project Discovery 정본**이다. UAF 파이프라인 6요소 중 **Project Discovery** 요소(ARCHITECTURE.md §2.2)의 상세 계약을 소유한다. 특히 Discovery의 **오케스트레이션 구조**(어떻게 상태가 전이하며 산출로 수렴하는가)를 확정한다.
+- **정본 배치.** 이 문서는 **UAF specs 경계**의 **Project Discovery 정본**이다. UAF 파이프라인 6요소 중 **Project Discovery** 요소(ARCHITECTURE.md §2.2)의 상세 계약을 소유한다. 특히 Discovery의 **오케스트레이션 구조**(어떻게 상태가 전이하며 산출로 수렴하는가)를 확정한다.
 
 - **Workflow부 / Module부 완성.** 본 문서는 **두 단계에 걸쳐 완성**되었다. **Workflow부**(§3.1~§3.8 — Compiler 프레이밍·State Machine·파생 뷰·Event Model·Termination·Execution Ready·Invariants)는 v1.1 W2 Task가 완성했고, **Module부**(§3.9~§3.16 및 §1 Non-Goals의 P4 재기재·§4~§7의 Module 상세 — Module Structure·Strategy Provider Interface·Discovery Dimension·Confidence·Adaptive Discovery·Question Budget·Discovery Policy·Metrics 분류)는 v1.1 W3 Task가 완성한다. 두 부는 하나의 정본으로 통합되며, 어느 부도 §3.3 State Machine 단일 정본을 재정의하지 않는다(DISC-INV-2).
 
-- **UAF·UAHF 상위 정본 무수정.** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·specs/·framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. Discovery와 UAHF의 유일한 접점은 Project Contract 하나다(ARCHITECTURE.md §8 UAF-INV ①).
+- **UAF·UAHF 상위 정본 무수정.** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. Discovery와 UAHF의 유일한 접점은 Project Contract 하나다(ARCHITECTURE.md §8 UAF-INV ①).
 
 - **선행 인터페이스만 소비.** Discovery의 입력인 **Discovery Request**의 확정 추상은 ARCHITECTURE.md §12.2다(3요소 {mode, inputs, policy}). 본 문서는 이 확정 추상만 소비하며, Entry Resolution의 상세 정본(`entry/specs/01-entry.md`, 예정)은 병렬 작성 중이므로 그 미완성 산출물을 참조·추측하지 않는다(07 R2).
 
-- **AI 비의존.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명을 두지 않는다(specs/TEMPLATE.md §3, framework/core/structure.md §5 C-3 동형). 구체 실현(진입 명령의 형태·직렬화 형식·증거 스캔 구현·사용자 확인 채널)은 Adapter Binding 소관이며(§4), 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
+- **AI 비의존.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명을 두지 않는다(uahf/specs/TEMPLATE.md §3, uahf/framework/core/structure.md §5 C-3 동형). 구체 실현(진입 명령의 형태·직렬화 형식·증거 스캔 구현·사용자 확인 채널)은 Adapter Binding 소관이며(§4), 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
 
-- **네임스페이스 분리.** Discovery 내부 용어(파생 뷰 라벨 "Lifecycle"·"Process"·"Workflow" 등)는 UAHF Glossary(specs/00-glossary.md)의 동명 용어와 **네임스페이스로 구분**한다(ARCHITECTURE.md §12 동형). UAHF 용어는 정본을 § 포인터로 참조하고 재정의하지 않는다.
+- **네임스페이스 분리.** Discovery 내부 용어(파생 뷰 라벨 "Lifecycle"·"Process"·"Workflow" 등)는 UAHF Glossary(uahf/specs/00-glossary.md)의 동명 용어와 **네임스페이스로 구분**한다(ARCHITECTURE.md §12 동형). UAHF 용어는 정본을 § 포인터로 참조하고 재정의하지 않는다.
 
 - **정본 위임.** Contract 스키마·버저닝·UAHF Interface의 상세 정본은 `planning/specs/03-project-contract.md`(예정, W4)가 소유한다. 본 문서는 "필수 코어 필드"·"완결 기준"을 추상으로 참조하고 그 소유 지점을 포인터로만 표기한다.
 
@@ -58,11 +58,11 @@ Workflow부의 책임은 다섯 가지다.
 
 - **구현 0.** v1.1은 Architecture·계약 설계만 수행한다. 실행 코드·물리 실현을 정의하지 않는다(Adapter 소관, §4).
 - **UAHF 하류 책임 비담당 (P4 재기재).** Project Discovery는 다음 **5건을 담당하지 않는다** — 전부 하류 UAHF의 책임이며(ARCHITECTURE.md §10 책임 경계표 비담당 5), Discovery는 Project Contract를 산출한 지점에서 멈춘다.
-  - ① **Agent 실행** — UAHF Agent Layer 소관(specs/00-glossary.md §3.2-A).
-  - ② **Planning** — 구현 계획·작업 분해. UAHF Advisor/Planner 소관(specs/00-glossary.md §3.2-E).
-  - ③ **Workflow 실행** — 분해·병렬 디스패치·병합. UAHF Workflow Layer 소관(specs/00-glossary.md §3.2-A).
-  - ④ **Memory Consult** — 기억 회수. UAHF Memory Service 소관(specs/00-glossary.md §3.2-C).
-  - ⑤ **UAHF Execution** — 핵심 루프 구동. UAHF 하류 소관(specs/00-glossary.md §3.2-J 핵심 루프).
+  - ① **Agent 실행** — UAHF Agent Layer 소관(uahf/specs/00-glossary.md §3.2-A).
+  - ② **Planning** — 구현 계획·작업 분해. UAHF Advisor/Planner 소관(uahf/specs/00-glossary.md §3.2-E).
+  - ③ **Workflow 실행** — 분해·병렬 디스패치·병합. UAHF Workflow Layer 소관(uahf/specs/00-glossary.md §3.2-A).
+  - ④ **Memory Consult** — 기억 회수. UAHF Memory Service 소관(uahf/specs/00-glossary.md §3.2-C).
+  - ⑤ **UAHF Execution** — 핵심 루프 구동. UAHF 하류 소관(uahf/specs/00-glossary.md §3.2-J 핵심 루프).
 - **Contract 스키마 상세 비정의.** Project Contract의 필드·스키마·버저닝은 `planning/specs/03-project-contract.md`(예정, W4) 소관이다. 본 문서는 "필수 코어 필드"를 추상으로만 다룬다.
 - **Discovery 실행 호스팅·Memory 활용 비설계.** 역할 추상까지만 정의하고 물리 호스팅은 설계하지 않으며, Memory 활용은 확장 포인트로만 표기한다(ARCHITECTURE.md §11, §5).
 
@@ -70,12 +70,12 @@ Workflow부의 책임은 다섯 가지다.
 
 ## §2. Position
 
-- **아키텍처 상 위치.** UAF 파이프라인의 **Project Discovery** 요소다(ARCHITECTURE.md §2.2). UAHF 6-Layer 스택의 지층(Layer)이 아니라, 그 **외부·상류의 UAF 레벨 구조**다(ARCHITECTURE.md §2.4, specs/00-glossary.md INV-3 무촉). Discovery는 Discovery Request를 입력받아 Project Contract를 산출한 지점에서 멈춘다.
+- **아키텍처 상 위치.** UAF 파이프라인의 **Project Discovery** 요소다(ARCHITECTURE.md §2.2). UAHF 6-Layer 스택의 지층(Layer)이 아니라, 그 **외부·상류의 UAF 레벨 구조**다(ARCHITECTURE.md §2.4, uahf/specs/00-glossary.md INV-3 무촉). Discovery는 Discovery Request를 입력받아 Project Contract를 산출한 지점에서 멈춘다.
 
 - **의존하는 문서 (이 문서를 읽기 전에 이해가 필요한 것).**
   - ARCHITECTURE.md (실재, v1.3) — UAF 구조·의존 방향(§2)·원칙(§6)·P1~P5(§7)·상시 불변(§7.1)·UAF-INV(§8)·책임 경계(§10)·Non-Goals(§11)·용어와 **Discovery Request 추상(§12.2)**. 본 문서의 최상위 근거.
-  - specs/00-glossary.md (실재, Frozen 0.2) — UAHF 용어 정본. 네임스페이스 분리의 대조 기준. 특히 §3.2-A·§3.2-C·§3.2-E·§3.2-F.
-  - specs/TEMPLATE.md (실재, Frozen 0.1) — 문서 구조(§0~§9)·품질 기준.
+  - uahf/specs/00-glossary.md (실재, Frozen 0.2) — UAHF 용어 정본. 네임스페이스 분리의 대조 기준. 특히 §3.2-A·§3.2-C·§3.2-E·§3.2-F.
+  - uahf/specs/TEMPLATE.md (실재, Frozen 0.1) — 문서 구조(§0~§9)·품질 기준.
 
 - **입력 계약(선행 확정).** Discovery의 입력 **Discovery Request** {mode, inputs, policy}의 추상은 ARCHITECTURE.md §12.2가 확정한다. 이 추상만 소비한다. Entry Resolution 상세(`entry/specs/01-entry.md`, 예정)는 병렬 작성 중이며 본 문서는 참조·추측하지 않는다(07 R2).
 
@@ -120,7 +120,7 @@ Discovery는 다음 5원칙을 따른다. 각 원칙은 §3.3~§3.7의 계약으
 - **P-D1 One Discovery Many Techniques.** Discovery는 하나이되, 그것을 수행하는 기법(Strategy)은 여럿이며 교체 가능하다. 하나의 State Machine·Event Model이 어떤 기법을 쓰든 동일한 산출로 수렴한다(§3.1 Strategy Invariance, §3.8 DISC-INV-7).
 - **P-D2 Confidence Driven Discovery.** 진행과 종료는 차원별 **Confidence**가 규율한다. 확신이 임계에 이르면 그 차원의 수집을 멈추고, 전 차원이 임계에 이르면 종합으로 넘어간다(§3.3, §3.7). Confidence 척도·근거 등급의 상세는 §3.12.
 - **P-D3 Adaptive Discovery.** 고정 대본이 아니라 적응적으로 진행한다. 남은 예산 대비 확신 이득이 큰 방향을 택하고, 포화한 차원은 건너뛴다. 적응 규칙 상세는 §3.13.
-- **P-D4 Minimize Human Intervention.** 일상적 진행은 자동으로 수행하고, 사람 개입은 꼭 필요한 지점(확인·강제)에서만 요구한다. 개입 최소화는 UAHF Loop의 "사람 개입 최소" 관행과 정합한다(specs/03-loop.md §3.1-D 동형).
+- **P-D4 Minimize Human Intervention.** 일상적 진행은 자동으로 수행하고, 사람 개입은 꼭 필요한 지점(확인·강제)에서만 요구한다. 개입 최소화는 UAHF Loop의 "사람 개입 최소" 관행과 정합한다(uahf/specs/03-loop.md §3.1-D 동형).
 - **P-D5 Preserve Human Authority.** 사람의 권한을 보존한다. **확정 게이트는 사용자 승인**이며(ARCHITECTURE.md §8 UAF-INV ⑤), 사용자는 언제든 `UserOverride`로 진행을 강제(일시중단·종료·에스컬레이션)할 수 있다(§3.3, §3.6).
 
 주: P-D4(개입 최소)와 P-D5(권한 보존)는 상충하지 않는다. 반복적·기계적 판단은 자동화하되(P-D4), 최종 확정 게이트와 강제 권한은 항상 사용자에게 남긴다(P-D5).
@@ -203,9 +203,9 @@ Discovery의 진행은 **단일 정본 State Machine**으로 정의된다. 이 �
 
 | 뷰 | 관점 | State Machine에서 도출하는 것 | 네임스페이스 주의 |
 |---|---|---|---|
-| **Lifecycle 뷰** | 단계(stage) 관점 | 비종단 6상태를 발견의 단계 진행으로 본 뷰(Initiated → Contextualizing → Eliciting → Synthesizing → Validating → Compiling → 종단). | UAHF **Agent Lifecycle**(specs/00-glossary.md §3.2-F, 7단계 Consult~Complete)과 별개다. Discovery의 Lifecycle 뷰는 State Machine 단계의 나열이며 UAHF Agent Lifecycle이 아니다. |
+| **Lifecycle 뷰** | 단계(stage) 관점 | 비종단 6상태를 발견의 단계 진행으로 본 뷰(Initiated → Contextualizing → Eliciting → Synthesizing → Validating → Compiling → 종단). | UAHF **Agent Lifecycle**(uahf/specs/00-glossary.md §3.2-F, 7단계 Consult~Complete)과 별개다. Discovery의 Lifecycle 뷰는 State Machine 단계의 나열이며 UAHF Agent Lifecycle이 아니다. |
 | **Process 뷰** | 역할·책임 관점 | 각 단계에서 누가 무엇을 하는가 — Front-end(Strategy)가 증거 수집(Contextualizing·Eliciting), Middle(Confidence·Synthesis)이 판정(Synthesizing), Back-end(Contract Compiler)가 컴파일(Compiling), 사용자가 확인(Validating). | "Process"는 본 뷰의 **라벨**이며 UAHF 정본 용어가 아니다(새 용어 신설 아님). |
-| **Workflow 뷰** | 오케스트레이션 관점 | 단계가 어떤 Event로 구동·순서화되고, 예산·종료가 어떻게 통제되는가(§3.5·§3.6). | UAHF **Workflow**(Layer — specs/00-glossary.md §3.2-A / Component — §3.2-D)와 별개다. Discovery의 Workflow 뷰는 발견 내부 오케스트레이션 관점이며 UAHF Workflow 계층·컴포넌트가 아니다. |
+| **Workflow 뷰** | 오케스트레이션 관점 | 단계가 어떤 Event로 구동·순서화되고, 예산·종료가 어떻게 통제되는가(§3.5·§3.6). | UAHF **Workflow**(Layer — uahf/specs/00-glossary.md §3.2-A / Component — §3.2-D)와 별개다. Discovery의 Workflow 뷰는 발견 내부 오케스트레이션 관점이며 UAHF Workflow 계층·컴포넌트가 아니다. |
 
 **규칙(명문화).** 세 뷰는 편의상 관점을 달리한 **표현**일 뿐이다. 어떤 뷰도 §3.3의 상태·전이·종단을 새로 정의·변경할 수 없다. 뷰와 정본이 어긋나면 정본(§3.3)이 우선한다.
 
@@ -235,7 +235,7 @@ Discovery의 진행은 **단일 정본 State Machine**으로 정의된다. 이 �
 
 **원칙.**
 
-- **Append-only 기록.** Event 기록은 순서 있는 append-only 로그다. 기록된 뒤에 전이가 유효하며, 기록되지 않은 전이는 없다. 이는 UAHF의 loop-data 관행과 동형이다(specs/03-loop.md §3.2-A 루프 상태 기록 append-only, specs/08-hooks.md §3.2-A Event가 확정 계약에서 도출되는 관행 동형).
+- **Append-only 기록.** Event 기록은 순서 있는 append-only 로그다. 기록된 뒤에 전이가 유효하며, 기록되지 않은 전이는 없다. 이는 UAHF의 loop-data 관행과 동형이다(uahf/specs/03-loop.md §3.2-A 루프 상태 기록 append-only, uahf/specs/08-hooks.md §3.2-A Event가 확정 계약에서 도출되는 관행 동형).
 - **Metrics는 이 Event에서만 파생된다.** 발견의 관측 지표(효율·품질·개입 등)는 별도 계측이 아니라 **이 Event 로그에서만** 파생된다(ARCHITECTURE.md §6 원칙 6 Event Driven). Metrics의 분류·산식 상세는 **§3.16** 소관이다.
 
 ---
@@ -253,7 +253,7 @@ Discovery는 반드시 종단에 이른다. 종단에 이르는 경로는 정확
 
 - **경로 ②의 Completeness 불가침.** 예산이 소진되어도 Compiler는 불완전 Contract를 내지 않는다. 필수 코어 필드는 실측 또는 **가정**으로 충족되어야 하며, 가정으로 충족한 항목은 Assumption Ledger에 기재된다(§3.7). 어느 쪽으로도 충족 불가하면 Ready 종단이 아니라 `Escalated`다.
 - **일시중단·재개.** `Suspended`는 상태가 보존되어 재개 가능하다. 재개 시맨틱의 물리 실현(직렬화·복원)은 Adapter 소관이다(§4).
-- **종단 보장.** 어떤 경로로도 검증되지 않은 결과가 Ready로 보고되지 않는다(§3.7, DISC-INV-5·DISC-INV-6). 이는 UAHF Loop의 종료 보장 관행과 정합한다(specs/03-loop.md §3.1-C 동형).
+- **종단 보장.** 어떤 경로로도 검증되지 않은 결과가 Ready로 보고되지 않는다(§3.7, DISC-INV-5·DISC-INV-6). 이는 UAHF Loop의 종료 보장 관행과 정합한다(uahf/specs/03-loop.md §3.1-C 동형).
 
 ---
 
@@ -293,7 +293,7 @@ Discovery는 어떤 구현·Strategy에서도 다음을 유지한다. DISC-INV-7
 
 - **DISC-INV-1 (Event 전이).** 모든 상태 전이는 §3.5 Event로만 일어난다. Event 없는 전이는 없다.
 - **DISC-INV-2 (단일 정본).** §3.3 State Machine이 단일 정본이다. §3.4 파생 뷰는 이를 재정의하지 않는다.
-- **DISC-INV-3 (Append-only 로그).** Event 기록은 순서 있는 append-only 로그다. 기록되지 않은 전이는 없다(specs/03-loop.md §3.2-A 관행 동형).
+- **DISC-INV-3 (Append-only 로그).** Event 기록은 순서 있는 append-only 로그다. 기록되지 않은 전이는 없다(uahf/specs/03-loop.md §3.2-A 관행 동형).
 - **DISC-INV-4 (Metrics 파생).** 모든 Metrics는 §3.5 Event에서만 파생된다(ARCHITECTURE.md §6 원칙 6). 별도 계측을 정본으로 두지 않는다.
 - **DISC-INV-5 (Completeness 불가침 · 불완전 출력 금지).** Compiler는 불완전 Contract를 산출하지 않는다. 모든 Ready 종단에서 필수 코어 필드 Completeness는 타협 불가다(§3.7, P2 정합).
 - **DISC-INV-6 (사용자 승인 게이트).** 사용자 최종 승인 없이 `Ready`·`ReadyWithAssumptions` 종단에 도달하지 않는다(ARCHITECTURE.md §8 UAF-INV ⑤).
@@ -463,7 +463,7 @@ Discovery의 관측 지표(Metrics)는 별도 계측이 아니라 **§3.5 Event 
 | Contextualizing 증거 스캔·프레이밍(§3.3) | Greenfield 프레이밍·Brownfield 증거 스캔의 물리 구현·증거 소스 접근. |
 | Strategy 실행 호스팅(§3.1 Front-end) | Discovery 실행을 어느 주체가 호스팅하는가 — **역할 추상까지만** 정의하고 물리 호스팅은 설계하지 않는다(ARCHITECTURE.md §11). |
 
-특정 AI·모델·제품 기능·직렬화 형식·환경 경로는 여기서도 명명하지 않는다. 구체 인스턴스는 해당 Adapter Binding 문서 소관이다(framework/core/structure.md §5 C-3 동형).
+특정 AI·모델·제품 기능·직렬화 형식·환경 경로는 여기서도 명명하지 않는다. 구체 인스턴스는 해당 Adapter Binding 문서 소관이다(uahf/framework/core/structure.md §5 C-3 동형).
 
 ### 4.2 이식 교체 지점 (Portability Swap Points)
 
@@ -482,7 +482,7 @@ Discovery의 관측 지표(Metrics)는 별도 계측이 아니라 **§3.5 Event 
 
 Discovery는 v1.1에서 UAHF Memory를 회수·활용하지 **않는다**. Memory Consult는 Discovery의 **비담당**이며(ARCHITECTURE.md §10 비담당 ④), Discovery의 Memory 활용은 **확장 포인트로만** 열어두고 설계하지 않는다(ARCHITECTURE.md §11).
 
-- **확장 포인트(설계 안 함).** 향후 Discovery가 Memory를 활용한다면, 접근은 **Memory Service Interface(단일 Port)** 경유만 허용되며 영속성 백엔드에 직접 접근하지 않는다(specs/00-glossary.md §3.2-C, ARCHITECTURE.md 5.1). v1.1은 이 경로를 설계하지 않는다.
+- **확장 포인트(설계 안 함).** 향후 Discovery가 Memory를 활용한다면, 접근은 **Memory Service Interface(단일 Port)** 경유만 허용되며 영속성 백엔드에 직접 접근하지 않는다(uahf/specs/00-glossary.md §3.2-C, uahf/ARCHITECTURE.md §5.1). v1.1은 이 경로를 설계하지 않는다.
 - **네임스페이스 구분.** §3.5 Discovery Event 로그(append-only)는 Discovery **내부 기록**이며 UAHF Memory가 아니다. 둘을 혼동하지 않는다.
 
 **Module부 정합.** §3.9 Evidence Store는 Discovery 내부 append-only 기록이며 UAHF Memory가 아니다(위 네임스페이스 구분). 어떤 Module부 모듈도 v1.1에서 UAHF Memory를 회수·기록하지 않는다 — Memory Consult는 여전히 비담당이다(ARCHITECTURE.md §10 비담당 ④, §1 Non-Goals P4 ④). Discovery의 Memory 활용은 확장 포인트로만 열려 있다(ARCHITECTURE.md §11).
@@ -533,7 +533,7 @@ Workflow부 범위의 대표 실패 시나리오와 대응이다.
 - Verifier가 §3.3-B 전이표를 파싱해 Event 부여·종단 도달성·비종단 진출성을 확인한다.
 - Verifier가 15 Event·4 Termination·판정식을 §3.5·§3.6·§3.7과 대조한다.
 - Verifier가 Discovery 내부 개념의 누출과 AI 의존 토큰을 전수 스캔한다.
-- 판정 순서는 UAHF 검증 게이트 관행과 동형이다 — CP1 Worker 자체 점검 → CP2 Verifier 독립 판정 → CP3 Advisor 승인(specs/03-loop.md §3.1-A 게이트-단계 매핑, specs/00-glossary.md §3.2-E). 자체 점검은 최종 승인이 아니다.
+- 판정 순서는 UAHF 검증 게이트 관행과 동형이다 — CP1 Worker 자체 점검 → CP2 Verifier 독립 판정 → CP3 Advisor 승인(uahf/specs/03-loop.md §3.1-A 게이트-단계 매핑, uahf/specs/00-glossary.md §3.2-E). 자체 점검은 최종 승인이 아니다.
 
 **Module부 완료 기준 (시연 가능 문장).**
 

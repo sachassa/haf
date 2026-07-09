@@ -19,7 +19,7 @@
 | 2026-07-07 | v1.1 Draft | 최초 작성 — `uaf/appendix/` 경계 최초 산출물. **비정본 부록**: 발견·설계 방법론 5종(grill-me·JTBD·Shape Up·Design Sprint·Event Storming)의 핵심 장점을 **Strategy Provider Capability 선언** 관점(`uaf/specs/02-discovery.md` §3.10-A 스키마)으로 대응시키는 참고 표. §0 비정본 선언(정본 우선·계약/용어 미확정 명시)·§2 참조 축(§3.10-A·§3.11 § 포인터·재정의 0)·§3 방법론 5종 대응표(각 방법론이 강한 Discovery Dimension·질문 산출 특징·흡수 원칙)·§4 흡수 원칙 종합·§5 UAF-INV ⑥ 정합(방법론 지식은 Provider 구현·본 부록에만·정본 청정)·§6 확정하지 않는 것 확정. 정본 재정의 0(Strategy Provider Interface·Dimension·Capability 스키마는 § 포인터만)·특정 AI 실명·모델명·제품 기능명 0(방법론 고유명은 비정본 격리 지점의 정당 보유)·자가 전수 스캔. | Worker (Advisor 위임, v1.1 W5 T6) |
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 
-(이력 절은 문서 머리에 둔다 — uaf/ 관행 동형: `ARCHITECTURE.md` §9·`discovery/specs/02-discovery.md` §9·framework/core/structure.md §9. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — UAF 관행 동형: `ARCHITECTURE.md` §9·`discovery/specs/02-discovery.md` §9·uahf/framework/core/structure.md §9. 이후 개정은 이 표에 append-only로 기록한다.)
 
 ---
 

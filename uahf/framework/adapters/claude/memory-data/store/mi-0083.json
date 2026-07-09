@@ -1,0 +1,17 @@
+{
+  "id": "mi-0083",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "v1.2.1 구조 이동 후 편집 경계 참조 정합(reference reconciliation) 스코프갭 — 파생 참조 표면(루트·각 Layer의 README·ROADMAP·.claude·ARCHITECTURE 표 행 등) 부분 스윕으로 옛 경로/스텁 잔존 참조가 완료 보고에 포함되고 CP2에서 검출됨(Phase 2 루트 §0 라인29 stale uaf/ +6 스텁 obsolete 주석; Phase 3 4파일 Step C 누락 — root README·ROADMAP·uahf/.claude/README·ARCHITECTURE Execution 행). 계수·이동은 정확하고 참조 정합 완결만 부분 미달. 부류: repository-refactoring·reference-reconciliation·scope-completeness.",
+    "matched_lesson_id": null,
+    "was_recalled": "N/A — 매칭 Active Lesson 부재. v1.2.1 세션 Active 회수 집합에 '구조 이동 후 편집 경계 참조 정합 완결' 국면을 커버하는 Active Lesson이 없다. 인접 Active Lesson인 L-06(mi-0014)은 applicability='기존 문서의 상태·결정 서술을 개정하는 상황'(situation: document-revision·status-decision-description-update)으로 트리거가 다르고, L-20(mi-0079)은 '산출물 본문 외부 정본 § 포인터·절 명칭 귀속' 축으로 다르다 → 이 'post-move 참조 경로 정합' 축을 커버하는 매칭 Active Lesson 자체가 부재하다.",
+    "verdict": "Novel",
+    "recall_set_ref": "v1.2.1 세션 Active 회수 집합(세션 진입 Consult·Memory 자동 로드) — Active 22건(Lesson 16: L-01~L-15+L-20 · Best Practice 6: BP-01·BP-02·BP-03·BPD-06·BPD-11·BPD-13). v1.2.1은 Advisor 오케스트레이션 트랙으로 자동 루프의 형식 회수 기록을 별도 산출하지 않았고, 회수 기준은 세션 진입 시 Memory 자동 로드 Active 집합이다.",
+    "follow_up": "매칭 Active Lesson 없음 → Novel(05 §3.1-C·lessons.md §4). RecallGap 아님 — 매칭 Active Lesson 자체가 부재하다(L-06은 상태·결정 서술 개정 축, L-20은 § 귀속 축으로 트리거 상이; v1.2 mi-0076·v1.1 mi-0072 판정 논리 동형). 이 실패는 'repository-refactoring 후 편집 경계 참조 정합' 축의 신규 국면으로, 신규 Lesson 후보 L-21 등록(→ mi-0084)이 후속 조치다. v1.2.1 내 Phase 2·3 두 지점 동형 발생을 근거로 축적. 각 건 CP2 검출·CP3 수선·재검증 잔여 0. 실패 아님(검증이 잡아냄)."
+  },
+  "source": "v1.2.1-review",
+  "timestamp": "2026-07-05T22:21:09.602+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

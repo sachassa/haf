@@ -1,0 +1,25 @@
+{
+  "id": "mi-0084",
+  "kind": "lesson",
+  "content": {
+    "id": "L-21",
+    "status": "Candidate",
+    "failure": "v1.2.1 구조 이동 중 편집 가능 경계의 참조 정합에서 스코프갭 발생 — Phase 2에서 루트 §0 라인29 stale uaf/ 참조 + 6 스텁 obsolete 주석이, Phase 3에서 Worker의 참조 정합 단계(Step C) 누락으로 4파일(root README·ROADMAP·uahf/.claude/README·ARCHITECTURE Execution 행)이 갱신되지 않은 채 완료 보고에 포함됨. 각 건은 CP1 자체점검을 통과하고 CP2 독립검증에서 검출·CP3 수선됨(재검증 잔여 0).",
+    "cause": "구조 이동 후 편집 가능 경계의 참조 정합을 '주요 이동 대상' 중심으로 수행하고, 파생 참조 표면(루트·각 Layer의 README·ROADMAP·.claude·ARCHITECTURE 표 행 등)을 전수 열거하지 않아 스윕이 부분적으로 남음. CP1 자체점검이 '이동 수행'은 확인했으나 '참조 정합 완결(편집 경계 내 옛 경로 잔존 0)'을 전수 대조 항목으로 포함하지 않음.",
+    "lesson": "구조 이동·경로 재구성 작업에서 편집 가능 경계의 참조 정합은 이동 대상뿐 아니라 파생 참조 표면(루트·각 Layer의 README·ROADMAP·.claude·ARCHITECTURE 표 행 등)을 전수 열거해 스윕하고, CP1 자체점검에 '편집 경계 내 옛 경로/스텁 잔존 참조 0'을 실측 대조 항목으로 반드시 포함한다. stale-allow로 의도 보존하는 참조(무수정 정본·append-only 데이터)와 정합 대상 참조(편집 경계)를 명시 구분해 후자만 전수 스윕한다.",
+    "applicability": "디렉터리·경로 이동 후 편집 가능한 문서의 참조·링크를 새 경로로 정합해야 하는 상황 — 참조 표면이 여러 문서·여러 Layer에 분산되어 부분 스윕으로 잔존 참조가 남을 위험이 있고, 무편집 보존 대상(stale-allow)과 정합 대상을 구분해야 하는 경우.",
+    "provenance": {
+      "task_ref": "v1.2.1 Repository Refactoring — Phase 2·Phase 3 참조 정합",
+      "report_ref": "docs/v1.2.1-repository-refactoring-brief.md 진행 로그(Phase 2 CP2/CP3: 라인29 stale uaf/+6 스텁 주석; Phase 3 CP2/CP3: 스코프갭 4건·Step C 누락) · docs/v1.2.1-context-and-design.md §7",
+      "origin_role": "도출 Advisor(Planner 초안 채택)·심사 Advisor(승격 심사 대기 — Candidate; 재발 판정 mi-0083=Novel)",
+      "ordering_ref": "v1.2.1 세션 (mi 시퀀스 연속)"
+    }
+  },
+  "source": "v1.2.1-review",
+  "timestamp": "2026-07-05T22:21:10.602+09:00",
+  "labels": {
+    "stable_id": "L-21",
+    "status": "Candidate",
+    "situation": ["repository-refactoring", "reference-reconciliation", "path-migration", "scope-completeness", "cp1-self-check"]
+  }
+}

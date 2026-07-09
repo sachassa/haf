@@ -1,0 +1,24 @@
+{
+  "id": "mi-0082",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-15",
+    "status": "Candidate",
+    "success": "v1.2.1 Repository Refactoring — 무수정 제약(코드·Runtime·기존 UAHF 무편집) 하에서 대규모·비가역 Layer 중심 구조 이동을 3 Phase(청정 이동→uaf 분할→runtime→uahf 승격)로 완주. 정본·append-only 데이터 바이트 무변경(M=0)·단계별 CP2 독립검증 Pass·거짓 완료 0. 커밋 체인 692c4ca→e1b36c4→3951407→6764465, 작업트리 clean.",
+    "practice": "무수정 제약 하 대규모 Repository 구조 이동의 안전 실행 패턴 — (1) 이행 전 git 안전망 선행: 스냅샷 커밋 + 바이트 보존 강제(전역 autocrlf 차단·`* -text`)로 이동을 완전 가역화하고 무편집을 물리 보장한다. (2) 순수 이동(git mv·rename)만 쓰고 내용은 편집하지 않는다. (3) 편집 불가한 참조(append-only 데이터·무수정 정본의 옛 경로 참조)는 강제 편집하지 않고 stale-allow로 바이트 보존하되, 옛→새 경로 마이그레이션 매핑 노트를 남겨 후속 정식 개정 시 해소하고, 데이터 정정이 필요하면 supersede-append로만 표현한다. (4) 각 Phase마다 CP2 독립검증으로 바이트 보존(M=0)·무단 편집 0을 확증한 뒤 Advisor 승인·커밋한다.",
+    "applicability": "코드/구현을 수정하지 않고 디렉터리·문서만 이동하는 대규모·비가역 Repository 재구성 상황 — 특히 append-only 데이터나 무수정 정본이 옛 경로를 참조해 이동으로 참조가 깨질 위험이 있고, 이동의 가역성·무편집을 물리 보장하며 단계별 독립검증이 필요한 경우.",
+    "provenance": {
+      "task_ref": "v1.2.1 Repository Refactoring — Phase 1·2·3 (커밋 e1b36c4·3951407·6764465)",
+      "report_ref": "docs/v1.2.1-context-and-design.md §6·§7·§7.1 · docs/v1.2.1-repository-refactoring-brief.md 진행 로그(git 안전망 설치·Phase 1~3 CP2/CP3 행)",
+      "origin_role": "도출 Advisor(Planner 초안 채택)·심사 Advisor(Candidate 보류 — 1개 트랙 발생·대규모 구조 이동 실무 동형 재발 시 재상정)",
+      "ordering_ref": "v1.2.1 세션 (mi 시퀀스 연속·mi-0081 다음)"
+    }
+  },
+  "source": "v1.2.1-review",
+  "timestamp": "2026-07-05T22:21:08.602+09:00",
+  "labels": {
+    "stable_id": "BPD-15",
+    "status": "Candidate",
+    "situation": ["repository-refactoring", "byte-preservation", "git-safety-net", "no-modification-constraint", "staged-migration"]
+  }
+}

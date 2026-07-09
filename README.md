@@ -1,6 +1,6 @@
 # Universal Agentic Framework (UAF)
 
-상태: v1.2.1 스텁 (구조 이동 산출물 — 완전 저술은 후속 트랙)
+상태: v1.2.1 Baseline 확정 (구조 이동 완결 · 사용자 승인 2026-07-09) — 이 README 문서 자체는 스텁이며 완전 저술은 후속 트랙
 
 ## 개요
 Universal Agentic Framework(UAF)는 에이전트 기반 프로젝트를 진입부터 실행까지 관통하는 Layer 중심 프레임워크다. 각 Layer는 독립적으로 사용할 수 있고, 자신의 `.claude/`(override)·`README`·`ARCHITECTURE`·`ROADMAP`를 가진다. 최상위 `.claude/`는 Global Default다.

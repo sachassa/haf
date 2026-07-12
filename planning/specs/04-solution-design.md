@@ -20,6 +20,7 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-13 | v1.3 Draft (CP2 대기) | 최초 작성 — planning/ Layer의 **Solution Design 단계(성숙 활동) 정본 신설**. planning/ 이중 책임 중 "성숙 활동" 측 소유(모델 P·D2·M6, W0 §2). 단계 계약(입력=Ready\|ReadyWithAssumptions 종단 인스턴스 vN·출력 2경로[성숙 경로 superseding v(N+1)+Projection / 스킵 경로 무산출+경량 확인]·§3.1); 복잡도 판정(Policy as Data·스킵 게이트 D6·§3.2); 역할 할당 계약(Expert Role=Capability 선언·**개방 네임스페이스**·고정 열거 0·최소 할당·§3.3); 협업 설계 프로토콜 골격(State Machine 비종단 5·종단 3·전이 전수·사용자 게이트 명시·단일 인스턴스 수렴·§3.4); Projection(Contract=Source of Truth·파생 산출·동적 선택·§3.5); 경계 기준(vs Discovery — 04 소유 문안·02 무수정·§3.6); 저장 스코프(워크스페이스 귀속 원칙만·§3.7); 불변 **SP-INV 1~8**(§3.8); 확장 포인트 설계 0(§3.9). 형태 A(실행 코드 0·Adapter Binding·dogfooding E2E는 v1.4 이월, D8). 03 스키마·PC-INV·UAHF 개념 재정의 0(§ 포인터만)·방법론 고유명·특정 AI/모델/제품명·고정 역할 카탈로그 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W1) |
+| 2026-07-13 | v1.3 Draft r2 | Gap Analysis(사용자 Target Architecture 대조, 옵션 2 승인) 최소 보완 **C-1** — §3.1-D에 Handoff 의미론 1항 추가(기존 메커니즘 재사용 명문화: 선택 입력 03 §3.5-A·defer=Ready 인스턴스 존속·revise=T10·중단/위임=T11·별도 상태기계 신설 없음). 상태·전이·SP-INV·스키마 무변. W1 CP2 반려 정정 2건(§3.1-B "비Ready 종단" 라벨·§1 "①②" 글리프)은 W1 커밋(3a22a28)에 반영·본 행으로 소급 기록. | Advisor (사용자 승인) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, `ARCHITECTURE.md` §9·`planning/specs/03-project-contract.md` §9·`discovery/specs/02-discovery.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -131,6 +132,7 @@ Solution Design은 **Ready 종단 Contract 인스턴스를 입력으로, 프로�
 
 - **완료 조건.** 협업 프로토콜(§3.4)이 종단(`Matured`·`Skipped`)에 이르고, 종단이 사용자 게이트를 통과했을 때 단계가 완료된다. `Matured`는 단일 일관 superseding 인스턴스(+선택 Projection)를 남긴다.
 - **실패·에스컬레이션.** 자율 수렴 불가(잔여 충돌 미해소·의존 계약 미확정·권위 충돌)나 사용자 강제 시 `Escalated`로 종단하여 상위(사람) 판단에 위임한다(§3.4 T11). 추측으로 우회하지 않는다.
+- **Handoff 의미론 (기존 메커니즘 재사용 — 별도 상태기계 없음).** `Matured`·`Skipped` 종단 이후 UAHF 착수 시점·여부는 **사용자 소관**이다 — Contract는 UAHF의 **선택 입력**(03 §3.5-A)이므로 종단이 실행을 즉시 강제하지 않으며, 보류(defer) 시 Ready 인스턴스가 파일로 존속해 소비 대기한다. 수정 재진입은 T10, 중단·상위 위임은 T11이 담당한다(§3.4-B). 본 문서는 Execution Decision을 위한 별도 상태기계·게이트를 신설하지 않는다.
 
 ### 3.2 복잡도 판정 (Complexity Assessment — Policy as Data)
 

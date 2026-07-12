@@ -1,7 +1,7 @@
 # ARCHITECTURE — Universal Agentic Framework 상위 구조 정본 (라우터)
 
-작성일: 2026-07-07 (v1.3 완전 재저술: 2026-07-09)
-상태: v1.3 — 완전 재저술 (라우터 모델·§0 개념 프레이밍 재서술·knowledge 횡단 Base 편입·.claude Global Default/override 절 신설). 불변 콘텐츠(UAF-INV ①~⑥·P1~P5·INV-3 무촉·6요소 파이프라인 의미론·책임 경계표·Discovery Request 추상) 논지 보존. 직전 Baseline: v1.1 (사용자 승인 2026-07-07) → v1.2.1 구조 이동 (사용자 승인 2026-07-09).
+작성일: 2026-07-07 (v1.3 완전 재저술: 2026-07-09 · v1.4 Solution Design 성숙 루프 개정: 2026-07-13)
+상태: v1.4 — Solution Design 성숙 루프 반영 (§2.2 Contract 요소 내부 성숙 서술·§2.1 라우터 표 planning 행·§3 연결 계약 Project Contract 불릿·§10 주석·§12.1 용어 4건 추가). v1.3 논지(라우터 모델·6요소 파이프라인 의미론·UAF-INV ①~⑥·P1~P5·INV-3 무촉·책임 경계표 담당4/비담당5 카운트·Discovery Request 추상) 무변. 직전 Baseline: v1.1 (사용자 승인 2026-07-07) → v1.2.1 구조 이동 (사용자 승인 2026-07-09) → v1.3 완전 재저술 (2026-07-09).
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -23,6 +23,7 @@
 | 2026-07-09 | v1.2.1 | uaf/ARCHITECTURE.md → 루트 ARCHITECTURE.md 이관(경로 참조 정합·물리 Layer 매핑 추가). 논지 무변경. | Worker(Advisor 위임, Phase 2) |
 | 2026-07-09 | v1.3 | 완전 재저술 — 라우터 모델(각 Layer 독립 ARCHITECTURE 분기·물리 Layer 매핑을 §2 본문 골격으로 승격)·§0 개념 프레이밍 재서술(uaf/ 소멸·신 물리 실재=최상위 5 Layer·UAF=상위 프레임워크/UAHF=Runtime Layer 구현체)·knowledge 횡단 Base 편입(설계 원칙 9종→10종)·.claude Global Default/override 절 신설(tier2 §2·§4 인용)·내부 stale uaf/ 정합. 불변 콘텐츠(UAF-INV ①~⑥·P1~P5·INV-3 무촉·6요소 의미론·책임 경계표·Discovery Request 추상) 논지 보존. 새 설계 결정 창설 0. | Worker(Advisor 위임) |
 | 2026-07-09 | v1.3 (정합) | 라우터 내부 정합 — (a) **Entry Resolution 물리 귀속 정정**: §2.1 지도 행·§2.2 태그를 Entry Resolution = `entry/`(정본 `entry/ARCHITECTURE.md`)·Project Discovery = `discovery/`로 정정(spec `entry/specs/01-entry.md` 배치·P1·§12.1과 정합 — 라우터 내부 불일치 해소). (b) 실재 spec(01/02/03) 대상 `(예정)` 마커 **13곳 제거**(§ 포인터 유지). 참조 정합·defect 정정 — 시맨틱 개정 아님·**버전 무상승**, 불변 콘텐츠 논지 보존. | Advisor (T-D1) |
+| 2026-07-13 | v1.4 | Solution Design 성숙 루프 반영 (v1.3 마일스톤 W2b) — (Δ1) §2.2 Project Contract 불릿에 Contract 요소 **내부 성숙 루프**(Ready vN → superseding v(N+1)·정본 `planning/specs/04-solution-design.md`·단순하면 스킵) 서술 추가 + "파이프라인은 6요소 그대로다" 명시. (Δ2) §2.2 이중 지위 괄호 소폭 개정 "(Discovery의 산출)" → "(Discovery가 컴파일한 최초 인스턴스와 그 성숙 계보)". (Δ3) §2.1 라우터 표 planning 행 파이프라인 요소 칸 "Project Contract · Solution Design(성숙 루프)"로 갱신(행 수·Layer 수 무변). (Δ4) §10 주석 1문 추가(성숙=Discovery 비수행 활동·planning/ 소관·비담당②와 별개 네임스페이스) — 표·담당4/비담당5 카운트 무변. (Δ5) §12.1 용어 4건 추가(Solution Design·Expert Role·Projection·Contract Maturation). (Δ6) 본 행 append + 머리 상태 라인 v1.4 갱신. 재량: §3 연결 계약 Project Contract 불릿에 성숙 계보 한 구 추가(연결 payload 불변 명시). 6요소 카운트·UAF-INV 6건·P1~P5 문면 무변·새 설계 결정/새 연결 계약 창설 0. | Worker (Advisor 위임, v1.3 W2b) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, uahf/framework/core/structure.md §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. 표 내 옛 행의 `uaf/ARCHITECTURE.md`·`§3`·`9종` 등 표기는 그 개정 시점의 정확한 이력 기록이므로 그대로 둔다.)
 
@@ -73,7 +74,7 @@
 |---|---|---|
 | Entry Layer · Entry Resolution | `entry/` | `entry/ARCHITECTURE.md` |
 | Project Discovery | `discovery/` | `discovery/ARCHITECTURE.md` |
-| Project Contract | `planning/` | `planning/ARCHITECTURE.md` |
+| Project Contract · Solution Design(성숙 루프) | `planning/` | `planning/ARCHITECTURE.md` |
 | UAHF | `uahf/` | `uahf/ARCHITECTURE.md` |
 | Execution | `uahf/` (실행 단계 — 별도 디렉터리 없음) | `uahf/ARCHITECTURE.md` |
 | (횡단) Knowledge Base | `knowledge/` | `knowledge/ARCHITECTURE.md` (§4 — 파이프라인 단계 아님) |
@@ -107,11 +108,11 @@ Execution            — UAHF 핵심 루프 구동 (위임 → 구현 → 검증
 - **Entry Layer** — UAF의 공식 진입점. 사용자 입력을 수용하는 추상 연산이다. 물리 실현(진입 명령의 형태)은 Adapter 소관이다 (AI-Agnostic, §6). 상세 정본: `entry/ARCHITECTURE.md`·`entry/specs/01-entry.md`.
 - **Entry Resolution** — Entry Layer가 수행하는 유일한 연산. 명시 진입과 Workspace Evidence를 평가해 **Discovery Request**를 산출한다. Discovery를 직접 수행하지 않는다 (P1, UAF-INV ④).
 - **Project Discovery** — Discovery Request를 입력으로 **Project Contract를 산출하는 Compiler**다 (P2). 어떤 Discovery Strategy를 쓰든 결과는 항상 동일한 Project Contract다 (Strategy Invariance, UAF-INV ③). 상세 정본: `discovery/ARCHITECTURE.md`·`discovery/specs/02-discovery.md`.
-- **Project Contract** — UAF와 UAHF의 **공식 Stable Contract(Public API)**이자 **유일한 접점**이다 (P3, UAF-INV ①). UAHF에는 **선택 입력**으로 주어진다 — 부재 시 UAHF는 기존 방식으로 운용된다(하위 호환). 상세 정본: `planning/ARCHITECTURE.md`·`planning/specs/03-project-contract.md`.
+- **Project Contract** — UAF와 UAHF의 **공식 Stable Contract(Public API)**이자 **유일한 접점**이다 (P3, UAF-INV ①). UAHF에는 **선택 입력**으로 주어진다 — 부재 시 UAHF는 기존 방식으로 운용된다(하위 호환). Contract 요소 내부에서, Ready 인스턴스 vN은 프로젝트 복잡도에 따라 Solution Design(planning/ 소유, 정본 `planning/specs/04-solution-design.md`)에 의해 superseding 인스턴스 v(N+1)로 성숙될 수 있다(단순하면 스킵 — vN이 곧 소비 대상). 파이프라인은 6요소 그대로다. 상세 정본: `planning/ARCHITECTURE.md`·`planning/specs/03-project-contract.md`.
 - **UAHF** — 기존 Universal Agentic Harness Framework 전체(6-Layer + Cross-cutting Memory Service, `uahf/ARCHITECTURE.md` §5·§5.1). 본 문서의 무수정 대상이며, § 포인터로만 참조한다.
 - **Execution** — UAHF가 Project Contract(있으면)를 참조하여 핵심 루프(Core Loop: 위임 → 구현 → 검증 → 승인, `uahf/specs/00-glossary.md` §3.2-J 핵심 루프)를 구동하는 실행 단계다.
 
-**Project Contract의 이중 지위 주의.** Project Contract는 (i) 파이프라인의 한 요소(Discovery의 산출)이면서 동시에 (ii) UAF↔UAHF의 계약 접점이다. 데이터 계약인 **Discovery Request**는 Entry Resolution의 출력이자 Project Discovery의 입력인 요소 간 인터페이스이며, 그 추상은 §12에서 확정된다. 요소 간 연결 계약의 통합 서술은 §3에 둔다.
+**Project Contract의 이중 지위 주의.** Project Contract는 (i) 파이프라인의 한 요소(Discovery가 컴파일한 최초 인스턴스와 그 성숙 계보)이면서 동시에 (ii) UAF↔UAHF의 계약 접점이다. 데이터 계약인 **Discovery Request**는 Entry Resolution의 출력이자 Project Discovery의 입력인 요소 간 인터페이스이며, 그 추상은 §12에서 확정된다. 요소 간 연결 계약의 통합 서술은 §3에 둔다.
 
 ### §2.3 slot (설계 제외 — 자리 표기만)
 
@@ -146,7 +147,7 @@ entry ──[Discovery Request]──▶ discovery ──[Project Contract]─�
 ```
 
 - **Discovery Request** — Entry Resolution의 출력이자 Project Discovery의 입력인 데이터 계약(3요소 {mode, inputs, policy}). 이 인터페이스 추상은 본 라우터 §12.2에서 확정되며, 후속 병렬 작업(`entry/specs/01-entry.md`·`discovery/specs/02-discovery.md`)의 선행 확정 인터페이스다.
-- **Project Contract** — Project Discovery의 출력이자 UAHF의 **선택 입력**인 공식 Stable Contract(Public API). UAF↔UAHF의 유일 접점이다 (P3, UAF-INV ①②). 스키마·버저닝·UAHF Interface 상세 정본: `planning/specs/03-project-contract.md`.
+- **Project Contract** — Project Discovery의 출력이자 UAHF의 **선택 입력**인 공식 Stable Contract(Public API). UAF↔UAHF의 유일 접점이다 (P3, UAF-INV ①②). planning/ 성숙 루프(Solution Design, §2.2)로 최초 인스턴스가 superseding 계보를 이룰 수 있으나, 연결 payload(Contract 스키마)는 불변이다. 스키마·버저닝·UAHF Interface 상세 정본: `planning/specs/03-project-contract.md`.
 - **연결의 성질 (라우터 수준 선언).** 연결 payload는 **타입 계약(schema)**이지 서술(narrative)이 아니다 — 그래야 LLM 교체·Layer 독립 실행 시 다음 Layer가 안정적으로 파싱·소비한다(AI-Agnostic·Layer별 LLM 선택과 직결, context-and-design §4). 계약이 파일로 남으므로 앞 Layer 없이 계약만 있으면 뒤 Layer가 실행 가능하다(독립 실행) — Contract가 UAHF의 선택 입력이라 uahf 단독 실행이 이미 설계에 내장되어 있다(UAF-INV ①).
 - **정본 위임·범위 경계.** Layer 계약 저장 위치(대상 프로젝트 `.claude/`)·호출 표면(`uaf:<layer>`)·체이닝/오케스트레이션의 **정식화**는 본 라우터가 확정하지 않는다 — 그것은 각 Layer 정본 및 후속 Layer 연결/오케스트레이션 트랙 소관이다(Non-Goals, §11; context-and-design §4·§5·§8). 라우터는 이미 확정된 두 계약의 위상만 고정한다.
 
@@ -244,7 +245,7 @@ Project Discovery가 **담당하는 것(4)**과 **담당하지 않는 것(5)**�
 | | ④ Memory Consult (기억 회수 — UAHF Memory Service 소관) |
 | | ⑤ UAHF Execution (핵심 루프 구동 — UAHF 하류 소관) |
 
-주: 비담당 5건은 전부 **하류 UAHF의 책임**이다. Discovery가 이들을 수행하지 않음으로써 의존 방향(§2.5)과 UAHF 무수정(UAF-INV ①)이 함께 성립한다. 비담당 항목의 상세 계약 정본은 각 UAHF spec(`uahf/specs/02-agent.md`·`uahf/specs/07-workflow.md`·`uahf/specs/04-memory.md` 등)이 소유하며, 본 표는 § 포인터로만 경계를 가른다.
+주: 비담당 5건은 전부 **하류 UAHF의 책임**이다. Discovery가 이들을 수행하지 않음으로써 의존 방향(§2.5)과 UAHF 무수정(UAF-INV ①)이 함께 성립한다. 비담당 항목의 상세 계약 정본은 각 UAHF spec(`uahf/specs/02-agent.md`·`uahf/specs/07-workflow.md`·`uahf/specs/04-memory.md` 등)이 소유하며, 본 표는 § 포인터로만 경계를 가른다. Contract 성숙(Solution Design)은 Discovery가 수행하지 않는 활동으로서 planning/ 소관이다(정본 `planning/specs/04-solution-design.md`) — 비담당②의 UAHF 구현 Planning과는 별개 네임스페이스다.
 
 ---
 
@@ -287,6 +288,10 @@ UAF 신규 용어의 **소유 지점**은 이 절(및 각 Layer의 `<layer>/spec
 - **Project Contract** — UAF↔UAHF 공식 **Stable Contract(Public API)**. Project Discovery의 산출이자 UAHF의 선택 입력이다 (P3, UAF-INV ①②). 상세(스키마·버저닝·UAHF Interface)의 정본: `planning/specs/03-project-contract.md`.
 - **Strategy / Strategy Provider** — 교체 가능한 증거 수집 Front-end와 그 제공자. Capability 선언 기반으로 선택된다 (Capability First). 특정 방법론은 이 Provider만이 안다 (UAF-INV ⑥). 상세 정본: `discovery/specs/02-discovery.md`.
 - **Knowledge Base (`knowledge/`)** — 모든 Layer가 Consult하는 UAF 레벨 횡단 공용 지식 Base. 파이프라인 단계가 아니다 (§4). 상세 정본: `knowledge/ARCHITECTURE.md`.
+- **Solution Design** — Ready 종단 Contract 인스턴스를 입력으로, 프로젝트 복잡도에 따라 동적으로 구성된 전문가 역할 협업으로 솔루션 설계 결정을 성숙시켜, 사용자 승인 하에 superseding Contract 인스턴스를 재발행하는 UAF 레벨 활동. 소유 = `planning/`. UAHF 구현 Planning(§10 비담당②)과 별개 네임스페이스다. 상세 정본: `planning/specs/04-solution-design.md`.
+- **Expert Role** — Solution Design에서 Capability 선언으로 정의되는 논리 역할. 고정 Agent Class가 아니며 개방 네임스페이스다. 프로젝트 특성·복잡도에 따라 최소 필요 역할만 동적으로 구성된다. 실행 주체 매핑은 Adapter 소관(코어는 역할 추상까지 — M5). 상세 정본: `planning/specs/04-solution-design.md`.
+- **Projection** — Project Contract를 Source of Truth로 하여 파생 생성되는 프로젝트별 산출 문서(예: PRD·ARCHITECTURE·ADR·UI Guide). 대상 프로젝트 워크스페이스에 귀속되며, 유형 목록은 개방 레지스트리(비정본 부록)다. 모든 프로젝트에 모든 유형을 강제하지 않는다. 상세 정본: `planning/specs/04-solution-design.md`.
+- **Contract Maturation(성숙)** — Ready 인스턴스 vN을 기준선으로 새 설계 결정을 반영한 v(N+1)을 supersedes 계보로 재발행하는 것. 단일 문서의 상태 변경이 아니라 **완결 인스턴스의 재발행**이다(PC-INV 7·9 무촉). 상세 정본: `planning/specs/04-solution-design.md`.
 
 ### §12.2 Discovery Request 인터페이스 추상 (여기서 확정)
 

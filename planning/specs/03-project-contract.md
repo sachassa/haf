@@ -1,7 +1,7 @@
 # planning/specs/03-project-contract — Project Contract Specification
 
 작성일: 2026-07-07
-상태: v1.1 Baseline (CP2 첫 판정 Pass 15/0/0 · CP3 승인 · 사용자 승인 2026-07-07)
+상태: v1.2 Draft (v1.1 Baseline 개정 — CP2 대기 · 사용자 Baseline 승인은 마일스톤 종결 시)
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -21,6 +21,9 @@
 |---|---|---|---|
 | 2026-07-07 | v1.1 Draft | 최초 작성 — `uaf/specs/` 경계 Project Contract 정본 신설(설계 순서 P5의 마지막 고정 지점, W4 [Contract]). 지위 확정(UAF↔UAHF 공식 **Stable Contract·Public API**, P3·UAF-INV ①② — **논리 스키마만** 정의·직렬화/물리 포맷/저장 위치는 Adapter 소관, §3.1); 스키마 필드 그룹 **9종**(Meta·Intent·Requirements·Constraints·Risks·Architecture Direction·Assumption Ledger·Readiness·Provenance[불투명 부속], §3.2-A); **필수 코어 필드** 열거·02-discovery §3.7 Completeness 판정 대상 정합(§3.2-B); **Discovery Dimension 5 → Contract 필드 매핑**(컴파일 방향만·역방향 의존 0 — 02-discovery §3.11 위임 해소, §3.2-C); 버저닝 전략 C2(**schemaVersion/instanceVersion** 분리·SemVer 규율·**tolerant reader**·필드 제거 금지·스키마 개정 거버넌스, §3.3); 인스턴스 거버넌스(append-only 이력·supersedes 계보, §3.4); UAHF Interface(선택 입력·Consult 정독·Scaffold 배치·UAHF 무수정 근거·정식 등재는 확장 포인트, §3.5); 불변 PC-INV 11건(역참조 금지·Provenance 불투명·SemVer·tolerant reader·필드 제거 금지·Completeness 불가침·UAHF 무수정·인스턴스 이력·상시 불변 2건 반영, §3.6). 코어 필드 정의에 Discovery 내부 개념(질문·전략·예산·Strategy·Capability) 참조 0(Provenance 부속 제외·자가 전수 스캔). UAHF·UAF 상위 정본 무수정(§ 포인터만·재정의 0)·특정 AI 실명·모델명·제품 기능명·방법론 고유명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.1 W4 T5) |
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-13 | v1.2 Draft | v1.1 Baseline 개정 — 근거 마일스톤 v1.3 W2a(Solution Design 단계 신설·정본 `planning/specs/04-solution-design.md`). **델타 4건:** (1) §3.1-B **생산자 확장** — 두 생산 경로 명문화: (i) 최초 인스턴스 = Discovery Compiler 산출(기존 문면 유지)·(ii) superseding 성숙 인스턴스 = Solution Design의 성숙 재발행(§3.4 동일 supersedes 메커니즘·사용자 승인 게이트); 두 경로 모두 PC-INV 7(완결 산출만) 충족. (2) §3.4 인스턴스 갱신 유형에 **Contract Maturation(성숙)** 추가 — 동일 append-only·supersedes 메커니즘(새 메커니즘 창설 아님·PC-INV 9 무촉). (3) 본 v1.2 행 append + **카운트 drift 정정 주석**(표 하단). (4) 문서 머리 상태 라인 v1.1 Baseline → v1.2 Draft 갱신. **스키마 무변경(D4)** — 필드 신설·삭제·필수화 0·`schemaVersion` 1.0 유지·PC-INV 1~12 목록·문면 무변경. §9 기존 행(v1.1 Draft·v1.1 Baseline) byte 불변(append-only·L-10). 특정 AI 실명·모델명·제품 기능명·방법론 고유명 유입 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W2a) |
+
+> **카운트 drift 정정 (v1.2 W2a).** 위 **v1.1 Draft 행**의 "불변 PC-INV 11건" 표기는 §3.6 본문 열거 실측 **12건**(PC-INV 1~12)과 불일치한다(저술 시점 결함). **§3.6 본문이 정본**이며, 옛 v1.1 Draft 행은 append-only 원칙(L-10)에 따라 **무수정 보존**한다 — 정정은 본 주석으로만 기록한다.
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·entry/specs/01-entry.md §9·discovery/specs/02-discovery.md §9·uahf/framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -104,7 +107,7 @@
 
 | 항목 | 계약 |
 |---|---|
-| **생산자** | Project Discovery의 Back-end(Contract Compiler)가 단일 타깃 형식으로 컴파일한다(discovery/specs/02-discovery.md §3.1). Compiler는 **불완전 Contract를 산출하지 않는다**(§3.7 Completeness 불가침 정합, §3.6 PC-INV 7). |
+| **생산자** | 두 생산 경로가 있다. **(i) 최초 인스턴스** — Project Discovery의 Back-end(Contract Compiler)가 단일 타깃 형식으로 컴파일한다(discovery/specs/02-discovery.md §3.1). **(ii) superseding 성숙 인스턴스** — Solution Design(정본 `planning/specs/04-solution-design.md`)이 Ready 종단 인스턴스 vN을 기준선으로 superseding 인스턴스 v(N+1)을 재발행한다(§3.4 동일 supersedes 메커니즘·사용자 승인 게이트 통과 — 정본 04). 두 경로 모두 **불완전 Contract를 산출하지 않는다** — Compiler는 불완전 출력을 내지 않고 성숙 재발행은 완결 인스턴스만 산출한다(§3.7 Completeness 불가침 정합, §3.6 PC-INV 7). |
 | **소비자** | UAHF는 Contract를 **선택 입력**으로 소비한다 — **tolerant reader**로서 **필수 코어 필드만 의존**하고 미지 필드·부속 네임스페이스는 must-ignore한다(§3.3-C). 부재 시 UAHF는 기존 방식으로 운용된다(하위 호환, §3.5, D2④). |
 | **완결 기준** | 필수 코어 필드(§3.2-B)가 전건 충족(실측 또는 가정)되고 Readiness가 선언되어야 유효한 Ready Contract다(02-discovery §3.7 축 1 Completeness). 완결 기준 = 필수 코어 필드 전건 충족. |
 | **불변 준수** | 스키마 본문(코어 필드 정의)에 Discovery 내부 개념 참조 0건(Provenance 부속 제외, §3.6 PC-INV 2). 버저닝은 SemVer·tolerant reader·필드 제거 금지를 지킨다(§3.6 PC-INV 4·5·6). |
@@ -215,6 +218,7 @@ UAHF는 Contract를 **tolerant reader**로 소비한다.
 
 - **append-only 이력.** 인스턴스 갱신은 **append-only**다. 기존 `instanceVersion`의 문면은 **불변**이며, 갱신은 새 인스턴스 버전을 덧붙일 뿐 과거 버전을 고쳐 쓰지 않는다(§3.6 PC-INV 9; UAHF loop-data append-only 관행과 동형 — uahf/specs/03-loop.md §3.2-A).
 - **supersedes 계보.** 기존 Contract를 기준선으로 이어가는 새 발견 실행(예: Incremental Discovery — discovery/specs/02-discovery.md §3.3-A Contextualizing의 incremental 분기)은 **새 `instanceVersion` + Meta의 `supersedes` 계보 기록**을 남긴다. 이전 인스턴스는 계보로 보존된다.
+- **갱신 유형 — Contract Maturation(성숙) 추가.** supersedes 갱신을 낳는 사유는 위 **새 발견 실행**(예: Incremental Discovery)에 더해 **Contract Maturation(성숙)** 이 있다 — Solution Design(정본 `planning/specs/04-solution-design.md`)이 Ready 종단 인스턴스 vN을 기준선으로 새 설계 결정을 반영한 superseding 인스턴스 v(N+1)을 재발행하는 것이다. 성숙은 **동일한 append-only·supersedes 메커니즘**을 쓰며 **새 갱신 메커니즘을 창설하지 않는다** — 인스턴스 이력 append-only(§3.6 PC-INV 9)를 그대로 따르고 `schemaVersion`·코어 스키마는 무촉이다. 성숙 활동의 상세 계약은 정본 04(§3.1 단계 계약·§3.6 경계 기준) 소관이며, 본 문서는 그 갱신이 §3.4 supersedes 계보로 표현됨만 확정한다.
 - **Discovery 내부 변경의 도달 한계.** Discovery 내부 변경(기법·전략·예산·질문 방식)은 `instanceVersion`·Provenance 부속에만 반영되고 **`schemaVersion`·코어 스키마에 도달하지 못한다**(§3.2-D, §3.6 PC-INV 2). 즉 인스턴스가 어떤 발견 과정을 거쳐 갱신되었든, 스키마(Public API)는 그 사실로 인해 변하지 않는다.
 
 ### 3.5 UAHF Interface

@@ -1,7 +1,7 @@
 # planning/docs/appendix/expert-role-catalog — Expert Role 예시 카탈로그 (비정본 부록)
 
 작성일: 2026-07-13
-상태: v1.3 Draft (CP2 대기)
+상태: v1.3 Baseline (비정본 부록 · 사용자 승인 2026-07-13)
 성격: **비정본 부록 (Non-Canonical Appendix)**
 상위 규약: AGENT.md (INV-1)
 근거 정본:
@@ -17,6 +17,7 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-13 | v1.3 Draft (CP2 대기) | 최초 작성 — Solution Design 마일스톤(W2d) 신설 **비정본 부록**. Expert Role의 **예시** 카탈로그: 역할은 Capability 선언 기반 **개방 네임스페이스**이며 고정 팀이 아님을 재확인(§1·§3.0)·프로젝트 유형별 최소 구성 **예시** 3세트(§3.1~§3.3 — 각 세트에 "역할명은 예시일 뿐 표준 아님" 명기)·최소 할당 원칙(SP-INV 8)과 불필요 역할 배제 지침(§4)·역할→실행 주체 매핑 Adapter 소관 포인터(§5). 정본(04 §3.3) 재정의 0(§ 포인터만)·계약/불변/용어 확정 0·특정 AI/벤더/모델/제품 기능명 0·방법론 고유명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W2d) |
+| 2026-07-13 | v1.3 Baseline | Baseline 승격 — v1.3 마일스톤 사용자 Baseline 승인(비정본 부록). | Advisor (사용자 승인) |
 
 (이력 절은 문서 머리에 둔다 — UAF 관행 동형: `planning/specs/04-solution-design.md` §9·`planning/docs/appendix/methodology-mapping.md` §9. 이후 개정은 이 표에 append-only로 기록한다.)
 

@@ -1,7 +1,7 @@
 # planning/docs/appendix/review-dimension-catalog — Integrated Design Review 관점 차원 예시 (비정본 부록)
 
 작성일: 2026-07-13
-상태: v1.3 Draft (CP2 대기)
+상태: v1.3 Baseline (비정본 부록 · 사용자 승인 2026-07-13)
 성격: **비정본 부록 (Non-Canonical Appendix)**
 상위 규약: AGENT.md (INV-1)
 근거 정본:
@@ -16,6 +16,7 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-13 | v1.3 Draft (CP2 대기) | 최초 작성 — Gap Analysis(사용자 Target Architecture 대조, 옵션 2 승인) 최소 보완 **C-2**. Integrated Design Review(`Reviewing`·04 §3.4-D ④)가 무엇을 통합 검토할 수 있는가의 **관점 차원 예시** 카탈로그: 차원 예시 표 8종(아키텍처 일관성·인터페이스 호환성·데이터 흐름 일관성·보안·운영성·시험성·기술 호환성·횡단 관심사) — 채택·강제·표준화 0. 정본(04 §3.4) 재정의 0(§ 포인터만)·계약/불변/용어 확정 0·특정 AI/벤더/모델/제품 기능명 0·방법론 고유명 0. | Advisor (사용자 승인, v1.3 보완) |
+| 2026-07-13 | v1.3 Baseline | Baseline 승격 — v1.3 마일스톤 사용자 Baseline 승인(비정본 부록). | Advisor (사용자 승인) |
 
 (이력 절은 문서 머리에 둔다 — UAF 관행 동형: `planning/specs/04-solution-design.md` §9·`planning/docs/appendix/projection-catalog.md` §9. 이후 개정은 이 표에 append-only로 기록한다.)
 

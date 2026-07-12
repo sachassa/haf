@@ -2,7 +2,7 @@
 
 작성: Advisor · 2026-07-13 · v1.3 마일스톤 W0~W2 완료·W3 진행 중
 용도: 새 세션에서 아래를 붙여넣으면 재분석 없이 착수. (물리 발화 = `/uaf-continue`)
-상태: **v1.3 W0~W2 완료(커밋 a44042e·3a22a28·9e5905a) · 사용자 Baseline 승인 대기 중 크래시 시 → W3 잔여(승인 게이트·상태 라인 승격·Memory Update)부터 재개.**
+상태: **v1.3 완결 — 사용자 Baseline 승인 2026-07-13** (Gap Analysis[Target Architecture 대조] 옵션 2 보완 C-1·C-2 포함 · 04 v1.3 Baseline·03 v1.2 Baseline·부록 3종 승격). 다음 = [v1.4] vs [T-b]/[T-c] 사용자 택1.
 
 ---
 

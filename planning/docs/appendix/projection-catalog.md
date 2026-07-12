@@ -1,7 +1,7 @@
 # planning/docs/appendix/projection-catalog — Projection 유형 예시 레지스트리 (비정본 부록)
 
 작성일: 2026-07-13
-상태: v1.3 Draft (CP2 대기)
+상태: v1.3 Baseline (비정본 부록 · 사용자 승인 2026-07-13)
 성격: **비정본 부록 (Non-Canonical Appendix)**
 상위 규약: AGENT.md (INV-1)
 근거 정본:
@@ -17,6 +17,7 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-13 | v1.3 Draft (CP2 대기) | 최초 작성 — Solution Design 마일스톤(W2d) 신설 **비정본 부록**. Projection 유형의 **예시** 개방 레지스트리: Contract=Source of Truth·Projection=파생 원칙(04 §3.5 포인터, §1)·유형 예시 표(PRD·ARCHITECTURE·ADR·UI Guide·API Spec·DB Schema·Deployment — 각 1줄 목적·"언제 유용한가", §3)·전 유형 강제 금지·동적 선택 원칙(§3.0)·ADR "What/Why/Trade-off 보존"·UI Guide "Design Principles·Tokens·Anti-patterns" 예시 세부(§3.1·§3.2)·**사용자 어휘 대응(비정본)** Draft≈Ready vN / Final≈superseding v(N+1)(D5·04 §0, §4)·산출물 워크스페이스 귀속(SP-INV 7, §5) 포인터. 정본(04 §3.5) 재정의 0(§ 포인터만)·계약/불변/용어 확정 0·특정 AI/벤더/모델/제품 기능명 0·방법론 고유명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W2d) |
+| 2026-07-13 | v1.3 Baseline | Baseline 승격 — v1.3 마일스톤 사용자 Baseline 승인(비정본 부록). | Advisor (사용자 승인) |
 
 (이력 절은 문서 머리에 둔다 — UAF 관행 동형: `planning/specs/04-solution-design.md` §9·`planning/docs/appendix/methodology-mapping.md` §9. 이후 개정은 이 표에 append-only로 기록한다.)
 

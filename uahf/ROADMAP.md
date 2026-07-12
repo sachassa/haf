@@ -63,6 +63,9 @@ v0.x 전반은 Claude Code를 적극 활용한다.
 | v1.0 | Architecture Validation & Release | 2nd Adapter 최소 구현, Dogfooding, 문서화 | 높음 |
 | v1.1 | Project Discovery & Entry Layer | UAF Entry Architecture 설계 — 신규 uaf/ 경계(Entry Layer·Entry Resolution·Project Discovery·Project Contract), Architecture 설계만(구현 0), UAHF 정본 무수정 | 중간 |
 | v1.2 | Project Discovery Implementation | uaf/ 정본 4문서 §4 바인딩 지점 11건을 Claude Adapter 경계에 형태 A로 물리화(바인딩 3 + 진입 명령 2), Greenfield/Brownfield 두 경로 E2E 실동작 검증(검증 중점 5건), UAHF 정본 명시 3건 한정 개정·실행 코드 0 | 중간 |
+| v1.3 | Solution Design (Contract Maturation) | Discovery~UAHF 사이 성숙 활동(Solution Design)의 아키텍처 정본 확립 — `planning/specs/04-solution-design.md` 신설(단계 계약·복잡도 게이트·Expert Role 개방 네임스페이스·협업 프로토콜 골격·SP-INV 1~8), 03 v1.2(생산자 2경로·Maturation 갱신 유형), 루트 ARCHITECTURE 문서버전 v1.4(6요소 유지·성숙 루프·§12 용어 4건), planning ARCH 이중 책임, 비정본 부록 2종. Architecture 설계만(형태 A·실행 코드 0)·UAHF 정본 무수정 — Adapter 바인딩·dogfooding E2E는 v1.4 | 중간 |
+
+> 버전 네임스페이스 주의 — 표의 v1.3은 **마일스톤 버전**이다. 루트 `ARCHITECTURE.md`의 **문서 버전 v1.3**(2026-07-09 라우터 재저술)과는 별개 네임스페이스이며, 마일스톤 v1.3에서 루트 문서 버전은 v1.4로 상승했다(설계 정본 = `docs/v1.3-context-and-design.md`).
 
 ---
 

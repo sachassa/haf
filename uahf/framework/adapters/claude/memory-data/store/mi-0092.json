@@ -1,0 +1,17 @@
+{
+  "id": "mi-0092",
+  "kind": "recurrence-judgment",
+  "content": {
+    "failure_signature": "Tier 2 T-a(각 Layer 독립 ARCHITECTURE 완전 저술) 마일스톤 — 4파일(entry 파일럿·discovery·planning·knowledge) exemplar-first 2-Wave 저술. 산출물 자체 실패 신호 0(CP2 4/4 첫 판정 Pass 10/0/0·rework 0). 검증이 표면화한 2건의 근접 신호: (1) 파일럿 저술이 상위 규약 표기를 `.claude/AGENT.md`로 정확화했으나 정본 형제 4종(루트 ARCHITECTURE·01·02·03)은 전부 bare `AGENT.md` — 독립 Verifier가 불일치 확증, Advisor가 코퍼스 일관을 위해 bare 표준화·경로 정확화는 T-b 이월. (2) planning CP2에서 독립 Verifier의 카운트 재계수가 Frozen `03-project-contract.md`의 자기 불일치 포착 — §9 이력=`PC-INV 11건` vs §3.6 본문=1~12=12 고유(Advisor CP3 독립 재grep 확증). planning ARCH는 본문(1~12)을 정확 인용해 무결.",
+    "matched_lesson_id": "L-21 · L-24 (둘 다 Candidate)",
+    "was_recalled": "N/A(커널 Candidate라 Active 회수 밖) — 그러나 이번 마일스톤은 L-24(완전성·카운트 주장 전 독립 검증)·L-21(감사/요약 목록 불신·독립 전수 재스캔) 커널이 '설계대로 작동'한 사례다: 독립 Verifier 카운트 재계수가 Frozen 03의 요약 카운트 drift를 포착했고, Advisor가 CP3에서 자기 재grep으로 재확증(L-24 자기 주장 검증을 Advisor 자신에게 적용).",
+    "verdict": "Novel",
+    "recall_set_ref": "T-a 세션 Active 회수 집합 — Active 22건(Lesson 16 + Best Practice 6). L-21·L-24는 Candidate라 회수 집합 밖이나 규율은 .claude/CLAUDE.md 상시 로드 + SessionStart 훅으로 강제됨.",
+    "follow_up": "신규 facet = Frozen 정본 문서의 §9 이력 '요약 카운트'가 §N 본문 '열거 카운트'와 drift(03: 11 vs 12) → 하류 인용은 요약이 아닌 본문 열거를 대조·인용하고 원천의 자기 불일치는 blind 전파 없이 이월 표기 → L-25 등록(→ mi-0094). exemplar-first(파일럿 CP2/CP3→스켈레톤 동결→병렬 팬아웃)가 4파일 균일성·altitude를 rework 0으로 확보 → BPD-18 등록(→ mi-0093). 이월 인벤토리: (i) AGENT.md 코퍼스 경로 정규화(T-b) (ii) 03 PC-INV 카운트 내부 불일치(Frozen spec 개정 규율 소관) (iii) discovery §4 위상 체인 5노드/'6상태' 라벨 명료화(비결함·선택). 실패 아님(검증이 잡아냄·마일스톤 clean pass)."
+  },
+  "source": "ta-layer-arch-review",
+  "timestamp": "2026-07-05T22:21:18.602+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

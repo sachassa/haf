@@ -1,0 +1,24 @@
+{
+  "id": "mi-0093",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-18",
+    "status": "Candidate",
+    "practice": "여러 파일을 균일한 스켈레톤으로 저술/개정해야 할 때(예: 각 Layer 독립 ARCHITECTURE 4개), 미확정 스켈레톤을 N배 병렬로 확산하지 말고 exemplar-first 2-Wave로 진행한다: (W1) 가장 성숙·대표적인 1개를 파일럿으로 Worker 위임→독립 Verifier CP2→Advisor CP3→그 산출물을 스켈레톤 정본으로 '동결'. (W2) 나머지를 동결 exemplar만 참조(R2)해 병렬 Worker 위임→각 독립 CP2→CP3. 파일럿 검증에서 얻은 정련(표기 표준·§2 실측 규율·altitude 상단 경계)을 W2 브리프에 명문 주입한다.",
+    "rationale": "미확정 스켈레톤을 4-parallel로 확산하면 최대 4배 rework 위험. 파일럿 1개로 altitude·균일성·표기 관례 리스크를 실물 검증·동결한 뒤 확산하면 rework를 최소화하고 N파일 균일성을 보장한다. T-a에서 4파일 CP2 전건 첫 판정 Pass 10/0/0·rework 0으로 실증.",
+    "applicability": "동일 스켈레톤을 따르는 다수 문서/모듈의 신규 저술 또는 대규모 개정 — 스켈레톤 자체가 미확정이라 확산 전 검증이 필요한 경우. spec-backed(얇은 위임)와 spec-less(1차 정본) 변형이 섞이면 파일럿=대표 spec-backed로, 변형은 별도 스켈레톤(B)으로 분기.",
+    "provenance": {
+      "task_ref": "Tier 2 T-a Layer ARCHITECTURE 4개 저술 (커밋 d14788d)",
+      "report_ref": "계획 crystalline-purring-pillow(Wave 설계·exemplar-first) · CP2 4/4 Pass 10/0/0 · [[uahf-active-track-ta-layer-arch]]",
+      "origin_role": "설계 Advisor(Wave 설계·파일럿 채택 게이트·스켈레톤 동결)·검증 독립 Verifier(파일럿 동결 적합성 판정)·심사 대기 Candidate",
+      "ordering_ref": "T-a 세션 (mi 시퀀스 연속·mi-0092 다음)"
+    }
+  },
+  "source": "ta-layer-arch-review",
+  "timestamp": "2026-07-05T22:21:19.602+09:00",
+  "labels": {
+    "stable_id": "BPD-18",
+    "status": "Candidate",
+    "situation": ["exemplar-first", "pilot-freeze-fanout", "uniform-skeleton", "rework-minimization", "multi-file-authoring"]
+  }
+}

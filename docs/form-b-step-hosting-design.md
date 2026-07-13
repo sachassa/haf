@@ -1,7 +1,7 @@
 # 형태 B Step Execution Hosting — 설계 정본 (초안)
 
 작성: Advisor · 2026-07-13
-상태: W0 확정 (사용자 승인 2026-07-13 — 설계 방향·D-1·D-3 승인 · D-2 재검증 반영[§4]·W3 E2E 필수 7 시나리오 편입[§8])
+상태: W0 확정 (사용자 승인 2026-07-13 — 설계 방향·D-1·D-3 승인 · D-2 재검증 반영[§4]·W3 E2E 필수 7 시나리오 편입[§8]) · D-2 최종 확정 + §6 ③ stale 배치 표기 정정(§4 표 기준 — 사용자 게이트·정정 승인 2026-07-13)
 입력: 사용자 지시 16항(2026-07-13) · [후속-A] 비교 분석 보고서(Option D·Adopt/Adapt 6·Reject 3·Scope Matrix) · 저장소 Ground Truth 실측(Explore 3기 + Advisor 교차 — §2 충돌 검증)
 성격: 마일스톤 설계 정본 후보. 계약 정본은 이 문서가 아니라 각 spec·프로토콜 문서·바인딩이 소유한다(재정의 0 — 충돌 시 정본 우선·Advisor 보고). 버전 번호는 미확정(사용자 원칙 9 — 버전 선전제 금지).
 
@@ -156,7 +156,7 @@ Step 실행 상세·중간 로그·대량 Artifact는 run 디렉터리(백엔드
 
 ## §6. 변경 파일 범위 (구현 마일스톤 — 승인 후)
 
-**신설 (4±1):** ① `uahf/framework/runtime/step-hosting-protocol.md`(계약 — AI/언어 비의존) ② `uahf/framework/adapters/claude/step-hosting-binding.md`(물리) ③ `uahf/framework/adapters/claude/step-host/`(Python 실행 코드 + 자체 테스트) ④ run 데이터 백엔드(E2E 시 생성 — L-07 정직 구분) ⑤ (선택·비정본) Step 저술 관행 부록.
+**신설 (4±1):** ① `uahf/framework/runtime/step-hosting-protocol.md`(계약 — AI/언어 비의존) ② `uahf/framework/adapters/claude/step-hosting-binding.md`(물리) ③ `uahf/framework/loop/step-host/`(중립 Host — Python 실행 코드 + configSchema + 자체 테스트) + `uahf/framework/adapters/claude/step-invoker/`(invoker 인터페이스의 claude 구현) ④ run 데이터 백엔드(E2E 시 생성 — L-07 정직 구분) ⑤ (선택·비정본) Step 저술 관행 부록.
 
 **기존 정본 개정: 0건 목표** — 01/02/03/06/07 Frozen spec·루트 ARCH·04·구조 규격 전부 무수정(§ 포인터 재사용·C-1). 경미 append 후보(비차단·구현 마일스톤 W3급): loop/workflow-binding §9·OQ에 "형태 B 부분 실현" 사실 append(BPD-17 규율) · adapter-conformance notes 병기 · Contract 성숙 재발행(v3 — open 1·3항 부분 해소 반영)은 **구현·E2E 완주 후 별도 성숙 run으로**(선전제 금지).
 

@@ -1,7 +1,7 @@
 # framework/runtime/step-hosting-protocol — Step 실행 호스팅 프로토콜 (형태 B)
 
 작성일: 2026-07-13
-상태: W1 확정 (CP2 1차 Fail 1[F-1] 정정 → 재판정 Pass 5/0/0 · CP3 승인 · 2026-07-13 — Baseline 승격은 W3 사용자 게이트)
+상태: v1.5 Baseline (W1 CP2 재판정 Pass 5/0/0 · W3 E2E CP2 Pass 7/7 · CP3 승인 · 사용자 승인 2026-07-13)
 상위 규약: AGENT.md
 근거 정본:
 
@@ -35,6 +35,7 @@
 | 2026-07-13 | W1 Draft r2 | CP2 재작업(F-1·O-1): cross-layer 앵커 3곳(§3.1 표·§3.1 주·§7.2 표) bare '04 §3.3' → '04-solution-design §3.3' 명시 정정 · 근거 정본 3건 등재(00-glossary·02-discovery §3.2·04-solution-design §3.3) | Worker (CP2 재작업 지시) |
 | 2026-07-13 | W1 확정 | CP2 재판정 Pass(점검 5 Met·0 Violated·0 Undetermined — 1차 판정의 Fail 1[F-1]은 r2로 해소) · CP3 Advisor 승인 · 상태행 동결. Baseline 승격은 W3 사용자 게이트 유보. | Advisor |
 | 2026-07-13 | W3 실증 (본문 무변경) | W2 구현·W3 dogfooding E2E 로 §7.2 소관 산출물이 전부 실재화됨 — `framework/loop/step-host/`(중립 Host·테스트 17)·`framework/adapters/claude/step-hosting-binding.md`·`step-invoker/`(테스트 19)·run 데이터 백엔드(`step-data/runs/` 8 run·E2E 7 시나리오 CP2 독립 Pass). §7.3 문면은 W1 시점 실측 스냅샷으로 보존한다(BPD-17 — 현행 실재는 본 행과 step-hosting-binding.md §6 이 기록). 본문 계약·SH-INV 무변경. | Advisor |
+| 2026-07-13 | v1.5 Baseline | 마일스톤 v1.5 「형태 B Step Execution Hosting」 사용자 승인 — 기준선 확정(Baseline 승격 게이트 통과·상태행 승격). 본문 무변경. | Advisor |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 

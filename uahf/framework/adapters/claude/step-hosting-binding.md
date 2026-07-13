@@ -1,7 +1,7 @@
 # framework/adapters/claude/step-hosting-binding — Claude Step Hosting Adapter 바인딩
 
 작성일: 2026-07-13
-상태: W2 확정 (CP2 Pass 9 Met/0 Violated/0 Undetermined — 실행 검증 포함 · CP3 승인 · 2026-07-13 — Baseline 승격은 W3 사용자 게이트). 직전 기준선: 없음(신규 산출물 — 형태 B Step Hosting 마일스톤 W2)
+상태: v1.5 Baseline (W2 CP2 Pass 9/0/0[실행 검증 포함] · W3 E2E CP2 Pass 7/7 · CP3 승인 · 사용자 승인 2026-07-13). 직전 기준선: 없음(신규 산출물 — 마일스톤 v1.5 형태 B Step Hosting)
 상위 규약: AGENT.md
 근거 정본:
 
@@ -31,6 +31,7 @@
 | 2026-07-13 | W2 Draft | 최초 작성. `framework/adapters/claude/` 경계의 신규 산출물(형태 B Step Hosting). step-hosting-protocol.md(W1) §7.2 바인딩 지점 8건을 claude 환경 실값으로 확정: 직렬화(Step=JSON·이벤트 로그=JSONL·config=JSON)·run 데이터 백엔드 이원화(§3)·invoker 의 claude 구현 로딩·Autonomy→CLI 권한 플래그 매핑(`interactive`=기본·`auto_approve`=`--permission-mode acceptEdits`·`unrestricted`=`--dangerously-skip-permissions` — 이 플래그 문자열은 이 문서·step-invoker/ 에만 등장)·게이트 등급 분리 명기·재시도 한도 기본 2·autonomy 기본 interactive(§4)·역할 실행/CP2 독립/CP3 Advisor 디스패치 물리 형태·물리 정지 신호=종료 코드 2·win32 실행 전제·타임아웃(§5). CLI 플래그는 `claude --help` 실측(2.1.207) 확인분만 기재(§6 실측 대조). 프로토콜·spec 재정의 0, 새 계약·새 용어 0. 신설 경로 밖 파일 무수정. | Worker (Advisor 위임, Task W2) |
 | 2026-07-13 | W2 확정 | CP2 독립 판정 Pass(V1~V6 — Met 9·Violated 0·Undetermined 0; 테스트 36건 라이브 재실행 Pass·CLI 플래그 `claude --help` 실측 전건 부합·토큰 경계 2개 독립 도구 교차 스캔 0건·기존 파일 무수정 실측) · CP3 Advisor 승인 · 상태행 동결. 비차단 관찰 3건(invoker FileNotFound 분기의 blocking 라벨 불일치·CLI 실호출 미검증[W3 소관]·보고 추출 중괄호 파서 엣지)은 W3 이관. Baseline 승격은 W3 사용자 게이트 유보. | Advisor |
 | 2026-07-13 | W3 실증 정합 | dogfooding E2E 필수 7 시나리오 전건 실증(실 CLI 21 세션·`step-data/runs/` 8 run — CP2 독립 판정 Pass: 시나리오 7/7·차원 4/4 Met·Violated 0) · §3.2 run 구조 제안이 실물로 실현(구조 확정) · §7 OQ-SH-1 해소(CP3=배치 종단 Advisor 디스패치 실증)·자매 바인딩 OQ append 완료·신규 관찰 OQ-SH-4(CP2 모델 슬롯 결합)·OQ-SH-5(해소 API 부재·해소=fail 계수) 등재 · W2 이관 관찰 중 O-1(blocking 라벨)은 s6 호스팅 실행이 실제 정정(`claude_invoker.py` 1행·hosted CP2 통과). OQ-SH-2·3 은 미실증 open 유지. Baseline 승격은 사용자 게이트 유보. | Advisor |
+| 2026-07-13 | v1.5 Baseline | 마일스톤 v1.5 「형태 B Step Execution Hosting」 사용자 승인 — 기준선 확정(Baseline 승격 게이트 통과·상태행 승격). 본문 무변경. | Advisor |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 

@@ -1,8 +1,8 @@
-# 다음 세션 부트스트랩 프롬프트 (마일스톤 v1.6 Project Orchestration — Baseline 확정 · Contract v3 T8 게이트 대기)
+# 다음 세션 부트스트랩 프롬프트 (마일스톤 v1.7 첫 외부 소비 프로젝트 — Baseline 확정)
 
-작성: Advisor · 2026-07-13 · v1.6 마감 시점
+작성: Advisor · 2026-07-14 · v1.7 마감 시점
 용도: 새 세션에서 아래를 붙여넣으면 **추가 재조사 없이** 착수. (물리 발화 = `/uaf-continue`)
-상태: **마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 완결 — Baseline 확정 + Contract v3 발행(T8 사용자 승인 2026-07-13)**. S1~S5 완주·상태행 승격·루트 라우터 등재(문서버전 v1.5)·ROADMAP 등재·maturation-r002 Matured 종결(seq 1~10)·**project-contract.v3.md 발행(supersedes 2·v2 문면 불변) — 세션 진입 Consult 정독 대상 = v3**. 트랙 완결 — 다음 트랙은 사용자 지시 대기.
+상태: **마일스톤 v1.7 「첫 실제 신규 외부 소비 프로젝트(UAHF Control Plane) + OQ-PO-B4 해소」 완결 — Baseline 확정(사용자 승인·번호 v1.7 부여 2026-07-14).** W0~W5 완주·CP2 8회 전건 Pass·사용자 게이트 6회 전부 실 해소. 트랙 완결 — 다음 트랙은 사용자 지시 대기.
 
 ---
 
@@ -11,62 +11,60 @@
 ```
 너는 Universal Agentic Framework(UAF/UAHF)의 메인 Advisor다.
 
-직전 완결 트랙: 마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 —
-Baseline 확정(사용자 승인 2026-07-13). 커밋 체인: fd112cd(S1 Layer·spec) →
-ce0cdba(S2 Revision Ledger·Orchestrator) → c65d20f+04b8f6e(S3 Gate Policy) →
-745f26e(S4 Allocation·Model Selection·OQ-SH-4 해소) → 5e843dc(S5 Artifact
-Registry·실 CLI 종단 E2E) → 7da5c97(Baseline 확정·라우터 등재) → 41ce16f
-(maturation-r002·T8 대기) → [Memory Update 커밋].
+직전 완결 트랙: 마일스톤 v1.7 「첫 실제 신규 외부 소비 프로젝트(UAHF Control Plane)
++ OQ-PO-B4 해소」 — Baseline 확정(사용자 승인 2026-07-14). 커밋 체인(UAHF):
+4e3a42d(W0 비픽스처 스모크+W1 Discovery r003) → ea86a07(W3 드라이버) →
+8af78d1(W3 성숙 run 완주·Contract v2) → 2768b9f(W4 드라이버) → 1ad91a9(W4 구현
+run 완주·OQ-PO-B4 해소) → [마감 커밋]. 신규 저장소(uahf-control-plane):
+67d981c(초기화 Contract v1+Scaffold) → b4cec95(Contract v2) → 7bd66a8(MVP 구현)
+→ [README Handoff].
 
-■ v1.6 결과 요지
-- UAF 레벨 신규 최상위 Layer `orchestration/` 신설(루트 ARCHITECTURE v1.5 §2.3
-  "Agentic Runtime" slot 실현·§2.1 라우터 등재·최상위 6 Layer). 사용자 배치
-  재검증 게이트(2026-07-13): 소유=UAF 레벨(UAHF 내부 아님)·UAHF 접촉=substrate
-  라이브러리 무수정 재사용(step-host import — 루트 §2.5 하향 방향·UAF-INV ①
-  규범 문면 무변+병존 주).
-- 정본: orchestration/specs/05-project-orchestration.md(v1.6 Baseline — PO-INV 8·
-  Graph Revision Ledger·Gate Policy 5종+단조성·할당 3층 Role/AgentSpec/Instance·
-  Model Selection hysteresis·ArtifactRecord) + orchestration/ARCHITECTURE.md.
-- 중립 코드: orchestration/framework/orchestrator/ 6모듈(revision·orchestrator·
-  gates·allocation·artifacts·stephost_bridge)+스키마 4종·테스트 총 165(126+
-  step-host 20+invoker 19). "PM Agent" 3분해(기계 조율=deterministic 코드·의미
-  판단=국소 fresh-context Step·확정 권위=사용자).
-- 바인딩: uahf/framework/adapters/claude/project-orchestration-binding.md(v1.6 —
-  UAF 레벨 바인딩 5종째)+orchestration-data/(run 백엔드·E2E).
-- E2E: 실 claude CLI 5 세션 종단(user_decision 게이트 물리 정지 exit 2→해소
-  [시뮬레이션 명시 라벨]→구현 revision 인과→review 게이트→완주·replay 동일
-  fingerprint·상류 재실행 흔적 0) + artifact 계보(v1 해시 불변·supersedes).
-- CP2 총 7회 전건 첫 판정 Pass(S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0·
-  마감 2파트)·CP3 전건 승인. OQ-SH-4 해소·OQ-LB-2/WB-2 승계 표기.
+■ v1.7 결과 요지
+- 신규 외부 소비 프로젝트 = C:\my-claude-project\uahf-control-plane\ (독립 git repo):
+  UAHF 하네스 운영 관찰 웹 대시보드(Next.js+React+TS·Tailwind+shadcn — Contract 제약,
+  사용자 진술). MVP = 관찰 전용 파생 뷰(run 목록·타임라인+게이트·revision/artifact
+  계보·토큰/비용 — 실데이터 렌더 실측·빌드 통과·수동 코딩 0).
+- 풀 파이프라인 실증: Entry /new 행1 → Greenfield Discovery(greenfield-r003 · 37이벤트
+  · 질문 루프 실 사용자 · G2) → Contract v1(pc-uahf-control-plane-001·소비 프로젝트
+  .claude/project-contract/ 관례 배치) → Scaffold 첫 실 설치(27산출물·Manifest·CP2
+  6/0/0) → 첫 orchestration 형태 B 호스팅 성숙 run(maturation-r003 + orch-m-maturation-cp
+  — 05 §3.7 실현·13세션·역할 동적 할당 2종[data-layer/ui-view designer]·독립 제안·
+  Wireframe 사용자 수정 요구[task_superseded·동일 게이트 basis]·Reconcile·Integrated
+  Review 17행 전건 정합·T8) → Contract v2(supersedes 1·v1 blob 불변) → 구현 run
+  (orch-w-impl-cp — 실 LLM impl-plan 4-task·실 CLI 16세션·재시도 1 정직 기록·done AC
+  4/4·npm run build 통과).
+- **OQ-PO-B4 해소**(정본 문면 = project-orchestration-binding.md:201): 설계 산출
+  artifact를 실 LLM 제안 step이 소비해 구현 task 제안 → 실 사용자 게이트 → revision
+  basis 포함 append — 픽스처 0·시뮬레이션 라벨 0. 선행 스모크 = 시나리오 k
+  (orch-k-nonfixture-smoke — 외부 워크스페이스 지정 실증 포함).
+- 드라이버 신규 = orchestration-data/e2e/{k,m,w}_*.py + amend_m_wireframe.py(격리
+  지점·기존 파일/중립 코드 무수정·재사용 가능). SD 정본 로그 = maturation-r003
+  events.jsonl seq 1~10(UserResponded 선행 = 게이트 불가침·r001/r002 동형).
 
-■ Contract v3 발행 완료 (T8 사용자 승인 2026-07-13)
-- maturation-r002 Matured 종결(events seq 1~10 — UserResponded[seq 7·승인·게이트
-  옵션 확정: 6-Layer 채택·OQ-SH-4 반영 유지]가 T8[seq 8]에 선행 = 게이트 불가침
-  물리 증거·r001 동형). v3 = discovery-data/contracts/uahf/project-contract.v3.md
-  (instanceVersion 3·supersedes 2·v1/v2 blob 불변 실측·발행 문면 = 후보에서
-  placeholder 3개소만 확정). **세션 진입 Consult 정독 대상 = v3.**
-- 보고 승계: OQ-R2-1 — 04 §3.1-B 문면은 성숙 입력을 Ready 계열로 한정하나 본
-  run 입력은 Matured v2(03 §3.4 계보상 유효 기준선으로 진행·r002 seq 1에 명기).
-  04 문면 명확화("직전 Matured 인스턴스 포함")는 별도 결정(Baseline 개정 게이트
-  필요) — 미착수·이월.
+■ Contract 정독 대상 (Consult)
+- UAHF 자신: project-contract.v3.md (변동 없음 — discovery-data/contracts/uahf/).
+- 신규 소비 프로젝트: uahf-control-plane/.claude/project-contract/project-contract.v2.md
+  (최고 instanceVersion — 그 트랙 작업 시).
 
 ■ 다음 트랙 후보 (착수는 사용자 지시 — 임의 착수 금지)
-1. 물리 동시 디스패치(동시성 invoker — OQ-WB-2 잔여 축·worktree 격리 Defer 승계).
-2. 실 LLM 제안 step 기반 비픽스처 완전 성숙 run(OQ-PO-B4) — 실제 외부 프로젝트
-   적용(Contract intent "실용화")과 결합 가능.
-3. OQ-SH 잔여 — SH-2(interactive headless)·SH-3(stream-json)·SH-5(Escalation
-   해소 어휘·게이트 큐 어휘와 통합 후보).
-4. 대화형 단위의 형태 B 호스팅 · 멀티프로젝트 오케스트레이션 · 비용/토큰 미터링.
-5. Tier 2 잔여 [T-b]·[T-c] · 유지보수 일괄(이월 인벤토리).
+1. 물리 동시 디스패치(동시성 invoker — OQ-WB-2 잔여·v1.7에서도 순차 실행이 병목 실측).
+2. Control Plane 확장 — 디자인 협업 라운드(사용자↔디자인 역할 에이전트·톤앤매너/테마
+   — v2 open + 이번 트랙 사용자 요청 표면화) · Control 기능(게이트 해소 쓰기 1종) ·
+   실시간 갱신. v2→v3 성숙 run으로 진행 가능(호스팅 재사용).
+3. OQ-SH 잔여(SH-2·SH-3·SH-5) · 대화형 단위 형태 B 호스팅 · 멀티프로젝트 · 미터링.
+4. 유지보수 일괄 — scaffold-binding §2/§6.1↔§3.1 내부 모순 정정(v1.7 검출)·04 §3.1-B
+   문면(OQ-R2-1)·02 §3.7 자기 불일치 등 이월 인벤토리.
+5. Tier 2 잔여 [T-b]·[T-c].
 
-■ 이월 인벤토리 (비차단·승계)
-- v1.5 승계분(02 §3.7 자기 불일치·OQ-SD-2·entry/discovery-binding 시제·
-  settings.json stale·adapter-conformance notes defer 등) 전부 승계.
-- v1.6 신규: 루트 §2.3 헤딩 "(향후)" 라벨(앵커 안정 우선 보존·후속 정합 선택지) ·
-  design doc §9 OQ 스냅샷(BPD-17 보존) · AgentSpec tie-break "사전순" 라벨의
-  strict-prefix 극단 부정확(결정성은 성립) · steps/ 미러=비정본 편의 뷰 ·
-  OQ-PO-B1(제시 표면 문법)·B2(해소 어휘)·B3(headless 제시 브리지) ·
-  Superpowers 비정본 부록 후보(리뷰 2판정·placeholder 금지·receiving-review).
+■ v1.7 검출·관찰 이월 (비차단)
+- scaffold-binding 내부 모순(설치 대상 표기 vs §3.1 suffix 보존 규칙 — Verifier 검출).
+- Eliciting 차원 커버리지: 시각 디자인(톤앤매너) 질문 누락 → 기본값 디폴트 — 교훈 등록.
+- uahf-control-plane not-found가 HTTP 200(이상적 404 아님) · GateEvent.state 필드 정리
+  (reviewing-record §4.2 이월) · invoke_seq 위상별 재시작(표시 흠결) · 중립 store 빈
+  원장 touch 거동(j/k 공유 특성) · gate-review Verifier 쓰기 시도(denials로 차단됨 —
+  행동 아티팩트 관찰).
+- 프로세스 교훈: W3까지 커밋이 run-증거 CP2에 선행 → W4부터 CP2 후 커밋으로 교정.
+- v1.6 이월 전부 승계(OQ-R2-1·OQ-PO-B1/B2/B3·OQ-SH 잔여·02 §3.7 등).
 ```
 
 ---
@@ -75,8 +73,10 @@ Registry·실 CLI 종단 E2E) → 7da5c97(Baseline 확정·라우터 등재) →
 
 | 항목 | 위치 |
 |---|---|
-| 설계 정본 | `docs/project-orchestration-design.md` (v1.6 Baseline) |
-| Layer 정본 | `orchestration/specs/05-project-orchestration.md` · `orchestration/ARCHITECTURE.md` |
-| 바인딩 | `uahf/framework/adapters/claude/project-orchestration-binding.md` |
-| v3 후보·run | `uahf/framework/adapters/claude/solution-design-data/events/maturation-r002/` |
-| 플랜(게이트 통과본) | `C:\Users\aime8\.claude\plans\uaf-project-orchestration-elegant-cat.md` |
+| 트랙 플랜(게이트 통과본) | `C:\Users\aime8\.claude\plans\typed-skipping-turtle.md` |
+| 신규 프로젝트·Handoff | `C:\my-claude-project\uahf-control-plane\README.md` (계보 표 포함) |
+| Discovery run | `uahf/framework/adapters/claude/discovery-data/events/greenfield-r003/` |
+| 성숙 run(SD 정본+호스팅) | `solution-design-data/events/maturation-r003/` · `orchestration-data/runs/orch-m-maturation-cp/` |
+| 구현 run(OQ-PO-B4) | `orchestration-data/runs/orch-w-impl-cp/` · `uahf-control-plane/impl-plan.json` |
+| 스모크 run | `orchestration-data/runs/orch-k-nonfixture-smoke/` |
+| 드라이버(격리 지점) | `orchestration-data/e2e/{k,m,w}_*.py`·`amend_m_wireframe.py` |

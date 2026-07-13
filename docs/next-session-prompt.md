@@ -2,7 +2,7 @@
 
 작성: Advisor · 2026-07-13 · v1.6 마감 시점
 용도: 새 세션에서 아래를 붙여넣으면 **추가 재조사 없이** 착수. (물리 발화 = `/uaf-continue`)
-상태: **마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 Baseline 확정 — 사용자 승인 2026-07-13** (플랜 게이트·배치 재검증 게이트·Baseline 게이트·번호 부여 통과). S1~S5 완주·상태행 승격·루트 라우터 등재(문서버전 v1.5)·ROADMAP 등재. **잔여 1건: Contract v2→v3 성숙 run(maturation-r002)이 Validating에서 정지 — T8 사용자 게이트 대기.**
+상태: **마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 완결 — Baseline 확정 + Contract v3 발행(T8 사용자 승인 2026-07-13)**. S1~S5 완주·상태행 승격·루트 라우터 등재(문서버전 v1.5)·ROADMAP 등재·maturation-r002 Matured 종결(seq 1~10)·**project-contract.v3.md 발행(supersedes 2·v2 문면 불변) — 세션 진입 Consult 정독 대상 = v3**. 트랙 완결 — 다음 트랙은 사용자 지시 대기.
 
 ---
 
@@ -39,18 +39,16 @@ Registry·실 CLI 종단 E2E) → 7da5c97(Baseline 확정·라우터 등재) →
 - CP2 총 7회 전건 첫 판정 Pass(S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0·
   마감 2파트)·CP3 전건 승인. OQ-SH-4 해소·OQ-LB-2/WB-2 승계 표기.
 
-■ 최우선 잔여: Contract v3 T8 게이트 (사용자 응답 대기)
-- maturation-r002(41ce16f)가 Validating에서 정지. v3 후보 =
-  solution-design-data/events/maturation-r002/candidate/project-contract.v3.CANDIDATE.md
-  (미발행). v2→v3 diff 요약 = 같은 디렉터리 reviewing-record.md §2.
-- 사용자 승인(T8) 시: GatePresented·UserResponded·T8 이벤트 append →
-  discovery-data/contracts/uahf/project-contract.v3.md 발행(v2 보존·supersedes 2)
-  → 세션 진입 Consult 정독 대상 = v3. 수정 요청(T10)/스킵은 04 §3.4 전이 준수.
-- 게이트 옵션(reviewing-record 참조): decisions[1] 6-Layer 현행화 채택/이연 ·
-  OQ-SH-4의 open[0] 문맥 반영 유지/제외.
-- 보고 사항: OQ-R2-1 — 04 §3.1-B 문면은 성숙 입력을 Ready 계열로 한정하나 본
-  run 입력은 Matured v2(03 §3.4 계보상 유효 기준선으로 진행). 04 문면 명확화는
-  별도 결정(Frozen 아님·Baseline 개정 게이트 필요) — 사용자 판단 대기.
+■ Contract v3 발행 완료 (T8 사용자 승인 2026-07-13)
+- maturation-r002 Matured 종결(events seq 1~10 — UserResponded[seq 7·승인·게이트
+  옵션 확정: 6-Layer 채택·OQ-SH-4 반영 유지]가 T8[seq 8]에 선행 = 게이트 불가침
+  물리 증거·r001 동형). v3 = discovery-data/contracts/uahf/project-contract.v3.md
+  (instanceVersion 3·supersedes 2·v1/v2 blob 불변 실측·발행 문면 = 후보에서
+  placeholder 3개소만 확정). **세션 진입 Consult 정독 대상 = v3.**
+- 보고 승계: OQ-R2-1 — 04 §3.1-B 문면은 성숙 입력을 Ready 계열로 한정하나 본
+  run 입력은 Matured v2(03 §3.4 계보상 유효 기준선으로 진행·r002 seq 1에 명기).
+  04 문면 명확화("직전 Matured 인스턴스 포함")는 별도 결정(Baseline 개정 게이트
+  필요) — 미착수·이월.
 
 ■ 다음 트랙 후보 (착수는 사용자 지시 — 임의 착수 금지)
 1. 물리 동시 디스패치(동시성 invoker — OQ-WB-2 잔여 축·worktree 격리 Defer 승계).

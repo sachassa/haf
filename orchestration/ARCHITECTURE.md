@@ -1,7 +1,7 @@
 # orchestration — Architecture (프로젝트 오케스트레이션 Layer)
 
 작성일: 2026-07-13
-상태: S1 확정 (CP2 첫 판정 Pass 8/0/0 · CP3 Advisor 승인 2026-07-13 — Baseline 승격은 트랙 종단 사용자 게이트 유보)
+상태: v1.6 Baseline (CP2 5단계 전건 첫 판정 Pass — S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0 · CP3 승인 · 사용자 승인 2026-07-13)
 상위 규약: 루트 `ARCHITECTURE.md` (라우터) · `AGENT.md`
 근거 정본 (각 § 포인터로만 참조 — 재정의·복제 0):
 
@@ -17,6 +17,7 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-13 | S1 Draft r2 | 신규 저술(배치 재검증 게이트 확정 2026-07-13). orchestration Layer 개관 정본 신설(라우터 ↔ 하위 spec 사이의 **Layer 개관 고도**). 상세 계약(Revision Ledger·Gate Policy 5종·할당 3층·Artifact Record·PO-INV 문면)은 `orchestration/specs/05-project-orchestration.md`가 소유하고 본 문서는 § 포인터로만 위임(재정의·복제 0). 루트 §2.3 Agentic Runtime slot 실현·자매 01~04 Layer 정합. UAF 레벨 신규 Layer이되 UAHF 6-Layer 무촉(INV-3)·UAHF 정본 무수정(UAF-INV ① — substrate 라이브러리 무수정 재사용)·특정 AI/모델/제품 기능명 0. | Worker (Advisor 위임, Task S1 r2) |
+| 2026-07-13 | v1.6 Baseline | 마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 사용자 승인 — 기준선 확정(Baseline 승격·상태행 승격·루트 `ARCHITECTURE.md` v1.5 §2.1 라우터 등재). S1~S5 전 단계 완료 — CP2 5단계 전건 첫 판정 Pass(S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0)·CP3 승인. 개관 본문 무변경(상세 계약 정본 = `orchestration/specs/05-project-orchestration.md`). | Advisor |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 루트 `ARCHITECTURE.md` §9·`entry/ARCHITECTURE.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 

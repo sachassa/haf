@@ -1,7 +1,7 @@
 # orchestration/specs/05-project-orchestration — Project Orchestration Specification
 
 작성일: 2026-07-13
-상태: S1 확정 (CP2 첫 판정 Pass 8/0/0 · CP3 Advisor 승인 2026-07-13 — Baseline 승격은 트랙 종단 사용자 게이트 유보)
+상태: v1.6 Baseline (CP2 5단계 전건 첫 판정 Pass — S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0 · CP3 승인 · 사용자 승인 2026-07-13)
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -28,6 +28,7 @@
 | 2026-07-13 | S1 Draft | 최초 작성(구 배치 = `uahf/framework/runtime/project-orchestration-protocol.md`). Project Orchestration provider·언어 중립 계약 신설 — 설계 정본 §1~§4·§3.8 형식화. 위상 선언(§2 — "PM Agent" 3분해)·Project Work Graph(§3.1)·Graph Revision Ledger(§3.2 — 신규 소유 RevisionEvent)·Gate Policy(§3.3 — 신규 소유 GatePolicyEntry·5종·단조성)·할당 계약(§3.4 — 신규 소유 AgentSpec·3층·4역할 병존)·Model Selection(§3.5 — OQ-SH-4)·Artifact Record(§3.6 — 신규 소유 ArtifactRecord)·독립 실행 Agent 모델(§3.7)·PO-INV 8건(§4). | Worker (Advisor 위임, Task S1) |
 | 2026-07-13 | S1 Draft r2 | **배치 재검증 게이트(사용자 결정 2026-07-13) 반영** — 정본을 `orchestration/specs/05-project-orchestration.md`로 **이동**(UAF spec 번호 계보 01~04 승계·5번째). 재프레이밍: §0 위치 = **UAF 레벨 신규 Layer `orchestration/`**(루트 §2.3 Agentic Runtime slot 실현·자매 01~04 spec) · UAHF 관계 = **substrate 소비**(중립 모듈 라이브러리 무수정 import — 루트 §2.5 허용 방향·UAF-INV ① '무수정' 준수) · 근거 정본에 루트 §2.3·§2.5·§8·§11 추가 · step-hosting-protocol을 "substrate 계약(무수정 재사용 대상)"으로 인용 위치 조정 · uahf spec 인용을 cross-layer 전체 경로(`uahf/specs/NN-name.md §X`)로 정합(UAF 레벨 spec 관례 실측 동형) · INV-3 무촉 재프레이밍(UAF 레벨 Layer 신설이되 UAHF 6-Layer 무촉·v1.1 선례). **계약 내용(§3 계열·PO-INV 8·게이트 5종·할당 3층·Artifact Record) 무변.** 구 파일 삭제(untracked). | Worker (Advisor 재작업 지시, Task S1 r2) |
 | 2026-07-13 | S1 확정 | CP2 첫 판정 **Pass**(점검 8 Met·0 Violated·0 Undetermined — 독립 토큰 전수·앵커 표본 15건 원문 대조·git 무촉 실측) · CP3 Advisor 승인. Advisor 재량 정정 1건: §6 자기 무촉 확인 수단 서술의 툴체인 토큰 1어 중립화(§7 절대 주장과의 자기 불일치 해소 — Verifier 관찰 1 회부분). Verifier 관찰 2(UAF-INV ① "접점 하나뿐" 조항 vs substrate import)는 2026-07-13 배치 게이트 사용자 결정으로 해소된 사항으로 판정·Baseline 게이트 재확인 항목으로 이월. 상태행 확정. Baseline 승격·루트 라우터 등재는 트랙 종단 사용자 게이트 유보. | Advisor |
+| 2026-07-13 | v1.6 Baseline | 마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 사용자 승인 — 기준선 확정(Baseline 승격·상태행 승격·루트 `ARCHITECTURE.md` v1.5 §2.1 라우터 등재). S1~S5 전 단계 완료 — CP2 5단계 전건 첫 판정 Pass(S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0·커밋 fd112cd→ce0cdba→c65d20f→04b8f6e→745f26e→5e843dc)·CP3 승인. 본문 계약(§3 계열·PO-INV 8·게이트 5종·할당 3층·Artifact Record) 무변경. | Advisor |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, `entry/specs/01-entry.md` §9·`planning/specs/04-solution-design.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 

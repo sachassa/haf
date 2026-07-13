@@ -1,9 +1,9 @@
 # Project Orchestration / Dynamic Agent System — 설계 정본
 
 작성: Advisor · 2026-07-13
-상태: 설계 확정 (사용자 승인 2026-07-13 — Phase A~E 플랜 게이트 통과 · 구조 대안 3안 중 대안 B 채택) + **배치 재검증 게이트 확정 (사용자 결정 2026-07-13)**: ① 소유·배치 = **UAF 레벨 신규 Layer `orchestration/`** (루트 §2.3 "Agentic Runtime (향후)" slot의 실현로 귀속 — 플랜 원안의 UAHF 내부 v1.6 프레이밍을 대체) ② UAHF 접촉 = **라이브러리 재사용** (step-host 중립 모듈 무수정 import — 루트 §2.5 "상위만이 하위를 안다"의 허용 방향)
+상태: 설계 확정 (사용자 승인 2026-07-13 — Phase A~E 플랜 게이트 통과 · 구조 대안 3안 중 대안 B 채택) + **배치 재검증 게이트 확정 (사용자 결정 2026-07-13)**: ① 소유·배치 = **UAF 레벨 신규 Layer `orchestration/`** (루트 §2.3 "Agentic Runtime (향후)" slot의 실현로 귀속 — 플랜 원안의 UAHF 내부 v1.6 프레이밍을 대체) ② UAHF 접촉 = **라이브러리 재사용** (step-host 중립 모듈 무수정 import — 루트 §2.5 "상위만이 하위를 안다"의 허용 방향) + **v1.6 Baseline 확정(2026-07-13 사용자 승인 · 번호 v1.6 부여 · 루트 `ARCHITECTURE.md` v1.5 §2.1 라우터 등재 · ROADMAP 등재)**
 입력: 사용자 지시 13절(2026-07-13 — Project Orchestration 설계 착수 요청) · 저장소 Ground Truth 실측(Explore 2기: 상류 계층·실행 계층 + Advisor 하중 앵커 교차 재확인) · Superpowers v6.1.1 웹 조사(Adopt/Adapt/Reject/Defer Matrix 16항)
-성격: 마일스톤 설계 정본. 계약 정본은 이 문서가 아니라 각 spec·프로토콜 문서·바인딩이 소유한다(재정의 0 — 충돌 시 정본 우선·Advisor 보고). 버전 번호는 미확정(버전 선전제 금지 — Baseline 사용자 게이트에서 부여).
+성격: 마일스톤 설계 정본. 계약 정본은 이 문서가 아니라 각 spec·프로토콜 문서·바인딩이 소유한다(재정의 0 — 충돌 시 정본 우선·Advisor 보고). 버전 번호 = **v1.6**(2026-07-13 Baseline 사용자 게이트에서 부여).
 
 ---
 

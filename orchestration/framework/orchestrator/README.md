@@ -101,8 +101,8 @@ provider·모델·상류 Layer 고유명 토큰을 두지 않는다(PO-INV 8).
 - **중립성(PO-INV 8).** `artifacts.py`·스키마·테스트에 provider·모델 토큰 0건(전수 스캔).
   approvalState 어휘·verdict `Pass` 는 05 §3.6·06 계약 어휘다.
 
-**아직 없는 것(트랙 종단/후속).** 실 LLM 제안 step 기반 비픽스처 성숙 run·루트 라우터 등재는
-트랙 종단/후속 소관이다(설계 §6·바인딩 §7 OQ-PO-B4).
+**아직 없는 것(후속).** 실 LLM 제안 step 기반 비픽스처 성숙 run 은 후속 소관이다(설계 §6·바인딩 §7 OQ-PO-B4).
+루트 라우터 등재는 v1.6 Baseline 으로 완료되었다(루트 `ARCHITECTURE.md` v1.5 §2.1 라우터 표).
 
 ## 게이트 처리 (S3 — 05 §3.3·PO-INV 4)
 

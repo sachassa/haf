@@ -1,0 +1,26 @@
+{
+  "stop_reason": "gate",
+  "stopped_tasks": [
+    "gate-unit-impl-plan"
+  ],
+  "pending_gates": [
+    {
+      "gate_id": "gate-unit-impl-plan",
+      "gateKind": "user_decision_required",
+      "target": {
+        "artifactClass": null,
+        "interventionCondition": null,
+        "targetClass": null,
+        "transition": null,
+        "unitId": "impl-plan",
+        "unitType": "proposal"
+      },
+      "scoped_question": {
+        "gateKind": "user_decision_required",
+        "unitId": "impl-plan"
+      },
+      "since": 5
+    }
+  ],
+  "note": "user_decision 게이트 물리 정지 — 실 사용자 해소 이벤트 대기(exit 2). unrestricted/auto_approve 여부와 무관하게 게이트 정지는 보존된다(PO-INV 4)."
+}

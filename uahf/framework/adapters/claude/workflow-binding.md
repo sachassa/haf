@@ -37,6 +37,7 @@
 | 2026-07-06 | v0.7 Baseline | v0.7 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-06 | v0.8 Draft (개정 — 시연 소산 실재 반영) | v0.8 Task EX-R2 — Advisor 승인 하 격리 개정 (v0.7 CP2 §3.7-4 관찰 해소, 사용자 승인 2026-07-06 편입 범위). v0.7 시연 소산의 "미생성·생성 예정" 라이브 서술 전 지점을 파일 시스템 직접 실측 후 실재 상태로 정합화(L-06·L-07) — docs/v0.7-demo.md(§4.3 Work Graph 인스턴스·§6.2 Merge Result)·v0.7-demo-procedure.md·v0.7-demo-fixtures/ 9파일·loop-data 3파일 실재 반영, §8 OQ-WB-1 해소됨 표기(§3.2 구조 제안이 시연 실물로 채택·실현 — demo.md §0.1). 계약·바인딩 확정 내용(DP-W4·SP 대응·물리 채널) 무변경, 시점 명시 스냅샷·기존 이력 행 문면 불변(L-10·V4 §4). | Worker (Advisor 위임, Task EX-R2) |
 | 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-13 | (OQ 부분 해소 정합 — 버전 무상승) | §8 OQ-WB-2 부분 해소 표기 append — 형태 B Step Hosting 마일스톤이 §4.1 예약 로케이터("무인 병렬 오케스트레이션 실행 진입점")를 부분 실현: 중립 Step Host(`framework/loop/step-host/`)가 Work Graph(07 §3.2-A)를 데이터로 소비(ready_set=parallelSets 논리·dogfooding E2E 실증). 물리 동시 디스패치는 동시성 invoker 후속 과제로 이연(스케줄 논리 실현·물리 병렬 잔여). 본문 매핑·계약 무변경(참조 정합=버전 미상승 선례·BPD-17 append-only). | Advisor |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -265,7 +266,7 @@ session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서�
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 
 - **OQ-WB-1 (시연 소산 docs/ 물리 위치·문서 구조 = Worker 제안, Advisor 채택 대상) — 해소됨 (v0.8 개정 — 시연 실물이 §3.2 정본 구조대로 생성·채택됨, demo.md §0.1 명시).** DP-W4는 직렬화 물리 **형태**(문서 형태·새 백엔드 미신설)를 확정했고, 그 위임에 따라 시연 소산의 **물리 위치**(docs/ 아래 v0.7 시연 문서)·**문서 구조**(Work Graph 인스턴스·Merge Result 기록의 구조화 섹션)를 §3.2가 구조 제안·근거로 확정했다. 이 위치·구조는 07 §4.1 행 1·SP-1(문서 형태)·07 §7(시연 완료 기준)을 물리적으로 만족한다. **후속 시연 Task(WF9)가 이 구조 제안을 그대로 채택·실현했다** — docs/v0.7-demo.md §4.3(Work Graph 인스턴스)·§6.2(Merge Result)가 그 구조화 섹션이며, demo.md §0.1이 "workflow-binding §3.2 정본, OQ-WB-1 해소"를 명시한다(§7 실측). 계약(07 §3.2) 변경이 아니었으므로 채택은 비차단으로 진행됐다(loop-binding.md OQ-LB-1이 loop-data/ 하위 구조를 Worker 제안·Advisor 채택 대상으로 남긴 것과 동형, memory-binding.md §8 OQ-M5-1 "해소됨" 표기 선례 동형).
-- **OQ-WB-2 (형태 B 경계 분할 — 비차단).** 무인 병렬 오케스트레이션 실행 코드(형태 B)가 `framework/workflow/` Module 구현 디렉터리와 `framework/adapters/claude/` 사이 어디에 분할 배치되는지는 형태 B 설계 시 확정 대상이다(§4.1, structure.md §4 규칙 4 defer, loop-binding.md OQ-LB-2·verifier-binding.md OQ-VB-2 동형). Bootstrap(형태 A)에서는 규약 실현이므로 이 분할이 필요하지 않으며, 계약(07 §3) 변경이 아니므로 비차단이다.
+- **OQ-WB-2 (형태 B 경계 분할 — 비차단) — 부분 해소 (형태 B Step Hosting 마일스톤, 2026-07-13).** 무인 병렬 오케스트레이션 실행 코드(형태 B)가 `framework/workflow/` Module 구현 디렉터리와 `framework/adapters/claude/` 사이 어디에 분할 배치되는지는 형태 B 설계 시 확정 대상이다(§4.1, structure.md §4 규칙 4 defer, loop-binding.md OQ-LB-2·verifier-binding.md OQ-VB-2 동형). Bootstrap(형태 A)에서는 규약 실현이므로 이 분할이 필요하지 않으며, 계약(07 §3) 변경이 아니므로 비차단이다. **부분 해소(형태 B Step Hosting 마일스톤)** — 무인 구동 실행 진입점은 `framework/loop/step-host/`(중립 Step Host)가 실현하며 Work Graph(07 §3.2-A)를 데이터로 소비한다(ready_set = parallelSets 도출 논리·순차는 그 특수형 — dogfooding E2E 실증 `step-data/runs/`). provider 의존 = `framework/adapters/claude/step-invoker/`·물리 매핑 = `step-hosting-binding.md`. **물리 동시 디스패치**(병렬 집합 원소의 동시 실행)는 동시성 invoker 후속 과제로 이연 — 스케줄 논리는 실현·물리 병렬은 잔여(그래서 부분 해소). 계약(07 §3) 변경 0.
 
 ---
 

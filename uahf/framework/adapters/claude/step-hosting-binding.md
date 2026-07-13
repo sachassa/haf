@@ -30,6 +30,7 @@
 |---|---|---|---|
 | 2026-07-13 | W2 Draft | 최초 작성. `framework/adapters/claude/` 경계의 신규 산출물(형태 B Step Hosting). step-hosting-protocol.md(W1) §7.2 바인딩 지점 8건을 claude 환경 실값으로 확정: 직렬화(Step=JSON·이벤트 로그=JSONL·config=JSON)·run 데이터 백엔드 이원화(§3)·invoker 의 claude 구현 로딩·Autonomy→CLI 권한 플래그 매핑(`interactive`=기본·`auto_approve`=`--permission-mode acceptEdits`·`unrestricted`=`--dangerously-skip-permissions` — 이 플래그 문자열은 이 문서·step-invoker/ 에만 등장)·게이트 등급 분리 명기·재시도 한도 기본 2·autonomy 기본 interactive(§4)·역할 실행/CP2 독립/CP3 Advisor 디스패치 물리 형태·물리 정지 신호=종료 코드 2·win32 실행 전제·타임아웃(§5). CLI 플래그는 `claude --help` 실측(2.1.207) 확인분만 기재(§6 실측 대조). 프로토콜·spec 재정의 0, 새 계약·새 용어 0. 신설 경로 밖 파일 무수정. | Worker (Advisor 위임, Task W2) |
 | 2026-07-13 | W2 확정 | CP2 독립 판정 Pass(V1~V6 — Met 9·Violated 0·Undetermined 0; 테스트 36건 라이브 재실행 Pass·CLI 플래그 `claude --help` 실측 전건 부합·토큰 경계 2개 독립 도구 교차 스캔 0건·기존 파일 무수정 실측) · CP3 Advisor 승인 · 상태행 동결. 비차단 관찰 3건(invoker FileNotFound 분기의 blocking 라벨 불일치·CLI 실호출 미검증[W3 소관]·보고 추출 중괄호 파서 엣지)은 W3 이관. Baseline 승격은 W3 사용자 게이트 유보. | Advisor |
+| 2026-07-13 | W3 실증 정합 | dogfooding E2E 필수 7 시나리오 전건 실증(실 CLI 21 세션·`step-data/runs/` 8 run — CP2 독립 판정 Pass: 시나리오 7/7·차원 4/4 Met·Violated 0) · §3.2 run 구조 제안이 실물로 실현(구조 확정) · §7 OQ-SH-1 해소(CP3=배치 종단 Advisor 디스패치 실증)·자매 바인딩 OQ append 완료·신규 관찰 OQ-SH-4(CP2 모델 슬롯 결합)·OQ-SH-5(해소 API 부재·해소=fail 계수) 등재 · W2 이관 관찰 중 O-1(blocking 라벨)은 s6 호스팅 실행이 실제 정정(`claude_invoker.py` 1행·hosted CP2 통과). OQ-SH-2·3 은 미실증 open 유지. Baseline 승격은 사용자 게이트 유보. | Advisor |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -164,7 +165,9 @@ step-hosting-protocol.md §7.2 표(바인딩 지점 7행)를 claude 환경 실�
 
 ## §7. Open Questions
 
-- **OQ-SH-1 (CP3 물리 형태 E2E).** CP3(Advisor 역할) 디스패치의 물리 형태(사이클 Complete 전 개별 vs 배치 종단 일괄)는 W2 자체 테스트 범위 밖이며 W3 E2E 에서 실증·확정한다.
+- **OQ-SH-1 (CP3 물리 형태 E2E) — 해소됨 (W3 dogfooding E2E, 2026-07-13).** CP3(Advisor 역할) 디스패치의 물리 형태(사이클 Complete 전 개별 vs 배치 종단 일괄)는 W2 자체 테스트 범위 밖이며 W3 E2E 에서 실증·확정한다. **W3 실증: 배치 종단 일괄** — run 완주 후 런처가 role=Advisor fresh 세션을 별도 디스패치해 `final_verdict` 를 회수·기록한다(`step-data/runs/e2e-s1-normal/logs/cp3-result.json` = Pass — 물리 증거).
 - **OQ-SH-2 (`interactive` headless 반의어).** headless(`-p`) 실행에서 `interactive` policy 의 도구 승인 프롬프트는 대화 채널이 없으므로 실질적으로 승인 대기 없이 진행 제약을 받을 수 있다. `interactive` 의 headless 의미(예: 승인 필요 도구 만나면 blocked 로 에스컬레이션)의 정밀 정의는 W3 E2E 관찰로 확정한다. 현재는 "기본 실행(권한 생략 플래그 없음)"으로만 바인딩한다.
 - **OQ-SH-3 (`--output-format stream-json` 채택).** 대량 산출·진행 표시가 필요한 E2E 에서 `json`(단일 결과) vs `stream-json`(실시간)의 선택은 W3 관찰로 확정한다. 현재 기본은 `json`.
-- **자매 바인딩 OQ append(비차단).** loop-binding §9·workflow-binding §9·OQ 에 "형태 B 부분 실현(Step Host)" 사실을 append 하는 정합 작업은 W3 소관이다(설계 §6·BPD-17 규율). 본 문서 범위 밖.
+- **자매 바인딩 OQ append(비차단) — 해소됨 (W3 정합, 2026-07-13).** loop-binding §9·workflow-binding §9·OQ 에 "형태 B 부분 실현(Step Host)" 사실을 append 하는 정합 작업은 W3 소관이다(설계 §6·BPD-17 규율). 본 문서 범위 밖. **W3 정합 완료: loop-binding §8 OQ-LB-2 해소 표기·workflow-binding §8 OQ-WB-2 부분 해소 표기 + 각 §9 이력 행 append(버전 무상승·append-only).**
+- **OQ-SH-4 (CP2 모델 슬롯 결합 — W3 관찰·비차단).** 중립 Host(`host.py _dispatch_cp2`)는 CP2 Verifier 를 `model=step.model` 로 디스패치한다 — Verifier 가 검증 전용 모델을 독립 지정할 수 없고 Step 슬롯을 상속한다(W3 실측: e2e-s6 은 Worker=sonnet 이라 CP2 도 sonnet). Worker/Verifier 모델 독립 지정 여부는 후속 설계 판단(중립 Host 개정 사안 — 계약 무변, 02 §4 소관 슬롯 의미는 그대로).
+- **OQ-SH-5 (Escalation 해소 API 부재·해소=fail 계수 결합 — W3 관찰·비차단).** blocked/재시도 한도 초과 `Escalated` 의 해소에 전용 이벤트 어휘·연산이 없어, 해소는 "파생 상태를 Failed 로 되돌리는 `outcome=fail`(ref.kind=resolved) 이벤트의 수동 append"로 실현된다(W3 s3 실측 — 프로토콜 §4.3 해소 이벤트의 현행 물리 형태). 이 재사용 때문에 해소 이벤트가 `prior_failures` 재시도 예산을 소모한다(s3 에서 해소 이벤트 중복 append 가 한도 1 을 소모해 retry-limit-exceeded 를 조기 유발 — 로그만으로 전 과정 재구성 가능·append-only 보존). 전용 해소 어휘(재시도 비계수) 도입 여부는 후속 설계 판단. 부수 관찰: E2E 드라이버(`step-data/e2e/` — Host/바인딩 아님)의 invoke 로그 파일명이 프로세스별 순번이라 재기동 시 이전 프로세스의 원출력 로그가 덮어쓰일 수 있음(권위 기록 events.jsonl 은 무영향).

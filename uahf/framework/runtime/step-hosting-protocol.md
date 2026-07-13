@@ -34,6 +34,7 @@
 | 2026-07-13 | W1 Draft | 최초 작성. 형태 B Step Execution Hosting 프로토콜 신설 — 설계 정본(docs/form-b-step-hosting-design.md) §3·§4·§5·§8을 provider-중립 계약으로 형식화. 위상 선언(§2)·Step 직렬화 축(§3.1)·Fresh Context Assembly(§3.2)·상태 파생·결정적 재개(§4)·재시도·피드백·검증 통합(§5)·Execution Readiness Clarification·Autonomy Policy·진입 모드(§6)·불변 SH-INV 8건·Adapter 바인딩 지점·실측 대조(§7). 01/02/03/06/07 Frozen spec·루트 ARCH·04 계약 재정의 0(§ 포인터 인용만), 새 상태·필드·Component 창설 0(C-1·Glossary INV-3 무촉), 본문 provider·언어·툴체인·플래그 토큰 0(C-3). | Worker (Advisor 위임, Task W1) |
 | 2026-07-13 | W1 Draft r2 | CP2 재작업(F-1·O-1): cross-layer 앵커 3곳(§3.1 표·§3.1 주·§7.2 표) bare '04 §3.3' → '04-solution-design §3.3' 명시 정정 · 근거 정본 3건 등재(00-glossary·02-discovery §3.2·04-solution-design §3.3) | Worker (CP2 재작업 지시) |
 | 2026-07-13 | W1 확정 | CP2 재판정 Pass(점검 5 Met·0 Violated·0 Undetermined — 1차 판정의 Fail 1[F-1]은 r2로 해소) · CP3 Advisor 승인 · 상태행 동결. Baseline 승격은 W3 사용자 게이트 유보. | Advisor |
+| 2026-07-13 | W3 실증 (본문 무변경) | W2 구현·W3 dogfooding E2E 로 §7.2 소관 산출물이 전부 실재화됨 — `framework/loop/step-host/`(중립 Host·테스트 17)·`framework/adapters/claude/step-hosting-binding.md`·`step-invoker/`(테스트 19)·run 데이터 백엔드(`step-data/runs/` 8 run·E2E 7 시나리오 CP2 독립 Pass). §7.3 문면은 W1 시점 실측 스냅샷으로 보존한다(BPD-17 — 현행 실재는 본 행과 step-hosting-binding.md §6 이 기록). 본문 계약·SH-INV 무변경. | Advisor |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 

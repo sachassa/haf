@@ -1,0 +1,30 @@
+{
+  "capability": "impl",
+  "delegation": {
+    "constraints": "워크스페이스 밖 금지",
+    "context": [
+      "형태 B W3 E2E s4 — 강제 중단→deterministic resume"
+    ],
+    "done": "python -c \"import io;d=io.open('fileA.txt',encoding='utf-8').read();assert d=='A',repr(d)\" (종료 코드 0 = 통과)",
+    "from": "Advisor",
+    "input": "빈 워크스페이스",
+    "output": "fileA.txt",
+    "task": "현재 워크스페이스에 fileA.txt 파일을 생성하라. 내용은 정확히 A (후행 개행 없이). 워크스페이스 밖 파일 금지. CP1 에서 done 의 AC 를 실제 실행해 확인하라.",
+    "to": "Worker"
+  },
+  "dependsOn": [],
+  "done": "python -c \"import io;d=io.open('fileA.txt',encoding='utf-8').read();assert d=='A',repr(d)\" (종료 코드 0 = 통과)",
+  "id": "A",
+  "interfaceContract": {
+    "content": "A",
+    "produces": [
+      "fileA.txt"
+    ]
+  },
+  "model": "haiku",
+  "ownedBoundary": [
+    "fileA.txt"
+  ],
+  "role": "Worker",
+  "task": "현재 워크스페이스에 fileA.txt 파일을 생성하라. 내용은 정확히 A (후행 개행 없이). 워크스페이스 밖 파일 금지. CP1 에서 done 의 AC 를 실제 실행해 확인하라."
+}

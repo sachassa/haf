@@ -1,0 +1,24 @@
+{
+  "capability": "impl",
+  "delegation": {
+    "constraints": null,
+    "from": "Advisor",
+    "input": "불명확한 입력",
+    "output": "불명확한 출력",
+    "task": "무언가를 만들어라(불충분한 위임 — done·context 누락).",
+    "to": "Worker"
+  },
+  "dependsOn": [],
+  "id": "s7b1",
+  "interfaceContract": {
+    "produces": [
+      "something"
+    ]
+  },
+  "model": "haiku",
+  "ownedBoundary": [
+    "something"
+  ],
+  "role": "Worker",
+  "task": "불충분한 Step — 진입 Sufficiency 판정에서 걸려야 한다."
+}

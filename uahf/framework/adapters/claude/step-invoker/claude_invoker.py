@@ -226,7 +226,7 @@ class ClaudeInvoker(Invoker):
             return InvokeResult(
                 kind=KIND_FAILURE,
                 failure={"reason": "claude CLI 미탐지: " + self.cli, "repro": "PATH 확인 필요",
-                         "blocking": "차단됨"},
+                         "blocking": "계속 가능"},
                 ref="cli-missing",
             )
         return self.parse_result(proc.stdout or "", proc.returncode)

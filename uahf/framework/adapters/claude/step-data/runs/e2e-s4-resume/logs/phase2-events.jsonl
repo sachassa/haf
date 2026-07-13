@@ -1,0 +1,8 @@
+{"actor": "Worker", "at": 1, "cycle_id": "A", "from_stage": null, "outcome": "pass", "ref": {"kind": "dispatch"}, "retry_count": 0, "seq": 1, "to_stage": "Execute", "trigger": "완료 조건 충족"}
+{"actor": "Verifier", "at": 2, "cycle_id": "A", "from_stage": "Verify", "outcome": "pass", "ref": {"kind": "cp2-pass", "verdict_ref": "verdict"}, "retry_count": 0, "seq": 2, "to_stage": "Complete", "trigger": "완료 조건 충족"}
+{"actor": "Worker", "at": 3, "cycle_id": "B", "from_stage": null, "outcome": "pass", "ref": {"kind": "dispatch"}, "retry_count": 0, "seq": 1, "to_stage": "Execute", "trigger": "완료 조건 충족"}
+{"actor": "Worker", "at": 4, "cycle_id": "B", "from_stage": "Execute", "outcome": "fail", "ref": {"kind": "interrupted", "reason": "실행 중단"}, "retry_count": 0, "seq": 2, "to_stage": "Execute", "trigger": "재작업 되돌림"}
+{"actor": "Worker", "at": 5, "cycle_id": "B", "from_stage": "Failed", "outcome": "pass", "ref": {"kind": "dispatch"}, "retry_count": 1, "seq": 3, "to_stage": "Execute", "trigger": "재작업 되돌림"}
+{"actor": "Verifier", "at": 6, "cycle_id": "B", "from_stage": "Verify", "outcome": "pass", "ref": {"kind": "cp2-pass", "verdict_ref": "verdict"}, "retry_count": 1, "seq": 4, "to_stage": "Complete", "trigger": "완료 조건 충족"}
+{"actor": "Worker", "at": 7, "cycle_id": "C", "from_stage": null, "outcome": "pass", "ref": {"kind": "dispatch"}, "retry_count": 0, "seq": 1, "to_stage": "Execute", "trigger": "완료 조건 충족"}
+{"actor": "Verifier", "at": 8, "cycle_id": "C", "from_stage": "Verify", "outcome": "pass", "ref": {"kind": "cp2-pass", "verdict_ref": "verdict"}, "retry_count": 0, "seq": 2, "to_stage": "Complete", "trigger": "완료 조건 충족"}

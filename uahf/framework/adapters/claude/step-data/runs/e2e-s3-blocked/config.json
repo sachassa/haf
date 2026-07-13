@@ -1,0 +1,19 @@
+{
+  "allowed_tools": [
+    "Bash(python:*)",
+    "Read",
+    "Write",
+    "Edit"
+  ],
+  "cp3": {
+    "enabled": false
+  },
+  "policy": "auto_approve",
+  "retry_limit": 2,
+  "run_id": "e2e-s3-blocked",
+  "step_order": [
+    "s3b"
+  ],
+  "timeout": 300,
+  "workspace_mode": "subdir"
+}

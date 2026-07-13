@@ -1,0 +1,30 @@
+{
+  "capability": "impl",
+  "delegation": {
+    "constraints": "오직 claude_invoker.py 만 수정. 테스트/기타 파일 생성·수정 금지. 상위 재수행 금지.",
+    "context": [
+      "형태 B W3 E2E s6 — Full UAF Mode(상위 재실행 0)",
+      "Contract: pc-uahf-001 v2 — discovery-data/contracts/uahf/project-contract.v2.md"
+    ],
+    "done": "AC1: `python uahf/framework/adapters/claude/step-invoker/tests/test_claude_invoker.py` 가 전건 Pass(종료 코드 0). AC2: 같은 파일의 FileNotFoundError 분기가 더 이상 blocking='차단됨' 을 쓰지 않고 KIND_FAILURE(비차단 실패) 의미와 정합하는 비차단 값을 쓴다.",
+    "from": "Advisor",
+    "input": "claude_invoker.py 확정 결함 O-1(FileNotFoundError 분기 blocking 라벨 불일치)",
+    "output": "정정된 claude_invoker.py",
+    "task": "저장소 루트가 현재 작업 디렉터리다. Full UAF Mode 진입이다 — 상위 산출물(Contract pc-uahf-001 v2·설계)은 재사용하며 상위 Interview/Plan 을 재수행하지 마라.\n실제 작업: uahf/framework/adapters/claude/step-invoker/claude_invoker.py 의 invoke() 메서드 안 FileNotFoundError 분기(225행 부근)를 정정하라. 그 분기는 kind=KIND_FAILURE(비차단 실패=재시도 대상)를 반환하는데 failure 딕셔너리의 'blocking' 값이 '차단됨'(=blocked=Escalated 의미)으로 되어 있어 내부 불일치다(확정 결함 O-1). blocking 값을 비차단 표기 '계속 가능' 으로 바꿔 KIND_FAILURE 의미와 정합시켜라.\n오직 이 한 파일의 이 한 곳만 수정하라. 테스트 파일·다른 파일·다른 로직을 절대 건드리지 마라. 수정 후 done 의 AC(테스트 전건 Pass)를 실제 실행해 확인한 뒤 완료 보고를 내라.",
+    "to": "Worker"
+  },
+  "dependsOn": [],
+  "done": "AC1: `python uahf/framework/adapters/claude/step-invoker/tests/test_claude_invoker.py` 가 전건 Pass(종료 코드 0). AC2: 같은 파일의 FileNotFoundError 분기가 더 이상 blocking='차단됨' 을 쓰지 않고 KIND_FAILURE(비차단 실패) 의미와 정합하는 비차단 값을 쓴다.",
+  "id": "s6fix",
+  "interfaceContract": {
+    "modifies": [
+      "uahf/framework/adapters/claude/step-invoker/claude_invoker.py"
+    ]
+  },
+  "model": "sonnet",
+  "ownedBoundary": [
+    "uahf/framework/adapters/claude/step-invoker/claude_invoker.py"
+  ],
+  "role": "Worker",
+  "task": "저장소 루트가 현재 작업 디렉터리다. Full UAF Mode 진입이다 — 상위 산출물(Contract pc-uahf-001 v2·설계)은 재사용하며 상위 Interview/Plan 을 재수행하지 마라.\n실제 작업: uahf/framework/adapters/claude/step-invoker/claude_invoker.py 의 invoke() 메서드 안 FileNotFoundError 분기(225행 부근)를 정정하라. 그 분기는 kind=KIND_FAILURE(비차단 실패=재시도 대상)를 반환하는데 failure 딕셔너리의 'blocking' 값이 '차단됨'(=blocked=Escalated 의미)으로 되어 있어 내부 불일치다(확정 결함 O-1). blocking 값을 비차단 표기 '계속 가능' 으로 바꿔 KIND_FAILURE 의미와 정합시켜라.\n오직 이 한 파일의 이 한 곳만 수정하라. 테스트 파일·다른 파일·다른 로직을 절대 건드리지 마라. 수정 후 done 의 AC(테스트 전건 Pass)를 실제 실행해 확인한 뒤 완료 보고를 내라."
+}

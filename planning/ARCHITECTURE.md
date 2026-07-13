@@ -19,6 +19,7 @@
 | 2026-07-12 | v1.3 정합 | 스텁→완전 저술. planning Layer(Project Contract 설계 계약) 개관 정본 신설(라우터 ↔ 하위 spec 사이의 **Layer 개관 고도**). 상세 계약(논리 스키마 필드 그룹 표·필수 코어 필드 목록·Dimension 매핑 표·버저닝 규칙 문면·UAHF Interface·PC-INV 문면 등)은 `planning/specs/03-project-contract.md`가 소유하고 본 문서는 § 포인터로만 위임(재정의·복제 0). Project Contract의 **이중 지위**(Discovery 산출 요소 ∧ UAF↔UAHF 공식 Stable Contract·유일 접점) 개관(루트 §2.2 정합). **C2 네임스페이스 구분** §0 명시 — `planning/` Layer(= Project Contract 설계 계약) ≠ UAHF Advisor/Planner의 구현 Planning(루트 §10 비담당②). 루트 §2.1 지도(Project Contract = `planning/`)와 정합. 새 설계 결정 창설 0 · UAHF 정본 무수정(UAF-INV ①) · 특정 AI/모델/제품 기능명 0. | Worker (Advisor 위임, T-a W2 T-planning) |
 | 2026-07-13 | v1.3 · 이중 책임 정합 | Solution Design 마일스톤(W2c) 개정 — planning Layer를 **이중 책임**(① Project Contract 설계[데이터 계약·정본 03] + ② Solution Design 성숙 활동[정본 04])으로 정합. **Δ1** §0 C2 2항→**3항** 재서술(①②③ — 04 §0 정합, ② Solution Design ≠ ③ UAHF 구현 Planning)·§6 구현 Planning 문면 3항 정합. **Δ2** §1 목적 이중 책임 선언·근거 정본에 04 등재·§6 Memory 문면 04 §5 정합(성숙 활동도 v1.3 Memory 무접근). **Δ3** §2 구조 실측 재확인(2026-07-13) — `specs/04-solution-design.md`·부록 2종(`docs/appendix/expert-role-catalog.md`·`projection-catalog.md`) 등재. **Δ4** §7 정본 포인터 표에 04 라우팅 5행·부록 2행 추가. **Δ5** 본 이력 append·상태/작성 라인 갱신. 새 계약·불변·용어 창설 0(전부 04 § 포인터)·UAHF 정본 무수정(UAF-INV ①)·특정 AI/모델/제품 기능명·방법론 고유명 0·기존 §9 행 byte 불변(L-22). | Worker (Advisor 위임, v1.3 W2c) |
 | 2026-07-13 | v1.3 · 보완 C-2 등재 | Gap Analysis(사용자 Target Architecture 대조, 옵션 2 승인) 보완 — §2 디렉터리 실측·§7 라우팅 표에 `docs/appendix/review-dimension-catalog.md`(Integrated Design Review 관점 차원 예시 **비정본 부록**) 등재. 새 계약·불변·용어 창설 0·기존 §9 행 byte 불변. | Advisor (사용자 승인) |
+| 2026-07-13 | v1.3 · v1.4 바인딩 라우팅 등재 | v1.4 W3 — §7 라우팅 표에 **Solution Design Adapter Binding** 1행 추가(정본 = 04 §4 · `uahf/framework/adapters/<adapter>/solution-design-binding.md` — v1.4 W1 신설·CP2 Pass의 등재 반영). 새 계약·불변·용어 창설 0(라우팅 1행만)·기존 §9 행 byte 불변. | Advisor (v1.4 W3) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 루트 `ARCHITECTURE.md` §9·`planning/specs/03-project-contract.md` §9·`entry/ARCHITECTURE.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -143,6 +144,7 @@ planning Layer는 다음을 **수행하지 않는다**(경계). 각 항목은 �
 | Projection(Contract=Source of Truth·파생 산출·동적 선택·워크스페이스 귀속) | `planning/specs/04-solution-design.md` §3.5 |
 | 성숙 경계 기준(vs Discovery — 미결 해소·신규 설계 결정 창출) | `planning/specs/04-solution-design.md` §3.6 |
 | 불변 SP-INV 1~8 | `planning/specs/04-solution-design.md` §3.8 |
+| Solution Design Adapter Binding(실행 호스팅·게이트 채널·저장 위치·Policy 실값·성숙 run provenance) | `planning/specs/04-solution-design.md` §4 · `uahf/framework/adapters/<adapter>/solution-design-binding.md` |
 | 방법론 대응(비정본 부록 — P5·UAF-INV ⑥) | `planning/docs/appendix/methodology-mapping.md` |
 | Expert Role 예시 카탈로그(비정본 부록 — 계약·용어 미확정) | `planning/docs/appendix/expert-role-catalog.md` |
 | Projection 유형 예시 카탈로그(비정본 부록 — 계약·용어 미확정) | `planning/docs/appendix/projection-catalog.md` |

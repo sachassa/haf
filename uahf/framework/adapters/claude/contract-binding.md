@@ -26,6 +26,7 @@
 | 2026-07-07 | v1.2 Draft | 최초 작성. `framework/adapters/claude/` 경계의 **UAF 정본(uaf/specs/03) 바인딩** 산출물(자매 바인딩 관례 동형·접두 없음). 03 "### 4.1 바인딩 대상" 표 **4행 전건**을 Claude 환경 물리 실현으로 확정(§2 — 실재/규약 실현/형태 B 3구분). ⓐ Contract 직렬화 = **Markdown 본문 + YAML front-matter 단일 문서**로 확정(§3 — 9그룹·필수 코어 필드 10 표현·tolerant reader 정합·Provenance 분리 컨테이너·append-only 표현 요건 충족 문면). ⓑ 저장 위치 이원화 확정(§4 — 일반 관례 `.claude/project-contract/`·본 저장소 인스턴스 `framework/adapters/claude/discovery-data/contracts/uahf/`, DP-X2, 01-entry §3.2-C 물리 실현). ⓒ `schemaVersion`(SemVer 점표기 문자열)·`instanceVersion`(단조 증가 정수) 표기 형식 확정(§5 — MAJOR 원칙 금지·필드 제거 금지·deprecated 마킹 물리 훼손 0, PC-INV 4·5·6). ⓓ Provenance 불투명 컨테이너 외형·must-ignore 경계만 확정, 내부 형식은 후속 discovery-binding.md(예정) 위임(§6, DP-X6, 03 §3.2-D 동형). 상시 불변 자기 점검(§7 — 코어 필드 직렬화에 Discovery 내부 개념 0·다중 패턴 자가 스캔·Stable Contract 규율 훼손 0). 03 "### 4.2" 이식 교체 지점 대응 표(§8 — "유지되는 것" 열 = 03 §3 불변 재확인). 상태 서술 실측 대조(§10 — discovery-data/ 현 시점 미존재·v1.2 E2E Task 생성 예정 정직 구분, L-07). 실행 코드 0(형태 A, D-v1.2-1). 03 §3·§4·UAHF 정본 재정의 0·§ 포인터 인용만·새 계약 요소(필드·연산·불변·kind) 창설 0·특정 방법론 고유명 0. 동시 작성 중인 병렬 산출물 불인용(07 R2). | Worker (Advisor 위임, Task T-C) |
 | 2026-07-07 | v1.2 Draft (r2 — § 라벨 오귀속 정정) | **Advisor 게이트 C 검출 결함 1건 교정** (T1 r2 동형 부류). **결함 요지:** "contract-presence 탐지의 경로 관례·직렬화 형식·존재 판정 수단은 Adapter 소관" 위임 문구를 **01-entry §3.2-C에 오귀속**했으나, 실측 대조 결과 이 위임 문구의 실제 소유 절은 **01-entry §4.1(### §4.1 바인딩 대상, 불릿 2)**이다 — §3.2-C는 Evidence Source 등록 스키마(sourceType·capability·valueDomain)·v1.1 Evidence 2종(contract-presence·repository-presence, 유/무 값 도메인)만 소유하며 Adapter 위임 문구를 담지 않는다. 라이브 본문 오귀속 지점의 원인 = §4.1 불릿 말미 교차 참조 "(§3.2-C)"를 소속 절로 오독. **교정 내용:** 라이브 본문 6지점(근거 정본 01-entry 불릿·§2 표 행2·§4 도입 문단·§4.1 근거 문단·§11 OQ-TC-2·§12 요약)에서 위임 귀속을 §4.1로 정정하고 §3.2-C는 "contract-presence Evidence 관측 정의·유/무 값 도메인 소유"로만 인용. **동종 결함 전수 재대조(BP-01):** 본문·근거 정본 목록의 전 외부 정본 § 귀속(01-entry·03·specs/12·structure.md·uaf/ARCHITECTURE·Glossary·02·07·02-discovery)을 대상 정본 파일 직접 실측 재대조 — 그 외 동종 결함 0건. r1 이력 행 문면 불변(L-10 — 이력 행은 시점 기록, 재대조 대상 제외). 산출물 1개 파일만 수정, 다른 파일 무수정. | Worker (Advisor 게이트 C 재작업 지시, Task T-C r2) |
 | 2026-07-07 | v1.2 Baseline | v1.2 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass 16/0/0; CP3 Advisor 승인) | Advisor |
+| 2026-07-13 | v1.2 Baseline (r3 — 상태 서술 재베이스라인) | **상태 서술 재베이스라인(BPD-17·L-06) — v1.3 §6 이월 (d) 해소.** v1.2 E2E(2026-07-07)가 `discovery-data/` 트리·Contract 인스턴스 v1을, v1.4 성숙 E2E(maturation-r001, 2026-07-13)가 superseding 인스턴스 v2를 본 문서 정본 구조 그대로 생성해 실재로 전환됨에 따라, 라이브 본문 **8지점**(§0 L-07 문단·§2 표 4행 "실재 여부" 열·§4.2 불릿·§12 요약 2건)의 "미존재·생성 예정" 시제 서술을 실재로 현행화하고, §10 원 표(2026-07-07 스냅샷)는 byte 보존한 채 **§10-A 재실측 서브블록(2026-07-13)**을 append(discovery-binding §13 재베이스라인 선례 동형). 기존 §9 행 byte 불변. **계약(직렬화 §3·경로 §4·표기 §5·Provenance 외형 §6) 무변경 — 시맨틱 개정 아님(버전 미상승, v1.2.1 선례).** | Advisor (v1.4 W3) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 자매 memory-binding.md §9·framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -41,7 +42,7 @@
 
 - **하네스 Bootstrap 전제(형태 A, D-v1.2-1).** 이 하네스는 현재 Bootstrap 상태다(Glossary J-13, 자매 바인딩 §0). 본 문서의 바인딩은 **실행 코드 0**이다 — Contract를 컴파일·직렬화·소비하는 실행 코드는 도입되지 않았다. 따라서 매핑은 (i) 물리 실재 표면, (ii) 규약으로 확정된 정본 문면(형태 A — 경로·형식·표기 규격), (iii) 실행 코드 도입 시 로딩될 지점(형태 B — 컴파일러·tolerant reader 파서)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
 
-- **실측 기반 상태 서술(L-07).** "실재/미존재" 주장은 파일 시스템 확인 후에만 기입한다. 본 문서가 확정하는 물리 경로(`discovery-data/…`)의 데이터 자산은 **현 시점 미존재**이며, 그 생성은 v1.2 E2E Task(T-XG·T-XB) 소관이다 — 본 문서는 경로·구조·형식의 **정본 문면만** 소유한다(memory-binding.md §7 "지원 구조 — 시연 시 생성" 선례 동형). §10이 그 실측 대조 표다.
+- **실측 기반 상태 서술(L-07).** "실재/미존재" 주장은 파일 시스템 확인 후에만 기입한다. 본 문서가 확정하는 물리 경로(`discovery-data/…`)의 데이터 자산은 **작성 시점(2026-07-07) 미존재**였고, v1.2 E2E Task(T-XG·T-XB)가 이 정본 구조 그대로 생성해 **현재 실재**한다 — 성숙 인스턴스(v2)는 v1.4 성숙 E2E(maturation-r001)가 동일 관례로 append했다(2026-07-13 재실측 — §10-A 재베이스라인 서브블록). 본 문서는 경로·구조·형식의 **정본 문면만** 소유한다(memory-binding.md §7 "지원 구조 — 시연 시 생성" 선례 동형). §10이 그 실측 대조 표다.
 
 - **네임스페이스·용어.** 본 문서가 확정하는 것은 물리 표기(직렬화 형식·경로·버전 값 형태·라벨)뿐이며, 03이 소유하는 스키마 용어(`schemaVersion`·`instanceVersion`·`supersedes`·tolerant reader·opaque annex 등)는 03 정의를 § 포인터로 참조하고 재정의하지 않는다. 새 UAHF 용어·새 계약 요소(필드·연산·불변·kind)를 신설하지 않는다.
 
@@ -68,10 +69,10 @@
 
 | # | 03 §3 계약 요소 (정본 §) | 03 §4.1 바인딩 지점 (정본 인용) | 물리 실현 (claude 환경) | 실재 여부 |
 |---|---|---|---|---|
-| 1 | Contract 직렬화·물리 포맷 (§3.1·§3.2) | 논리 스키마를 실제 문서·레코드로 표현하는 직렬화 형식. | **Markdown 본문 + YAML front-matter 단일 문서.** front-matter가 9그룹·필수 코어 필드 10의 자기서술 구조를, 본문이 인간 가독 렌더링을 담는다. Provenance는 분리 네임스페이스 컨테이너. 상세 §3. | 형식 확정(정본, 규약 실현/형태 A). Contract 인스턴스 데이터 미존재 — v1.2 E2E Task 생성 예정. 컴파일러·파서는 형태 B. |
-| 2 | Contract 저장 위치 (§3.2) | Contract 인스턴스가 프로젝트에 배치·보관되는 물리 위치·경로 관례. | **이원화 확정**: 일반 관례 = 소비 프로젝트 내 `.claude/project-contract/`; 본 UAHF 저장소 인스턴스(Brownfield dogfooding) = `framework/adapters/claude/discovery-data/contracts/uahf/`(격리). 상세 §4. 01-entry §4.1이 Adapter 소관으로 미룬 contract-presence 탐지 경로의 실현(§3.2-C는 contract-presence Evidence 관측 정의·유/무 도메인만 소유). | 경로 관례 확정(정본, 형태 A). `discovery-data/` 데이터 자산 미존재 — E2E Task 생성 예정(§10). |
-| 3 | `schemaVersion`·`instanceVersion` 표기 형식 (§3.3·§3.4) | 버전 값의 물리 표기·직렬화. | front-matter 스칼라 — `schemaVersion` = SemVer 점표기 문자열(예 형태 `"1.0"`), `instanceVersion` = 단조 증가 정수, `supersedes` = 이전 인스턴스 참조. 상세 §5. | 표기 형식 확정(정본, 형태 A). 값 채움은 인스턴스 생성 시(E2E Task). |
-| 4 | Provenance 부속 물리 형식 (§3.2-D) | 불투명 부속의 물리 저장 형식 — Discovery 측·Adapter 측 소관(내부 구조 비정의). | front-matter 내 **분리 네임스페이스 `provenance` 컨테이너**(불투명 블록) — 외형·must-ignore 경계만 본 문서가 확정. 내부 형식은 후속 discovery-binding.md(예정) 소관. 상세 §6. | 컨테이너 외형·경계 확정(정본, 형태 A). 내부 형식·데이터는 후속 바인딩·E2E Task 소관. |
+| 1 | Contract 직렬화·물리 포맷 (§3.1·§3.2) | 논리 스키마를 실제 문서·레코드로 표현하는 직렬화 형식. | **Markdown 본문 + YAML front-matter 단일 문서.** front-matter가 9그룹·필수 코어 필드 10의 자기서술 구조를, 본문이 인간 가독 렌더링을 담는다. Provenance는 분리 네임스페이스 컨테이너. 상세 §3. | 형식 확정(정본, 규약 실현/형태 A). Contract 인스턴스 데이터 실재 — v1.2 E2E 생성(v1)·v1.4 성숙 E2E append(v2), 2026-07-13 재실측 §10-A. 컴파일러·파서는 형태 B. |
+| 2 | Contract 저장 위치 (§3.2) | Contract 인스턴스가 프로젝트에 배치·보관되는 물리 위치·경로 관례. | **이원화 확정**: 일반 관례 = 소비 프로젝트 내 `.claude/project-contract/`; 본 UAHF 저장소 인스턴스(Brownfield dogfooding) = `framework/adapters/claude/discovery-data/contracts/uahf/`(격리). 상세 §4. 01-entry §4.1이 Adapter 소관으로 미룬 contract-presence 탐지 경로의 실현(§3.2-C는 contract-presence Evidence 관측 정의·유/무 도메인만 소유). | 경로 관례 확정(정본, 형태 A). `discovery-data/` 데이터 자산 실재 — v1.2 E2E 생성(2026-07-13 재실측 §10-A). |
+| 3 | `schemaVersion`·`instanceVersion` 표기 형식 (§3.3·§3.4) | 버전 값의 물리 표기·직렬화. | front-matter 스칼라 — `schemaVersion` = SemVer 점표기 문자열(예 형태 `"1.0"`), `instanceVersion` = 단조 증가 정수, `supersedes` = 이전 인스턴스 참조. 상세 §5. | 표기 형식 확정(정본, 형태 A). 값 채움 실재 — 인스턴스 v1·v2 실측(§10-A). |
+| 4 | Provenance 부속 물리 형식 (§3.2-D) | 불투명 부속의 물리 저장 형식 — Discovery 측·Adapter 측 소관(내부 구조 비정의). | front-matter 내 **분리 네임스페이스 `provenance` 컨테이너**(불투명 블록) — 외형·must-ignore 경계만 본 문서가 확정. 내부 형식은 후속 discovery-binding.md(예정) 소관. 상세 §6. | 컨테이너 외형·경계 확정(정본, 형태 A). 내부 형식 확정·데이터 실재 — discovery-binding §10(Discovery run)·solution-design-binding §8(성숙 run)·인스턴스 v1·v2 실측(§10-A). |
 
 주:
 
@@ -157,7 +158,7 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 
 - **경로.** 본 UAHF 저장소 자신을 대상 프로젝트로 발견하는 dogfooding 인스턴스는 `framework/adapters/claude/discovery-data/contracts/uahf/`에 격리 배치한다. 파일명 관례는 §4.1과 동일(`project-contract.v<N>.md`).
 - **근거(UAF-INV ① 안전).** 본 저장소의 dogfood Contract를 라이브 `.claude/` 규약 표면(하네스 자신의 AGENT.md·CLAUDE.md 등)이나 Core 경계에 섞으면 하네스 규약과 발견 산출 데이터가 혼입된다. 이를 Adapter 경계 이하 `discovery-data/`로 격리하면 데이터 자산이 격리 지점 뒤에 놓여, UAHF 정본 무수정(ARCHITECTURE.md §8 UAF-INV ①)과 정합한다. 이는 자매 `memory-data/`·`loop-data/`가 Adapter 경계 이하로 백엔드 데이터를 격리한 선례(memory-binding.md §0·§2)와 동형이다.
-- **`discovery-data/`는 지원 구조(현 시점 미존재).** 이 경로·구조는 본 문서가 확정한 정본 문면이며, 실제 디렉터리·인스턴스 데이터 생성은 **v1.2 E2E Task(T-XG·T-XB) 소관**이다(§10 실측 대조). 본 문서는 물리 데이터 자산을 생성하지 않는다 — 경로·구조·형식의 정본만 소유한다(memory-binding.md §2 주 "지원 구조 — 시연 시 생성" 선례 동형, L-07).
+- **`discovery-data/`는 지원 구조(작성 시점 미존재 → 현재 실재).** 이 경로·구조는 본 문서가 확정한 정본 문면이며, 실제 디렉터리·인스턴스 데이터는 **v1.2 E2E Task(T-XG·T-XB)가 이 정본 구조 그대로 생성해 실재**하고, 성숙 인스턴스(`project-contract.v2.md`)는 v1.4 성숙 E2E(maturation-r001)가 동일 파일명 관례로 append했다(2026-07-13 재실측 — §10-A). 본 문서는 물리 데이터 자산을 생성하지 않는다 — 경로·구조·형식의 정본만 소유한다(memory-binding.md §2 주 "지원 구조 — 시연 시 생성" 선례 동형, L-07).
 
 ---
 
@@ -254,6 +255,19 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 - **핵심 구분.** 본 문서가 확정한 직렬화 형식·저장 경로·버전 표기·Provenance 컨테이너 외형은 **정본 문면(형태 A)**이며, 물리 데이터 자산(`discovery-data/…`·`.claude/project-contract/…` 인스턴스 파일)은 **현 시점 미존재**로 v1.2 E2E Task(T-XG·T-XB)가 이 정본 구조 그대로 생성할 예정이다. 데이터 생성 주체는 E2E Task이며, 본 문서는 구조·형식·경로·표기의 정본만 소유한다(memory-binding.md §2·§7 "지원 구조 — 시연 시 생성" 선례 동형, L-07).
 - 실측과 불일치하는 서술은 0건이다 — 미존재(`discovery-data/`)를 실재로, 실재(자매 바인딩·03 정본)를 미존재로 쓰지 않았다.
 
+### §10-A. 재실측 서브블록 (2026-07-13 — BPD-17 재베이스라인 · discovery-binding §13 선례 동형)
+
+위 §10 표는 2026-07-07 작성 시점 스냅샷으로 **byte 불변 보존**한다. 아래는 v1.4 W3 시점(2026-07-13) `ls`/`git` 직접 재실측이다.
+
+| 대상 | §10 원 서술 (2026-07-07) | 재실측 결과 (2026-07-13, 직접 실측) |
+|---|---|---|
+| `framework/adapters/claude/discovery-data/` | **미존재** (E2E Task 생성 예정) | **실재** — v1.2 E2E Task가 정본 구조 그대로 생성(`events/{brownfield-r001,greenfield-r002}/`·`policy/`·`contracts/uahf/`·`e2e-greenfield-project/`). 생성 주체 = E2E Task, 본 문서는 정본 문면만 소유(§10 핵심 구분 유지). |
+| `discovery-data/contracts/uahf/` 인스턴스 데이터 | **미존재** (E2E Task 생성 예정) | **실재** — `project-contract.v1.md`(pc-uahf-001 v1, v1.2 E2E 생성) + `project-contract.v2.md`(instanceVersion 2·supersedes 1 — v1.4 성숙 E2E maturation-r001이 §4.1 파일명 관례·§5 표기 그대로 append, 03 §3.4 Contract Maturation). |
+| 소비 프로젝트 `.claude/project-contract/` (일반 관례) | 본 저장소 미존재(정상) | **여전히 미존재(정상)** — 일반 관례는 소비 프로젝트 배치 대상(E2E Greenfield 대상 프로젝트 내 `e2e-greenfield-project/.claude/project-contract/`에는 실재). |
+| Contract 컴파일러·tolerant reader 파서(형태 B) | 미도입 (형태 B 예정) | **여전히 미도입** — Bootstrap 상태(형태 A) 유지. |
+
+- 본 서브블록은 상태 서술의 재베이스라인일 뿐, 계약(직렬화·경로·표기·Provenance 외형)은 무변경이다.
+
 ---
 
 ## §11. 정본 경계·격리·계약 소유 (self-note)
@@ -275,10 +289,10 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 - 이 문서 = `framework/adapters/claude/` 경계의 **UAF 정본(planning/specs/03) 바인딩** 산출물(DP-X1). 정본 = 03 §3·§4(본 문서는 물리 실현, 재정의 아님 — §0). 자매 바인딩 12문서(UAHF spec 바인딩)와 구분되는 UAF 레벨 바인딩·접두 없는 동형 파일명.
 - **§2:** 03 "### 4.1 바인딩 대상" 표 **4행 전건**을 물리 실현으로 매핑(실재/규약 실현/형태 B 3구분).
 - **§3:** 직렬화 = **Markdown 본문 + YAML front-matter 단일 문서** — ⓐ 9그룹·필수 코어 필드 10 표현 ⓑ tolerant reader 정합(자기서술·미지 must-ignore) ⓒ Provenance 분리 불투명 컨테이너 ⓓ append-only 인스턴스(새 파일 + `supersedes`) 표현. scaffold-binding.md §4 관례 동형.
-- **§4:** 저장 위치 이원화(DP-X2) — 일반 관례 `.claude/project-contract/`(Advisor 정독·Scaffold 배치 정합, 03 §3.5-B) + 본 저장소 격리 `framework/adapters/claude/discovery-data/contracts/uahf/`(UAF-INV ① 안전). 01-entry §4.1 Adapter 위임의 물리 실현(§3.2-C = contract-presence Evidence 정의). `discovery-data/`는 현 시점 미존재·E2E Task 생성 예정.
+- **§4:** 저장 위치 이원화(DP-X2) — 일반 관례 `.claude/project-contract/`(Advisor 정독·Scaffold 배치 정합, 03 §3.5-B) + 본 저장소 격리 `framework/adapters/claude/discovery-data/contracts/uahf/`(UAF-INV ① 안전). 01-entry §4.1 Adapter 위임의 물리 실현(§3.2-C = contract-presence Evidence 정의). `discovery-data/`는 작성 시점 미존재였고 v1.2 E2E가 생성해 실재(2026-07-13 재실측 §10-A).
 - **§5:** 버전 표기 — `schemaVersion` SemVer 점표기 문자열·`instanceVersion` 단조 증가 정수·`supersedes` 참조. MAJOR 원칙 금지·필드 제거 금지·deprecated 마킹이 물리 표기에서 훼손 0(PC-INV 4·5·6).
 - **§6:** Provenance = 분리 네임스페이스 `provenance` 컨테이너 외형·must-ignore 경계만 확정. 내부 형식은 discovery-binding.md(예정) 위임(DP-X6, 03 §3.2-D 동형).
 - **§7:** 상시 불변 자기 점검 — 코어 필드 직렬화(§3 그룹 1~8·§5)에 Discovery 내부 개념(질문 선택·전략·예산·Strategy·Capability) 0건(다중 패턴 자가 스캔; Readiness 산출 기록·Provenance 제외), Stable Contract 규율(SemVer·tolerant reader·필드 제거 금지) 훼손 0(PC-INV 2·11).
 - **§8:** 03 "### 4.2" 이식 교체 지점 3건 대응 표("교체되는 것 / 유지되는 것") — 유지 열이 03 §3 불변(C-1 동형) 재확인.
-- **§10:** 실측 대조 — `discovery-data/` 현 시점 미존재(E2E Task 생성 예정), 자매 바인딩·03 정본 실재. 미존재를 실재로 쓰지 않음(L-07).
+- **§10:** 실측 대조 — 2026-07-07 스냅샷(`discovery-data/` 당시 미존재·byte 보존) + §10-A 재실측 서브블록(2026-07-13 — 실재 전환·인스턴스 v1·v2). 미존재를 실재로 쓰지 않음(L-07).
 - 03 §3·§4·UAHF 정본 재정의 0, Glossary 용어 신설 0, 새 계약 요소 창설 0, 실행 코드 0(형태 A). 구체 직렬화 형식·물리 경로 토큰은 이 Adapter 경계에서 허용된다(격리 지점).

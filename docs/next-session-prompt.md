@@ -2,7 +2,7 @@
 
 작성: Advisor · 2026-07-13 · v1.4 W0~W3 완료
 용도: 새 세션에서 아래를 붙여넣으면 재분석 없이 착수. (물리 발화 = `/uaf-continue`)
-상태: **v1.4 Baseline 후보 — 사용자 Baseline 승인 대기.** (승인 시 이 라인·바인딩 상태 라인이 Baseline으로 갱신됨. W2 성숙 게이트 T8은 2026-07-13 사용자 승인 완료.)
+상태: **v1.4 완결 — 사용자 Baseline 승인 2026-07-13** (solution-design-binding v1.4 Baseline 승격·성숙 게이트 T8 및 Baseline 승인 완료). 다음 = [후속-A] vs [T-b]/[T-c] 사용자 택1.
 
 ---
 

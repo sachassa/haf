@@ -1,7 +1,7 @@
 # framework/adapters/claude/solution-design-binding — Claude Code Solution Design Adapter 바인딩
 
 작성일: 2026-07-13
-상태: v1.4 Draft (CP2 대기)
+상태: v1.4 Baseline (CP2 독립 판정 Pass 10/0/0 · CP3 승인 · 사용자 Baseline 승인 2026-07-13)
 상위 규약: AGENT.md
 근거 정본:
 
@@ -25,6 +25,8 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-13 | v1.4 Draft (CP2 대기) | 최초 작성. `framework/adapters/claude/` 경계의 **UAF 정본(planning/specs/04-solution-design) 바인딩** 산출물 — contract-binding.md·entry-binding.md·discovery-binding.md에 이은 **4번째 UAF 레벨 바인딩**(접두 없는 자매 골격 동형·adapter-conformance "자매 11종" 계수 비합산 DP-X4 동형). 04 "### 4.1 바인딩 지점" 표 **4행 전건**(① Expert Role 실행 호스팅 ② 사용자 게이트 제시·응답 채널 ③ 산출물 저장 위치 ④ 복잡도 판정·역할 선택·Projection 선택 Policy 실값)을 Claude 환경 물리 실현으로 확정(§2 — 실재/규약 실현(형태 A)/형태 B 3구분). **DP-1**(저장) = `solution-design-data/` 백엔드 트리 정본 선언(events/maturation-<run-id>/·policy/)·superseding 인스턴스는 contract-binding §4.2 경로에 append(참조 인용·재정의 0)·이원화(DP-X2 동형)(§3). **DP-2**(기록) = run 단위 append-only 로그·1 사건 = 1 레코드·seq 순서 값 전속(물리 시각 별도 실측 성격 L-09)·전이 레코드는 04 §3.4-A 상태·§3.4-B T1~T11 정본 인용·SD 고유 최소 레코드 종류를 Adapter 기록 관례로 명명 확정(Discovery Event 15종 명칭 차용 0·새 코어 계약 요소 창설 0)(§4). **DP-4**(게이트) = 주 세션 제시·응답 채널(discovery-binding §5 동형)·T8/T9/T10/T11 실의미·승인 전 Matured 불가(SP-INV 4)(§5). **DP-3**(호스팅) = 04 §4.1 행1 정본 그대로 **역할 추상까지만**·주 세션(Advisor) Orchestrator 규약 절차·Expert Role 수행은 기존 위임 실행 관행 재사용·새 병렬 프레임워크 0·물리 호스팅 설계 0(discovery-binding §7 동형)(§6). **DP-5**(Policy) = `solution-design-data/policy/` 데이터 소스 + **최소 실값 1세트 정본 값 표**(성숙/스킵 판정 기준·역할 선택 규칙·Projection 선택 정책)(§7, DP-X5 동형). **Provenance** = 성숙 run 내부 형식(runId·이벤트 로그 경로·기준선 vN 참조)만 확정·외형·must-ignore 경계는 contract-binding §6 소유(재정의 0·discovery-binding §10 경계 동형)(§8). 책임 경계 문안(Solution Design 활동[04] / Contract Maturation 갱신 유형[03 §3.4]) 반영(§0). 04 §4.2 이식 교체 지점 대응 표(§10 — "유지되는 것" 열 = 04 §3 불변 재확인). 상시 불변 자기 점검(§11 — 재정의 0·창설 0·Discovery Event 명칭 차용 0·mention/use 경계). 상태 서술 실측 대조(§12 — `solution-design-data/` 현 시점 미존재·W2 E2E 생성 예정 정직 구분, L-07). 실행 코드 0(형태 A). 04·03·02·루트 재정의 0·§ 포인터 인용만·새 계약 요소(상태·전이·불변·필드·kind) 창설 0·방법론 고유명·고정 역할 카탈로그·타 AI 벤더·모델명 0(자가 전수 스캔). 동시 작성 중인 병렬 산출물 불인용(07 R2). | Worker (Advisor 위임, v1.4 W1) |
+
+| 2026-07-13 | v1.4 Baseline | **Baseline 승격** — W1 CP2 독립 판정 Pass 10/0/0(AC 10건 전건·전이표 1:1 대조 오전사 0·금지 토큰 독립 스캔 0)·CP3 승인·W2 dogfooding E2E(maturation-r001 — pc-uahf-001 v1→v2 성숙·CP2 증명 13/13)가 본 바인딩 정본 문면(백엔드 트리·레코드 어휘·게이트 채널·Policy 실값·Provenance 형식) 그대로 실주행됨을 실증한 뒤 **사용자 Baseline 승인(2026-07-13)**. §12의 "solution-design-data/ 미존재·W2 생성 예정" 서술은 작성 시점 스냅샷으로 보존 — W2가 정본 구조 그대로 생성해 현재 실재(백엔드 실측 = W2 CP2 리포트·contract-binding §10-A 동형 맥락). 본문 무변경(상태 라인·본 행만). | Advisor (사용자 승인) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 자매 contract-binding.md §9·entry-binding.md §9·discovery-binding.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
 

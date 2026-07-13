@@ -1,0 +1,24 @@
+{
+  "id": "mi-0105",
+  "kind": "lesson",
+  "content": {
+    "id": "L-27",
+    "status": "Candidate",
+    "lesson": "실행 코드(형태 B)가 도입된 저장소에서는 커밋 전 빌드·테스트 실행 부산물의 스테이징을 차단한다: (1) 부산물 패턴(__pycache__/·*.pyc 등 언어·툴체인별)을 .gitignore로 선(先)등록해 애초에 추적 대상에서 제외하고, (2) `git add`가 일괄/와일드카드 스테이징이면 스테이징 전 `git status`로 부산물 유무를 스캔한 뒤 커밋한다. 문서 전용 저장소 시절의 무차별 스테이징 습관은 실행 코드 도입 시점에 위생 규칙으로 대체되어야 한다 — 소스·계약을 바꾸지 않는 부산물이라도 저장소를 오염시키고 diff 노이즈·재현성 저해를 남긴다.",
+    "evidence": "v1.6 S3 — pytest 실행이 남긴 __pycache__ 바이트코드 8건이 커밋 c65d20f에 일괄 스테이징으로 유입 → 즉시 검출·정정 커밋 04b8f6e(8건 제거 + .gitignore 신설 __pycache__/·*.pyc). 재발 판정 Novel(mi-0104). 정정 후 후속 S4·S5는 부산물 유입 0.",
+    "applicability": "실행 코드·테스트가 있는 저장소에서 커밋을 준비하는 전 상황 — 특히 UAHF처럼 문서·규약(형태 A)에서 실행 코드(형태 B)로 전환한 직후. Python(__pycache__/·*.pyc)·Node(node_modules·빌드 산출)·일반 빌드 산출물(dist/·*.o) 등 툴체인별 부산물 패턴에 일반화. .gitignore가 없거나 부산물 패턴을 누락한 저장소에서 우선 점검.",
+    "provenance": {
+      "task_ref": "v1.6 S3 커밋 오염 사건 — 커밋 04b8f6e",
+      "report_ref": "mi-0104 재발 판정(Novel) · 04b8f6e diff 실측(pyc 8·.gitignore +2)",
+      "origin_role": "검출·등록 Advisor — 심사 대기 Candidate",
+      "ordering_ref": "v1.6 세션 (mi-0104 다음)"
+    }
+  },
+  "source": "v1.6-project-orchestration",
+  "timestamp": "2026-07-13T22:10:02.000+09:00",
+  "labels": {
+    "stable_id": "L-27",
+    "status": "Candidate",
+    "situation": ["exec-code-repo-hygiene", "build-artifact-before-staging", "gitignore-first", "bulk-git-add-scan", "pytest-pycache"]
+  }
+}

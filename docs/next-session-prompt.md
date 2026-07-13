@@ -1,8 +1,8 @@
-# 다음 세션 부트스트랩 프롬프트 (마일스톤 v1.5 형태 B Step Hosting — Baseline 확정·트랙 완결)
+# 다음 세션 부트스트랩 프롬프트 (마일스톤 v1.6 Project Orchestration — Baseline 확정 · Contract v3 T8 게이트 대기)
 
-작성: Advisor · 2026-07-13 · v1.5 마감 시점
+작성: Advisor · 2026-07-13 · v1.6 마감 시점
 용도: 새 세션에서 아래를 붙여넣으면 **추가 재조사 없이** 착수. (물리 발화 = `/uaf-continue`)
-상태: **마일스톤 v1.5 「형태 B Step Execution Hosting」 Baseline 확정 — 사용자 승인 2026-07-13** (Baseline 게이트·번호 부여 게이트 통과). W0~W3 완주·상태행 승격·ROADMAP 2종 v1.5 등재·repo Memory Update 마감(store 98→102). **트랙 완결 — 다음 트랙은 사용자 지시 대기.**
+상태: **마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 Baseline 확정 — 사용자 승인 2026-07-13** (플랜 게이트·배치 재검증 게이트·Baseline 게이트·번호 부여 통과). S1~S5 완주·상태행 승격·루트 라우터 등재(문서버전 v1.5)·ROADMAP 등재. **잔여 1건: Contract v2→v3 성숙 run(maturation-r002)이 Validating에서 정지 — T8 사용자 게이트 대기.**
 
 ---
 
@@ -11,68 +11,74 @@
 ```
 너는 Universal Agentic Framework(UAF/UAHF)의 메인 Advisor다.
 
-직전 완결 트랙: 마일스톤 v1.5 「형태 B Step Execution Hosting」 — Baseline 확정
-(사용자 승인 2026-07-13). 커밋 체인: fbd1b0e(W0 설계) → 2d4f948(W1 프로토콜) →
-a45a3e1(W2 구현) → 94bc97e(W3 E2E+정합) → e22d2ff(핸드오프) → [Baseline 확정 커밋]
-→ [Memory Update 커밋].
+직전 완결 트랙: 마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 —
+Baseline 확정(사용자 승인 2026-07-13). 커밋 체인: fd112cd(S1 Layer·spec) →
+ce0cdba(S2 Revision Ledger·Orchestrator) → c65d20f+04b8f6e(S3 Gate Policy) →
+745f26e(S4 Allocation·Model Selection·OQ-SH-4 해소) → 5e843dc(S5 Artifact
+Registry·실 CLI 종단 E2E) → 7da5c97(Baseline 확정·라우터 등재) → 41ce16f
+(maturation-r002·T8 대기) → [Memory Update 커밋].
 
-■ v1.5 결과 요지
-- 형태 B 실행 코드 첫 도입: framework/runtime/step-hosting-protocol.md(v1.5 Baseline·
-  SH-INV 8·Frozen spec 개정 0) · framework/loop/step-host/(중립 Host·AI/provider 토큰 0·
-  unittest 17) · adapters/claude/step-hosting-binding.md(v1.5 Baseline)+step-invoker/
-  (dangerously 유일 소재·테스트 19).
-- dogfooding E2E 7 시나리오 전건 실증(실 CLI 21 세션·step-data/runs/ 8 run·append-only):
-  게이트 등급 분리(unrestricted에서도 Escalated 정지)·deterministic resume(replay 해시
-  동일)·retry feedback 재주입·CP3 물리 디스패치·Full UAF 상위 재실행 0·Standalone 분기·
-  s3 게이트 실개입 사가(정지 2회·Advisor 해소 2회·라이브 CP2 실검출 1회).
-- CP2 3회 전건 독립 Pass(W1 재판정 5/0/0·W2 9/0/0 실행 검증·W3 7/7+4/4)·CP3 승인.
-- Memory Update: mi-0099(Recurrence — cross-layer bare 라벨·L-20/L-22 커널)·
-  mi-0100(Novel — 부수효과 미확정 재시도)·mi-0101(L-26 Candidate)·mi-0102(BPD-21
-  Candidate — 형태 B 무인 E2E 패턴). store 102.
+■ v1.6 결과 요지
+- UAF 레벨 신규 최상위 Layer `orchestration/` 신설(루트 ARCHITECTURE v1.5 §2.3
+  "Agentic Runtime" slot 실현·§2.1 라우터 등재·최상위 6 Layer). 사용자 배치
+  재검증 게이트(2026-07-13): 소유=UAF 레벨(UAHF 내부 아님)·UAHF 접촉=substrate
+  라이브러리 무수정 재사용(step-host import — 루트 §2.5 하향 방향·UAF-INV ①
+  규범 문면 무변+병존 주).
+- 정본: orchestration/specs/05-project-orchestration.md(v1.6 Baseline — PO-INV 8·
+  Graph Revision Ledger·Gate Policy 5종+단조성·할당 3층 Role/AgentSpec/Instance·
+  Model Selection hysteresis·ArtifactRecord) + orchestration/ARCHITECTURE.md.
+- 중립 코드: orchestration/framework/orchestrator/ 6모듈(revision·orchestrator·
+  gates·allocation·artifacts·stephost_bridge)+스키마 4종·테스트 총 165(126+
+  step-host 20+invoker 19). "PM Agent" 3분해(기계 조율=deterministic 코드·의미
+  판단=국소 fresh-context Step·확정 권위=사용자).
+- 바인딩: uahf/framework/adapters/claude/project-orchestration-binding.md(v1.6 —
+  UAF 레벨 바인딩 5종째)+orchestration-data/(run 백엔드·E2E).
+- E2E: 실 claude CLI 5 세션 종단(user_decision 게이트 물리 정지 exit 2→해소
+  [시뮬레이션 명시 라벨]→구현 revision 인과→review 게이트→완주·replay 동일
+  fingerprint·상류 재실행 흔적 0) + artifact 계보(v1 해시 불변·supersedes).
+- CP2 총 7회 전건 첫 판정 Pass(S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0·
+  마감 2파트)·CP3 전건 승인. OQ-SH-4 해소·OQ-LB-2/WB-2 승계 표기.
+
+■ 최우선 잔여: Contract v3 T8 게이트 (사용자 응답 대기)
+- maturation-r002(41ce16f)가 Validating에서 정지. v3 후보 =
+  solution-design-data/events/maturation-r002/candidate/project-contract.v3.CANDIDATE.md
+  (미발행). v2→v3 diff 요약 = 같은 디렉터리 reviewing-record.md §2.
+- 사용자 승인(T8) 시: GatePresented·UserResponded·T8 이벤트 append →
+  discovery-data/contracts/uahf/project-contract.v3.md 발행(v2 보존·supersedes 2)
+  → 세션 진입 Consult 정독 대상 = v3. 수정 요청(T10)/스킵은 04 §3.4 전이 준수.
+- 게이트 옵션(reviewing-record 참조): decisions[1] 6-Layer 현행화 채택/이연 ·
+  OQ-SH-4의 open[0] 문맥 반영 유지/제외.
+- 보고 사항: OQ-R2-1 — 04 §3.1-B 문면은 성숙 입력을 Ready 계열로 한정하나 본
+  run 입력은 Matured v2(03 §3.4 계보상 유효 기준선으로 진행). 04 문면 명확화는
+  별도 결정(Frozen 아님·Baseline 개정 게이트 필요) — 사용자 판단 대기.
 
 ■ 다음 트랙 후보 (착수는 사용자 지시 — 임의 착수 금지)
-1. Contract v3 성숙 재발행 — v2 open 1·3항이 v1.5로 부분 해소됨·별도 성숙 run
-   (BPD-20 패턴·04-solution-design 정본).
-2. OQ-SH 후속 설계 — OQ-SH-2(interactive headless 의미)·SH-3(stream-json)·
-   SH-4(CP2 모델 슬롯 독립 지정)·SH-5(Escalation 해소 전용 어휘 — 해소=fail 계수 결합
-   해체)·물리 동시 디스패치(동시성 invoker — OQ-WB-2 잔여 축).
-3. 실제 외부 프로젝트 적용(Contract intent "실용화" — 형태 B 도입 완료로 착수 가능).
-4. Tier 2 잔여 [T-b] harness-doc 경로 정규화 · [T-c] AGENT/CLAUDE body 분할(L-14 hold).
-5. 유지보수 일괄 — 이월 인벤토리(아래) 정리 트랙.
+1. 물리 동시 디스패치(동시성 invoker — OQ-WB-2 잔여 축·worktree 격리 Defer 승계).
+2. 실 LLM 제안 step 기반 비픽스처 완전 성숙 run(OQ-PO-B4) — 실제 외부 프로젝트
+   적용(Contract intent "실용화")과 결합 가능.
+3. OQ-SH 잔여 — SH-2(interactive headless)·SH-3(stream-json)·SH-5(Escalation
+   해소 어휘·게이트 큐 어휘와 통합 후보).
+4. 대화형 단위의 형태 B 호스팅 · 멀티프로젝트 오케스트레이션 · 비용/토큰 미터링.
+5. Tier 2 잔여 [T-b]·[T-c] · 유지보수 일괄(이월 인벤토리).
 
 ■ 이월 인벤토리 (비차단·승계)
-- 설계 정본 §3.9 bare "04 §3.3" 표기(프로토콜은 정정됨·문서 내부 가독) ·
-  adapter-conformance notes 병기 defer · E2E 드라이버 invoke 로그 프로세스별 덮어쓰기 ·
-  02 §3.7 자기 불일치 · 03 bare "§3.7"·§7 done-11 stale · CP1~CP3 인용 앵커(v1.3 §6 승계) ·
-  OQ-SD-2 · entry/discovery-binding 시제 서술 · conformance §6 BP-16 행 stale ·
-  settings.json stale(v1.4 검출) · Superpowers Gap Analysis Defer · Tier 3(물리 재배치·
-  설치형 패키징).
-
-■ 정독 순서 (재조사 금지)
-1. git log --oneline -7 + git status
-2. Memory Consult([[uahf-session-entrypoint]]) + Contract 정독(project-contract.v2.md —
-   최고 instanceVersion)
-3. 필요 시: docs/form-b-step-hosting-design.md·step-hosting-protocol.md §9·
-   step-hosting-binding.md §7(OQ 잔여)
-4. step-data/runs/ 는 증거 원본 — 수정 금지(append-only)
-
-⚠️ 상시 원칙: 완전성 주장 전 전수 스윕·범위 명시(L-24) · 카운트 본문 재계수(L-25) ·
-동결 in-place 금지(L-22) · 라우팅 표 정정(L-23) · 부수효과 실측 확정 후 재시도(L-26
-Candidate — 비멱등 연산) · Worker 완료 보고 불신·CP2 독립·CP3 승인 · 버전/마일스톤 번호
-임의 변경 금지 · working tree 사용자 변경사항 보존.
+- v1.5 승계분(02 §3.7 자기 불일치·OQ-SD-2·entry/discovery-binding 시제·
+  settings.json stale·adapter-conformance notes defer 등) 전부 승계.
+- v1.6 신규: 루트 §2.3 헤딩 "(향후)" 라벨(앵커 안정 우선 보존·후속 정합 선택지) ·
+  design doc §9 OQ 스냅샷(BPD-17 보존) · AgentSpec tie-break "사전순" 라벨의
+  strict-prefix 극단 부정확(결정성은 성립) · steps/ 미러=비정본 편의 뷰 ·
+  OQ-PO-B1(제시 표면 문법)·B2(해소 어휘)·B3(headless 제시 브리지) ·
+  Superpowers 비정본 부록 후보(리뷰 2판정·placeholder 금지·receiving-review).
 ```
 
 ---
 
-## 🪶 짧은 버전
+## 정본 포인터
 
-> **v1.5 형태 B Step Execution Hosting Baseline 확정(사용자 승인 2026-07-13)·트랙 완결.** 실행 코드 첫 도입(프로토콜+중립 Host+claude 바인딩/invoker)·E2E 7/7 실 CLI 실증·CP2 3회 전건 Pass·ROADMAP v1.5 등재·Memory store 102. 다음 트랙 = 사용자 지시 대기(후보: Contract v3 성숙 run·OQ-SH 후속·외부 프로젝트 적용·T-b/T-c·유지보수 일괄).
-
----
-
-## 현재 상태 스냅샷 (2026-07-13 v1.5 마감)
-
-- **정본 상태**: step-hosting-protocol.md = v1.5 Baseline · step-hosting-binding.md = v1.5 Baseline · loop-binding OQ-LB-2 해소·workflow-binding OQ-WB-2 부분 해소(버전 무상승) · Frozen spec 15종·루트 ARCH·04 무수정(C-1 위반 0).
-- **게이트 실증 물리 증거**: s5b(unrestricted에서 Escalated 정지)·s3(Advisor 실개입 해소 2회·exit 2 캡처)·s1(CP3 배치 종단 디스패치 cp3-result.json) — UAF-INV ⑤.
-- **Contract**: pc-uahf-001 v2 현행(open 1·3항 v1.5로 부분 해소 — v3 재발행은 별도 성숙 run·사용자 지시 대기).
-- **Memory**: store 102·index 102(순수 append +4)·Candidate에 L-26·BPD-21 추가(승격 심사 대기)·기존 mi-0001~0098 무변경.
+| 항목 | 위치 |
+|---|---|
+| 설계 정본 | `docs/project-orchestration-design.md` (v1.6 Baseline) |
+| Layer 정본 | `orchestration/specs/05-project-orchestration.md` · `orchestration/ARCHITECTURE.md` |
+| 바인딩 | `uahf/framework/adapters/claude/project-orchestration-binding.md` |
+| v3 후보·run | `uahf/framework/adapters/claude/solution-design-data/events/maturation-r002/` |
+| 플랜(게이트 통과본) | `C:\Users\aime8\.claude\plans\uaf-project-orchestration-elegant-cat.md` |

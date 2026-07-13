@@ -1,0 +1,15 @@
+{
+  "allowed_tools": [
+    "Write",
+    "Read",
+    "Edit",
+    "Bash(python:*)"
+  ],
+  "note": "비픽스처 스모크 — 제안 내용·설계 내용 비고정(실 LLM 산출)·사용자 게이트 실 사용자 해소 예정(시뮬레이션 0). OQ-PO-B4 해소 선행 스모크(project-orchestration-binding.md:201). workspace_dir 은 run 디렉터리 밖 외부 절대경로(W4 전제 실측).",
+  "output_format": "json",
+  "policy": "auto_approve",
+  "retry_limit": 2,
+  "run_id": "orch-k-nonfixture-smoke",
+  "timeout": 300,
+  "workspace_dir": "C:\\Users\\aime8\\AppData\\Local\\Temp\\claude\\C--my-claude-project-universa-agentic-harness-framework\\d9d393c9-726b-4364-bd4f-77e02970747d\\scratchpad\\orch-k-workspace"
+}

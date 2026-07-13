@@ -1,0 +1,21 @@
+{
+  "id": "mi-0099",
+  "kind": "recurrence-judgment",
+  "content": {
+    "incident": "v1.5 W1 CP2 첫 판정 Fail 1(F-1): 프로토콜이 'Capability 선언'의 소재를 bare '04 §3.3'으로 3곳 인용 — 문서 헤더 근거 정본 규약상 04=specs/04-memory.md(§3.3=Invariants)여서 실제 소재 planning/specs/04-solution-design.md §3.3(역할 할당 계약)과 오귀속. 뿌리는 설계 정본 §3.9의 bare '04' 표기 승계(설계 문서 네임스페이스에서는 04=solution-design으로 읽히나 프로토콜 네임스페이스에서는 04=04-memory로 해소됨).",
+    "verdict": "Recurrence",
+    "kernel_analysis": "기존 커널 L-20(복합 인용 귀속까지 실측 대조)·L-22(경로 스윕≠앵커 정합)의 '인용 귀속' 커널 재발 — 신규 facet = 'cross-layer 동번호 spec의 bare 라벨이 문서 자체 인용 네임스페이스 규약과 충돌'(원문 전사가 아니라 상류 문서의 표기 관례를 다른 네임스페이스로 승계할 때 발생). 방어선 작동: 저술 시점 예방은 실패했으나 CP2 독립 § 앵커 실측 대조가 포착(Fail 1)·재작업 r2로 해소·재판정 Pass 5/0/0. 예방 규칙: 타 Layer 정본 인용 시 문서의 근거 정본 목록이 확정한 라벨 해소 규약을 기준으로 명시 prefix(예: 04-solution-design §3.3)를 쓰고, 상류 문서의 bare 표기를 전사하지 않는다.",
+    "provenance": {
+      "task_ref": "v1.5 W1 CP2 — 커밋 2d4f948(F-1 정정 r2·재판정 Pass)",
+      "report_ref": "W1 CP2 독립 Verifier 리포트(F-1 Violated 확정·04-memory §3.3=Invariants 실측·04-solution-design §3.3=역할 할당 계약 실측) + Advisor 독립 재확증 grep",
+      "origin_role": "검출 Verifier(CP2)·확증 Advisor·정정 Worker(r2)",
+      "ordering_ref": "v1.5 세션 (mi 시퀀스 연속·mi-0098 다음)"
+    }
+  },
+  "source": "v1.5-form-b-step-hosting",
+  "timestamp": "2026-07-13T15:49:26.000+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "situation": ["cross-layer-bare-label", "citation-namespace-collision", "l-20-l-22-kernel", "cp2-anchor-audit-caught"]
+  }
+}

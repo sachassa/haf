@@ -1,0 +1,24 @@
+{
+  "id": "mi-0101",
+  "kind": "lesson",
+  "content": {
+    "id": "L-26",
+    "status": "Candidate",
+    "lesson": "예외·오류 발생 시 '어느 단계에서 났는가'(연산 vs 출력/표시)를 구분하고, 부수효과를 실측 확정한 후에만 재시도한다. 특히 append-only 저장소 대상 연산은 비멱등이므로 재시도 전 저장소 꼬리를 재판독한다 — 출력 단계 예외는 연산 성공과 양립하며, 중복 append는 되돌릴 수 없고(불변 준수) 파생 상태·예산(재시도 한도 등)에 후속 파장을 남긴다. 파장이 발생했으면 기록은 보존하고 파장을 로그 위에서 해소한다(사후 수정 금지).",
+    "evidence": "v1.5 W3 s3 — UnicodeEncodeError(cp949 print)가 append 성공 후 발생 → 재시도로 해소 이벤트 중복 append(at 3·4) → retry 예산 1 소모 → retry-limit-exceeded Escalated 조기(seq 7) → 해소 #2 필요. append-only 보존으로 전 과정 로그 재구성 가능(커밋 94bc97e). 재발 판정 Novel(mi-0100).",
+    "applicability": "비멱등 연산(append-only 로그·이벤트 스토어·외부 API 부작용)을 도구·스크립트로 수행하는 전 상황. 콘솔 인코딩(win32 cp949)·파이프 오류 등 표시 계층 예외가 흔한 환경에서 특히 중요. 재시도 로직을 설계할 때는 '부수효과 확인 단계'를 재시도 앞에 명시적으로 둔다.",
+    "provenance": {
+      "task_ref": "v1.5 W3 s3 해소 사건 — 커밋 94bc97e",
+      "report_ref": "mi-0100 재발 판정(Novel) · W3 CP2 리포트 관찰 O-2",
+      "origin_role": "사건·등록 Advisor — 심사 대기 Candidate",
+      "ordering_ref": "v1.5 세션 (mi-0100 다음)"
+    }
+  },
+  "source": "v1.5-form-b-step-hosting",
+  "timestamp": "2026-07-13T15:49:28.000+09:00",
+  "labels": {
+    "stable_id": "L-26",
+    "status": "Candidate",
+    "situation": ["exception-stage-misattribution", "side-effect-verification-before-retry", "append-only-irreversible", "non-idempotent-retry", "win32-console-encoding"]
+  }
+}

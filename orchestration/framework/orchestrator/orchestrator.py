@@ -28,6 +28,12 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from allocation import Allocation, _present
+from artifacts import (
+    ArtifactCapturingInvoker,
+    ArtifactDeclarationStore,
+    derive_registry,
+    resolve_references,
+)
 from gates import (
     GATE_APPROVAL_REQUIRED,
     GATE_AUTO_CONTINUE,
@@ -112,6 +118,8 @@ class ProjectOrchestrator:
         stop_handler: Any = None,
         gate_policy: GatePolicy | None = None,
         allocation: Allocation | None = None,
+        artifact_store: ArtifactDeclarationStore | None = None,
+        run_id: Any = None,
     ) -> None:
         self.ledger = ledger
         # step 이벤트 store 는 Step Host 와 **공유**한다 — 두 원장이 아니라 이중 원장
@@ -133,6 +141,12 @@ class ProjectOrchestrator:
         # allocation 미지정(None) 시 슬롯 채움을 하지 않는다 — S2·S3 거동 완전 보존.
         # 지정 시 Step 직렬화 시점에 미지정 슬롯(role/model)만 채운다(명시값 우선·05 §3.4·§3.5).
         self.allocation = allocation
+        # artifact_store 미지정(None) 시 산출물 포집을 하지 않는다 — S2~S4 거동 완전 보존.
+        # 지정 시 실행 invoker 를 ArtifactCapturingInvoker 로 감싸 Worker 완료 보고의
+        # artifacts 를 append-only 선언 원장에 포집한다(05 §3.6). 레지스트리는 그 선언과
+        # 이벤트 로그에서 파생될 뿐 별도 mutable 상태로 저장되지 않는다(제2 진리원천 아님).
+        self.artifact_store = artifact_store
+        self.run_id = run_id
 
     # ------------------------------------------------------------------
     # 게이트 근거 실재 검증 (PO-INV 5 — 실재 검증만·판단 0)
@@ -260,6 +274,18 @@ class ProjectOrchestrator:
             if slot is not None:
                 step.model = slot
 
+    def _effective_invoker(self) -> Any:
+        """실행 invoker — artifact_store 지정 시 산출물 포집 래퍼로 감싼다(05 §3.6).
+
+        미지정(None)이면 self.invoker 그대로(래핑 0·S2~S4 거동 바이트 동일 보존). 래퍼는
+        inner.invoke 반환을 변경하지 않고 투명 통과시키며 Worker 완료 보고의 artifacts 만
+        선언 원장에 포집한다(부작용·판단 0). read_only 파생 경로에서는 invoke 가 호출되지
+        않으므로 래핑이 무해하다(포집 없음).
+        """
+        if self.artifact_store is None:
+            return self.invoker
+        return ArtifactCapturingInvoker(self.invoker, self.artifact_store, run_id=self.run_id)
+
     def _new_host(self, steps: list[Step]) -> StepHost:
         """StepHost 를 무수정 import·구동한다(공유 EventStore). 재정의 0.
 
@@ -269,7 +295,7 @@ class ProjectOrchestrator:
         cp2_model = self.allocation.cp2_model() if self.allocation is not None else None
         return StepHost(
             steps,
-            self.invoker,
+            self._effective_invoker(),
             store=self.event_store,
             retry_limit=self.retry_limit,
             policy=self.policy,
@@ -308,6 +334,33 @@ class ProjectOrchestrator:
         ]
         blob = json.dumps(canonical, sort_keys=True, ensure_ascii=False)
         return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+    # ------------------------------------------------------------------
+    # Artifact Registry — 파생 인덱스 (05 §3.6·PO-INV 2·7 — 읽기만·mutable 저장 0)
+    # ------------------------------------------------------------------
+    def artifact_registry(self) -> dict[str, Any]:
+        """{artifactId: [ArtifactRecord]} 파생 인덱스를 매 호출 새로 파생한다.
+
+        입력 = (선언 원장, 이벤트 로그). approvalState 는 게이트/검증 이벤트에서 파생되며
+        게이트 식별자는 orchestrator 의 `_gate_id_for` 관례(같은 단위 → 같은 gate_id)로
+        해석한다. 선언 원장 미지정(artifact_store None) 시 빈 레지스트리. 순수 파생 —
+        별도 mutable 상태로 저장하지 않는다(제2 진리원천 아님·PO-INV 2).
+        """
+        declarations = self.artifact_store.read_all() if self.artifact_store is not None else []
+        return derive_registry(
+            declarations,
+            self.event_store.read_all(),
+            gate_id_for=self._gate_id_for,
+            gate_policy=self.gate_policy,
+        )
+
+    def resolve_references(self, required_grade: str) -> list[Any]:
+        """번들 조립용 확정 참조 — 요구 등급 이상 approvalState 의 최신 버전만 해석한다.
+
+        미완성·미승인 산출물은 추측·인용하지 않는다(05 §3.6·07 R2). 계보는 배제하지 않고
+        resolve 만 확정 참조에서 제외한다(문면 불변 보존).
+        """
+        return resolve_references(self.artifact_registry(), required_grade)
 
     # ------------------------------------------------------------------
     # 게이트 처리 — 단위 경계(배치 종단)에서 gates.evaluate 소비 (05 §3.3·PO-INV 1·4)

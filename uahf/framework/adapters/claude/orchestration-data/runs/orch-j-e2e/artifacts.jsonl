@@ -1,0 +1,2 @@
+{"artifactId": "design-decision.md", "contentHash": null, "derivedFrom": [], "location": "design-decision.md", "producedBy": {"attempt": null, "capability": "cap-design", "model": "haiku", "role": "Worker", "runId": "orch-j-e2e", "stepId": "d1"}, "supersedes": null, "version": 1}
+{"artifactId": "impl-note.txt", "contentHash": null, "derivedFrom": ["design-decision.md"], "location": "impl-note.txt", "producedBy": {"attempt": null, "capability": "cap-impl", "model": "haiku", "role": "Worker", "runId": "orch-j-e2e", "stepId": "impl"}, "supersedes": null, "version": 1}

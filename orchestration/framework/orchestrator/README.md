@@ -26,20 +26,22 @@ provider·모델·상류 Layer 고유명 토큰을 두지 않는다(PO-INV 8).
   매핑·정책 실값)은 이 코드가 아니라 **Adapter Binding 문서** 소관이다(05 §5). 이 코드는
   그 지점을 추상(RevisionStore·EventStore·Invoker·config)으로 열어 둔다.
 
-## 구성 (S2·S3·S4 산출)
+## 구성 (S2·S3·S4·S5 산출)
 
 | 파일 | 책임 |
 |---|---|
 | `revision.py` | RevisionEvent · RevisionLedger(append-only, 인메모리+JSONL) · `fold()`(순수·안정 정렬) · `validate_revision()`(순수·07 §3.1-A 사유 코드 재사용). |
-| `orchestrator.py` | ProjectOrchestrator — fold → Step 직렬화 → **StepHost 무수정 구동**(공유 EventStore) → 그래프 성장 확인 → Escalated 즉시 정지. 게이트 근거 실재 검증(PO-INV 5)·결정적 재개. **S3: 단위 경계 게이트 처리(`_process_gates` — 배치 종단 일괄)·정지 게이트 정지·재개**. **S4: Step 직렬화 시점 슬롯 채움(`_build_steps`→`_fill_slots`·명시값 우선)·재선택 차수 파생(`_fallback_level`)·CP2 독립 모델 슬롯 StepHost 전달(`_new_host`)·CP3 비-Pass 정지 배선(`_process_gates` approval 분기)**. |
+| `orchestrator.py` | ProjectOrchestrator — fold → Step 직렬화 → **StepHost 무수정 구동**(공유 EventStore) → 그래프 성장 확인 → Escalated 즉시 정지. 게이트 근거 실재 검증(PO-INV 5)·결정적 재개. **S3: 단위 경계 게이트 처리(`_process_gates` — 배치 종단 일괄)·정지 게이트 정지·재개**. **S4: Step 직렬화 시점 슬롯 채움(`_build_steps`→`_fill_slots`·명시값 우선)·재선택 차수 파생(`_fallback_level`)·CP2 독립 모델 슬롯 StepHost 전달(`_new_host`)·CP3 비-Pass 정지 배선(`_process_gates` approval 분기)**. **S5: 선택 `artifact_store` 투명 포집 래퍼 배선(`_effective_invoker`)·`artifact_registry()`/`resolve_references()` 파생 메서드(읽기만·mutable 저장 0)**. |
 | `gates.py` | **(S3)** Gate Policy 평가기 — gateKind 5종·심각도 전순서·`GatePolicy.evaluate`(순수·결정적)·게이트 단조성 하한(`floor`·`effective_gate`)·게이트 이벤트 필드 관례 단일 소유(`gate::` 관례 정식화)·`pending_gates` 파생 뷰·해소 적격성. **(S4)** `latest_marker_verdict`(승인/리뷰 마커 verdict **status** 소비·내용 판정 0 — CP3 비-Pass 정지의 소비 함수). |
 | `allocation.py` | **(S4)** Dynamic Allocation + Model Selection Policy — `AgentSpec`(7필드 실행 프로파일)·`AgentSpecRegistry`(버전 있는 데이터·`match` deterministic·불투명 참조)·`ModelSelectionPolicy`(Policy as Data·`select_model` 순수·fallback·CP2 독립 슬롯)·`Allocation` 파사드. |
+| `artifacts.py` | **(S5)** Artifact Record·Registry — `ArtifactRecord`(8필드 계보·provenance)·approvalState 파생 사다리(draft→verified→approved→user_approved·게이트/검증 이벤트 파생 뷰)·Artifact 선언 원장(append-only 인메모리+JSONL)·`ArtifactCapturingInvoker`(완료 보고 artifacts 투명 포집 래퍼)·`derive_registry()`(순수·계보 보존·approvalState 파생)·`resolve_references()`(요구 등급 이상 최신 버전만). **레지스트리는 저장되지 않고 매 호출 파생된다(제2 진리원천 아님).** |
 | `stephost_bridge.py` | `uahf/framework/loop/step-host/` 중립 모듈의 **무수정 import 경로**(평면 import 를 위한 sys.path 조작은 orchestration 쪽에서만). |
 | `revision_schema.json` | RevisionEvent 직렬화 형태 정의(실값 없음 — step-host `config_schema.json` 관례 동형). |
 | `gate_policy_schema.json` | **(S3)** Gate Policy 데이터 형태 정의(실값 없음). **floor 는 스키마가 아니라 코드(`gates.py floor()`) 소유** — 정책 데이터로 하한을 약화 불가(주석 명시). |
 | `allocation_schema.json` | **(S4)** AgentSpec 레지스트리 + 매칭 tie-break 정책 형태(실값 없음). tie-break 스키마 default 는 코드 fallback(`allocation.DEFAULT_TIE_BREAK`)과 일치(단일 진리원천). |
 | `model_selection_schema.json` | **(S4)** Model Selection 정책 형태(실값 없음) — `slots`(class→불투명 슬롯)·`fallbackChain`·`cp2ModelSlot`(OQ-SH-4). 실제 모델명은 스키마·중립 코드 밖(Adapter 실값)에만. |
-| `tests/` | 모의 invoker 기반 통합 테스트(외부 의존 0). `test_gates.py`(S3) = gates 순수 + orchestrator 게이트 통합. `test_allocation.py`(S4) = allocation 순수 + orchestrator 슬롯/모델/CP3 통합(시나리오 f/g/h/i/j). |
+| `artifact_record_schema.json` | **(S5)** ArtifactRecord 형태 정의(실값 없음) — 8필드·approvalState enum(4등급·코드 사다리와 일치). |
+| `tests/` | 모의 invoker 기반 통합 테스트(외부 의존 0). `test_gates.py`(S3)·`test_allocation.py`(S4)·`test_artifacts.py`(S5) = artifacts 순수 + orchestrator 산출물 계보 통합(시나리오 i). |
 
 ## 할당·모델 선택 (S4 — 05 §3.4·§3.5·PO-INV 6·8)
 
@@ -72,8 +74,35 @@ provider·모델·상류 Layer 고유명 토큰을 두지 않는다(PO-INV 8).
   모델 슬롯은 불투명 문자열이며(테스트는 `tier-a`/`tier-verify` 등 사용) 실값은 Adapter 정책
   데이터 소관이다(model_selection_schema.json 주석).
 
-**아직 없는 것(후속 단계).** Artifact Registry(`artifacts.py`)·Adapter 바인딩 완성(직렬화·
-capability→물리 호출 매핑·run 데이터 백엔드)은 S5 소관이며 이번 단계 범위 밖이다(설계 §5).
+## Artifact Registry (S5 — 05 §3.6·PO-INV 7·2·8)
+
+- **레지스트리 = 파생 인덱스(제2 진리원천 아님).** `artifacts.py` 는 완료 보고(02 §3.2-C
+  `artifacts`)에서 포집한 append-only 선언 원장과 게이트/검증 이벤트로부터 `{artifactId:
+  [ArtifactRecord]}` 를 **매 호출 새로 파생**한다(`derive_registry` — 순수 함수·별도 mutable
+  저장 0). 완료 보고 artifacts 는 `ArtifactCapturingInvoker`(투명 래퍼)가 실행 경로에서
+  포집하며, 래퍼는 inner 반환을 변경하지 않고 CP2/CP3 verdict 반환은 포집하지 않는다.
+- **ArtifactRecord 8필드.** `{artifactId·version·supersedes·derivedFrom·producedBy·
+  approvalState·location·contentHash}`(05 §3.6). `producedBy`(provenance)는 **불투명 부속**
+  (SP-INV 3 동형)이며 소비 조건으로 쓰지 않는다.
+- **approvalState = 게이트/검증 이벤트 파생 뷰(PO-INV 7).** draft → verified(대상 step 의
+  CP2 Pass 이벤트) → approved(CP3 승인 마커 Pass) → user_approved(user_decision 게이트가
+  적격 사용자 actor 로 해소). **각 등급은 대응 이벤트 실재에서만 파생**되며 직접 쓰이지 않는다.
+  게이트 판독은 `gates.py` 순수 함수에 위임한다(재구현 0).
+- **계보 append-only(PO-INV 7).** `supersedes` 는 삭제가 아니라 계보 append 이며 과거 버전
+  문면(location+contentHash 내용)은 불변이다(PC-INV 9 동형). `derive_registry` 는 계보 전체를
+  version 오름차순으로 보존한다.
+- **번들 확정 참조 = 요구 등급 이상 최신 버전만.** `resolve_references(registry,
+  required_grade)` 는 각 artifactId 에 대해 요구 등급 이상 approvalState 의 최신 version 하나만
+  해석한다 — 미완성·미승인 산출물은 추측·인용 0(05 §3.6·07 R2). 등급 미달·구버전은 배제하지
+  않고 resolve 만 제외한다(문면 불변 보존).
+- **orchestrator 통합(최소).** `ProjectOrchestrator(artifact_store=...)` 지정 시 실행 invoker
+  를 포집 래퍼로 감싸고 `artifact_registry()`·`resolve_references(required_grade)` 를
+  파생 제공한다. 미지정(기본) 시 포집 0·S2~S4 거동 바이트 동일 보존.
+- **중립성(PO-INV 8).** `artifacts.py`·스키마·테스트에 provider·모델 토큰 0건(전수 스캔).
+  approvalState 어휘·verdict `Pass` 는 05 §3.6·06 계약 어휘다.
+
+**아직 없는 것(트랙 종단/후속).** 실 LLM 제안 step 기반 비픽스처 성숙 run·루트 라우터 등재는
+트랙 종단/후속 소관이다(설계 §6·바인딩 §7 OQ-PO-B4).
 
 ## 게이트 처리 (S3 — 05 §3.3·PO-INV 4)
 
@@ -153,8 +182,11 @@ python -B -m unittest discover -s orchestration/framework/orchestrator/tests -p 
 
 (`-B` 로 pyc 부산물을 만들지 않는다. pytest 는 쓰지 않는다.)
 
-**테스트 성격 (정직 표기).** `tests/` 는 전부 **모의 invoker 통합 테스트**다 — 기존
-`invoker.py` Invoker 추상을 구현한 중립 stub 으로 설계 §5 S2~S4 시나리오를 실증한다
-(S2 제안→게이트→revision→실행·결정적 재개·순환 차단 / S3 게이트 5종·단조성·자율성 직교 /
-S4 모델 슬롯 f·hysteresis g·CP2 독립 h·CP3 정지 i·tie-break j). **실 CLI E2E·capability→
-물리 호출 매핑·run 데이터 백엔드는 S5 소관**이며 이번 테스트에 포함되지 않는다.
+**테스트 성격 (정직 표기).** `tests/` 는 전부 **모의 invoker 통합 테스트 + 순수 함수
+테스트**다 — 기존 `invoker.py` Invoker 추상을 구현한 중립 stub 으로 설계 §5 S2~S5 시나리오를
+실증한다(S2 제안→게이트→revision→실행·결정적 재개·순환 차단 / S3 게이트 5종·단조성·자율성
+직교 / S4 모델 슬롯·hysteresis·CP2 독립·CP3 정지·tie-break / **S5 ArtifactRecord·approvalState
+파생 사다리·derive_registry 순수·resolve_references·시나리오 i 계보(설계 v1→rework v2
+supersedes·derivedFrom·소비 번들 required_grade·v1 문면 불변 물리 해시)**). 전건 Pass:
+orchestration 126·step-host 20·step-invoker 19. **실 CLI 종단 E2E(시나리오 j)는 Adapter
+경계의 `orchestration-data/e2e/` 드라이버**가 소유한다(비프로덕션·격리 지점 — 05 §5).

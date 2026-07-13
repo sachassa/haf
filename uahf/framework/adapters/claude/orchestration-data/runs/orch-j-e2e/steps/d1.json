@@ -1,0 +1,32 @@
+{
+  "capability": "cap-design",
+  "delegation": {
+    "constraints": "워크스페이스 밖 파일 생성·수정 금지",
+    "context": [
+      "Project Orchestration S5 E2E (j) — 설계 단위·user_decision 게이트",
+      "상위 Contract 는 읽기 전용 참조(재실행 금지)"
+    ],
+    "done": "python -c \"import io;d=io.open('design-decision.md',encoding='utf-8').read();assert d=='DESIGN-DECISION: append-only-ledger',repr(d)\" (종료 코드 0 = 통과)",
+    "from": "Advisor",
+    "input": "빈 워크스페이스(설계 착수)",
+    "output": "design-decision.md",
+    "task": "현재 작업 디렉터리(이 워크스페이스)에 design-decision.md 파일을 생성하라. 내용은 정확히\nDESIGN-DECISION: append-only-ledger\n이며 후행 개행을 붙이지 마라. 이 워크스페이스 밖의 어떤 파일도 생성·수정하지 마라. Execute 종료 시 done 의 AC 커맨드를 실제로 실행하여(CP1 자체 점검) 종료 코드 0 을 확인한 뒤에만 완료 보고를 내라. 완료 보고 artifacts 에 design-decision.md 경로를 실어라.",
+    "to": "Worker"
+  },
+  "dependsOn": [],
+  "done": "python -c \"import io;d=io.open('design-decision.md',encoding='utf-8').read();assert d=='DESIGN-DECISION: append-only-ledger',repr(d)\" (종료 코드 0 = 통과)",
+  "id": "d1",
+  "interfaceContract": {
+    "content": "DESIGN-DECISION: append-only-ledger",
+    "produces": [
+      "design-decision.md"
+    ]
+  },
+  "model": "haiku",
+  "ownedBoundary": [
+    "design-decision.md"
+  ],
+  "role": "Worker",
+  "task": "현재 작업 디렉터리(이 워크스페이스)에 design-decision.md 파일을 생성하라. 내용은 정확히\nDESIGN-DECISION: append-only-ledger\n이며 후행 개행을 붙이지 마라. 이 워크스페이스 밖의 어떤 파일도 생성·수정하지 마라. Execute 종료 시 done 의 AC 커맨드를 실제로 실행하여(CP1 자체 점검) 종료 코드 0 을 확인한 뒤에만 완료 보고를 내라. 완료 보고 artifacts 에 design-decision.md 경로를 실어라.",
+  "unitType": "design_maturation"
+}

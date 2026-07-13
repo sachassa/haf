@@ -41,6 +41,10 @@
     "timeout": {
       "type": ["number", "null"],
       "description": "실행 컨텍스트 타임아웃(초). null = 무제한. 실값은 Config·Adapter 소관."
+    },
+    "cp2_model": {
+      "type": ["string", "null"],
+      "description": "CP2 검증 단위(Verifier)의 독립 모델 슬롯(OQ-SH-4 해소). 형태(shape)만 규정한다 — 모델 실값(고유명)은 Adapter/Model Selection 정책 데이터 소관이며 이 스키마·중립 코드는 불투명 슬롯 문자열만 안다. null 또는 생략(기본) = 기존 거동 보존(CP2 가 대상 step 의 모델 슬롯을 상속). 지정 시 CP2 만 그 슬롯을 쓰며 피검증 단위와 결합되지 않는다."
     }
   }
 }

@@ -27,9 +27,11 @@ import json
 from dataclasses import dataclass, field
 from typing import Any
 
+from allocation import Allocation, _present
 from gates import (
     GATE_APPROVAL_REQUIRED,
     GATE_AUTO_CONTINUE,
+    GATE_ESCALATION_REQUIRED,
     GATE_REVIEW_REQUIRED,
     REF_KIND_APPROVAL,
     REF_KIND_REVIEW,
@@ -41,6 +43,7 @@ from gates import (
     has_requirement,
     has_settlement,
     is_resolved,
+    latest_marker_verdict,
     pending_gates,
 )
 from revision import RevisionLedger, RevisionRejected, fold
@@ -64,6 +67,11 @@ REASON_UNGROUNDED_REVISION = "UngroundedRevision"
 
 # 진행 보장 안전판 — epoch 무한 성장 방지(설계상 revision 은 유한·append-only).
 DEFAULT_MAX_EPOCHS = 1000
+
+# verdict 어휘(06 §3.2-C — Pass 판정). provider·모델 토큰이 아니라 검증 판정 어휘다.
+# host.py 의 verdict_pass 가 소비하는 것과 동일 어휘이며, orchestrator 의 CP3 status
+# 소비도 이 값과의 동등 비교만 한다(내용 판정 0·PO-INV 1).
+VERDICT_PASS = "Pass"
 
 
 @dataclass
@@ -103,6 +111,7 @@ class ProjectOrchestrator:
         timeout: float | None = None,
         stop_handler: Any = None,
         gate_policy: GatePolicy | None = None,
+        allocation: Allocation | None = None,
     ) -> None:
         self.ledger = ledger
         # step 이벤트 store 는 Step Host 와 **공유**한다 — 두 원장이 아니라 이중 원장
@@ -121,6 +130,9 @@ class ProjectOrchestrator:
         self.stop_handler = stop_handler
         # gate_policy 미지정(None) 시 게이트 처리를 하지 않는다 — S2 거동 완전 보존.
         self.gate_policy = gate_policy
+        # allocation 미지정(None) 시 슬롯 채움을 하지 않는다 — S2·S3 거동 완전 보존.
+        # 지정 시 Step 직렬화 시점에 미지정 슬롯(role/model)만 채운다(명시값 우선·05 §3.4·§3.5).
+        self.allocation = allocation
 
     # ------------------------------------------------------------------
     # 게이트 근거 실재 검증 (PO-INV 5 — 실재 검증만·판단 0)
@@ -194,11 +206,67 @@ class ProjectOrchestrator:
         return fold(grounded, self.ledger.initial_graph)
 
     def _build_steps(self, graph: dict[str, Any]) -> list[Step]:
-        """현재 그래프 Task 를 기존 step.py Step 으로 직렬화한다(새 Step 클래스 창설 0)."""
-        return [Step.from_dict(task) for task in graph.get("tasks") or []]
+        """현재 그래프 Task 를 기존 step.py Step 으로 직렬화한다(새 Step 클래스 창설 0).
+
+        allocation 이 지정되면 Step 직렬화 시점에 미지정 슬롯(role/model)을 채운다
+        (명시값 우선·05 §3.4·§3.5). 채움은 결정적 파생이므로 같은 두 원장 → 같은 슬롯이다
+        (PO-INV 3 — 별도 mutable 기록 없이 원장에서 파생). allocation 미지정이면 무처리
+        (S2·S3 거동 보존).
+        """
+        steps = [Step.from_dict(task) for task in graph.get("tasks") or []]
+        if self.allocation is not None:
+            for step in steps:
+                self._fill_slots(step)
+        return steps
+
+    # ------------------------------------------------------------------
+    # 할당·모델 슬롯 채움 (05 §3.4·§3.5·PO-INV 6 — 불투명 전달·hysteresis)
+    # ------------------------------------------------------------------
+    def _fallback_level(self, step_id: str) -> int:
+        """이 step 의 재선택 차수 = 재선택 트리거 이벤트 누적 수(05 §3.5 hysteresis).
+
+        재선택 트리거는 정확히 2건뿐이며(allocation.RESELECTION_TRIGGER_KINDS) 이 함수가
+        이벤트 로그에서 그 개수만 센다 — 그 외 어떤 경로도 모델 슬롯을 바꾸지 않는다(코드
+        구조로 2건 한정 확인 가능). 정상 재시도(budget 내 fail)·크래시 재개는 트리거가
+        아니므로 계수되지 않는다(재선택 없음). 순수 함수(이벤트 로그 파생·판단 0).
+        """
+        from allocation import RESELECTION_TRIGGER_KINDS
+
+        count = 0
+        for e in self.event_store.read_all():
+            if e.get("cycle_id") != step_id:
+                continue
+            ref = e.get("ref")
+            if isinstance(ref, dict) and ref.get("kind") in RESELECTION_TRIGGER_KINDS:
+                count += 1
+        return count
+
+    def _fill_slots(self, step: Step) -> None:
+        """미지정 role/model 슬롯을 채운다(명시값 우선·불투명 전달·PO-INV 6).
+
+        - role: 미지정이면 위임 8필드의 to(수임 역할·02 §3.2-B)를 슬롯에 반영(물리 매핑 0).
+        - model: 미지정이면 capability → AgentSpec → modelPolicyClass(불투명 키) → 모델
+          슬롯(재선택 차수 fallback 반영). 이미 채워진 슬롯은 존중한다(명시값 우선).
+        capability 슬롯은 매칭 입력이며 그대로 둔다. AgentSpec 의 물리 매핑은 해석하지
+        않는다(PO-INV 6 — modelPolicyClass 를 불투명 정책 키로만 소비).
+        """
+        if not _present(step.role):
+            to_role = (step.delegation or {}).get("to")
+            if _present(to_role):
+                step.role = to_role
+        if not _present(step.model) and _present(step.capability):
+            level = self._fallback_level(step.id)
+            slot = self.allocation.model_for(step.capability, level)
+            if slot is not None:
+                step.model = slot
 
     def _new_host(self, steps: list[Step]) -> StepHost:
-        """StepHost 를 무수정 import·구동한다(공유 EventStore). 재정의 0."""
+        """StepHost 를 무수정 import·구동한다(공유 EventStore). 재정의 0.
+
+        allocation 이 CP2 독립 모델 슬롯을 정의하면 그 값을 StepHost 에 전달한다
+        (OQ-SH-4 해소·전달만·해석 0). 미정의면 None → Host 가 대상 step 슬롯 상속(기존 거동).
+        """
+        cp2_model = self.allocation.cp2_model() if self.allocation is not None else None
         return StepHost(
             steps,
             self.invoker,
@@ -208,6 +276,7 @@ class ProjectOrchestrator:
             workdir=self.workdir,
             timeout=self.timeout,
             stop_handler=self.stop_handler,
+            cp2_model=cp2_model,
         )
 
     def derive_states(self) -> dict[str, str]:
@@ -338,12 +407,30 @@ class ProjectOrchestrator:
                 continue
 
             if gate == GATE_APPROVAL_REQUIRED:
-                # 경계 CP3(Advisor 역할) 1회 디스패치(멱등·물리화) — 비정지.
+                # 경계 CP3(Advisor 역할) 1회 디스패치(멱등·물리화).
                 if not has_settlement(events, gate_id, REF_KIND_APPROVAL):
                     result = self._dispatch_gate_step(task, gate_id, ROLE_ADVISOR)
                     append_approval_marker(
                         self.log, gate_id, gate, self._verdict_summary(result), actor=ROLE_ADVISOR
                     )
+                    events = self.event_store.read_all()  # 마커 append 반영.
+                # CP3 verdict **status** 소비(내용 판정 0·PO-INV 1·host.py verdict_pass 동형).
+                # 비-Pass 면 escalation 게이트 요구 append + 정지(적격 해소로만 재개). status
+                # 를 읽어 분기할 뿐 승인 내용을 판단하지 않는다 — StepHost 의 CP2 소비와 동형.
+                if latest_marker_verdict(events, gate_id, REF_KIND_APPROVAL) != VERDICT_PASS:
+                    if not is_resolved(events, gate_id, GATE_ESCALATION_REQUIRED, self.gate_policy):
+                        if not has_requirement(events, gate_id):
+                            append_gate_requirement(
+                                self.log, gate_id, GATE_ESCALATION_REQUIRED,
+                                target=descriptor,
+                                scoped_question={
+                                    "unitId": tid,
+                                    "gateKind": GATE_ESCALATION_REQUIRED,
+                                    "cause": "cp3_not_pass",
+                                },
+                                actor=self.gate_policy.gate_raiser,
+                            )
+                        must_stop = True
                 continue
 
             # escalation_required | user_decision_required — 정지 게이트.

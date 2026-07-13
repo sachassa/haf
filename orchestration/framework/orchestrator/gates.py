@@ -325,6 +325,30 @@ def has_settlement(events: Iterable[dict[str, Any]], gate_id: Any, *ref_kinds: s
     )
 
 
+def latest_marker_verdict(
+    events: Iterable[dict[str, Any]],
+    gate_id: Any,
+    ref_kind: str,
+) -> Any:
+    """지정 마커(리뷰/승인)의 최신 verdict **status** 를 반환한다(내용 아님·상태만).
+
+    approval/review 마커의 ref.verdict 는 `{verdict, ref}` 경량 요약(_verdict_summary)이다.
+    이 함수는 그 verdict status 만 꺼낸다 — 판정 내용을 해석하지 않는다(PO-INV 1). 마커가
+    없으면 None(미디스패치·미처리). 소비 측(orchestrator)이 이 status 로만 분기한다
+    (host.py verdict_pass 동형 — status 소비이지 내용 판단 아님).
+    """
+    rows = [
+        e for e in gate_events_for(events, gate_id)
+        if (e.get("ref") or {}).get("kind") == ref_kind
+    ]
+    if not rows:
+        return None
+    verdict = (rows[-1].get("ref") or {}).get("verdict")
+    if isinstance(verdict, dict):
+        return verdict.get("verdict")
+    return verdict
+
+
 def is_resolved(
     events: Iterable[dict[str, Any]],
     gate_id: Any,

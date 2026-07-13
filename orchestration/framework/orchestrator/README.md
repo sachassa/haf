@@ -26,20 +26,54 @@ provider·모델·상류 Layer 고유명 토큰을 두지 않는다(PO-INV 8).
   매핑·정책 실값)은 이 코드가 아니라 **Adapter Binding 문서** 소관이다(05 §5). 이 코드는
   그 지점을 추상(RevisionStore·EventStore·Invoker·config)으로 열어 둔다.
 
-## 구성 (S2·S3 산출)
+## 구성 (S2·S3·S4 산출)
 
 | 파일 | 책임 |
 |---|---|
 | `revision.py` | RevisionEvent · RevisionLedger(append-only, 인메모리+JSONL) · `fold()`(순수·안정 정렬) · `validate_revision()`(순수·07 §3.1-A 사유 코드 재사용). |
-| `orchestrator.py` | ProjectOrchestrator — fold → Step 직렬화 → **StepHost 무수정 구동**(공유 EventStore) → 그래프 성장 확인 → Escalated 즉시 정지. 게이트 근거 실재 검증(PO-INV 5)·결정적 재개. **S3: 단위 경계 게이트 처리(`_process_gates` — 배치 종단 일괄)·정지 게이트 정지·재개**. |
-| `gates.py` | **(S3)** Gate Policy 평가기 — gateKind 5종·심각도 전순서·`GatePolicy.evaluate`(순수·결정적)·게이트 단조성 하한(`floor`·`effective_gate`)·게이트 이벤트 필드 관례 단일 소유(`gate::` 관례 정식화)·`pending_gates` 파생 뷰·해소 적격성. |
+| `orchestrator.py` | ProjectOrchestrator — fold → Step 직렬화 → **StepHost 무수정 구동**(공유 EventStore) → 그래프 성장 확인 → Escalated 즉시 정지. 게이트 근거 실재 검증(PO-INV 5)·결정적 재개. **S3: 단위 경계 게이트 처리(`_process_gates` — 배치 종단 일괄)·정지 게이트 정지·재개**. **S4: Step 직렬화 시점 슬롯 채움(`_build_steps`→`_fill_slots`·명시값 우선)·재선택 차수 파생(`_fallback_level`)·CP2 독립 모델 슬롯 StepHost 전달(`_new_host`)·CP3 비-Pass 정지 배선(`_process_gates` approval 분기)**. |
+| `gates.py` | **(S3)** Gate Policy 평가기 — gateKind 5종·심각도 전순서·`GatePolicy.evaluate`(순수·결정적)·게이트 단조성 하한(`floor`·`effective_gate`)·게이트 이벤트 필드 관례 단일 소유(`gate::` 관례 정식화)·`pending_gates` 파생 뷰·해소 적격성. **(S4)** `latest_marker_verdict`(승인/리뷰 마커 verdict **status** 소비·내용 판정 0 — CP3 비-Pass 정지의 소비 함수). |
+| `allocation.py` | **(S4)** Dynamic Allocation + Model Selection Policy — `AgentSpec`(7필드 실행 프로파일)·`AgentSpecRegistry`(버전 있는 데이터·`match` deterministic·불투명 참조)·`ModelSelectionPolicy`(Policy as Data·`select_model` 순수·fallback·CP2 독립 슬롯)·`Allocation` 파사드. |
 | `stephost_bridge.py` | `uahf/framework/loop/step-host/` 중립 모듈의 **무수정 import 경로**(평면 import 를 위한 sys.path 조작은 orchestration 쪽에서만). |
 | `revision_schema.json` | RevisionEvent 직렬화 형태 정의(실값 없음 — step-host `config_schema.json` 관례 동형). |
 | `gate_policy_schema.json` | **(S3)** Gate Policy 데이터 형태 정의(실값 없음). **floor 는 스키마가 아니라 코드(`gates.py floor()`) 소유** — 정책 데이터로 하한을 약화 불가(주석 명시). |
-| `tests/` | 모의 invoker 기반 통합 테스트(외부 의존 0). `test_gates.py`(S3) = gates 순수 + orchestrator 게이트 통합. |
+| `allocation_schema.json` | **(S4)** AgentSpec 레지스트리 + 매칭 tie-break 정책 형태(실값 없음). tie-break 스키마 default 는 코드 fallback(`allocation.DEFAULT_TIE_BREAK`)과 일치(단일 진리원천). |
+| `model_selection_schema.json` | **(S4)** Model Selection 정책 형태(실값 없음) — `slots`(class→불투명 슬롯)·`fallbackChain`·`cp2ModelSlot`(OQ-SH-4). 실제 모델명은 스키마·중립 코드 밖(Adapter 실값)에만. |
+| `tests/` | 모의 invoker 기반 통합 테스트(외부 의존 0). `test_gates.py`(S3) = gates 순수 + orchestrator 게이트 통합. `test_allocation.py`(S4) = allocation 순수 + orchestrator 슬롯/모델/CP3 통합(시나리오 f/g/h/i/j). |
 
-**아직 없는 것(후속 단계).** 할당·모델 선택(`allocation.py`)·Artifact Registry
-(`artifacts.py`)·Adapter 바인딩 완성은 S4~S5 소관이며 이번 단계 범위 밖이다(설계 §5).
+## 할당·모델 선택 (S4 — 05 §3.4·§3.5·PO-INV 6·8)
+
+- **AgentSpec 3층 병존.** 할당은 Role(04 §3.3 Expert Role — 인용·재정의 0) / AgentSpec(실행
+  프로파일·본 Layer 신규 소유) / Instance(비영속·이벤트 로그 파생) 3층이며, 02 §3.2-A 4역할
+  (Lifecycle 의무 축)과 병존한다. `allocation.py` 는 AgentSpec 층만 소유한다 — Role 재정의 0.
+- **AgentSpec 7필드.** `{specId·capabilitySelector·briefTemplateRef·defaultConstraints·
+  toolPolicyClass·modelPolicyClass·version}`(05 §3.4). briefTemplateRef·defaultConstraints·
+  toolPolicyClass·modelPolicyClass 는 **불투명 참조**다 — 코드는 실값의 의미를 해석하지 않고
+  매칭·키 사용·전달만 한다(PO-INV 6 — 어느 실행 주체가 호스팅하는가는 Adapter 소관).
+- **매칭 deterministic + tie-break.** `AgentSpecRegistry.match(capability)` 는 capability 선언
+  까지만 소비해(제안=LLM step·수용=게이트·05 §3.4) 매칭 AgentSpec 중 하나를 결정적으로 고른다.
+  **tie-break 기본값(05 §9 OQ 8 S4 확정): 더 구체적인 selector 우선 → 같으면 최고 version.**
+  진짜 동률은 specId 사전순으로 결정적 해소한다. 규칙은 `tieBreak` 데이터로 오버라이드 가능하다.
+- **Model Selection = Policy as Data·hysteresis.** `ModelSelectionPolicy.select_model(class,
+  level)` 는 순수 함수다 — 같은 입력 → 같은 슬롯(정상 재실행에서 재선택 없음). 모델 선택은 Step
+  직렬화 시점 1회 고정이며, 슬롯을 바꾸는 **재선택 트리거는 정확히 2건뿐**이다(`allocation.
+  RESELECTION_TRIGGER_KINDS` — (a) retry 한도 도달 (b) 명시적 모델 정책 이벤트). orchestrator
+  `_fallback_level` 이 이벤트 로그에서 그 2종만 세어 재선택 차수를 파생한다 — 그 외 어떤 경로도
+  모델 슬롯을 바꾸지 않는다(코드 구조로 2건 한정 확인 가능). 슬롯은 별도 mutable 기록이 아니라
+  (capability, 정책, 트리거 이벤트)의 결정적 파생이다(같은 두 원장 → 같은 슬롯·PO-INV 3 동형).
+- **CP2 Verifier 모델 독립(OQ-SH-4 해소).** `cp2ModelSlot` 이 지정되면 orchestrator 가
+  `StepHost(cp2_model=...)` 로 전달하고, Step Host 가 CP2 만 그 슬롯으로 디스패치한다(피검증
+  단위와 결합 해소). 미지정(기본)은 대상 step 슬롯 상속(기존 거동 완전 보존).
+- **CP3 비-Pass 정지(S4 배선).** `approval_required` 게이트에서 CP3(Advisor 역할) 디스패치의
+  verdict **status** 가 비-Pass 면 escalation 게이트 요구를 append 하고 정지한다 — 적격 해소
+  (Advisor/사람)로만 재개된다. verdict 는 **status 소비**이지 내용 판정이 아니다(PO-INV 1·
+  host.py `verdict_pass` 동형). CP3 Pass 면 기존처럼 무정지 통과한다.
+- **중립성(PO-INV 8).** `allocation.py`·스키마·테스트에 실제 모델명·provider 토큰 0건이다 —
+  모델 슬롯은 불투명 문자열이며(테스트는 `tier-a`/`tier-verify` 등 사용) 실값은 Adapter 정책
+  데이터 소관이다(model_selection_schema.json 주석).
+
+**아직 없는 것(후속 단계).** Artifact Registry(`artifacts.py`)·Adapter 바인딩 완성(직렬화·
+capability→물리 호출 매핑·run 데이터 백엔드)은 S5 소관이며 이번 단계 범위 밖이다(설계 §5).
 
 ## 게이트 처리 (S3 — 05 §3.3·PO-INV 4)
 
@@ -114,11 +148,13 @@ orchestrator 는 그 실재만 검증했다(revision 근거·PO-INV 5). S3 는 �
 라이브러리로 무수정 import 한다. 외부 패키지 의존은 없다(표준 라이브러리 `unittest` 만).
 
 ```
-python orchestration/framework/orchestrator/tests/test_revision.py
-python orchestration/framework/orchestrator/tests/test_orchestrator.py
+python -B -m unittest discover -s orchestration/framework/orchestrator/tests -p "test_*.py"
 ```
 
-**테스트 성격 (정직 표기).** `tests/test_orchestrator.py` 는 **모의 invoker 통합
-테스트**다 — 기존 `invoker.py` Invoker 추상을 구현한 중립 stub 으로 설계 §5 S2 시나리오
-3건(제안→게이트→revision→실행 / 결정적 재개 / 순환 차단)을 실증한다. **실 CLI E2E 는
-S5 소관**이며 이번 테스트에 포함되지 않는다.
+(`-B` 로 pyc 부산물을 만들지 않는다. pytest 는 쓰지 않는다.)
+
+**테스트 성격 (정직 표기).** `tests/` 는 전부 **모의 invoker 통합 테스트**다 — 기존
+`invoker.py` Invoker 추상을 구현한 중립 stub 으로 설계 §5 S2~S4 시나리오를 실증한다
+(S2 제안→게이트→revision→실행·결정적 재개·순환 차단 / S3 게이트 5종·단조성·자율성 직교 /
+S4 모델 슬롯 f·hysteresis g·CP2 독립 h·CP3 정지 i·tie-break j). **실 CLI E2E·capability→
+물리 호출 매핑·run 데이터 백엔드는 S5 소관**이며 이번 테스트에 포함되지 않는다.

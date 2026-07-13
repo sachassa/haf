@@ -83,12 +83,18 @@ class StepHost:
         workdir: str | None = None,
         timeout: float | None = None,
         stop_handler: Callable[[str, list[str]], None] | None = None,
+        cp2_model: Any = None,
     ) -> None:
         self.steps: list[Step] = list(steps)
         self.steps_by_id: dict[str, Step] = {s.id: s for s in self.steps}
         self.invoker = invoker
         self.log = EventLog(store if store is not None else InMemoryEventStore())
         self.retry_limit = retry_limit
+        # CP2 검증 단위의 모델 슬롯(OQ-SH-4 해소). None(기본) = 기존 거동 완전 보존 —
+        # CP2 는 대상 step 의 모델 슬롯을 상속한다. 독립 지정 값이 주어지면 CP2 만 그 값을
+        # 쓴다(피검증 단위와 동일 모델 결합 해소). 이 모듈은 슬롯 값을 해석하지 않고
+        # invoker 에 전달만 한다 — 모델 고유명 토큰은 여기 두지 않는다(SH-INV-8 동형).
+        self.cp2_model = cp2_model
         # policy 는 데이터로 보관해 invoker 에 전달만 한다(§6.2). Host 는 policy 로
         # 게이트 동작을 바꾸지 않는다 — 게이트 등급 분리(SH-INV-4)는 아래 코드가 소유한다.
         self.policy = policy
@@ -306,11 +312,15 @@ class StepHost:
             "completion_report": completion,
             "criteria": criteria,
         }
+        # OQ-SH-4 해소: CP2 검증 단위 모델은 독립 지정(self.cp2_model)이 있으면 그것을,
+        # 없으면(None·기본) 기존처럼 대상 step 슬롯을 상속한다. 기본값 None 시 바이트 동일한
+        # 기존 거동(model=step.model)이 보존된다. Host 는 슬롯 값을 해석하지 않는다.
+        cp2_model = self.cp2_model if self.cp2_model is not None else step.model
         request = InvokeRequest(
             bundle=verify_bundle,
             role=ROLE_VERIFIER,
             capability=step.capability,
-            model=step.model,
+            model=cp2_model,
             policy=self.policy,
             workdir=self.workdir,
             timeout=self.timeout,

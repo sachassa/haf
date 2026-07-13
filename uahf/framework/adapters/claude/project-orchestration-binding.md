@@ -1,7 +1,7 @@
 # framework/adapters/claude/project-orchestration-binding — Claude Project Orchestration Adapter 바인딩
 
 작성일: 2026-07-13
-상태: S3 Draft (부분 — 게이트 큐 제시 채널만 확정. 직렬화·capability→물리 호출 매핑·run 데이터 백엔드·모델 정책 실값은 S4·S5 완성). 직전 기준선: 없음(신규 산출물 — 트랙 「Project Orchestration / Dynamic Agent System」)
+상태: S4 Draft (부분 — 게이트 큐 제시 채널 + Model Selection 실값 매핑 관례·OQ-SH-4 해소 기록 확정. 직렬화·capability→물리 호출 매핑·run 데이터 백엔드는 S5 완성). 직전 기준선: 없음(신규 산출물 — 트랙 「Project Orchestration / Dynamic Agent System」)
 상위 규약: AGENT.md
 근거 정본:
 
@@ -22,6 +22,7 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-13 | S3 Draft (부분) | 최초 작성. `framework/adapters/claude/` 경계의 신규 산출물(UAF 레벨 바인딩 5종째를 Adapter 물리 경계에 동거 — contract/entry/discovery/solution-design-binding 선례·05 §5). **본 판은 게이트 큐 제시 채널(§3)만 확정**한다: `pending_gates` 파생 뷰를 이 환경에서 사용자에게 제시하는 물리 채널(Claude Code 세션 표면·구조화 제시)과, 사용자·Advisor 의 해소 응답을 게이트 해소 이벤트로 append 하는 물리 관례(`gate::<gate_id>` cycle·`append_gate_resolution` actor 매핑)를 바인딩한다. 정지 신호(종료 코드 2)·Autonomy→권한 플래그 매핑은 step-hosting-binding 확정분을 상속·인용한다. 직렬화 형식·capability→물리 호출 매핑·run 데이터 백엔드 경로·모델 정책 실값은 **S4·S5 소관으로 미확정**(§1·§4 스텁). 05·gates.py 계약 재정의 0, 새 계약·새 용어·새 개입 조건 0. 신설 경로 밖 파일 무수정. | Worker (Advisor 위임, Task S3) |
+| 2026-07-13 | S4 Draft (부분) | **§4 신설(Model Selection 실값 매핑 관례·OQ-SH-4 해소 기록)** + 절 재베이스라인(구 §4 미확정→§5·구 §5 실측→§6·구 §6 OQ→§7 — BPD-17 재베이스라인 패턴·과거 §9 행 문면 불변 보존). §4.1 = 불투명 슬롯(중립 정책·`tier-a` 등)→claude 모델 별칭(`haiku`/`sonnet`/`opus`) 매핑 관례(Policy as Data·격리 지점 구체 토큰 허용)·hysteresis/재선택은 중립 코드(`allocation.RESELECTION_TRIGGER_KINDS`) 소유. §4.2 = CP2 독립 슬롯(`cp2ModelSlot`)→`StepHost(cp2_model=...)`→`--model` 전달 경로. §4.3 = **OQ-SH-4 해소 기록**(중립 Host `host.py _dispatch_cp2` 최소 개정 1개소·`cp2_model` 기본 None 시 기존 거동 바이트 동일·step-host 회귀 17건 무손상·`config_schema.json` 선택 필드 추가). §5 갱신(S5 스텁으로 축소·allocation/model-selection 스키마 실재 반영)·§6 실측 대조 S4 재기술(orchestration 94·step-host 20 전건 Pass·전수 스캔 0). **step-hosting-binding §7 OQ-SH-4 문면 자체 갱신은 트랙 종단 정합 소관 — 미접촉.** 05·중립 코드 계약 재정의 0·새 계약·새 gateKind·새 개입 조건 0. `uahf/` 접촉 = 이 문서 + host.py(+config_schema·테스트) 2건뿐(§6 실측). | Worker (Advisor 위임, Task S4) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행·자매 바인딩 §9 동형. 이후 개정은 이 표에 append-only 로 기록한다.)
 
@@ -32,7 +33,7 @@
 - **정본은 `orchestration/specs/05-project-orchestration.md`(§3.3)와 `orchestration/framework/orchestrator/gates.py`다.** 이 문서는 그 계약의 **claude 환경 실현 매핑**이며, 계약 요소(gateKind 5종·심각도 전순서·게이트 단조성·해소 적격성·게이트 이벤트 필드 관례)를 **재정의·확장하지 않는다**. 계약 요소는 정본 § 포인터·심볼 참조로만 인용한다.
 - 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 05 §5 가 "게이트 큐 제시 채널·직렬화 형식·capability→물리 호출 매핑·run 데이터 백엔드 경로·정책 실값은 Adapter Binding 문서 소관"이라며 미룬 지점이 실재하는(부분 확정되는) 자리다.
 - **격리 지점의 방향 반전(C-3 비적용).** 중립 경계(`orchestration/framework/orchestrator/`·05 본문)는 특정 AI·provider·실행 옵션 토큰이 0건이어야 한다(PO-INV 8). 이 문서는 그 **반대편**이다 — 구체 토큰(`claude` CLI·세션 표면·종료 코드·물리 경로)의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(자매 바인딩 §0 동형).
-- **본 판의 범위 = 게이트 큐 제시 채널만(부분).** 상태행대로 이 문서는 §3(게이트 큐 제시 채널)만 확정한다. §1·§4 는 S4·S5 완성 대상의 스텁이며, 데이터·물리 실현을 **주장하지 않는다**(L-07 — 미존재를 실재로 쓰지 않는다).
+- **본 판의 범위 = 게이트 큐 제시 채널 + Model Selection 실값 매핑·OQ-SH-4 해소(부분).** 이 문서는 §3(게이트 큐 제시 채널)과 **§4(Model Selection 실값 매핑 관례·OQ-SH-4 해소 기록)**을 확정한다. §5 의 나머지(직렬화·capability→물리 호출 매핑·run 데이터 백엔드)는 S5 완성 대상의 스텁이며, 데이터·물리 실현을 **주장하지 않는다**(L-07 — 미존재를 실재로 쓰지 않는다).
 - **창설 금지.** 이 문서는 05 §3.3·§5·gates.py 를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. 새 gateKind·새 상태·새 개입 조건·새 이벤트 필드를 만들지 않는다. 게이트 이벤트는 03 §3.2-A 10필드 무수정 재사용이다.
 - 용어는 `uahf/specs/00-glossary.md` 정본만 사용한다. "게이트 큐"·"제시 채널"·"정지 게이트" 는 05·gates.py 의 서술 라벨이다. 본 문서는 새 용어를 신설하지 않는다.
 
@@ -42,8 +43,9 @@
 
 이 문서는 05(§3.3 Gate Policy·§2.2 게이트 큐)와 gates.py 를 claude 환경 위에 **S3 시점의 구체 물리 실현**으로 매핑한다. **본 판은 다섯 책임 중 하나(게이트 큐 제시 채널)만** 확정한다:
 
-- **확정(본 판·§3).** `pending_gates` 파생 뷰의 사용자 제시 채널 + 해소 응답의 이벤트 append 물리 관례.
-- **미확정(S4·S5 스텁·§4).** 직렬화 형식(정책·이벤트) · capability→물리 호출 매핑 · run 데이터 백엔드 경로 · 모델 정책 실값 · AgentSpec 레지스트리. 이들은 후속 단계가 확정한다.
+- **확정(§3).** `pending_gates` 파생 뷰의 사용자 제시 채널 + 해소 응답의 이벤트 append 물리 관례.
+- **확정(§4).** Model Selection 정책 실값(불투명 슬롯 → claude 모델 별칭) 매핑 관례 + CP2 독립 슬롯(`cp2ModelSlot`) → `--model` 전달 경로 + OQ-SH-4 해소 기록.
+- **미확정(S5 스텁·§5).** 정책·이벤트 직렬화 형식 · capability→물리 호출 매핑 · run 데이터 백엔드 경로 · AgentSpec 실값 레지스트리. 이들은 후속 단계가 확정한다.
 
 이 문서는 05·gates.py 의 어떤 계약 요소도 재정의·확장하지 않는다.
 
@@ -94,30 +96,59 @@
 
 ---
 
-## §4. 미확정 (S4·S5 스텁 — L-07)
+## §4. Model Selection 실값 매핑 관례·OQ-SH-4 해소 (05 §3.5·§5 모델 정책 실값 행 — 본 판 확정)
 
-아래는 후속 단계 소관이며, 본 판은 물리 실현·데이터를 **주장하지 않는다**.
+### §4.1 불투명 슬롯 → claude 모델 별칭 매핑 관례 (격리 지점 — 구체 토큰 허용)
+
+- **정본은 중립이다.** `orchestration/framework/orchestrator/allocation.py`·`model_selection_schema.json`·`gates.py`(CP3 status 소비)는 provider·모델 고유명 토큰이 0건이어야 한다(PO-INV 8·전수 스캔). 모델 슬롯은 **불투명 문자열**(예: `tier-a`)이며 중립 코드는 그 의미를 해석하지 않는다(05 §3.5·PO-INV 6). 이 문서는 그 **반대편**(격리 지점)이며 구체 토큰(`claude` CLI·`--model`·모델 별칭)의 사용이 허용된다.
+- **매핑 관례.** Model Selection 정책 데이터(`model_selection_schema.json` 형태)의 불투명 슬롯 값은 이 환경에서 claude CLI `--model <alias|full>`(step-hosting-binding §5.1·§4 CLI 실측)의 별칭으로 매핑된다. 매핑은 **정책 데이터**(Policy as Data·05 §3.5)이며 엔진·계약 무변경으로 조정된다. 예시 매핑(비강제·프로젝트 정책 데이터 소관):
+
+  | 불투명 슬롯(중립 정책) | claude 모델 별칭(이 환경 실값) | capability class 예 |
+  |---|---|---|
+  | 약 티어 | `haiku` | 기계적(mechanical) |
+  | 중 티어 | `sonnet` | 통합(integration) |
+  | 강 티어 | `opus` | 설계·최종 리뷰(design) |
+
+  실제 정책 데이터의 `slots`(class→슬롯)·`fallbackChain`(약→강)·`cp2ModelSlot` 실값은 이 별칭 집합으로 채워진다. 값의 의미(모델 지정)는 02 §4 소관이며 invoker 는 `--model <slot>` 전달만 한다(step-hosting-binding §5.1·프로토콜 §3.1). 슬롯이 없으면 세션 기본 모델을 상속한다.
+- **hysteresis·재선택은 중립 코드 소유.** 모델 선택 1회 고정과 재선택 트리거 2건 한정(retry 한도 도달·명시적 모델 정책 이벤트)은 orchestrator 가 이벤트 로그에서 결정적으로 소유한다(05 §3.5·`allocation.RESELECTION_TRIGGER_KINDS`). 이 Adapter 는 슬롯→별칭 매핑만 담당하고 재선택 정책을 재정의하지 않는다.
+
+### §4.2 CP2 Verifier 모델 독립 지정 → `--model` 전달 (OQ-SH-4 해소 경로)
+
+- **독립 슬롯의 물리 전달.** Model Selection 정책의 `cp2ModelSlot`(있으면)은 orchestrator 가 `StepHost(cp2_model=...)`로 전달하고, Step Host `_dispatch_cp2` 가 CP2 검증 단위 invoke 요청의 `model` 슬롯으로 실어 이 환경 invoker 가 `--model <cp2 별칭>` 으로 전달한다. 이로써 CP2(Verifier)는 피검증 단위와 **동일 모델에 묶이지 않는다**(예: Worker=`haiku`여도 CP2=`sonnet` 독립 지정 가능). `cp2ModelSlot` 미지정 시 CP2 는 대상 step 슬롯을 상속한다(기존 거동 — W3 e2e-s6 은 Worker=`sonnet`이라 CP2 도 `sonnet`이었다).
+
+### §4.3 OQ-SH-4 해소 기록 (step-hosting-binding §7 OQ-SH-4)
+
+- **OQ-SH-4 — 해소됨 (본 트랙 S4, 2026-07-13).** step-hosting-binding §7 OQ-SH-4(중립 Host `host.py _dispatch_cp2` 가 CP2 를 `model=step.model` 로 디스패치해 검증 전용 모델 독립 지정 불가)는 본 트랙 S4 에서 **중립 Host 최소 개정으로 해소**되었다. 개정 = `StepHost` 생성자에 `cp2_model` 파라미터 추가(기본 `None`)·`_dispatch_cp2` 의 CP2 모델을 `self.cp2_model if self.cp2_model is not None else step.model` 로 변경(1개소). **기본값 `None` 시 기존 거동(model=step.model) 바이트 동일 보존** — 기존 step-host 회귀 전건 무손상. `config_schema.json` 에 선택 필드 `cp2_model`(불투명 슬롯·형태만) 추가. 계약 무변(02 §4 슬롯 의미 그대로)·중립 Host 는 슬롯 값을 해석하지 않는다(SH-INV-8 동형).
+- **정본 문면 갱신 위치.** step-hosting-binding §7 OQ-SH-4 문면 자체의 상태 갱신은 **트랙 종단 정합 소관**이며 본 문서가 대신 갱신하지 않는다(무수정 경계 — 05 §6). 해소 사실은 이 § 이 기록한다.
+- **`uahf/` 트리 접촉 2건(본 트랙 누계).** (i) 이 바인딩 문서(S3 신설·S4 §4 추가). (ii) `framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(+`config_schema.json`·step-host 테스트) — OQ-SH-4 해소. 그 외 `uahf/` 정본·중립 코드·append-only 데이터 무촉(형상 관리 상태 조회로 확인·§6 실측 대조).
+
+---
+
+## §5. 미확정 (S5 스텁 — L-07)
+
+아래는 후속 단계(S5) 소관이며, 본 판은 물리 실현·데이터를 **주장하지 않는다**.
 
 | 바인딩 지점 | 소관 | 상태 |
 |---|---|---|
-| Gate Policy 데이터 직렬화 형식·물리 경로 | S4·S5 (JSON·`orchestration-data/` 예상) | **미확정.** `gate_policy_schema.json` 형태만 실재(중립 코드). 실값 정책 데이터 미생성. |
-| capability → 물리 호출 매핑·AgentSpec 실값 레지스트리 | S4 | **미확정**(05 §3.4·PO-INV 6). |
-| Model Selection 정책 실값·CP2 모델 독립 지정(OQ-SH-4) | S4 (Step Host 코드 1개소·`uahf/` 트리 접촉 2건 중 하나) | **미확정.** 본 트랙 S3 는 `uahf/` 접촉을 이 바인딩 문서 신설 1건으로 한정한다. |
+| Gate Policy·Allocation·Model Selection 데이터 직렬화 형식·물리 경로 | S5 (JSON·`orchestration-data/` 예상) | **미확정.** `gate_policy_schema.json`·`allocation_schema.json`·`model_selection_schema.json` 형태만 실재(중립 코드). 실값 정책 데이터 미생성. |
+| capability → 물리 호출 매핑·AgentSpec 실값 레지스트리 | S5 | **미확정**(05 §3.4·PO-INV 6 — 중립 코드는 capability 선언까지만 소비·AgentSpec 물리 매핑 미해석). |
+| Model Selection 정책 실값(슬롯→별칭 실 데이터) | S5 (§4.1 매핑 관례 확정·실 데이터 미생성) | **관례 확정·실값 미생성.** 매핑 관례(§4.1)는 본 판 확정이나 실 정책 데이터(`slots`/`fallbackChain`/`cp2ModelSlot` 실값)는 S5 dogfooding 이 생성한다. |
 | run 데이터 백엔드 경로(dogfooding) | S5 (`framework/adapters/claude/orchestration-data/` 예상 — discovery-data·solution-design-data 선례) | **미확정·미생성.** |
 | 게이트 큐 제시 표면 문법·렌더 템플릿 실값 | S5 통합 dogfooding | **구조만 확정**(§3.2). 실값 미생성. |
 
 ---
 
-## §5. 실측 대조 (L-07)
+## §6. 실측 대조 (L-07)
 
-- **중립 코드 실재.** `orchestration/framework/orchestrator/gates.py`·`gate_policy_schema.json`·`tests/test_gates.py` 는 S3 에 파일 시스템 실재로 생성됐고 자체 테스트가 표준 라이브러리 `unittest` 만으로 통과한다(신규 33건 + S2 회귀 29건 + step-host 회귀 17건 = 전건 Pass).
-- **PO-INV 8(중립성) 실측.** `orchestration/framework/orchestrator/`(gates.py·orchestrator.py·gate_policy_schema.json)에 provider·모델·CLI 옵션 토큰 0건(전수 스캔). 구체 토큰(`claude`·종료 코드·`--dangerously-skip-permissions`)은 이 바인딩 문서와 step-invoker 코드에만 존재한다(격리 지점).
-- **`uahf/` 접촉 실측.** 본 트랙 S3 의 `uahf/` 트리 접촉은 **이 문서 신설 1건뿐**이다(형상 관리 상태 조회로 확인 — 다른 `uahf/` 정본·코드·데이터 무촉). OQ-SH-4 host.py 수정은 S4 소관이다(05 §6·§5).
-- **미생성 구분.** §4 의 정책 데이터·run 데이터 백엔드·capability 매핑·모델 실값은 **미생성**이다 — S4·S5 가 생성한다. 본 문서는 그 실재를 주장하지 않는다(L-07).
+- **중립 코드 실재 (S4).** S4 는 `orchestration/framework/orchestrator/allocation.py`·`allocation_schema.json`·`model_selection_schema.json`·`tests/test_allocation.py` 를 신설하고, `gates.py`(`latest_marker_verdict` — CP3 status 소비)·`orchestrator.py`(슬롯 채움·재선택 차수 파생·CP2 슬롯 전달·CP3 비-Pass 정지)를 최소 개정했다. 자체 테스트는 표준 라이브러리 `unittest` 만으로 통과한다 — **orchestration 94건(신규 32 + S2·S3 회귀 62)·step-host 20건(신규 3 + 회귀 17) = 전건 Pass**.
+- **PO-INV 8(중립성) 실측.** `orchestration/framework/orchestrator/`(allocation.py 포함 전 `.py`·전 `.json`·테스트)에 provider·모델·CLI 옵션 토큰 0건(전수 스캔). 모델 슬롯은 불투명 문자열(테스트는 `tier-a`/`tier-verify` 등)이다. 구체 토큰(`claude`·모델 별칭 `haiku`/`sonnet`/`opus`·`--model`)은 이 바인딩 문서(§4)와 step-invoker 코드에만 존재한다(격리 지점).
+- **`uahf/` 접촉 실측(본 트랙 누계 2건).** (i) 이 바인딩 문서(S3 신설·S4 §4 추가). (ii) `framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(+`config_schema.json` 선택 필드·`tests/test_step_host.py` 신규 3건) — OQ-SH-4 해소. 그 외 `uahf/` 정본·중립 코드·append-only 데이터 무촉(형상 관리 상태 조회로 확인).
+- **OQ-SH-4 해소 실측.** host.py diff = 생성자 `cp2_model` 파라미터 추가 + `_dispatch_cp2` 의 `model=step.model` → `model=cp2_model`(1행·`cp2_model=None` 시 기존 값). 기본 `None` 시 기존 step-host 회귀 17건 **무수정 Pass**(바이트 동일 거동 실측).
+- **미생성 구분.** §5 의 실 정책 데이터(슬롯→별칭 실 데이터)·run 데이터 백엔드·capability→물리 호출 매핑·AgentSpec 실값 레지스트리는 **미생성**이다 — S5 가 생성한다. §4.1 매핑 관례는 확정이나 실 데이터는 아직 없다(L-07 — 미존재를 실재로 쓰지 않는다).
 
 ---
 
-## §6. Open Questions (본 판 이월)
+## §7. Open Questions (본 판 이월)
 
 - **OQ-PO-B1 (게이트 큐 제시 표면 문법).** `pending_gates` 항목의 사람 친화 렌더 템플릿(라벨·문면·다국어)은 §3.2 구조 제안대로 S5 통합 dogfooding 이 실현·확정한다. 현재는 구조화 제안만.
 - **OQ-PO-B2 (해소 어휘 성숙).** 전용 해소 이벤트 어휘(재시도 예산 비계수·해소 취소)는 OQ-SH-5·05 §9 OQ 3 이월. 본 판은 `append_gate_resolution` 현행 형태만 바인딩.

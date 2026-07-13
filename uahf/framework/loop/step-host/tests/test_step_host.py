@@ -99,6 +99,7 @@ class ScriptedInvoker(Invoker):
             "step_id": step_id,
             "policy": request.policy,
             "feedback": request.bundle.get("feedback"),
+            "model": request.model,
         })
         if request.role == ROLE_VERIFIER:
             script = self.verifier.get(step_id)
@@ -401,6 +402,45 @@ class InvokerLoaderTest(unittest.TestCase):
     def test_load_invoker_rejects_bad_path(self):
         with self.assertRaises(ValueError):
             load_invoker("no_colon_here")
+
+
+class Cp2ModelIndependence(unittest.TestCase):
+    """OQ-SH-4 해소 — CP2 검증 단위 모델의 독립 지정(기본값 None 시 기존 거동 보존).
+
+    make_step 은 model="slot-model" 을 슬롯에 둔다. 기본(cp2_model 미지정)에서는 CP2 가
+    그 슬롯을 상속하고, 독립 지정 시에는 CP2 만 지정 슬롯을 쓰며 Worker 는 그대로 상속한다.
+    Host 는 슬롯 값을 해석하지 않는다(불투명 전달) — 여기 테스트도 불투명 문자열만 쓴다.
+    """
+
+    def test_default_cp2_inherits_step_model(self):
+        # cp2_model 미지정(기본 None) → CP2 도 Worker 와 동일하게 step 슬롯 상속(기존 거동).
+        inv = ScriptedInvoker()
+        host = StepHost([make_step("s1")], inv)  # cp2_model 미지정.
+        result = host.run()
+        self.assertTrue(result.completed, result.status)
+        self.assertEqual(inv.worker_calls("s1")[0]["model"], "slot-model")
+        self.assertEqual(inv.verifier_calls("s1")[0]["model"], "slot-model")
+
+    def test_independent_cp2_model_used_only_for_verifier(self):
+        # cp2_model 독립 지정 → CP2(Verifier) 만 그 슬롯, Worker 는 여전히 step 슬롯.
+        inv = ScriptedInvoker()
+        host = StepHost([make_step("s1")], inv, cp2_model="verify-tier")
+        result = host.run()
+        self.assertTrue(result.completed, result.status)
+        self.assertEqual(inv.worker_calls("s1")[0]["model"], "slot-model")
+        self.assertEqual(inv.verifier_calls("s1")[0]["model"], "verify-tier")
+
+    def test_independent_cp2_model_survives_retry(self):
+        # 재시도(CP2 Fail → rework)에서도 CP2 는 독립 슬롯, Worker 는 상속 유지.
+        inv = ScriptedInvoker(verifier={"s1": [verdict(passed=False, rework="다시"),
+                                               verdict(passed=True)]})
+        host = StepHost([make_step("s1")], inv, cp2_model="verify-tier")
+        result = host.run()
+        self.assertTrue(result.completed, result.status)
+        for c in inv.worker_calls("s1"):
+            self.assertEqual(c["model"], "slot-model")
+        for c in inv.verifier_calls("s1"):
+            self.assertEqual(c["model"], "verify-tier")
 
 
 class MultiStepGraphTest(unittest.TestCase):

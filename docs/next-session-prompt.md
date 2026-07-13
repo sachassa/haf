@@ -1,8 +1,8 @@
-# 다음 세션 부트스트랩 프롬프트 (v1.4 Solution Design Binding + Dogfooding E2E 이후)
+# 다음 세션 부트스트랩 프롬프트 (형태 B Step Hosting — W0~W3 완주·Baseline 사용자 게이트 대기)
 
-작성: Advisor · 2026-07-13 · v1.4 W0~W3 완료
-용도: 새 세션에서 아래를 붙여넣으면 재분석 없이 착수. (물리 발화 = `/uaf-continue`)
-상태: **v1.4 완결 — 사용자 Baseline 승인 2026-07-13** (solution-design-binding v1.4 Baseline 승격·성숙 게이트 T8 및 Baseline 승인 완료). 다음 = [후속-A] vs [T-b]/[T-c] 사용자 택1.
+작성: Advisor · 2026-07-13 · 형태 B Step Execution Hosting 트랙 W3 마감 시점
+용도: 새 세션에서 아래를 붙여넣으면 **추가 재조사 없이** 착수. (물리 발화 = `/uaf-continue`)
+상태: **W0~W3 전 Wave 완주·커밋됨** (fbd1b0e → 2d4f948 → a45a3e1 → 94bc97e). **잔여 = Baseline 승격 사용자 게이트 + 게이트 후속(상태행 승격·ROADMAP 등재·repo Memory Update 마일스톤 마감 등록)** — 직전 세션이 Baseline 후보 보고를 제출했고, 사용자 응답이 있었는지 먼저 확인하라.
 
 ---
 
@@ -11,51 +11,81 @@
 ```
 너는 Universal Agentic Framework(UAF/UAHF)의 메인 Advisor다.
 
-직전 세션에서 마일스톤 v1.4 「Solution Design Binding + Dogfooding E2E」를 진행했다.
-설계 정본 = docs/v1.4-context-and-design.md (DP-1~6·W1/W2/W3 AC·증명 13건 매핑).
+현재 트랙: 형태 B Step Execution Hosting — W0(설계)~W3(dogfooding E2E) 전부 완주·커밋.
+버전/마일스톤 번호는 미확정 — 사용자가 부여한다(임의 결정 금지).
 
-완료된 것 (커밋 체인 8fb7274[W0]→71555e0[W1]→bf3820b[W2]→W3 커밋):
-- uahf/framework/adapters/claude/solution-design-binding.md 신설 (377줄 · 04 §4.1
-  4행 물리화 · CP2 Pass 10/0/0 · UAF 레벨 바인딩 4종째 · conformance 계수 비합산)
-- solution-design-data/ 백엔드 신설 (policy/default-policy.yaml · events/maturation-r001/)
-- 실제 성숙 E2E 완주: pc-uahf-001 v1→v2 — Assessing→Proposing(역할 2 최소 할당·Worker
-  위임 호스팅)→Reconciling(실충돌 0·trade-off 6)→Reviewing(RD-1~12)→Validating(사용자
-  승인 T8)→Matured. v1 byte 불변(blob e40874e9 일치)·이벤트 로그 seq 1~10·CP2 증명 13/13.
-- project-contract.v2.md 발행 (instanceVersion 2 · supersedes 1 · schemaVersion "1.0")
-- W3: contract-binding 상태 서술 재베이스라인(라이브 8지점+§10-A·이월 (d) 해소)·
-  adapter-conformance UAF 바인딩 계수 3종→4종(OQ-SD-3 해소)·ROADMAP 3종·planning ARCH §7 1행·핸드오프.
+■ 트랙 결과 (전부 커밋·CP2 독립 판정 완료)
+- W0 설계 정본(fbd1b0e): docs/form-b-step-hosting-design.md — D-1·D-2(3분리)·D-3 사용자 승인.
+- W1 프로토콜(2d4f948): uahf/framework/runtime/step-hosting-protocol.md — W1 확정
+  (CP2 1차 Fail 1[F-1 cross-layer 앵커] → 재작업 r2 → 재판정 Pass 5/0/0 · CP3).
+  설계 정본 §6 ③ stale 배치 정정 포함(사용자 승인).
+- W2 구현(a45a3e1): framework/loop/step-host/(중립 Host·unittest 17·AI/provider 토큰 0)
+  + adapters/claude/step-hosting-binding.md(W2 확정) + step-invoker/(테스트 19·dangerously
+  플래그 유일 소재). CP2 Pass 9 Met/0/0(실행 검증 포함) · CP3.
+- W3 E2E(94bc97e): 필수 7 시나리오 전건 실증(실 CLI 21 세션·step-data/runs/ 8 run·
+  append-only). CP2 Pass(시나리오 7/7·차원 4/4 Met) · CP3. s3 확장 사가 = blocked exit 2
+  → Advisor 실해소(해소 이벤트 중복 append 정직 보존 — retry 예산 1 소모) → 라이브 CP2
+  Fail(바이트 불일치 실검출) → retry-limit Escalated exit 2 → 해소#2 → 완주.
+  s6 = Full UAF 진입(Contract v2 재사용·상위 재실행 0)에서 호스팅 sonnet Worker가
+  claude_invoker.py O-1 결함을 실제 정정(hosted CP2 통과). 정합: loop-binding OQ-LB-2
+  해소·workflow-binding OQ-WB-2 부분 해소·step-hosting-binding §7(OQ-SH-1 해소·OQ-SH-4/5
+  신규)·protocol §9 W3 행(§7.3은 W1 스냅샷 보존·BPD-17).
 
-확인할 것:
-1. git log --oneline + git status (clean 여부·W3/Baseline 커밋 실재)
-2. Memory Consult ([[uahf-session-entrypoint]] + Contract 정독 — 이제 정독 대상 =
-   discovery-data/contracts/uahf/project-contract.v2.md (최고 instanceVersion·성숙 인스턴스))
-3. solution-design-binding.md 상태 라인 — "Baseline"이면 v1.4 완결,
-   "Draft (CP2 대기)"면 사용자 Baseline 승인 게이트부터 재개.
+■ 잔여 (이 순서로)
+1. Baseline 승격 사용자 게이트 — 직전 세션 말미 Baseline 후보 보고에 대한 사용자 응답 확인.
+   미응답이면 보고 요지 재제시 후 게이트 요청. 승인 시:
+   (a) 상태행 승격 — step-hosting-protocol.md·step-hosting-binding.md의
+       "Baseline 승격은 W3 사용자 게이트" 문구를 승인 사실로 갱신(§9 append 동반)
+   (b) ROADMAP 등재(사용자가 부여한 버전/마일스톤 번호로)
+   (c) repo Memory Update — 마일스톤 마감 등록(memory-data/ mi 신규·재발 판정·store 계수):
+       후보 = ①해소 이벤트 중복 append 사건(콘솔 인코딩 실패가 출력 단계에서만 발생했는데
+       부수효과[append 성공]를 미확정한 채 재시도 — 부분 실행 검증 교훈·재발 판정 필요)
+       ②BPD 후보: 형태 B 무인 구동 E2E 패턴(BPD-14/20 확장 — 실 게이트 개입·append-only
+       사가·CP2 라이브 실검출) ③L-26 후보(가칭): 해소=fail 계수 결합의 예산 파장(OQ-SH-5)
+   (d) 핸드오프 최종 갱신·마감 커밋
+2. 게이트 보류/거부 시: 사용자 지시 반영 후 위 절차 재조정.
 
-다음 후보 (사용자 택1 — 선취 금지):
-  [후속-A] step 기반 실행기 계열 비교 분석 트랙 — 사용자 예고(Script-based Runtime·
-          execute.py 방식 vs 현행 UAF 워크플로우 비교 후 장점 선택 흡수).
-          v2 Contract open 3항 = UAHF Execution/Runtime 진화 축(등재만·설계 0 상태)
-  [T-b]  harness-doc 경로/약칭 정규화 (bare AGENT.md 경로 포함 — Tier 2 잔여)
-  [T-c]  AGENT/CLAUDE body 분할 (⚠️ L-14 CRLF hold — Tier 2 잔여)
+■ 이월·Open (비차단 — 차기 트랙 후보 입력)
+- OQ-SH-2(interactive의 headless 의미)·OQ-SH-3(stream-json) — 미실증 open.
+- OQ-SH-4(CP2 모델 슬롯 결합 — Verifier 독립 모델 지정)·OQ-SH-5(Escalation 해소 전용
+  어휘 부재·해소=fail 계수 결합) — W3 실측 관찰·후속 설계 판단.
+- adapter-conformance notes 병기 — 설계 §2 "후보만"·판정 무영향이라 defer(이번 미수행).
+- 설계 정본 §3.9 bare "04 §3.3" 표기(문서 내부 관례상 가독 문제·프로토콜은 정정됨) — 이월.
+- E2E 드라이버 invoke 로그의 프로세스별 덮어쓰기(권위 기록 events.jsonl 무영향) — 드라이버
+  개선 후보.
+- 물리 동시 디스패치(병렬 집합 원소 동시 실행) — 동시성 invoker 후속 과제(OQ-WB-2 잔여 축).
+- Contract v3 성숙 재발행(open 1·3항 부분 해소 반영) — E2E 완주했으므로 착수 가능해졌으나
+  별도 성숙 run으로(선전제 금지·사용자 지시 대기).
+- Superpowers Brainstorming/Planning UX Gap Analysis — Defer 유지.
+- 기존 이월 인벤토리 승계: 02 §3.7 자기 불일치 · 03 bare "§3.7"·§7 done-11 stale ·
+  CP1~CP3 인용 앵커(v1.3 §6 승계) · OQ-SD-2 · entry/discovery-binding 시제 서술 ·
+  adapter-conformance §6 BP-16 행 stale · [T-b] harness-doc 경로 정규화 ·
+  [T-c] AGENT/CLAUDE body 분할(L-14 CRLF hold) · Tier 3(물리 재배치·설치형 패키징).
 
-⚠️ 상시 원칙: 완전성 주장 전 전수 스윕·범위 명시(L-24) · 카운트는 본문 재계수(L-25) ·
-동결 in-place 금지(L-22) · 라우팅 표 정정(L-23) · exemplar-first(BPD-18) ·
-Worker 위임·완료 보고 불신·CP2 독립 검증·CP3 승인.
+■ 정독 순서 (재조사 금지)
+1. git log --oneline -5 + git status (4 커밋 실재·clean 확인)
+2. docs/form-b-step-hosting-design.md (설계 정본) — 필요 절만
+3. uahf/framework/runtime/step-hosting-protocol.md §9 + step-hosting-binding.md §7·§9
+4. Memory Consult([[uahf-session-entrypoint]]) + Contract 정독(project-contract.v2.md)
+5. step-data/runs/ 은 증거 원본 — 수정 금지(append-only)
+
+⚠️ 상시 원칙: 완전성 주장 전 전수 스윕·범위 명시(L-24) · 카운트 본문 재계수(L-25) ·
+동결 in-place 금지(L-22) · 라우팅 표 정정(L-23) · Worker 완료 보고 불신·CP2 독립·CP3 승인 ·
+버전/마일스톤 번호 임의 변경 금지 · working tree 사용자 변경사항 보존.
 ```
 
 ---
 
 ## 🪶 짧은 버전
 
-> v1.4: solution-design-binding 신설(CP2 10/0/0) + 실제 pc-uahf-001 v1→v2 성숙 E2E 완주(T8 사용자 승인·v1 byte 불변·증명 13/13) + W3 정합(재베이스라인·4종 계수·ROADMAP). 바인딩 상태 라인이 Draft면 사용자 Baseline 승인부터, Baseline이면 다음 트랙([후속-A] step 실행기 비교 분석 vs [T-b]/[T-c]) 택1부터.
+> 형태 B Step Hosting: W0~W3 전부 완주·커밋(fbd1b0e→2d4f948→a45a3e1→94bc97e). 프로토콜(W1 확정)·중립 Host+claude 바인딩/invoker(W2 확정·테스트 36)·E2E 7 시나리오 전건 실증(실 CLI 21 세션·CP2 독립 Pass 7/7). 잔여 = **Baseline 승격 사용자 게이트**(응답 확인 먼저) → 승인 시 상태행 승격·ROADMAP(번호는 사용자 부여)·repo Memory Update 마감 등록·핸드오프 최종화.
 
 ---
 
-## 현재 상태 스냅샷 (2026-07-13)
+## 현재 상태 스냅샷 (2026-07-13 W3 마감 시점)
 
-- **파이프라인 실증 완료**: Discovery → Contract v1(Ready) → Solution Design(maturation-r001) → Contract v2(supersedes 1) → UAHF(선택 입력 조건 충족 실측). 6요소 불변 — 성숙은 Contract 요소 내부 루프.
-- **Contract 정본**: pc-uahf-001 현재 인스턴스 = **v2**(성숙·2026-07-13 T8 승인). v1은 계보 보존(byte 불변). 세션 진입 Consult 정독 대상 = v2.
-- **검증 이력**: W1 CP2 Pass 10/0/0(독립 Verifier) · W2 CP2 증명 13/13·필수 8/8(독립 Verifier — seq 7<8 게이트 선행·blob 해시 일치 독립 재실측) · 전 과정 Worker/Verifier = opus 위임·Advisor CP3.
-- **이월 인벤토리**: 02 §3.7 자기 불일치·03 bare "§3.7"·03 §7 done-11 stale·CP1~CP3 인용 앵커(이상 v1.3 §6 승계) · 경로 이중 표기 통일(OQ-SD-2) · entry-binding·discovery-binding 본문 잔여 시제 서술("미존재" — 각 §10/§13 재베이스라인 블록은 실재·본문 시제만 구식) · **adapter-conformance §6 표 BP-16 행 "`.claude/settings.json` 미존재" stale(신규 검출 — 현재 실재: L-24 SessionStart 훅 신설분·BP-16 서술 재검토 필요·의미 연관이라 단순 치환 금지)** · [T-b]·[T-c] · Tier 3(형태 B·물리 재배치·상태 분리).
-- **버전 네임스페이스**: 마일스톤 v1.4 ≠ 루트 ARCHITECTURE 문서버전 v1.4(v1.3 마일스톤에서 소모). 본 마일스톤은 루트 문서버전 무상승.
+- **HEAD = 94bc97e** (W3). 비커밋 = 본 핸드오프 재작성분만.
+- **CP2 이력**: W1 1차 Fail 1(F-1)→r2→Pass 5/0/0 · W2 Pass 9/0/0(실행 검증) · W3 Pass(7/7·4/4). 전 판정 독립 Verifier 세션·Worker 보고 불신 규율 준수.
+- **불변 준수**: Frozen spec 15종·루트 ARCH·04 무수정(C-1 위반 0) · step-host/ AI/provider 토큰 0(2개 독립 도구 교차) · dangerously 문자열 = claude Adapter 경계에만 · 형태 A 회귀 무손상(17+19 재실행 Pass) · append-only 전 run 무결(스키마 10필드 전수 검사).
+- **게이트 실증**: Human Decision Gate가 unrestricted에서도 정지(s5b)·Advisor 실개입 해소 2회(s3)·CP3 물리 디스패치(s1) — UAF-INV ⑤ 물리 증거.
+- **Contract**: pc-uahf-001 v2 현행(open 1·3항이 본 트랙으로 부분 해소 — v3 재발행은 별도 성숙 run).

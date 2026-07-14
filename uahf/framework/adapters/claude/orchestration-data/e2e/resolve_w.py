@@ -29,6 +29,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -256,6 +257,25 @@ _PHASE_NOTE = {
 }
 
 
+def _archive_stop_signal(run_dir: Path, phase: str) -> None:
+    """해소 시점의 stop-signal.json 을 위상별로 mtime 보존 복사한다(T1 텔레메트리·순수 부가).
+
+    러너(run_*.py)는 다음 게이트 정지 시 stop-signal.json 을 **덮어써** 선행 게이트의 정지
+    시각(mtime)을 소실시킨다(1차 §T1 (a) 갭). (w)는 구조 게이트 1단만 정지하지만, 위상
+    아카이브를 남겨 게이트 대기(C 지표) 집계가 라이브 파일 상태에 비종속이 되게 한다. 해소
+    직전에 위상별로 mtime 보존 복사(shutil.copy2). **신규 run 에만 효력**(과거 Baseline run 은
+    무소급). 기존 아카이브는 덮어쓰지 않는다(idempotent·정직 보존). record 명명
+    (gate-resolution-record-<phase>.json)과 대칭.
+    """
+    src = run_dir / "logs" / "stop-signal.json"
+    if not src.exists():
+        return  # 정지 신호 부재 — 아카이브할 것 없음.
+    dst = run_dir / "logs" / ("stop-signal-%s.json" % phase)
+    if dst.exists():
+        return  # 기존 아카이브 보존(덮어쓰기 금지).
+    shutil.copy2(src, dst)  # copy2 = mtime(=게이트 정지 시각) 보존.
+
+
 class _NoInvoke:
     def invoke(self, request):
         raise RuntimeError("resolve_w 는 실행하지 않는다(게이트 해소·revision append 전용)")
@@ -275,6 +295,9 @@ def _recover_user_gate(run_dir: Path) -> str:
 
 def _append_resolution(run_dir: Path, gate_id: str, user_response: str, phase: str) -> None:
     """실 사용자 게이트 해소 — provenance annotation + 해소 이벤트 + 정직 기록 파일(simulated=false)."""
+    # 해소 시점 위상 아카이브(T1) — 라이브 stop-signal 덮어쓰기 전 정지 시각 보존.
+    _archive_stop_signal(run_dir, phase)
+
     log = EventLog(JsonlEventStore(str(run_dir / "events.jsonl")))
 
     # (1) 실 사용자 응답 provenance annotation append(simulated=false·actor=human).

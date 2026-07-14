@@ -30,6 +30,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -120,6 +121,27 @@ IMPL_PROPOSAL_SOURCE = (
 )
 
 
+def _archive_stop_signal(run_dir: Path, phase: str) -> None:
+    """해소 시점의 stop-signal.json 을 위상별로 mtime 보존 복사한다(T1 텔레메트리·순수 부가).
+
+    러너(run_*.py)는 다음 게이트 정지 시 stop-signal.json 을 **덮어써** 선행 게이트의 정지
+    시각(mtime)을 소실시킨다(1차 §T1 (a) 갭). 해소 직전에 위상별로 mtime 보존 복사
+    (shutil.copy2)해 두면 이후 게이트가 라이브 파일을 덮어써도 선행 게이트 정지 시각이
+    보존된다 — 게이트 대기(C 지표) 집계의 소실을 막는다. **신규 run 에만 효력**(과거 Baseline
+    run 은 무소급). 기존 아카이브는 덮어쓰지 않는다(idempotent·정직 보존).
+
+    (k)는 단일 user_decision 게이트라 record 가 무위상(gate-resolution-record.json)이므로,
+    라이브 파일명 충돌을 피해 위상 토큰 'resolved' 를 쓴다(m 의 structure/final 과 대칭).
+    """
+    src = run_dir / "logs" / "stop-signal.json"
+    if not src.exists():
+        return  # 정지 신호 부재 — 아카이브할 것 없음.
+    dst = run_dir / "logs" / ("stop-signal-%s.json" % phase)
+    if dst.exists():
+        return  # 기존 아카이브 보존(덮어쓰기 금지).
+    shutil.copy2(src, dst)  # copy2 = mtime(=게이트 정지 시각) 보존.
+
+
 class _NoInvoke:
     def invoke(self, request):
         raise RuntimeError("resolve_k 는 실행하지 않는다(revision append 전용)")
@@ -149,6 +171,9 @@ def main() -> int:
         print("      pending=%s" % json.dumps(pending, ensure_ascii=False), file=sys.stderr)
         return 1
     gate_id = user_gates[0]["gate_id"]
+
+    # 해소 시점 위상 아카이브(T1 텔레메트리) — 라이브 stop-signal 덮어쓰기 전 정지 시각 보존.
+    _archive_stop_signal(run_dir, "resolved")
 
     log = EventLog(JsonlEventStore(str(run_dir / "events.jsonl")))
 

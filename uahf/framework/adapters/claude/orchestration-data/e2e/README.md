@@ -42,6 +42,17 @@ Windows 콘솔 인코딩 안전을 위해 `PYTHONUTF8=1` 로 실행한다.
 - **실 CLI 실패는 은폐하지 않는다** — 실 세션 stdout·argv 는 `logs/invoke-*.json` 에 그대로
   캡처된다.
 
+## T1 Minimal Telemetry (2026-07-14 · 순수 판독)
+
+- `collect_metrics.py <run-dir>...` — invoke 로그·mtime·(선택 `--git-anchor`) git ts 에서
+  1차 분석 §15 지표를 `metrics/<runId>.run-metrics.json`·`metrics/aggregate.run-metrics.json`
+  으로 재산출한다(원장 무수정·출력은 run 밖 `metrics/` 에만·등급 확인/계산/근사/불가/소실).
+- `resolve_k/m/w.py` 는 해소 시점 `logs/stop-signal.json` 을 `stop-signal-<위상>.json` 으로
+  mtime 보존 복사(`shutil.copy2`·덮어쓰기 금지)해 다중 게이트 run 의 선행 게이트 정지 시각
+  소실을 막는다(**신규 run 에만 효력**).
+- `metrics/harness-subagent-metrics.json` — 하네스 서브에이전트 토큰/시간 통지 실측치 전사 슬롯
+  (빈 템플릿·기입은 Advisor 절차 소관).
+
 ## 실측 (2026-07-13)
 
 실 claude CLI headless(haiku·**5 세션**) 실증: Phase 1(exit 2·2 세션)·Phase 2(exit 0·3 세션).

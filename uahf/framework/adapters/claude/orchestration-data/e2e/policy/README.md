@@ -52,12 +52,12 @@ Worker 슬롯은 sonnet 그대로다. allocation 은 **model 슬롯을 비운 �
 }
 ```
 
-**주의(follow-up).** 위 `cp2ModelSlots` 는 코드(allocation.py)·단위 테스트로 실증되지만,
-`orchestration/framework/orchestrator/model_selection_schema.json` 은 이번 트랙 허용 변경 범위
-밖이라 **아직 이 필드를 스키마에 등재하지 않았다**(`additionalProperties: false`). `cp2ModelSlots`
-를 데이터로 쓰는 allocation.json 을 스키마 검증 대상으로 올리려면 스키마에 이 필드를 가법 추가
-(선택·object of strings)하는 후속이 필요하다. 그래서 위 `allocation.json` 템플릿은 스키마-유효를
-위해 전역 `cp2ModelSlot` 만 쓴다.
+**해소(follow-up 완결).** 위 `cp2ModelSlots` 는 코드(allocation.py)·단위 테스트로 실증되며,
+`orchestration/framework/orchestrator/model_selection_schema.json` 이 이제 이 필드를 **가법 등재**
+한다(선택·object of strings·최상위 `additionalProperties: false` 닫힌 스키마 유지). 따라서
+`cp2ModelSlots` 를 데이터로 쓰는 allocation.json 도 스키마-유효이며, 위 `allocation.json` 템플릿은
+전역 `cp2ModelSlot`(안전측 폴백)과 함께 `cp2ModelSlots`(capability class 별 CP2 차등)를 실제로 쓴다.
+생략/빈 객체(기본)면 전역 단일 거동을 완전 보존한다(기존 데이터 무회귀).
 
 ## Gate Policy 결합 (Critical = 사용자 게이트·T2 기존 기능)
 

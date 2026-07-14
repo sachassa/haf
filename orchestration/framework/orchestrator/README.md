@@ -39,7 +39,7 @@ provider·모델·상류 Layer 고유명 토큰을 두지 않는다(PO-INV 8).
 | `revision_schema.json` | RevisionEvent 직렬화 형태 정의(실값 없음 — step-host `config_schema.json` 관례 동형). |
 | `gate_policy_schema.json` | **(S3)** Gate Policy 데이터 형태 정의(실값 없음). **floor 는 스키마가 아니라 코드(`gates.py floor()`) 소유** — 정책 데이터로 하한을 약화 불가(주석 명시). |
 | `allocation_schema.json` | **(S4)** AgentSpec 레지스트리 + 매칭 tie-break 정책 형태(실값 없음). tie-break 스키마 default 는 코드 fallback(`allocation.DEFAULT_TIE_BREAK`)과 일치(단일 진리원천). |
-| `model_selection_schema.json` | **(S4)** Model Selection 정책 형태(실값 없음) — `slots`(class→불투명 슬롯)·`fallbackChain`·`cp2ModelSlot`(OQ-SH-4). 실제 모델명은 스키마·중립 코드 밖(Adapter 실값)에만. |
+| `model_selection_schema.json` | **(S4)** Model Selection 정책 형태(실값 없음) — `slots`(class→불투명 슬롯)·`fallbackChain`·`cp2ModelSlot`·`cp2ModelSlots`(class별 CP2 오버라이드·가법)·`defaultSlot`(OQ-SH-4). 실제 모델명은 스키마·중립 코드 밖(Adapter 실값)에만. |
 | `artifact_record_schema.json` | **(S5)** ArtifactRecord 형태 정의(실값 없음) — 8필드·approvalState enum(4등급·코드 사다리와 일치). |
 | `tests/` | 모의 invoker 기반 통합 테스트(외부 의존 0). `test_gates.py`(S3)·`test_allocation.py`(S4)·`test_artifacts.py`(S5) = artifacts 순수 + orchestrator 산출물 계보 통합(시나리오 i). |
 

@@ -614,6 +614,19 @@ class SchemaConsistency(unittest.TestCase):
                 data = json.load(fh)
             self.assertEqual(data["type"], "object", name)
 
+    def test_model_selection_schema_registers_cp2_model_slots(self):
+        path = os.path.join(_ORCH_DIR, "model_selection_schema.json")
+        with open(path, "r", encoding="utf-8") as fh:
+            schema = json.load(fh)
+        # 스키마 property 집합 = from_dict 소비 키 집합(단일 진리원천 대조).
+        self.assertEqual(
+            set(schema["properties"]),
+            {"slots", "fallbackChain", "cp2ModelSlot", "defaultSlot", "cp2ModelSlots"})
+        prop = schema["properties"]["cp2ModelSlots"]
+        self.assertEqual(prop["type"], "object")
+        self.assertEqual(prop["additionalProperties"], {"type": "string"})
+        self.assertIs(schema["additionalProperties"], False)  # 가법 등재 후에도 닫힌 스키마 유지.
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

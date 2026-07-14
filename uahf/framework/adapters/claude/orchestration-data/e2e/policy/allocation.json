@@ -18,6 +18,7 @@
     },
     "fallbackChain": ["haiku", "sonnet"],
     "cp2ModelSlot": "sonnet",
+    "cp2ModelSlots": {"low-risk-semantic": "haiku", "high-risk-semantic": "sonnet"},
     "defaultSlot": "sonnet"
   }
 }

@@ -97,7 +97,28 @@ run(sentinel)·w 구현 run(원문 전재) baseline 이 둘 다 통과한다(무
 
 - 중립 트리: `orchestration/framework/orchestrator/tests`(allocation 확장·descriptor-aware CP2)·
   `uahf/framework/loop/step-host/tests`(cp2_model_resolver seam)·`step-invoker/tests`.
-- e2e 트리: `e2e/tests/`(delegation 경계·러너 위생 검사·섀도 스텁 — 실 CLI 0).
+- e2e 트리: `e2e/tests/`(delegation 경계·러너 위생 검사·섀도 스텁·번들 payload 계측 — 실 CLI 0).
+
+### 전체 테스트 정본 호출 (R3 · 4-트리 러너 · deterministic·Skill 아님)
+
+R3 의 목적 = 매 단계 4경로 명령을 재도출하는 수고 제거(튜닝 Before/After 효과 주장은 불포함).
+
+정본 호출 = 이 러너 **또는** 아래 원 명령(4경로 병기) 중 택일 — 두 형태는 동일 트리를 실행한다:
+
+```
+# (A) 러너(권장·경로 역산)
+python run_all_tests.py            # -q 기본. 추가 인자는 pytest 로 패스스루(예: -v -k foo).
+
+# (B) 원 명령(저장소 루트에서·4경로 병기)
+python -m pytest \
+  orchestration/framework/orchestrator/tests \
+  uahf/framework/loop/step-host/tests \
+  uahf/framework/adapters/claude/step-invoker/tests \
+  uahf/framework/adapters/claude/orchestration-data/e2e/tests -q
+```
+
+러너는 pytest 종료코드를 그대로 반환한다. **기대 통과 수는 여기에 하드코딩하지 않는다**(트랙
+진행에 따라 증가 — stale 방지). 실측 통과 수는 실행 출력으로 확인한다.
 
 ## 실측 (2026-07-13)
 

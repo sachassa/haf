@@ -41,6 +41,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import statistics
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -88,8 +89,18 @@ def parse_invoke_log(path: Path) -> dict:
         "cache_read": 0,
         "cache_write": 0,
         "model_usage": {},
+        "payload_bytes": None,     # argv 의 -p 다음 원소(번들 JSON) UTF-8 바이트.
+        "payload_missing": True,   # -p 부재/argv 결손 → payload 미상(0 왜곡 금지·분리 계수).
         "parse_error": None,
     }
+    # 번들 payload 계측: argv 의 "-p" 플래그 다음 원소 = 번들 JSON 전문.
+    # (raw_stdout 파싱 실패로 조기 반환하더라도 payload 는 argv 로 독립 산출되도록 이 지점에서 계산.)
+    argv = d.get("argv")
+    if isinstance(argv, list) and "-p" in argv:
+        i = argv.index("-p")
+        if i + 1 < len(argv) and isinstance(argv[i + 1], str):
+            rec["payload_bytes"] = len(argv[i + 1].encode("utf-8"))
+            rec["payload_missing"] = False
     raw = d.get("raw_stdout") or ""
     try:
         rj = json.loads(raw)
@@ -120,6 +131,41 @@ def classify(role, gate_id) -> str:
     if gate_id:
         return "gate re-verification"
     return "CP2"
+
+
+# --- 번들 payload 계측(argv -p 다음 원소 UTF-8 바이트) --------------------------
+def bundle_payload_block(rows) -> dict:
+    """invoke rec 목록에서 번들 payload 바이트 블록을 산출한다(가법 계측·기존 산식 무촉).
+
+    -p 부재/argv 결손 세션은 payload 미상으로 **분리 계수**한다(0 으로 왜곡하지 않는다).
+    by_class 귀속은 기존 classify(role, gate_id) 규칙과 동일하다.
+    """
+    by_class = {"Worker step": 0, "CP2": 0, "gate re-verification": 0}
+    counted = []           # 계측 성공 세션의 바이트값.
+    missing = 0            # payload 미상(argv 결손 또는 -p 부재) 세션 수.
+    for r in rows:
+        if r.get("payload_missing") or r.get("payload_bytes") is None:
+            missing += 1
+            continue
+        b = r["payload_bytes"]
+        counted.append(b)
+        by_class[classify(r["role"], r["gate_id"])] += b
+    if counted:
+        per_session = {
+            "min": min(counted),
+            "median": statistics.median(counted),
+            "max": max(counted),
+        }
+    else:
+        per_session = {"min": None, "median": None, "max": None}
+    return {
+        "total_bytes": sum(counted),
+        "by_class_bytes": by_class,
+        "per_session": per_session,
+        "sessions_counted": len(counted),
+        "sessions_missing_argv": missing,
+        "grade": G_CONFIRMED,
+    }
 
 
 # --- 그래프 fold(task_added) + ready_set 동시성 --------------------------------
@@ -437,6 +483,7 @@ def collect_run(run_dir: Path) -> dict:
         "retry": retry,
         "classification_crosscheck": classification_crosscheck,
         "critical_path": critical_path,
+        "bundle_payload": bundle_payload_block(invokes),
         "ready_set_concurrency": ready_concurrency(run_dir),
         "gate_wait": gate_waits(run_dir),
         "impossible_metrics": {
@@ -564,6 +611,7 @@ def aggregate(run_metrics: list, elapsed: dict) -> dict:
                                     "grade": G_CONFIRMED},
         },
         "retry": {"value": sum(rm["retry"]["value"] for rm in run_metrics), "grade": G_CONFIRMED},
+        "bundle_payload": bundle_payload_block(all_rows),
         "verification_ratio": {
             "time_ratio": round(verif_time / total_dur, 4) if total_dur else None,
             "cost_ratio": round(verif_cost / total_cost, 4) if total_cost else None,

@@ -1,4 +1,20 @@
 {
+  "bundle_payload": {
+    "by_class_bytes": {
+      "CP2": 13629,
+      "Worker step": 12614,
+      "gate re-verification": 7348
+    },
+    "grade": "확인",
+    "per_session": {
+      "max": 5563,
+      "median": 4334.0,
+      "min": 3028
+    },
+    "sessions_counted": 8,
+    "sessions_missing_argv": 0,
+    "total_bytes": 33591
+  },
   "classification_crosscheck": {
     "consistent": true,
     "gate_reverification_sessions": 2,

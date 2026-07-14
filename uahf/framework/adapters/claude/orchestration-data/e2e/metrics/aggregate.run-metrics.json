@@ -1,5 +1,21 @@
 {
   "aggregate": {
+    "bundle_payload": {
+      "by_class_bytes": {
+        "CP2": 145360,
+        "Worker step": 133755,
+        "gate re-verification": 64068
+      },
+      "grade": "확인",
+      "per_session": {
+        "max": 20752,
+        "median": 8966,
+        "min": 3028
+      },
+      "sessions_counted": 37,
+      "sessions_missing_argv": 0,
+      "total_bytes": 343183
+    },
     "cost": {
       "by_class_usd": {
         "CP2": 6.8775,
@@ -214,7 +230,7 @@
       "verification_cost_usd": 11.4322
     }
   },
-  "generated_at": "2026-07-14T11:28:18.268980",
+  "generated_at": "2026-07-14T14:54:26.677935",
   "generator": "collect_metrics.py (T1 Minimal Telemetry)",
   "source": "invoke 로그·파일 mtime·(선택) git ts — 순수 판독"
 }

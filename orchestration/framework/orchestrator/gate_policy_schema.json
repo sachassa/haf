@@ -34,6 +34,11 @@
               "user_decision_required"
             ],
             "description": "gateKind 5종(05 §3.3 어휘·심각도 오름차순). auto_continue < review_required < approval_required < escalation_required < user_decision_required."
+          },
+          "requireIndependentReview": {
+            "type": "boolean",
+            "default": false,
+            "description": "review_required 를 유효 CP2 evidence(cp2-pass) 재사용으로 해소하지 않고 항상 독립 2차 검증(추가 Verifier 리뷰 단위)을 디스패치할지 여부(05 §3.3·T2). 고위험 단위 유형 등에서 참으로 지정한다. 기본 false = evidence 재사용 허용. gateKind 심각도·코드 하한(floor)과 무관하며 PO-INV 4 를 훼손하지 않는다(review 는 floor 게이트가 아니다). 다른 gateKind 엔트리에서는 무의미(무시)하다."
           }
         }
       }

@@ -51,8 +51,15 @@ from gates import (  # noqa: E402
     pending_gates,
     severity,
 )
+from artifacts import InMemoryArtifactDeclarationStore  # noqa: E402
 from orchestrator import OrchestrationResult, ProjectOrchestrator  # noqa: E402
-from revision import InMemoryRevisionStore, RevisionLedger  # noqa: E402
+from revision import (  # noqa: E402
+    InMemoryRevisionStore,
+    KIND_DEPENDENCY_ADDED,
+    KIND_TASK_ADDED,
+    KIND_TASK_SUPERSEDED,
+    RevisionLedger,
+)
 from stephost_bridge import (  # noqa: E402
     EventLog,
     InMemoryEventStore,
@@ -403,10 +410,19 @@ class ScenarioD_MixedGateBehavior(unittest.TestCase):
         # auto_continue: 게이트 이벤트 흔적 0.
         auto_gate_id = orch._gate_id_for("t-auto")
         self.assertEqual(gates.gate_events_for(events, auto_gate_id), [])
-        # review_required: 추가 리뷰(Verifier) 디스패치 흔적 + 마커 이벤트.
+        # review_required: T2 — 유효 cp2-pass evidence 재사용으로 해소(재검증 디스패치 0).
+        #   t-review 는 host 가 CP2 Pass → cp2-pass 를 남겼고 이를 대상하는 stale revision·
+        #   해시 불일치가 없으므로 evidence-reuse 마커가 근거 cp2-pass 를 명시 참조한다.
+        #   (T2 이전 기대: 재검증 Verifier 디스패치 1회. T2 의미론상 evidence 소비로 대체됨.)
         review_gate_id = orch._gate_id_for("t-review")
         self.assertTrue(has_settlement(events, review_gate_id, REF_KIND_REVIEW))
-        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 1)
+        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 0)  # 재검증 디스패치 생략.
+        review_marker = [
+            e for e in gates.gate_events_for(events, review_gate_id)
+            if (e.get("ref") or {}).get("kind") == REF_KIND_REVIEW
+        ][-1]
+        self.assertEqual(review_marker["ref"].get("mode"), gates.REVIEW_MODE_EVIDENCE_REUSE)
+        self.assertEqual((review_marker["ref"].get("basis") or {}).get("kind"), "cp2-pass")
         # approval_required: Advisor(CP3) 디스패치 흔적 + 마커 이벤트.
         approval_gate_id = orch._gate_id_for("t-approval")
         self.assertTrue(has_settlement(events, approval_gate_id, REF_KIND_APPROVAL))
@@ -419,8 +435,9 @@ class ScenarioD_MixedGateBehavior(unittest.TestCase):
         again = orch.run()
         self.assertTrue(again.stopped, again.status)
         self.assertEqual([g["gate_id"] for g in again.pending_gates], [user_gate_id])
-        # 재기동 시 review/approval 재디스패치 0(멱등).
-        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 1)
+        # 재기동 시 review/approval 재디스패치 0(멱등). T2: review 는 evidence 재사용이라
+        # 애초에 재검증 디스패치 0(마커 실재로 재처리도 0), approval 은 1회 디스패치 유지.
+        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 0)
         self.assertEqual(len(inv.gate_calls(ROLE_ADVISOR)), 1)
 
         # 사용자 actor(human) 해소 → 완주.
@@ -477,6 +494,183 @@ class ScenarioE_AutonomyOrthogonality(unittest.TestCase):
         result = orch.run()
         self.assertTrue(result.stopped, result.status)
         self.assertEqual([g["gateKind"] for g in result.pending_gates], [GATE_ESCALATION_REQUIRED])
+
+
+# ==========================================================================
+# ScenarioF — review_required evidence 재사용 통합 (T2·판단 0·fail-closed)
+#
+# review_required 게이트가 유효 cp2-pass evidence 를 소비해 해소하는지(디스패치 0), stale
+# 3규칙·정책 플래그·미지 revision 에서 재검증 디스패치(fallback)로 떨어지는지, 마커 실재
+# 시 재처리 0(멱등)인지를 orchestrator 통합으로 실증한다. 직접 _process_gates 경로는 seed
+# 로 특정 stale 상태를 구성하되 states 를 명시 공급한다(파생 상태 우회 — 게이트 결정만 관찰).
+# ==========================================================================
+def _review_policy(require_independent=False):
+    return GatePolicy(entries=[
+        GatePolicyEntry(
+            target={"unitType": "impl"}, gate=GATE_REVIEW_REQUIRED,
+            require_independent_review=require_independent,
+        ),
+    ])
+
+
+def _cp2_pass_ev(cycle, at, seq=1, verdict_ref="v"):
+    return {"cycle_id": cycle, "seq": seq, "from_stage": "Verify", "to_stage": "Complete",
+            "trigger": "완료 조건 충족", "outcome": "pass", "actor": ROLE_VERIFIER,
+            "ref": {"kind": "cp2-pass", "verdict_ref": verdict_ref}, "at": at}
+
+
+def _dispatch_ev(cycle, at, seq=1):
+    return {"cycle_id": cycle, "seq": seq, "from_stage": None, "to_stage": "Execute",
+            "trigger": "완료 조건 충족", "outcome": "pass", "actor": ROLE_WORKER,
+            "ref": {"kind": "dispatch"}, "at": at}
+
+
+def _grounding_ev(gate_id, at):
+    return {"cycle_id": "gate::" + gate_id, "seq": 1, "from_stage": "Consult",
+            "to_stage": "Complete", "trigger": "완료 조건 충족", "outcome": "pass",
+            "actor": "human", "ref": {"kind": "gate-resolved", "gate_id": gate_id}, "at": at}
+
+
+def _last_review_marker(events, gate_id):
+    rows = [
+        e for e in gates.gate_events_for(events, gate_id)
+        if (e.get("ref") or {}).get("kind") == REF_KIND_REVIEW
+    ]
+    return rows[-1] if rows else None
+
+
+def _build_direct(task, policy, seed_events, *, revisions=None, artifact_store=None):
+    """seed 된 이벤트/원장으로 orchestrator 를 구성한다(직접 _process_gates 관찰용)."""
+    store = InMemoryEventStore(seed=seed_events)
+    graph = {"goal": "g", "tasks": [task], "completion": "all-passed"}
+    ledger = RevisionLedger(InMemoryRevisionStore(seed=revisions or []), graph)
+    inv = GateMockInvoker()
+    orch = ProjectOrchestrator(
+        ledger, store, inv, gate_policy=policy, artifact_store=artifact_store
+    )
+    return orch, inv, store
+
+
+class ScenarioF_ReviewEvidenceReuse(unittest.TestCase):
+    def test_valid_cp2_pass_reused_no_dispatch(self):
+        # 유효 cp2-pass → 재검증 디스패치 0 + 마커가 근거 cp2-pass 를 명시 참조.
+        orch, inv, store = build_orch([gate_task("u", unit_type="impl")], _review_policy())
+        result = orch.run()
+        self.assertTrue(result.completed, result.status)
+        gid = orch._gate_id_for("u")
+        events = store.read_all()
+        self.assertTrue(has_settlement(events, gid, REF_KIND_REVIEW))
+        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 0)  # 디스패치 생략.
+        marker = _last_review_marker(events, gid)
+        self.assertEqual(marker["ref"].get("mode"), gates.REVIEW_MODE_EVIDENCE_REUSE)
+        basis = marker["ref"].get("basis") or {}
+        self.assertEqual(basis.get("kind"), "cp2-pass")
+        self.assertEqual(basis.get("cycle_id"), "u")
+        self.assertIsNotNone(basis.get("at"))
+        self.assertEqual(basis.get("verdict_ref"), "vd")  # host cp2-pass verdict_ref
+
+    def test_stale_a_retry_after_dispatches(self):
+        # cp2-pass 이후 같은 cycle 재디스패치(재실행 흔적) → stale → 재검증 디스패치.
+        task = gate_task("u", unit_type="impl")
+        seed = [_dispatch_ev("u", 1), _cp2_pass_ev("u", 2, seq=2), _dispatch_ev("u", 3, seq=3)]
+        orch, inv, store = _build_direct(task, _review_policy(), seed)
+        r = orch._process_gates({"u": PASSED}, 1)
+        self.assertIsNone(r)  # review 비정지.
+        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 1)  # stale → 디스패치.
+        marker = _last_review_marker(store.read_all(), orch._gate_id_for("u"))
+        self.assertIsNone(marker["ref"].get("mode"))  # 디스패치 경로(mode 없음).
+
+    def test_stale_b_reissue_revision_dispatches(self):
+        # 재발행(id==u) revision 이 cp2-pass 이후 grounded → stale → 재검증 디스패치.
+        payload = gate_task("u", unit_type="impl")
+        payload["supersedes"] = "u"
+        rev = {"revisionSeq": 1, "kind": KIND_TASK_SUPERSEDED, "payload": payload,
+               "basis": {"proposingStepRef": "u", "gateEventRef": "g-reissue"}}
+        task = gate_task("u", unit_type="impl")
+        seed = [_cp2_pass_ev("u", 2), _grounding_ev("g-reissue", 5)]
+        orch, inv, store = _build_direct(task, _review_policy(), seed, revisions=[rev])
+        orch._process_gates({"u": PASSED}, 1)
+        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 1)
+        marker = _last_review_marker(store.read_all(), orch._gate_id_for("u"))
+        self.assertIsNone(marker["ref"].get("mode"))
+
+    def test_creating_revision_before_evidence_reuses(self):
+        # task_added(id==u) 가 cp2-pass 를 선행(grounded at 1 < cp2-pass at 4) → 재사용(디스패치 0).
+        rev = {"revisionSeq": 1, "kind": KIND_TASK_ADDED,
+               "payload": gate_task("u", unit_type="impl"),
+               "basis": {"proposingStepRef": "p", "gateEventRef": "g-create"}}
+        task = gate_task("u", unit_type="impl")
+        seed = [_grounding_ev("g-create", 1), _dispatch_ev("u", 2), _cp2_pass_ev("u", 4, seq=2)]
+        orch, inv, store = _build_direct(task, _review_policy(), seed, revisions=[rev])
+        orch._process_gates({"u": PASSED}, 1)
+        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 0)  # evidence 재사용.
+        marker = _last_review_marker(store.read_all(), orch._gate_id_for("u"))
+        self.assertEqual(marker["ref"].get("mode"), gates.REVIEW_MODE_EVIDENCE_REUSE)
+
+    def test_stale_c_recorded_hash_mismatch_dispatches(self):
+        # 산출 artifact 에 contentHash 기록 + 실파일 재해시 불일치 → stale → 재검증 디스패치.
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "art.txt")
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write("actual content")
+            decl_store = InMemoryArtifactDeclarationStore(seed=[{
+                "artifactId": "a-u", "version": 1,
+                "producedBy": {"stepId": "u"}, "location": path,
+                "contentHash": "sha256:" + "0" * 64,  # 기록값 ≠ 실파일 재해시.
+            }])
+            task = gate_task("u", unit_type="impl")
+            seed = [_cp2_pass_ev("u", 2)]
+            orch, inv, store = _build_direct(
+                task, _review_policy(), seed, artifact_store=decl_store
+            )
+            orch._process_gates({"u": PASSED}, 1)
+            self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 1)
+            marker = _last_review_marker(store.read_all(), orch._gate_id_for("u"))
+            self.assertIsNone(marker["ref"].get("mode"))
+
+    def test_unknown_revision_kind_fail_closed_dispatches(self):
+        # 미지 revision kind(grounded)가 있으면 fail-closed → 재검증 디스패치.
+        rev = {"revisionSeq": 1, "kind": "frobnicate", "payload": {"id": "u"},
+               "basis": {"proposingStepRef": "p", "gateEventRef": "g-x"}}
+        task = gate_task("u", unit_type="impl")
+        seed = [_cp2_pass_ev("u", 2), _grounding_ev("g-x", 1)]
+        orch, inv, store = _build_direct(task, _review_policy(), seed, revisions=[rev])
+        orch._process_gates({"u": PASSED}, 1)
+        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 1)
+        marker = _last_review_marker(store.read_all(), orch._gate_id_for("u"))
+        self.assertIsNone(marker["ref"].get("mode"))
+
+    def test_policy_flag_forces_dispatch(self):
+        # 정책이 독립 2차 검증 요구 → 유효 evidence 여도 무조건 재검증 디스패치.
+        orch, inv, store = build_orch(
+            [gate_task("u", unit_type="impl")], _review_policy(require_independent=True)
+        )
+        result = orch.run()
+        self.assertTrue(result.completed, result.status)
+        gid = orch._gate_id_for("u")
+        events = store.read_all()
+        self.assertTrue(has_settlement(events, gid, REF_KIND_REVIEW))
+        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), 1)  # 정책 강제 디스패치.
+        marker = _last_review_marker(events, gid)
+        self.assertIsNone(marker["ref"].get("mode"))  # 디스패치 경로(mode 없음).
+        self.assertNotIn("basis", marker["ref"])  # 근거 참조 없음(evidence 재사용 아님).
+
+    def test_resume_is_idempotent_no_reprocessing(self):
+        # 마커 실재 시 재기동해도 재처리 0(새 이벤트·재디스패치 0·결정적 재개).
+        orch, inv, store = build_orch([gate_task("u", unit_type="impl")], _review_policy())
+        orch.run()
+        gid = orch._gate_id_for("u")
+        n_events = len(store.read_all())
+        n_verifier = len(inv.gate_calls(ROLE_VERIFIER))
+        again = orch.run()
+        self.assertTrue(again.completed, again.status)
+        self.assertEqual(len(store.read_all()), n_events)  # 새 이벤트 0(재처리 없음).
+        self.assertEqual(len(inv.gate_calls(ROLE_VERIFIER)), n_verifier)  # 재디스패치 0.
+        markers = [
+            e for e in gates.gate_events_for(store.read_all(), gid)
+            if (e.get("ref") or {}).get("kind") == REF_KIND_REVIEW
+        ]
+        self.assertEqual(len(markers), 1)  # 마커 정확히 1개(중복 append 0).
 
 
 class GateClampIntegration(unittest.TestCase):

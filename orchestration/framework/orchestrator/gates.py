@@ -140,6 +140,11 @@ class GatePolicyEntry:
 
     target: dict[str, Any] = field(default_factory=dict)
     gate: str = GATE_AUTO_CONTINUE
+    # 고위험 단위 유형 등에서 review_required 를 **유효 CP2 evidence 재사용으로 해소하지
+    # 않고** 독립 2차 검증(추가 Verifier 리뷰 단위)을 항상 요구하는 선택 플래그(05 §3.3).
+    # 기본 False = evidence 재사용 허용. 정책 데이터일 뿐 코드 하한(floor)과 무관하며
+    # (PO-INV 4 무촉·review 는 floor 게이트가 아님) gateKind 심각도도 바꾸지 않는다.
+    require_independent_review: bool = False
 
     def __post_init__(self) -> None:
         if self.gate not in _SEVERITY:
@@ -205,6 +210,22 @@ class GatePolicy:
             chosen = max_gate(chosen, e.gate)
         return chosen
 
+    def requires_independent_review(self, target_descriptor: dict[str, Any]) -> bool:
+        """이 target 의 지배 정책 엔트리가 독립 2차 검증(재검증 디스패치)을 강제하는가.
+
+        evaluate() 와 동일한 후보 선택(최상위 tier 매칭 엔트리)을 재사용하고, 그중 하나라도
+        require_independent_review 를 세우면 True 다. 순수·결정적 — 정책 데이터만으로 결정.
+        review_required 를 evidence 재사용으로 해소할지(False) 항상 재검증 단위를 디스패치할지
+        (True)를 소비 측(orchestrator)이 이 값으로 분기한다(판단 0 — 정책 데이터 소비).
+        """
+        descriptor = target_descriptor or {}
+        matching = [e for e in self.entries if _matches(e.target, descriptor)]
+        if not matching:
+            return False
+        top_tier = max(_entry_tier(e.target) for e in matching)
+        candidates = [e for e in matching if _entry_tier(e.target) == top_tier]
+        return any(getattr(e, "require_independent_review", False) for e in candidates)
+
     # --- 해소 적격성 (actor 클래스 매칭·순수) -------------------------------
     def is_eligible_resolver(self, gate_kind: str, actor: Any) -> bool:
         """이 actor 가 이 정지 게이트를 해소할 자격이 있는가.
@@ -227,6 +248,7 @@ class GatePolicy:
             GatePolicyEntry(
                 target=dict(e.get("target") or {}),
                 gate=e.get("gate", GATE_AUTO_CONTINUE),
+                require_independent_review=bool(e.get("requireIndependentReview", False)),
             )
             for e in (data.get("entries") or [])
         ]
@@ -271,8 +293,13 @@ GATE_CYCLE_PREFIX = "gate::"
 
 REF_KIND_REQUIRED = "gate-required"    # 정지 게이트 요구(Escalated 정지) 이벤트
 REF_KIND_RESOLVED = "gate-resolved"    # 정지 게이트 해소 이벤트(적격 actor 만 유효)
-REF_KIND_REVIEW = "gate-review"        # review_required 처리 마커(추가 리뷰 디스패치 완료)
+REF_KIND_REVIEW = "gate-review"        # review_required 처리 마커(추가 리뷰 디스패치 완료 또는 evidence 재사용)
 REF_KIND_APPROVAL = "gate-approval"    # approval_required 처리 마커(CP3 Advisor 디스패치 완료)
+
+# review_required 처리 마커의 해소 방식(자유 형식 ref 의 선택 필드 `mode`). 부재(마커에
+# mode 키 없음) = 기존 재검증 디스패치 방식(하위호환 판독). "evidence-reuse" = 유효 cp2-pass
+# evidence 소비로 해소(디스패치 생략·근거는 같은 ref 의 `basis` 가 명시 참조·T2·05 §3.3).
+REVIEW_MODE_EVIDENCE_REUSE = "evidence-reuse"
 
 
 def gate_cycle_id(gate_id: Any) -> str:
@@ -470,8 +497,26 @@ def append_review_marker(
     verdict: Any,
     *,
     actor: str = "Verifier",
+    basis: Any = None,
+    mode: Any = None,
 ) -> dict[str, Any]:
-    """review_required 처리 마커 append(추가 독립 리뷰 디스패치 완료·멱등 판정용)."""
+    """review_required 처리 마커 append(추가 독립 리뷰 디스패치 완료 또는 evidence 재사용·멱등 판정용).
+
+    ref 필드 확장은 **가법**이다(append-only·기존 이벤트 무재작성): mode/basis 는 지정될 때만
+    실린다. 미지정(디스패치 경로)이면 ref 는 종전과 **byte-identical**({kind,gate_id,gateKind,
+    verdict})이라 기존 마커·재생 결정성이 보존된다. evidence-reuse 경로는 basis 로 근거 cp2-pass
+    (at·seq·cycle_id·verdict_ref)를 명시 참조하고 mode="evidence-reuse" 를 실어 방식을 구분한다.
+    """
+    ref: dict[str, Any] = {
+        "kind": REF_KIND_REVIEW,
+        "gate_id": gate_id,
+        "gateKind": gate_kind,
+        "verdict": verdict,
+    }
+    if mode is not None:
+        ref["mode"] = mode
+    if basis is not None:
+        ref["basis"] = basis
     return log.append(
         cycle_id=gate_cycle_id(gate_id),
         from_stage="Verify",
@@ -480,7 +525,7 @@ def append_review_marker(
         outcome="pass",
         actor=actor,
         retry_count=0,
-        ref={"kind": REF_KIND_REVIEW, "gate_id": gate_id, "gateKind": gate_kind, "verdict": verdict},
+        ref=ref,
     )
 
 

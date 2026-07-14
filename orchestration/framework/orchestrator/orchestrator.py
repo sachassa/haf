@@ -32,6 +32,8 @@ from artifacts import (
     ArtifactCapturingInvoker,
     ArtifactDeclarationStore,
     derive_registry,
+    find_valid_cp2_evidence,
+    hash_file,
     resolve_references,
 )
 from gates import (
@@ -41,6 +43,7 @@ from gates import (
     GATE_REVIEW_REQUIRED,
     REF_KIND_APPROVAL,
     REF_KIND_REVIEW,
+    REVIEW_MODE_EVIDENCE_REUSE,
     GatePolicy,
     append_approval_marker,
     append_gate_requirement,
@@ -213,11 +216,18 @@ class ProjectOrchestrator:
         그래프에 반영하지 않는다. accept_revision 이 이미 근거를 보장하지만, 이 fold
         필터가 근거를 fold 수준에서도 강제하므로 재개 시 근거 실재를 재확인한다.
         """
-        grounded = [
+        return fold(self._grounded_revisions(), self.ledger.initial_graph)
+
+    def _grounded_revisions(self) -> list[Any]:
+        """게이트 근거(gateEventRef)가 이벤트 로그에 실재하는 revision 만(PO-INV 5 필터).
+
+        active_graph 의 fold 입력과 동일 필터다 — 그래프에 실제 반영된 revision 집합. review
+        evidence 재사용 판정(rule (b))도 이 집합만 본다(미grounded revision 은 그래프 무영향).
+        """
+        return [
             r for r in self.ledger.all()
             if self._gate_event_exists(r.basis.get("gateEventRef"))
         ]
-        return fold(grounded, self.ledger.initial_graph)
 
     def _build_steps(self, graph: dict[str, Any]) -> list[Step]:
         """현재 그래프 Task 를 기존 step.py Step 으로 직렬화한다(새 Step 클래스 창설 0).
@@ -354,6 +364,14 @@ class ProjectOrchestrator:
             gate_policy=self.gate_policy,
         )
 
+    def _flat_artifact_records(self) -> list[Any]:
+        """레지스트리를 평탄화한 ArtifactRecord 목록(review evidence rule (c) 입력·읽기만).
+
+        artifact_store 미지정이면 빈 목록 → rule (c) 공허(현 baseline 거동). 매 호출 파생이며
+        별도 저장하지 않는다(제2 진리원천 아님).
+        """
+        return [r for records in self.artifact_registry().values() for r in records]
+
     def resolve_references(self, required_grade: str) -> list[Any]:
         """번들 조립용 확정 참조 — 요구 등급 이상 approvalState 의 최신 버전만 해석한다.
 
@@ -422,6 +440,57 @@ class ProjectOrchestrator:
         )
         return self.invoker.invoke(request)
 
+    def _settle_review_gate(
+        self,
+        task: dict[str, Any],
+        tid: Any,
+        gate_id: str,
+        gate: str,
+        descriptor: dict[str, Any],
+        events: list[dict[str, Any]],
+    ) -> None:
+        """review_required 게이트를 해소한다 — 유효 CP2 evidence 소비 우선·재검증 디스패치 fallback.
+
+        ① 정책이 독립 2차 검증을 요구하면(고위험 unitType 등·R3) 기존 경로(재검증 디스패치) 그대로.
+        ② 아니면 유효 cp2-pass evidence 를 찾아 존재 시 **디스패치 생략**하고 근거 참조를 실은
+           evidence-reuse 마커를 append. ③ evidence 부재/stale 이면 기존 재검증 디스패치 경로.
+
+        판단 0(PO-INV 1): evidence 유효성은 순수 구조 판독(find_valid_cp2_evidence)이며, 마커의
+        verdict 는 host 가 기록한 cp2-pass Pass status 를 그대로 반영(재판정 0·host.py verdict_pass
+        동형). fallback 디스패치는 판정 권위(Verifier)를 그대로 재기동한다.
+        """
+        # ① 정책이 독립 2차 검증을 요구 — evidence 재사용 안 함(재검증 디스패치 존치).
+        if self.gate_policy.requires_independent_review(descriptor):
+            result = self._dispatch_gate_step(task, gate_id, ROLE_VERIFIER)
+            append_review_marker(
+                self.log, gate_id, gate, self._verdict_summary(result), actor=ROLE_VERIFIER
+            )
+            return
+
+        # ② 유효 cp2-pass evidence 탐색(순수·fail-closed).
+        finding = find_valid_cp2_evidence(
+            events,
+            tid,
+            revisions=self._grounded_revisions(),
+            artifact_records=self._flat_artifact_records(),
+            hash_observer=hash_file,
+        )
+        if finding.valid:
+            basis = finding.basis or {}
+            # verdict 요약은 근거 cp2-pass 의 Pass status 를 반영(status passthrough·판단 0).
+            verdict = {"verdict": VERDICT_PASS, "ref": basis.get("verdict_ref")}
+            append_review_marker(
+                self.log, gate_id, gate, verdict, actor=ROLE_VERIFIER,
+                basis=basis, mode=REVIEW_MODE_EVIDENCE_REUSE,
+            )
+            return
+
+        # ③ evidence 부재/stale → 기존 재검증 디스패치(fallback).
+        result = self._dispatch_gate_step(task, gate_id, ROLE_VERIFIER)
+        append_review_marker(
+            self.log, gate_id, gate, self._verdict_summary(result), actor=ROLE_VERIFIER
+        )
+
     def _process_gates(self, states: dict[str, str], epoch: int) -> "OrchestrationResult | None":
         """단위 경계 게이트를 배치 종단에서 일괄 평가·처리한다.
 
@@ -451,12 +520,10 @@ class ProjectOrchestrator:
             events = self.event_store.read_all()
 
             if gate == GATE_REVIEW_REQUIRED:
-                # CP2 외 추가 독립 리뷰(Verifier) 1회 디스패치(멱등) — 비정지.
+                # 유효 CP2 evidence(cp2-pass) 소비로 해소하되, 재검증 디스패치는 fallback 으로
+                # 존치한다(멱등·비정지·05 §3.3·T2). 마커 실재 시 재처리 0(결정적 재개).
                 if not has_settlement(events, gate_id, REF_KIND_REVIEW):
-                    result = self._dispatch_gate_step(task, gate_id, ROLE_VERIFIER)
-                    append_review_marker(
-                        self.log, gate_id, gate, self._verdict_summary(result), actor=ROLE_VERIFIER
-                    )
+                    self._settle_review_gate(task, tid, gate_id, gate, descriptor, events)
                 continue
 
             if gate == GATE_APPROVAL_REQUIRED:

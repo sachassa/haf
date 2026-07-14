@@ -34,6 +34,12 @@ from artifacts import (  # noqa: E402
     APPROVAL_LADDER,
     APPROVAL_USER_APPROVED,
     APPROVAL_VERIFIED,
+    CP2_EVIDENCE_ABSENT,
+    CP2_EVIDENCE_STALE_HASH,
+    CP2_EVIDENCE_STALE_REOPENED,
+    CP2_EVIDENCE_STALE_REVISION,
+    CP2_EVIDENCE_STALE_UNKNOWN_REVISION,
+    CP2_EVIDENCE_VALID,
     ArtifactCapturingInvoker,
     ArtifactRecord,
     InMemoryArtifactDeclarationStore,
@@ -42,6 +48,7 @@ from artifacts import (  # noqa: E402
     content_hash,
     derive_approval_state,
     derive_registry,
+    find_valid_cp2_evidence,
     hash_file,
     normalize_declaration,
     resolve_references,
@@ -56,6 +63,8 @@ from gates import (  # noqa: E402
 from orchestrator import ProjectOrchestrator  # noqa: E402
 from revision import (  # noqa: E402
     InMemoryRevisionStore,
+    KIND_DEPENDENCY_ADDED,
+    KIND_TASK_ADDED,
     KIND_TASK_SUPERSEDED,
     RevisionLedger,
 )
@@ -575,6 +584,178 @@ class ScenarioI_ArtifactLineage(unittest.TestCase):
             self.assertIsNot(a, b)  # 매 호출 새 객체(저장된 상태 아님).
             self.assertEqual({k: [x.to_dict() for x in v] for k, v in a.items()},
                              {k: [x.to_dict() for x in v] for k, v in b.items()})
+
+
+# ==========================================================================
+# find_valid_cp2_evidence — 유효 cp2-pass 탐색 + stale 3규칙 (순수·fail-closed·T2)
+# ==========================================================================
+def _cp2(cycle, at, seq=1, verdict_ref="v"):
+    return {"cycle_id": cycle, "seq": seq, "from_stage": "Verify", "to_stage": "Complete",
+            "trigger": "완료 조건 충족", "outcome": "pass", "actor": ROLE_VERIFIER,
+            "ref": {"kind": "cp2-pass", "verdict_ref": verdict_ref}, "at": at}
+
+
+def _dispatch(cycle, at, seq=1):
+    return {"cycle_id": cycle, "seq": seq, "from_stage": None, "to_stage": "Execute",
+            "trigger": "완료 조건 충족", "outcome": "pass", "actor": ROLE_WORKER,
+            "ref": {"kind": "dispatch"}, "at": at}
+
+
+def _fail(cycle, at, seq=1):
+    return {"cycle_id": cycle, "seq": seq, "from_stage": "Verify", "to_stage": "Verify",
+            "trigger": "Verify 실패", "outcome": "fail", "actor": ROLE_VERIFIER,
+            "ref": {"kind": "rework"}, "at": at}
+
+
+def _gate_pass(gate_id, at):
+    return {"cycle_id": "gate::" + gate_id, "seq": 1, "from_stage": "Consult",
+            "to_stage": "Complete", "trigger": "완료 조건 충족", "outcome": "pass",
+            "actor": "human", "ref": {"kind": "gate-resolved", "gate_id": gate_id}, "at": at}
+
+
+class FindValidCp2Evidence(unittest.TestCase):
+    # --- 부재·기본 유효 ---------------------------------------------------
+    def test_absent_when_no_cp2_pass(self):
+        f = find_valid_cp2_evidence([], "u")
+        self.assertFalse(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_ABSENT)
+        self.assertIsNone(f.basis)
+
+    def test_valid_basic_carries_provenance_basis(self):
+        events = [_dispatch("u", 1), _cp2("u", 2, seq=2, verdict_ref="vd")]
+        f = find_valid_cp2_evidence(events, "u")
+        self.assertTrue(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_VALID)
+        self.assertEqual(f.basis, {
+            "kind": "cp2-pass", "at": 2, "seq": 2, "cycle_id": "u", "verdict_ref": "vd",
+        })
+
+    def test_latest_cp2_pass_is_basis(self):
+        # 재시도(dispatch→fail→dispatch→cp2-pass) — 최종 cp2-pass 를 근거로(중간 fail 무해).
+        events = [_dispatch("u", 1), _fail("u", 2, seq=2), _dispatch("u", 3, seq=3), _cp2("u", 4, seq=4)]
+        f = find_valid_cp2_evidence(events, "u")
+        self.assertTrue(f.valid)
+        self.assertEqual(f.basis["at"], 4)
+
+    # --- rule (a) 재실행/retry -------------------------------------------
+    def test_stale_a_reopened_after_cp2_pass(self):
+        # cp2-pass 이후 같은 cycle 재디스패치 → 최종 판정 아님 → stale.
+        events = [_dispatch("u", 1), _cp2("u", 2, seq=2), _dispatch("u", 3, seq=3)]
+        f = find_valid_cp2_evidence(events, "u")
+        self.assertFalse(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_STALE_REOPENED)
+
+    def test_other_cycle_event_after_does_not_reopen(self):
+        # 다른 cycle 의 후속 이벤트는 이 cycle 의 evidence 를 stale 로 만들지 않는다.
+        events = [_cp2("u", 2), _dispatch("other", 3)]
+        f = find_valid_cp2_evidence(events, "u")
+        self.assertTrue(f.valid)
+
+    # --- rule (b) supersede/revision 영향 --------------------------------
+    def test_stale_b_reissue_revision_after_evidence(self):
+        # 재발행(id==u) revision grounded at 5 > cp2-pass at 2 → stale.
+        events = [_cp2("u", 2), _gate_pass("g1", 5)]
+        rev = {"kind": KIND_TASK_SUPERSEDED, "payload": {"supersedes": "u", "id": "u"},
+               "basis": {"gateEventRef": "g1"}}
+        f = find_valid_cp2_evidence(events, "u", revisions=[rev])
+        self.assertFalse(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_STALE_REVISION)
+
+    def test_valid_when_creating_revision_precedes_evidence(self):
+        # task_added(id==u) grounded at 1 <= cp2-pass at 4 → evidence 는 개정본을 검증(무관·valid).
+        # orch-w 실거동 대응: impl 단위는 task_added 로 생성 후 실행·cp2-pass(생성 선행).
+        events = [_gate_pass("g1", 1), _dispatch("u", 2), _cp2("u", 4, seq=2)]
+        rev = {"kind": KIND_TASK_ADDED, "payload": {"id": "u"}, "basis": {"gateEventRef": "g1"}}
+        f = find_valid_cp2_evidence(events, "u", revisions=[rev])
+        self.assertTrue(f.valid)
+
+    def test_unrelated_revision_ignored(self):
+        # 다른 task 를 대상하는 revision 은 무관 → valid.
+        events = [_cp2("u", 2), _gate_pass("g1", 5)]
+        rev = {"kind": KIND_TASK_ADDED, "payload": {"id": "other"}, "basis": {"gateEventRef": "g1"}}
+        f = find_valid_cp2_evidence(events, "u", revisions=[rev])
+        self.assertTrue(f.valid)
+
+    def test_dependency_added_after_evidence_is_stale(self):
+        events = [_cp2("u", 2), _gate_pass("g1", 5)]
+        rev = {"kind": KIND_DEPENDENCY_ADDED, "payload": {"id": "u", "dependsOn": ["x"]},
+               "basis": {"gateEventRef": "g1"}}
+        f = find_valid_cp2_evidence(events, "u", revisions=[rev])
+        self.assertFalse(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_STALE_REVISION)
+
+    def test_stale_b_unknown_kind_fail_closed(self):
+        # 미지 revision kind → 무엇을 대상하는지 알 수 없음 → fail-closed stale.
+        events = [_cp2("u", 2), _gate_pass("g1", 1)]
+        rev = {"kind": "frobnicate", "payload": {"id": "u"}, "basis": {"gateEventRef": "g1"}}
+        f = find_valid_cp2_evidence(events, "u", revisions=[rev])
+        self.assertFalse(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_STALE_UNKNOWN_REVISION)
+
+    def test_stale_b_grounding_unprovable_fail_closed(self):
+        # touches=True 이나 gateEventRef 부재(근거 통과 이벤트 미실재) → 순서 증명 불가 → stale.
+        events = [_cp2("u", 2)]
+        rev = {"kind": KIND_TASK_SUPERSEDED, "payload": {"supersedes": "u", "id": "u2"},
+               "basis": {"gateEventRef": None}}
+        f = find_valid_cp2_evidence(events, "u", revisions=[rev])
+        self.assertFalse(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_STALE_REVISION)
+
+    # --- rule (c) artifact 해시 -----------------------------------------
+    def test_vacuous_c_when_no_recorded_hash(self):
+        # 해시 미기록(baseline 전부 null) → rule (c) 공허 통과(valid). hash_observer 무관.
+        rec = ArtifactRecord(artifactId="a", producedBy={"stepId": "u"}, location="/x", contentHash=None)
+        f = find_valid_cp2_evidence([_cp2("u", 2)], "u", artifact_records=[rec])
+        self.assertTrue(f.valid)
+
+    def test_stale_c_recorded_hash_mismatch(self):
+        rec = ArtifactRecord(artifactId="a", producedBy={"stepId": "u"}, location="/x",
+                             contentHash="sha256:aaa")
+        f = find_valid_cp2_evidence(
+            [_cp2("u", 2)], "u", artifact_records=[rec], hash_observer=lambda loc: "sha256:bbb"
+        )
+        self.assertFalse(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_STALE_HASH)
+
+    def test_valid_c_recorded_hash_match(self):
+        rec = ArtifactRecord(artifactId="a", producedBy={"stepId": "u"}, location="/x",
+                             contentHash="sha256:aaa")
+        f = find_valid_cp2_evidence(
+            [_cp2("u", 2)], "u", artifact_records=[rec], hash_observer=lambda loc: "sha256:aaa"
+        )
+        self.assertTrue(f.valid)
+
+    def test_stale_c_recorded_hash_unobservable_fail_closed(self):
+        # 해시 기록됨 + 관측 수단 없음(hash_observer None) → 문면 불변 확인 불가 → fail-closed.
+        rec = ArtifactRecord(artifactId="a", producedBy={"stepId": "u"}, location="/x",
+                             contentHash="sha256:aaa")
+        f = find_valid_cp2_evidence([_cp2("u", 2)], "u", artifact_records=[rec])
+        self.assertFalse(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_STALE_HASH)
+
+    def test_hash_observer_exception_is_fail_closed(self):
+        def boom(loc):
+            raise OSError("gone")
+        rec = ArtifactRecord(artifactId="a", producedBy={"stepId": "u"}, location="/x",
+                             contentHash="sha256:aaa")
+        f = find_valid_cp2_evidence([_cp2("u", 2)], "u", artifact_records=[rec], hash_observer=boom)
+        self.assertFalse(f.valid)
+        self.assertEqual(f.reason, CP2_EVIDENCE_STALE_HASH)
+
+    def test_hash_rule_ignores_other_step_records(self):
+        # 다른 step 산출의 해시 불일치는 이 step evidence 를 stale 로 만들지 않는다.
+        rec = ArtifactRecord(artifactId="a", producedBy={"stepId": "other"}, location="/x",
+                             contentHash="sha256:aaa")
+        f = find_valid_cp2_evidence(
+            [_cp2("u", 2)], "u", artifact_records=[rec], hash_observer=lambda loc: "sha256:bbb"
+        )
+        self.assertTrue(f.valid)
+
+    def test_is_pure_no_input_mutation(self):
+        events = [_cp2("u", 2)]
+        snapshot = [dict(e) for e in events]
+        find_valid_cp2_evidence(events, "u")
+        self.assertEqual(events, snapshot)
 
 
 # ==========================================================================

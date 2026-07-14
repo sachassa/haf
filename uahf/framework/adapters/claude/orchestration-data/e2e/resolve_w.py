@@ -36,6 +36,9 @@ from pathlib import Path
 # k_common import 가 중립 코드 경로를 sys.path 에 배선한다(먼저 실행되어야 함·무수정 재사용).
 from k_common import build_orchestrator_k, load_json
 
+# delegation 참조형 표준화(T4-①) — 3면 공유 순수 함수(verify_run (d)와 동일 함수).
+from delegation_check import delegation_errors_for_task
+
 # 중립 코드 심볼(무수정 라이브러리).
 from events import EventLog, JsonlEventStore  # noqa: E402
 from gates import GATE_USER_DECISION_REQUIRED, append_gate_resolution  # noqa: E402
@@ -142,6 +145,7 @@ def validate_impl_plan(plan) -> list:
       - ownedBoundary 항목이 보호 경계(.claude/·install-manifest.md·specs/·framework/) 미침범.
       - ownedBoundary 항목이 task 간 상호 비중첩(동일·조상/자손 관계 금지).
       - done 이 비어있지 않은 문자열(비공백).
+      - delegation.task/done 이 참조형 sentinel 또는 상위 원문 전재(T4-①·delegation_check).
     """
     if not isinstance(plan, dict):
         return ["impl-plan 최상위가 단일 객체(dict)가 아니다: %s" % type(plan).__name__]
@@ -222,6 +226,9 @@ def validate_impl_plan(plan) -> list:
         done = t.get("done")
         if not isinstance(done, str) or not done.strip():
             errors.append("%s done 이 비어 있지 않은 문자열이어야 한다(비공백): %r" % (where, done))
+
+        # delegation.task/done 참조형 표준(T4-①) — sentinel 또는 상위 원문 전재만 유효.
+        errors.extend(delegation_errors_for_task(t, where=where))
 
     # ownedBoundary 상호 비중첩(task 쌍 × 항목 쌍).
     for a in range(len(ob_by_task)):

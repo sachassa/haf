@@ -53,6 +53,52 @@ Windows 콘솔 인코딩 안전을 위해 `PYTHONUTF8=1` 로 실행한다.
 - `metrics/harness-subagent-metrics.json` — 하네스 서브에이전트 토큰/시간 통지 실측치 전사 슬롯
   (빈 템플릿·기입은 Advisor 절차 소관).
 
+## T3 Verification Architecture + Risk Routing (2026-07-14 · W1~W4)
+
+### verify_run.py — 얇은 결정적 검증 러너 (W1·LLM 0·순수 판독·원장 무수정)
+
+```
+python verify_run.py <run-dir>... [--replay] [--git-hygiene] [-o <출력 디렉터리>]
+```
+
+기존 중립 검증기·순수 함수를 **조립 없이** 재사용해(collect_metrics 선례 — workspace makedirs
+회피) 결정적 축을 검사한다. 리포트는 run 밖 `metrics/verify/<runId>.verify.json`. 검사 축:
+(a) 원장 위생(seq/at 단조·ref.kind 관측 어휘·outcome 어휘·게이트 순서·simulated 라벨 정직성)·
+(b) revision 무결(`validate_revision`/`fold`)·(c) plan 스키마(`validate_stage_plan`/
+`validate_impl_plan` — artifact 실재 시)·(d) delegation 정합(`delegation_check`·W4 공유)·
+(e) 계수 정합(`derive_registry` 대조)·[--replay] (f) k 계열 replay 결정성·[--git-hygiene] (g)
+git porcelain. **결정적 검사는 러너가 산출하고 LLM CP2 는 의미 축을 전담**한다(T3 분리·SH-INV-4
+무촉 — CP2 자체는 제거하지 않는다). Baseline 3+1 run 실행 결과 전건 pass·run 파일 mtime 불변.
+
+### policy/allocation.json — Risk-based Model Routing (W2·opt-in·하위호환)
+
+`build_orchestrator(_k)(run_dir, invoker, allocation_path=...)` 또는 `config.allocation_file`
+로 배선한다. 미지정이면 현행 거동 완전 보존(allocation=None). 저위험 semantic=haiku·고위험/
+기본=sonnet·CP2=sonnet(균일 haiku·CP2 haiku 고정 금지). capability class 별 CP2 차등은
+`cp2ModelSlots`(가법·`policy/README.md` 참조). 자세한 계층·gate_policy 결합은 `policy/README.md`.
+
+### 섀도 검증 (W3·기본 off·관측 전용)
+
+`config.shadow_verify = {enabled, model, log_path?}` 로 켜면 `LoggingClaudeInvoker` 가 Verifier
+invoke(criteria 실재)를 지정 상위 모델로 **병행 재호출**해 두 판정 일치 여부를 섀도 로그에
+기록한다. **주 판정만 run 에 반영**(섀도는 관측 전용·실패해도 run 무영향·best-effort). 기본
+off 시 invoke 거동 byte 동일. 이번 트랙은 실 기동 없이 합성 스텁 단위 테스트로만 확인
+(LLM 비용 미발생).
+
+### delegation 참조형 표준 (W4/T4-①)
+
+`delegation_check.py` 가 3면(시나리오 프롬프트·`validate_*` 검증기·`verify_run` (d))의 단일
+규칙 소유다. delegation.task/done 은 **참조형 sentinel**(`"위 task 필드와 동일"`·
+`"위 done 필드와 동일"`·권장) **또는 상위 원문 전재**만 유효하고 요약·변형은 실패한다. m 성숙
+run(sentinel)·w 구현 run(원문 전재) baseline 이 둘 다 통과한다(무회귀). Verifier 브리프도
+"참조형 sentinel 은 계약 위반 아님·결정적 리포트 재구현 금지"를 명기한다.
+
+### 테스트
+
+- 중립 트리: `orchestration/framework/orchestrator/tests`(allocation 확장·descriptor-aware CP2)·
+  `uahf/framework/loop/step-host/tests`(cp2_model_resolver seam)·`step-invoker/tests`.
+- e2e 트리: `e2e/tests/`(delegation 경계·러너 위생 검사·섀도 스텁 — 실 CLI 0).
+
 ## 실측 (2026-07-13)
 
 실 claude CLI headless(haiku·**5 세션**) 실증: Phase 1(exit 2·2 세션)·Phase 2(exit 0·3 세션).

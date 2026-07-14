@@ -296,13 +296,30 @@ class ProjectOrchestrator:
             return self.invoker
         return ArtifactCapturingInvoker(self.invoker, self.artifact_store, run_id=self.run_id)
 
+    def _cp2_model_for(self, step: Step) -> Any:
+        """descriptor-aware CP2 슬롯 resolver — step.capability → CP2 모델 슬롯(전달만·해석 0).
+
+        allocation 의 capability class 별 CP2 오버라이드(있으면)를 반영하고, 없으면 전역 cp2_slot
+        으로 폴백한다(순수 파생·PO-INV 6 — modelPolicyClass 불투명 키 소비). allocation 부재 시
+        None(resolver 자체가 배선되지 않음).
+        """
+        if self.allocation is None:
+            return None
+        return self.allocation.cp2_model_for(step.capability)
+
     def _new_host(self, steps: list[Step]) -> StepHost:
         """StepHost 를 무수정 import·구동한다(공유 EventStore). 재정의 0.
 
-        allocation 이 CP2 독립 모델 슬롯을 정의하면 그 값을 StepHost 에 전달한다
+        allocation 이 CP2 독립 모델 슬롯을 정의하면 그 전역 값을 StepHost 에 전달한다
         (OQ-SH-4 해소·전달만·해석 0). 미정의면 None → Host 가 대상 step 슬롯 상속(기존 거동).
+        allocation 이 capability class 별 CP2 오버라이드(cp2_slots)를 가지면 descriptor-aware
+        resolver 를 추가 배선한다(위험도별 CP2 차등·가법). 오버라이드가 없으면 resolver 는
+        None → 전역 cp2_model 경로만 쓰여 기존 거동(S4 테스트 포함)이 완전히 보존된다.
         """
         cp2_model = self.allocation.cp2_model() if self.allocation is not None else None
+        cp2_resolver = None
+        if self.allocation is not None and self.allocation.has_cp2_overrides():
+            cp2_resolver = self._cp2_model_for
         return StepHost(
             steps,
             self._effective_invoker(),
@@ -313,6 +330,7 @@ class ProjectOrchestrator:
             timeout=self.timeout,
             stop_handler=self.stop_handler,
             cp2_model=cp2_model,
+            cp2_model_resolver=cp2_resolver,
         )
 
     def derive_states(self) -> dict[str, str]:

@@ -216,7 +216,12 @@ class ModelSelectionPolicy:
       slots          -> capability class → 기본 모델 슬롯(불투명 문자열).
       fallback_chain -> 티어 순서 리스트(약 → 강). fallback 은 base 슬롯을 이 체인에서
                         찾아 level 만큼 차상위로 진행한다(clamp).
-      cp2_slot       -> CP2 Verifier 독립 모델 슬롯(OQ-SH-4). None = Host 가 상속(기존 거동).
+      cp2_slot       -> CP2 Verifier 독립 모델 슬롯(OQ-SH-4·전역 기본). None = Host 가 상속.
+      cp2_slots      -> capability class → CP2 모델 슬롯 오버라이드(선택·가법 확장). 05 §3.5
+                        "CP2 = 독립 정책 행"의 데이터 확장 — 위험도별 CP2 차등을 정책 데이터로
+                        실현한다(고위험 단위 CP2 = 상위 티어·저위험 = 약 티어). 매칭 class 가
+                        없으면 cp2_slot(전역 기본)으로 폴백한다. 빈 dict(기본) = 전역 단일 거동
+                        완전 보존(기존 테스트·baseline 무회귀). cp2_slot 은 default 로 존치한다.
       default_slot   -> slots 미매칭 capability class 의 fallback 기본값(선택).
 
     모델 슬롯은 전부 불투명 문자열이다 — 실제 모델명은 Adapter 정책 실값에만 등장한다(C-3).
@@ -226,6 +231,7 @@ class ModelSelectionPolicy:
     fallback_chain: list[str] = field(default_factory=list)
     cp2_slot: str | None = None
     default_slot: str | None = None
+    cp2_slots: dict[str, str] = field(default_factory=dict)
 
     def select_model(self, capability_class: Any, level: int = 0) -> str | None:
         """capability class → 모델 슬롯(순수·결정적).
@@ -245,8 +251,22 @@ class ModelSelectionPolicy:
         return chain[min(idx + level, len(chain) - 1)]
 
     def cp2_model(self) -> str | None:
-        """CP2 Verifier 독립 모델 슬롯(없으면 None → Host 상속·OQ-SH-4 기본 거동)."""
+        """CP2 Verifier 독립 모델 슬롯 전역 기본(없으면 None → Host 상속·OQ-SH-4 기본 거동)."""
         return self.cp2_slot
+
+    def cp2_model_for(self, capability_class: Any) -> str | None:
+        """capability class → CP2 모델 슬롯(오버라이드 우선·없으면 전역 cp2_slot 폴백·순수).
+
+        cp2_slots 에 capability class 매칭이 있으면 그 오버라이드를, 없으면 cp2_slot(전역
+        기본)을 반환한다. cp2_slots 가 비어 있으면 항상 cp2_slot 이다(전역 단일 거동 보존).
+        """
+        if capability_class is not None and capability_class in self.cp2_slots:
+            return self.cp2_slots[capability_class]
+        return self.cp2_slot
+
+    def has_cp2_overrides(self) -> bool:
+        """capability class 별 CP2 오버라이드가 하나라도 있는가(resolver 배선 여부 판정용)."""
+        return bool(self.cp2_slots)
 
     @classmethod
     def from_dict(cls, data: dict[str, Any] | None) -> "ModelSelectionPolicy":
@@ -256,6 +276,7 @@ class ModelSelectionPolicy:
             fallback_chain=list(data.get("fallbackChain") or []),
             cp2_slot=data.get("cp2ModelSlot"),
             default_slot=data.get("defaultSlot"),
+            cp2_slots=dict(data.get("cp2ModelSlots") or {}),
         )
 
 
@@ -291,6 +312,20 @@ class Allocation:
 
     def cp2_model(self) -> str | None:
         return self.model_policy.cp2_model()
+
+    def cp2_model_for(self, capability: Any) -> str | None:
+        """capability → CP2 모델 슬롯(오버라이드 우선·전역 cp2_slot 폴백).
+
+        capability → AgentSpec → modelPolicyClass(불투명 키) → cp2_slots 오버라이드 조회.
+        매칭 실패·class 부재 시 class=None 으로 전역 cp2_slot 을 반환한다(폴백). PO-INV 6 —
+        modelPolicyClass 는 불투명 정책 키로만 소비.
+        """
+        spec = self.registry.match(capability)
+        model_class = spec.modelPolicyClass if spec is not None else None
+        return self.model_policy.cp2_model_for(model_class)
+
+    def has_cp2_overrides(self) -> bool:
+        return self.model_policy.has_cp2_overrides()
 
     @classmethod
     def from_dict(cls, data: dict[str, Any] | None) -> "Allocation":

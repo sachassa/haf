@@ -442,6 +442,39 @@ class Cp2ModelIndependence(unittest.TestCase):
         for c in inv.verifier_calls("s1"):
             self.assertEqual(c["model"], "verify-tier")
 
+    def test_descriptor_aware_resolver_overrides_per_step(self):
+        # W2-3: descriptor-aware resolver 가 step 별로 CP2 슬롯을 반환하면 그것을 쓴다.
+        # resolver 는 step 을 받아 슬롯을 반환하는 콜백(정책 소유)이며 Host 는 전달만 한다.
+        def resolver(step):
+            return "cp2-" + str(step.capability)
+        s1 = make_step("s1")
+        s1.capability = "cap-x"
+        inv = ScriptedInvoker()
+        host = StepHost([s1], inv, cp2_model_resolver=resolver)
+        result = host.run()
+        self.assertTrue(result.completed, result.status)
+        self.assertEqual(inv.worker_calls("s1")[0]["model"], "slot-model")  # Worker 불변.
+        self.assertEqual(inv.verifier_calls("s1")[0]["model"], "cp2-cap-x")  # resolver 우선.
+
+    def test_resolver_none_return_falls_back_to_global_then_step(self):
+        # resolver 가 None 을 반환하면 전역 cp2_model → 없으면 step.model 로 폴백(우선순위).
+        host_global = StepHost([make_step("s1")], ScriptedInvoker(),
+                               cp2_model="global-tier", cp2_model_resolver=lambda s: None)
+        host_global.run()
+        self.assertEqual(host_global.invoker.verifier_calls("s1")[0]["model"], "global-tier")
+
+        host_inherit = StepHost([make_step("s2")], ScriptedInvoker(),
+                                cp2_model_resolver=lambda s: None)
+        host_inherit.run()
+        self.assertEqual(host_inherit.invoker.verifier_calls("s2")[0]["model"], "slot-model")
+
+    def test_resolver_default_none_is_byte_identical(self):
+        # cp2_model_resolver 기본 None → 기존 거동(step.model 상속) 완전 보존.
+        inv = ScriptedInvoker()
+        host = StepHost([make_step("s1")], inv)  # resolver 미지정.
+        host.run()
+        self.assertEqual(inv.verifier_calls("s1")[0]["model"], "slot-model")
+
 
 class MultiStepGraphTest(unittest.TestCase):
     """병렬 집합(선행 의존 완료) 논리로 여러 Step 을 순차 완주한다."""

@@ -84,6 +84,7 @@ class StepHost:
         timeout: float | None = None,
         stop_handler: Callable[[str, list[str]], None] | None = None,
         cp2_model: Any = None,
+        cp2_model_resolver: Callable[[Step], Any] | None = None,
     ) -> None:
         self.steps: list[Step] = list(steps)
         self.steps_by_id: dict[str, Step] = {s.id: s for s in self.steps}
@@ -95,6 +96,11 @@ class StepHost:
         # 쓴다(피검증 단위와 동일 모델 결합 해소). 이 모듈은 슬롯 값을 해석하지 않고
         # invoker 에 전달만 한다 — 모델 고유명 토큰은 여기 두지 않는다(SH-INV-8 동형).
         self.cp2_model = cp2_model
+        # descriptor-aware CP2 슬롯 resolver(선택·가법·OQ-SH-4 데이터 확장). Step 별로 CP2 모델
+        # 슬롯을 해석하는 콜백이며, None(기본)이면 기존 규칙(cp2_model 우선·없으면 step.model
+        # 상속)만 쓴다 — 바이트 동일 기존 거동 보존. 해석은 콜백(정책 소유)이 하고 Host 는 반환
+        # 슬롯 값을 그대로 invoker 에 전달만 한다(SH-INV-1 — 판단 0·모델 고유명 토큰 0).
+        self.cp2_model_resolver = cp2_model_resolver
         # policy 는 데이터로 보관해 invoker 에 전달만 한다(§6.2). Host 는 policy 로
         # 게이트 동작을 바꾸지 않는다 — 게이트 등급 분리(SH-INV-4)는 아래 코드가 소유한다.
         self.policy = policy
@@ -312,10 +318,18 @@ class StepHost:
             "completion_report": completion,
             "criteria": criteria,
         }
-        # OQ-SH-4 해소: CP2 검증 단위 모델은 독립 지정(self.cp2_model)이 있으면 그것을,
-        # 없으면(None·기본) 기존처럼 대상 step 슬롯을 상속한다. 기본값 None 시 바이트 동일한
-        # 기존 거동(model=step.model)이 보존된다. Host 는 슬롯 값을 해석하지 않는다.
-        cp2_model = self.cp2_model if self.cp2_model is not None else step.model
+        # OQ-SH-4 해소: CP2 검증 단위 모델 슬롯 결정(우선순위·전부 전달만·해석 0):
+        #   ① descriptor-aware resolver 가 이 step 에 대해 슬롯을 반환하면(non-None) 그것을 쓴다
+        #      (위험도별 CP2 차등 — 데이터 확장·가법). ② 아니면 독립 지정(self.cp2_model),
+        #      ③ 그것도 없으면(None·기본) 대상 step 슬롯 상속. resolver 미지정·cp2_model 미지정
+        #      (전부 기본)이면 바이트 동일한 기존 거동(model=step.model)이 보존된다.
+        resolved = self.cp2_model_resolver(step) if self.cp2_model_resolver is not None else None
+        if resolved is not None:
+            cp2_model = resolved
+        elif self.cp2_model is not None:
+            cp2_model = self.cp2_model
+        else:
+            cp2_model = step.model
         request = InvokeRequest(
             bundle=verify_bundle,
             role=ROLE_VERIFIER,

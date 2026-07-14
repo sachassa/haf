@@ -271,6 +271,26 @@ class ModelSelection(unittest.TestCase):
         self.assertIsNone(ModelSelectionPolicy().cp2_model())
         self.assertEqual(ModelSelectionPolicy(cp2_slot="tier-v").cp2_model(), "tier-v")
 
+    def test_cp2_model_for_overrides_and_fallback(self):
+        # W2-3 가법 확장: capability class 별 CP2 오버라이드 우선·없으면 전역 cp2_slot 폴백.
+        pol = ModelSelectionPolicy(
+            cp2_slot="tier-vglobal",
+            cp2_slots={"mech": "tier-vmech", "design": "tier-vdesign"},
+        )
+        self.assertEqual(pol.cp2_model_for("mech"), "tier-vmech")
+        self.assertEqual(pol.cp2_model_for("design"), "tier-vdesign")
+        self.assertEqual(pol.cp2_model_for("unknown"), "tier-vglobal")  # 미매칭 → 전역 폴백.
+        self.assertEqual(pol.cp2_model_for(None), "tier-vglobal")
+        self.assertTrue(pol.has_cp2_overrides())
+
+    def test_cp2_slots_empty_preserves_global_single(self):
+        # 오버라이드 없음(기본) → 항상 전역 cp2_slot(전역 단일 거동 보존·무회귀).
+        pol = ModelSelectionPolicy(cp2_slot="tier-v")
+        self.assertEqual(pol.cp2_model_for("mech"), "tier-v")
+        self.assertFalse(pol.has_cp2_overrides())
+        # cp2_slot 도 None 이면 항상 None(Host 상속).
+        self.assertIsNone(ModelSelectionPolicy().cp2_model_for("mech"))
+
     def test_select_model_is_pure(self):
         pol = ModelSelectionPolicy(slots={"mech": "tier-a"}, fallback_chain=["tier-a", "tier-b"])
         self.assertEqual(pol.select_model("mech", 1), pol.select_model("mech", 1))
@@ -295,6 +315,29 @@ class AllocationLoaders(unittest.TestCase):
         self.assertEqual(alloc.model_for("cap-x"), "tier-a")
         self.assertEqual(alloc.model_for("cap-x", 1), "tier-b")
         self.assertEqual(alloc.cp2_model(), "tier-v")
+
+    def test_from_dict_reads_cp2_model_slots(self):
+        # W2-3: cp2ModelSlots(가법) 로드 + Allocation.cp2_model_for capability 경유 해석.
+        data = {
+            "registry": {"specs": [{"specId": "s1", "capabilitySelector": "cap-x",
+                                    "modelPolicyClass": "mech", "version": 1}]},
+            "modelSelection": {
+                "slots": {"mech": "tier-a"},
+                "cp2ModelSlot": "tier-vglobal",
+                "cp2ModelSlots": {"mech": "tier-vmech"},
+            },
+        }
+        alloc = Allocation.from_dict(data)
+        self.assertTrue(alloc.has_cp2_overrides())
+        self.assertEqual(alloc.cp2_model_for("cap-x"), "tier-vmech")   # class mech 오버라이드.
+        self.assertEqual(alloc.cp2_model_for("cap-none"), "tier-vglobal")  # 미매칭 → 전역 폴백.
+        # cp2ModelSlots 미지정(하위호환) → 오버라이드 없음.
+        alloc2 = Allocation.from_dict({
+            "registry": {"specs": [{"specId": "s", "capabilitySelector": "*", "modelPolicyClass": "m"}]},
+            "modelSelection": {"slots": {"m": "tier-a"}, "cp2ModelSlot": "tier-v"},
+        })
+        self.assertFalse(alloc2.has_cp2_overrides())
+        self.assertEqual(alloc2.cp2_model_for("anything"), "tier-v")
 
     def test_from_file_roundtrip(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -414,6 +457,63 @@ class ScenarioH_Cp2ModelIndependence(unittest.TestCase):
         orch, inv, store = build_orch([alloc_task("u1", "cap-mech")], allocation=demo_allocation())
         orch.run()
         self.assertEqual(inv.models_for(ROLE_VERIFIER, "u1"), ["tier-a"])
+
+
+def demo_allocation_cp2_overrides():
+    """capability class 별 CP2 오버라이드를 둔 데모 allocation(가법 확장·불투명 슬롯)."""
+    registry = AgentSpecRegistry([
+        AgentSpec(specId="spec-mech", capabilitySelector="cap-mech",
+                  modelPolicyClass="mechanical", version=1),
+        AgentSpec(specId="spec-design", capabilitySelector="cap-design",
+                  modelPolicyClass="design", version=1),
+    ])
+    policy = ModelSelectionPolicy(
+        slots={"mechanical": "tier-a", "design": "tier-c"},
+        fallback_chain=["tier-a", "tier-b", "tier-c", "tier-d"],
+        cp2_slot="tier-vglobal",
+        cp2_slots={"mechanical": "tier-vmech", "design": "tier-vdesign"},
+    )
+    return Allocation(registry=registry, model_policy=policy)
+
+
+class ScenarioH2_DescriptorAwareCp2(unittest.TestCase):
+    """W2-3 — descriptor-aware CP2 슬롯: capability class 별로 CP2 모델이 차등된다.
+
+    가법·spec 문면 대조 통과분(05 §3.5 "CP2 = 독립 정책 행" — 전역 단일 계약 아님). 오버라이드가
+    없으면 resolver 는 배선되지 않아 기존 (h) 거동이 완전 보존된다(무회귀).
+    """
+
+    def test_cp2_model_differs_per_capability_class(self):
+        tasks = [alloc_task("u1", "cap-mech"), alloc_task("u2", "cap-design", depends_on=["u1"])]
+        orch, inv, store = build_orch(tasks, allocation=demo_allocation_cp2_overrides())
+        result = orch.run()
+        self.assertTrue(result.completed, result.status)
+        # Worker 슬롯은 capability class 기본(불변).
+        self.assertEqual(inv.models_for(ROLE_WORKER, "u1"), ["tier-a"])
+        self.assertEqual(inv.models_for(ROLE_WORKER, "u2"), ["tier-c"])
+        # CP2(Verifier)는 capability class 별 오버라이드(위험도별 차등).
+        self.assertEqual(inv.models_for(ROLE_VERIFIER, "u1"), ["tier-vmech"])
+        self.assertEqual(inv.models_for(ROLE_VERIFIER, "u2"), ["tier-vdesign"])
+
+    def test_unmatched_capability_falls_back_to_global_cp2(self):
+        # 오버라이드 class 밖 capability → 전역 cp2_slot 폴백(resolver 는 배선되나 전역 반환).
+        alloc = demo_allocation_cp2_overrides()
+        # cap-other 는 어느 AgentSpec 도 매칭하지 않음 → model_for None → step.model 미채움.
+        # 명시 model 슬롯을 주어 Worker 는 그 값, CP2 는 전역 cp2 폴백을 검증한다.
+        task = alloc_task("u1", "cap-other")
+        task["model"] = "explicit"
+        orch, inv, store = build_orch([task], allocation=alloc)
+        result = orch.run()
+        self.assertTrue(result.completed, result.status)
+        self.assertEqual(inv.models_for(ROLE_WORKER, "u1"), ["explicit"])
+        self.assertEqual(inv.models_for(ROLE_VERIFIER, "u1"), ["tier-vglobal"])
+
+    def test_no_overrides_preserves_existing_cp2_behavior(self):
+        # cp2_slots 없음 → resolver 미배선 → (h) 전역 cp2_slot 거동 완전 보존(무회귀).
+        orch, inv, store = build_orch([alloc_task("u1", "cap-mech")],
+                                      allocation=demo_allocation(cp2_slot="tier-verify"))
+        orch.run()
+        self.assertEqual(inv.models_for(ROLE_VERIFIER, "u1"), ["tier-verify"])
 
 
 # ==========================================================================

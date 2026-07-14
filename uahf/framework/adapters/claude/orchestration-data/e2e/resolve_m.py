@@ -36,6 +36,9 @@ from pathlib import Path
 # k_common import 가 중립 코드 경로를 sys.path 에 배선한다(먼저 실행되어야 함·무수정 재사용).
 from k_common import build_orchestrator_k, load_json
 
+# delegation 참조형 표준화(T4-①) — 3면 공유 순수 함수(verify_run (d)와 동일 함수).
+from delegation_check import delegation_errors_for_task
+
 # 중립 코드 심볼(무수정 라이브러리).
 from events import EventLog, JsonlEventStore  # noqa: E402
 from gates import GATE_USER_DECISION_REQUIRED, append_gate_resolution  # noqa: E402
@@ -81,6 +84,7 @@ def validate_stage_plan(plan) -> list:
       - dependsOn 이 리스트이며 참조가 'assess' 또는 **선행 stage id** 만(무결).
       - ownedBoundary 가 비어 있지 않고 각 항목이 상대경로(절대경로·'..' 금지).
       - done 이 'python -c' 를 포함하는 문자열.
+      - delegation.task/done 이 참조형 sentinel 또는 상위 원문 전재(T4-①·delegation_check).
       - propose ≥ 1 · reconcile 정확히 1 · review 정확히 1.
       - reconcile.dependsOn = 전체 propose id 집합(정확 일치).
       - review.dependsOn = ["reconcile"].
@@ -174,6 +178,9 @@ def validate_stage_plan(plan) -> list:
         done = st.get("done")
         if not isinstance(done, str) or "python -c" not in done:
             errors.append("stages[%d] done 이 'python -c' 를 포함하는 문자열이 아니다: %r" % (i, done))
+
+        # delegation.task/done 참조형 표준(T4-①) — sentinel 또는 상위 원문 전재만 유효.
+        errors.extend(delegation_errors_for_task(st, where="stages[%d]" % i))
 
         # 유형별 버킷.
         if ut == "sd_propose":

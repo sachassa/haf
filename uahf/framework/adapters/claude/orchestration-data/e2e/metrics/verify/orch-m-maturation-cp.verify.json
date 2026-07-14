@@ -1,0 +1,76 @@
+{
+  "checks": [
+    {
+      "check": "ledger_hygiene",
+      "detail": {
+        "cycles": 12,
+        "event_count": 19,
+        "refs_without_kind_at": [],
+        "simulated_false": 2,
+        "simulated_true": 0,
+        "simulation_annotations": 0
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "revision_integrity",
+      "detail": {
+        "final_task_count": 5,
+        "kinds": [
+          "task_added",
+          "task_superseded"
+        ],
+        "revision_count": 5
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "plan_schema",
+      "detail": {
+        "error_count": 0,
+        "path": "C:\\my-claude-project\\universa-agentic-harness-framework\\uahf\\framework\\adapters\\claude\\solution-design-data\\events\\maturation-r003\\stage-plan.json",
+        "plan": "stage-plan.json"
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "delegation",
+      "detail": {
+        "tasks_checked": 6
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "artifact_counts",
+      "detail": {
+        "approval_states": [
+          "verified"
+        ],
+        "artifact_count": 7,
+        "declaration_count": 7,
+        "distinct_id_version": 7,
+        "record_count": 7
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "replay_determinism",
+      "detail": "k 계열 run 아님(orch-m-maturation-cp) — replay 는 k 계열만(workspace 안전 경계)",
+      "findings": [],
+      "status": "skip"
+    }
+  ],
+  "run_dir": "C:\\my-claude-project\\universa-agentic-harness-framework\\uahf\\framework\\adapters\\claude\\orchestration-data\\runs\\orch-m-maturation-cp",
+  "run_id": "orch-m-maturation-cp",
+  "status": "pass",
+  "summary": {
+    "fail": 0,
+    "pass": 5,
+    "skip": 1
+  }
+}

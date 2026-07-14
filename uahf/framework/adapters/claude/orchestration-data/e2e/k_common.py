@@ -23,10 +23,11 @@ from _orch_common import (  # noqa: F401  (재수출)
     RUNS_DIR,
     load_json,
     make_invoker,
+    resolve_allocation,
 )
 
 
-def build_orchestrator_k(run_dir: Path, invoker: Any):
+def build_orchestrator_k(run_dir: Path, invoker: Any, allocation_path: Any = None):
     """run 데이터 백엔드에서 중립 Orchestrator 를 조립한다(_orch_common.build_orchestrator 동형).
 
     유일한 차이: workdir = config 의 `workspace_dir`(절대경로). 부재 시 run_dir/workspace
@@ -54,6 +55,8 @@ def build_orchestrator_k(run_dir: Path, invoker: Any):
     workdir = str(Path(workspace)) if workspace else str(run_dir / "workspace")
     os.makedirs(workdir, exist_ok=True)
 
+    allocation = resolve_allocation(run_dir, cfg, allocation_path)
+
     orch = ProjectOrchestrator(
         ledger,
         event_store,
@@ -65,5 +68,6 @@ def build_orchestrator_k(run_dir: Path, invoker: Any):
         gate_policy=gate_policy,
         artifact_store=art_store,
         run_id=cfg.get("run_id"),
+        allocation=allocation,
     )
     return orch, cfg

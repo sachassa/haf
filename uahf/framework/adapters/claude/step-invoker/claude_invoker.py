@@ -65,8 +65,11 @@ _ROLE_BRIEFS = {
     ),
     ROLE_VERIFIER: (
         "너는 Verifier 다. 완료 보고를 그대로 신뢰하지 말고 산출물(artifacts) 자체를 근거로 "
-        "criteria(done) 충족을 독립 판정하라. 최종 메시지의 마지막 줄에 판정을 JSON 한 객체로 "
-        "출력하라 — {\"verdict\":\"Pass|Fail\",\"rework\":...}."
+        "criteria(done) 충족을 독립 판정하라. 결정적(스크립트로 판독 가능한) 검사는 제공된 "
+        "결정적 검증 리포트가 있으면 그것을 소비하고 재구현하지 말라 — 너는 의미 축(요건 충족·"
+        "설계 정합·누락)에 집중한다. delegation.task/done 이 참조형 sentinel(예 \"위 task 필드와 "
+        "동일\")인 것은 계약 위반이 아니다(참조형 표준). 최종 메시지의 마지막 줄에 판정을 JSON 한 "
+        "객체로 출력하라 — {\"verdict\":\"Pass|Fail\",\"rework\":...}."
     ),
     ROLE_ADVISOR: (
         "너는 Advisor 다. 최종 승인 판정을 수행하라. 최종 메시지의 마지막 줄에 "

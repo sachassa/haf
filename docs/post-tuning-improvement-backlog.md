@@ -62,6 +62,22 @@
 - **Dependency**: T3 Reuse Assessment 산출물(기존 자산 커버리지 맵)이 Skill 카탈로그의 씨앗.
 - **Suggested Future Track**: 「Skill & Capability Routing」 Framework Capability Track — T3 완료 후.
 
+## H. Continuous Telemetry / Lifecycle Observability (사용자 지시 등재 2026-07-14 — 기록만·구현 보류)
+
+- **Problem / Motivation**: 현행 성능 측정 인프라는 **단발성 분석/벤치마크·orchestration run 중심**이다 — invoke 원자료 자동 기록은 CLI invoker 경유 orchestration run에 한정(`LoggingClaudeInvoker`), `collect_metrics.py`는 수동 실행, run-metrics/aggregate는 자동 누적되지 않으며, Interview/Discovery는 원자료 부재(CLI invoker 미경유·해당 데이터 트리에 실행 코드 0), 주 세션·하네스 서브에이전트는 하네스 미노출(불가). **UAHF 전체 실사용 lifecycle의 지속적 누적 관측은 아직 완성되지 않았다.**
+- **Desired Outcome**: UAHF를 실제로 사용하면서 성능 데이터를 지속 누적하고, **충분한 실사용 데이터에서 반복 관찰되는 병목을 근거로** 성능 튜닝을 재개할 수 있는 관측 기반. 가능하면 전체 lifecycle을 관측 범위로 검토: `/new·/continue → Entry/Bootstrap/State Resolution → Discovery/Interview → Contract/Design → Orchestration → Worker/Verifier/CP2/Retry/Gate → Handoff/Closing`.
+- **후보 방향(검토 대상·미확정)**: **Telemetry Session Skill**(lifecycle/trace 관리) + **deterministic script/CLI**(결정적 기록·집계)의 이원 구조. 기존 invoke 원자료·`collect_metrics.py`·run-metrics 구조를 최대 재사용.
+- **불변 요구(설계 제약)**: 추가 LLM 호출 0 · 측정 실패가 본 작업을 실패시키지 않음(failure isolation — 섀도 장치 선례 `_orch_common.py`의 try/except→error 기록 패턴) · 원자료 보존·사후 재집계 가능 · measured/derived/unavailable(확인/계산/불가) 등급 구분 유지.
+- **미해결 질문(향후 별도 설계에서 결정)**:
+  1. 집계 경계 — orchestration run 종료 vs commit vs 전체 lifecycle trace. (2026-07-14 조사 실측: run 완주의 유일 결정 신호 = 러너 `result.completed` 분기[`run_k.py:67-69`·`run_orchestration.py:69-71`]; `collect_run(run_dir)` 단일-run 빌더 기존재; **함정 — `collect_metrics.main()`은 aggregate.run-metrics.json을 무조건 덮어써[:699-707] 순진한 자동 호출은 baseline aggregate를 파괴.**)
+  2. `/new`·`/continue`에서 telemetry lifecycle을 자동/필수로 시작하는 방식 — 단 Entry 명령 자체 탑재는 부적합(EN-INV 1·2 — 관측만·정지), lifecycle 연결 지점의 별도 정의 필요.
+  3. 세션 비정상 종료·`/continue` 재개·복수 orchestration run·복수 commit을 **하나의 trace로 연결**하는 의미론.
+  4. 주 세션·하네스 서브에이전트(하네스 미노출 — 불가 항목)·Interview/Discovery(원자료 부재)의 커버 방법 — CLI 호스팅화 등 구조 변경 선행 필요 여부.
+  5. step-data(형태 B step 호스팅) 동형 이식 — `run_host.py:125` 동형 완주 분기 실재하나 collect_metrics는 orchestration-data 전용(경로 배선 별도).
+- **Why Not Now**: Core Performance Tuning 종료 결정(2026-07-14 — T6/T7 미실시·측정 인프라 유지·실사용 누적·병목 재관찰 시 별도 트랙 재개)에 따라 **지금은 기록만 남긴다.** 최소 연결(러너 완주 분기 자동 집계)도 구현 보류(사용자 결정 2026-07-14).
+- **Dependency**: T1 산출물(collect_metrics·run-metrics·bundle_payload 지표)·invoke 원자료 스키마·(Skill 방향 채택 시) G(Skill Routing)와 접점.
+- **Suggested Future Track**: 「Continuous Telemetry / Lifecycle Observability」 독립 개선 트랙. 재개 트리거 = 실사용 병목 반복 관찰(Measurement First — 느낌 기반 재개 금지). 기존 확정 우선순위(B+C→D→G→A+F→E)에는 미배정 — 순위 편입은 사용자 결정.
+
 ---
 
 ## 실사용 Dogfooding Evidence (2026-07-14 — 사용자 직접 사용·확인 실측)
@@ -83,7 +99,7 @@ v1.7 산출물(uahf-control-plane)을 **사용자가 실제로 사용하며 발�
 ## 우선 관계 요약
 
 ```
-[성능 튜닝 트랙 T0~T7]  ← 지금
+[성능 튜닝 트랙 T0~T7]  ← 종료(2026-07-14 — T6/T7 미실시·측정 인프라 유지)
    └→ T3 Reuse Assessment 산출물 ──┐
 [Baseline 재측정 (T6~T7)]           │
    └→ E(Execution Modes) 선행 조건   │

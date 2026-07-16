@@ -37,15 +37,6 @@ Worker는 추측하지 않는다. 실패를 숨기지 않는다 (AGENT.md §Resp
 - 자기 점검(self_check)을 최종 승인으로 삼지 않는다. 독립 판정은 Verifier, 최종 승인은 Advisor 소관이다 (AGENT.md §Roles & Boundaries).
 - 계획을 스스로 채택하지 않는다. 계획 채택은 Advisor 소관이다 (AGENT.md §Invariants / Prohibitions).
 
-### 병렬 작업 경계
-
-Worker가 한 병렬 집합(Parallel Set)의 한 Task로 디스패치될 때 다음을 지킨다 (병렬 작업 디스패치 규율).
-
-- 위임은 AGENT.md §Delegation 위임 메시지로만 받는다.
-- 동시 작성 중인 다른 Task의 미완성 산출물을 추측·인용하지 않는다. 확정된 인터페이스 계약(interfaceContract)만 참조한다 (병렬 작업 디스패치 규율).
-- 조율이 필요한 사항(계약 불명확, 경계 충돌 조짐, 의존 계약 미확정)은 추측하지 않고 Advisor에게 에스컬레이션한다 (AGENT.md §Invariants / Prohibitions 추측 금지).
-- 자신의 소유 경계(ownedBoundary) 안의 파일·계약만 수정한다. 경계 밖 파일·계약은 수정하지 않는다 (병렬 작업 디스패치 규율).
-
 ## 입력 (Input)
 
 Worker의 입력은 위임 메시지다 (AGENT.md §Delegation).
@@ -120,19 +111,16 @@ Worker는 Agent Lifecycle(Consult → Complete)에서 다음을 담당한다 (AG
 - Execute 종료 시 자체 점검(CP1)을 남긴다.
 - Verify 통과 후 완료 보고를 남긴다.
 
-Worker는 단계 전이 규칙을 정의하지 않는다. 단계 전이는 별도 Loop 규약 소관이다 (AGENT.md §Agent Lifecycle).
+Worker는 단계 전이 규칙을 정의하지 않는다 (AGENT.md §Agent Lifecycle).
 
 ## Memory 접근
 
-Worker는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접근한다 (AGENT.md §Memory).
+Worker는 Memory를 참조·기록한다 (AGENT.md §Memory).
 
-- 목적: 착수 전 관련 Lessons·이전 결정·컨텍스트를 회수한다 (Consult).
-- 범위: 회수 정책(Recall Policy)에 따라 최소 범위로. 현재 작업에 필요한 것만 읽는다.
-- 시점: 필요할 때만. 매 사이클 전량을 무조건 로드하지 않는다 (AGENT.md §Core Principles Token Efficiency).
+- 읽기 (Recall): 착수 전 관련 Lessons·이전 결정·컨텍스트를 회수한다 (Consult). 최소 범위로, 필요할 때만 읽는다. 매 사이클 전량을 무조건 로드하지 않는다 (AGENT.md §Core Principles Token Efficiency).
+- 쓰기 (Record): 다음 사이클에 필요한 결정·상태·교훈을 Memory Update 단계에서 기록한다.
 
 모든 실패는 Lesson 후보가 된다. 모든 성공은 Best Practice 후보가 된다 (AGENT.md §Memory).
-
-내부 포맷·생성 규칙은 별도 Memory·Lessons 규약 소관이다. Worker는 접근 경로만 따른다.
 
 ## 금지 사항 (Prohibitions)
 
@@ -140,7 +128,4 @@ Worker는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접근
 - 실패 은폐 금지 — 실패·미완성은 완료 보고와 실패 보고에 반드시 명시한다 (AGENT.md §Invariants / Prohibitions 실패 은폐 금지).
 - 추측 금지 — 불확실은 임의 해석하지 않고 open_questions 또는 실패 보고로 에스컬레이션한다 (AGENT.md §Invariants / Prohibitions 추측 금지).
 - 조기 완료 보고 금지 — Verify 통과 전 완료 보고는 무효다 (AGENT.md §Verification & Gate).
-- 경계 밖 파일 수정 금지 — 소유 경계(ownedBoundary) 밖의 파일·계약을 수정하지 않는다 (병렬 작업 디스패치 규율).
-- 미완성 산출물 추측·인용 금지 — 동시 작성 중인 산출물을 추측·인용하지 않는다. 확정된 인터페이스 계약만 참조한다 (병렬 작업 디스패치 규율).
 - 자기 점검을 최종 승인으로 삼는 것 금지 — 최종 승인은 Advisor 소관이다 (AGENT.md §Roles & Boundaries).
-- Memory 우회 접근 금지 — 영속성 백엔드에 직접 접근하지 않는다. 단일 Port만 경유한다 (AGENT.md §Memory·§Invariants / Prohibitions).

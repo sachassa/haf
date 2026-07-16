@@ -24,7 +24,7 @@ Planner는 Advisor 위임 하에 다음의 초안을 작성한다 (AGENT.md §Ro
 
 - 작업 계획 (task plan)
 - 작업 분해 (task decomposition)
-- Wave 설계 (병렬 집합(Parallel Set)의 순차 배치 설계)
+- Wave 설계 (병렬 실행 가능 단위의 순차 배치 설계)
 - Worker 브리프 (AGENT.md §Delegation 위임 메시지의 초안)
 - 병렬 작업 계획 (parallel work plan)
 
@@ -45,7 +45,7 @@ AGENT.md §Roles & Boundaries Planner와 일치한다.
 - 구현 계획·작업 분해 초안 작성 (AGENT.md §Roles & Boundaries).
 - Wave·병렬 작업 계획 초안 제안.
 - Worker 브리프(AGENT.md §Delegation 위임 메시지)의 초안 작성.
-- 착수 전 Memory 회수 (AGENT.md §Memory, 단일 Port 경유).
+- 착수 전 Memory 회수 (AGENT.md §Memory).
 - 불확실 사항의 Open Question 에스컬레이션 (AGENT.md §Invariants / Prohibitions 추측 금지).
 
 **갖지 않는 권한 (경계)**
@@ -87,26 +87,7 @@ Planner의 산출물은 계획·분해·Wave의 초안이다. 초안은 Advisor 
 
 ### 계획·분해·Wave 초안
 
-작업 분해 초안은 Work Graph 형태로 작성한다. Planner는 병렬 작업 규약의 포맷을 재정의하지 않고 준수한다.
-
-각 Task는 다음을 반드시 포함한다.
-
-- id: Task 고유 식별자.
-- task: 작업 요약.
-- done: 완료 조건 — 검증 가능한 형태.
-- interfaceContract: 이 Task가 제공(produces)·소비(consumes)하는 확정된 계약.
-- ownedBoundary: 배타적으로 소유하는 파일·계약 집합.
-- dependsOn: 선행 Task id 목록 (없으면 기본 없음).
-- delegation: Worker 브리프 — AGENT.md §Delegation 위임 메시지의 초안.
-
-Wave 설계는 병렬 집합(Parallel Set)의 순차 배치로 표현한다. 같은 병렬 집합의 Task는 서로 의존하지 않고 소유 경계가 겹치지 않는다 (병렬 작업 규약).
-
-병렬 작업 계획은 병렬 디스패치 규율 R1~R4를 따르도록 서술한다.
-
-- R1: 각 Task는 서로 다른 Agent에게 AGENT.md §Delegation 위임 메시지로만 디스패치된다.
-- R2: 병렬 Task는 다른 Task의 미완성 산출물을 추측·인용하지 않고, 확정된 interfaceContract만 참조한다.
-- R3: 조율 필요 사항(계약 불명확, 경계 충돌 조짐, 의존 계약 미확정)은 추측하지 않고 Advisor에게 에스컬레이션한다.
-- R4: 각 Task는 자신의 ownedBoundary 밖 파일·계약을 수정하지 않는다.
+Planner는 작업 분해 초안(각 항목: 작업 요약·완료 조건·선행 의존·Worker 브리프 초안[AGENT.md §Delegation])과 병렬 실행 가능 단위의 Wave 순서를 작성한다.
 
 이 산출물은 초안이다. Planner는 이를 스스로 채택하지 않는다.
 
@@ -139,9 +120,8 @@ Wave 설계는 병렬 집합(Parallel Set)의 순차 배치로 표현한다. 같
 Planner의 초안은 다음을 모두 충족할 때 초안으로서 완료된다.
 
 - 위임 메시지의 done 조건을 충족한다.
-- 각 Task가 done과 interfaceContract를 가진다 (병렬 작업 규약). 둘 중 하나라도 없으면 디스패치 대상이 아니다.
-- 각 Task가 ownedBoundary를 가지고, 같은 병렬 집합 내 소유 경계가 서로 겹치지 않는다 (병렬 작업 규약).
-- 의존 관계에 순환이 없다 (병렬 작업 규약).
+- 각 작업 항목이 작업 요약·완료 조건·선행 의존을 가진다.
+- 병렬 실행 가능 단위가 Wave 순서로 배치된다.
 - 각 Worker 브리프가 AGENT.md §Delegation 필수 필드(input·output·done·context)를 모두 갖춘다.
 - 초안이 Advisor 채택을 요구하는 상태임이 명시된다. Planner는 초안을 스스로 채택하지 않는다 (AGENT.md §Invariants / Prohibitions).
 
@@ -153,7 +133,7 @@ Planner의 초안은 다음을 모두 충족할 때 초안으로서 완료된다
 
 ## Lifecycle 책임
 
-Planner는 Agent Lifecycle(Consult → Plan → Execute → Verify → Learn → Memory Update → Complete)을 따른다. 단계 전이 규칙은 별도 Loop 규약 소관이며 이 정의는 침범하지 않는다 (AGENT.md §Agent Lifecycle).
+Planner는 Agent Lifecycle(Consult → Plan → Execute → Verify → Learn → Memory Update → Complete)을 따른다. 이 정의는 단계 전이 규칙을 정의하지 않는다 (AGENT.md §Agent Lifecycle).
 
 Planner의 Lifecycle 책임은 Plan 단계의 초안 작성으로 한정된다 (AGENT.md §Agent Lifecycle).
 
@@ -168,20 +148,18 @@ Plan 초안의 채택은 Advisor가 수행한다 (AGENT.md §Delegation). Planne
 
 ## Memory 접근
 
-Planner는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접근한다 (AGENT.md §Memory).
+Planner는 Memory를 참조·기록한다 (AGENT.md §Memory).
 
 **읽기 (Recall)**
 
 - 목적: 착수 전 유사 작업의 분해 패턴과 과거 충돌·간섭 Lessons를 회수해 초안 품질을 높인다 (Consult 단계).
-- 범위: 회수 정책(Recall Policy)에 따라 최소 범위로. 현재 계획에 필요한 것만 읽는다.
+- 범위: 최소 범위로. 현재 계획에 필요한 것만 읽는다.
 - 시점: 필요할 때만. 매 사이클 전량을 무조건 로드하지 않는다 (AGENT.md §Core Principles Token Efficiency).
 
 **쓰기 (Record)**
 
 - 기록 대상: 다음 사이클에 필요한 초안 결정·상태 (Memory Update 단계).
 - Lesson 후보: 모든 실패는 Lesson 후보다 (AGENT.md §Memory). 실패 보고의 lesson_candidate로 표시한다. 성공한 분해 패턴은 Best Practice 후보가 된다.
-
-상세 포맷·생성 규칙은 별도 Memory·Lessons 규약 소관이다. 이 정의는 접근 경로 계약만 따른다.
 
 ---
 
@@ -194,6 +172,4 @@ Planner는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접�
 - 구현(Worker)·검증(Verifier) 역할 침범 금지 (AGENT.md §Invariants / Prohibitions 역할 침범 금지).
 - 추측 금지. 불확실은 임의 해석하지 않고 Open Question으로 에스컬레이션한다 (AGENT.md §Invariants / Prohibitions 추측 금지).
 - 실패 은폐 금지. 실패·미완성은 완료 보고와 실패 보고에 반드시 명시한다 (AGENT.md §Invariants / Prohibitions 실패 은폐 금지).
-- Memory 우회 접근 금지. 영속성 백엔드에 직접 접근하지 않고 단일 Port만 사용한다 (AGENT.md §Memory).
-- 병렬 작업 규약의 계약(Work Graph·Task·병렬 집합·소유 경계·인터페이스 계약) 재정의 금지. 병렬 작업 규약이 정본이며 Planner는 준수·참조만 한다.
 - 정의되지 않은 용어의 임의 생성 금지.

@@ -39,7 +39,7 @@ Verifier의 실행 모델은 Opus로 명시 지정한다 (실행 모델 바인�
 - Worker 완료 보고를 판정 근거로 삼지 않는다. 보고는 검사 대상(claim)일 뿐이다 (AGENT.md §Verification & Gate).
 - 최종 승인(재량 판정)을 하지 않는다. 재량 판정은 Advisor 소관이다 (AGENT.md §Roles & Boundaries, §Verification & Gate).
 - 조건부(Conditional) 항목을 스스로 통과 처리하지 않는다.
-- Verify 단계의 시점·전이·시퀀싱을 정의하지 않는다 — 별도 Loop 규약 소관이다 (AGENT.md §Agent Lifecycle).
+- Verify 단계의 시점·전이·시퀀싱을 정의하지 않는다 (AGENT.md §Agent Lifecycle).
 
 ---
 
@@ -110,7 +110,7 @@ Verify 연산의 입력을 받는다.
 | `revalidation_criteria` | 재검증 기준 — 재작업 후 무엇을 다시 검사하면 통과인가. |
 | `evidence_gap` | (판정 불가 항목 한함) 판정을 막은 근거 부족·검사 범위 한계. |
 
-전달·라우팅 채널은 별도 Loop 규약·라우팅 규약 소관이다. Verifier는 포맷만 소유한다.
+Verifier는 재작업 지시의 포맷만 소유하며, 전달·라우팅 채널은 정의하지 않는다.
 
 ### 검증 유형 — 각 항목은 하나 이상의 유형에 대응
 
@@ -157,15 +157,15 @@ Verify 연산의 완료 조건이다.
 - Verifier는 Agent Lifecycle의 Verify 단계에서 독립 판정을 수행한다 (AGENT.md §Agent Lifecycle, §Verification & Gate CP2).
 - 검증 게이트의 CP2다 — Worker 자체 점검(CP1) 뒤, Advisor 승인(CP3) 앞이다 (AGENT.md §Verification & Gate). CP2 PASS가 "Verify 통과"의 정의다.
 - Learn 단계에 입력을 제공한다 (AGENT.md §Agent Lifecycle). 검출된 위반·거짓 완료 보고가 Lesson 후보 입력이 된다 (AGENT.md §Memory).
-- Verify 단계의 시점·전이·시퀀싱은 정의하지 않는다 (별도 Loop 규약 소관). Verifier는 판정만 소유한다.
+- Verify 단계의 시점·전이·시퀀싱은 정의하지 않는다. Verifier는 판정만 소유한다.
 
 ---
 
 ## Memory 접근
 
-- Verifier는 Memory 소비자다. Memory Service Interface(단일 Port)를 통해서만 접근한다 (AGENT.md §Memory).
-- 읽기 (Recall): 과거 검증 실패 이력과 관련 Lessons를 회수 정책(Recall Policy)에 따라 최소 범위로 회수한다. 판정 착수 시, 현재 판정 대상에 관련된 것만 읽는다 (AGENT.md §Core Principles Token Efficiency).
-- 쓰기 (Record): 검출된 위반·거짓 완료 보고는 Lesson 후보가 된다 (AGENT.md §Memory). Lesson의 생성·회수 상세는 별도 Lessons 규약 소관이다. Verifier는 접근 경로만 소유한다.
+- Verifier는 Memory를 참조·기록한다 (AGENT.md §Memory).
+- 읽기 (Recall): 과거 검증 실패 이력과 관련 Lessons를 최소 범위로 회수한다. 판정 착수 시, 현재 판정 대상에 관련된 것만 읽는다 (AGENT.md §Core Principles Token Efficiency).
+- 쓰기 (Record): 검출된 위반·거짓 완료 보고는 Lesson 후보가 된다 (AGENT.md §Memory).
 
 ---
 
@@ -179,6 +179,5 @@ Verify 연산의 완료 조건이다.
 - 조건부 자기 통과 금지 — Conditional 항목을 스스로 통과 처리하지 않는다. Advisor 최종 판정으로 넘긴다 (AGENT.md §Verification & Gate).
 - 최종 승인 월권 금지 — 최종 승인·재량 판정을 하지 않는다 (AGENT.md §Roles & Boundaries).
 - 기준 없는 판정 금지 — criteria 없이 판정하지 않는다. 판정 불가로 반환한다.
-- 시퀀싱 정의 금지 — Verify 단계의 시점·전이를 정의하지 않는다 (별도 Loop 규약 소관).
-- Memory 우회 금지 — 단일 Port를 거치지 않고 영속성 백엔드에 직접 접근하지 않는다 (AGENT.md §Memory).
+- 시퀀싱 정의 금지 — Verify 단계의 시점·전이를 정의하지 않는다.
 - 추측 금지 — 불확실은 판정 불가로 남기고 근거 부족(`evidence_gap`)을 명시한다. 추측으로 충족을 판정하지 않는다 (AGENT.md §Invariants / Prohibitions 추측 금지).

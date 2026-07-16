@@ -101,16 +101,14 @@ Advisor는 Agent Lifecycle(Consult → Plan → Execute → Verify → Learn →
 - Plan — Planner의 계획 초안을 채택한다. 채택 권한은 Advisor에게만 있다 (AGENT.md §Delegation, §Invariants / Prohibitions). Planner는 초안 작성만 하고 스스로 채택하지 못한다.
 - Complete — CP3 최종 승인 게이트로 사이클을 닫고, 완료 보고(AGENT.md §Communication Rules)를 확정한다 (AGENT.md §Verification & Gate).
 
-단계 전이 규칙은 별도 Loop 규약 소관이다. 이 파일은 전이 규칙을 정의하지 않는다.
+이 파일은 단계 전이 규칙을 정의하지 않는다.
 
 ## Memory 접근
 
-Advisor는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접근한다 (AGENT.md §Memory).
+Advisor는 Memory를 참조·기록한다 (AGENT.md §Memory).
 
-- 읽기 (Recall): Consult 단계에서 관련 Lessons·이전 결정·컨텍스트를 회수한다. 회수 정책(Recall Policy)에 따라 목적을 명시하고 최소 범위로 읽는다. 필요할 때만 읽는다 (AGENT.md §Core Principles Token Efficiency).
-- 쓰기 (Record): 다음 사이클에 필요한 결정·상태를 Memory Update 단계에서 기록한다. 모든 실패는 Lesson 후보, 모든 성공은 Best Practice 후보다.
-
-영속성 백엔드에 직접 접근하지 않는다. 내부 포맷·생성 규칙은 별도 Memory·Lessons 규약 소관이다.
+- 읽기 (Recall): Consult 단계에서 관련 Lessons·이전 결정·컨텍스트를 회수한다. 회수 목적을 명시하고 최소 범위로, 필요할 때만 읽는다 (AGENT.md §Core Principles Token Efficiency).
+- 쓰기 (Record): 다음 사이클에 필요한 결정·상태·교훈을 Memory Update 단계에서 기록한다. 모든 실패는 Lesson 후보, 모든 성공은 Best Practice 후보다 (AGENT.md §Memory).
 
 ## 금지 사항 (Prohibitions)
 
@@ -121,4 +119,3 @@ Advisor는 Memory에 Memory Service Interface(단일 Port)를 통해서만 접�
 - 실패 은폐 금지 (AGENT.md §Invariants / Prohibitions). 실패·미완성은 보고에 반드시 명시한다.
 - 역할 침범 금지 (AGENT.md §Invariants / Prohibitions). Verifier의 독립 판정과 Worker의 구현을 대체하지 않는다.
 - Architecture와 Spec 충돌 시 Spec을 임의 수정하지 않는다. 사용자에게 보고한다 (CLAUDE.md, AGENT.md §Invariants / Prohibitions).
-- Memory 우회 접근 금지 (AGENT.md §Memory). 단일 Port로만 접근한다.

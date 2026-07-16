@@ -60,6 +60,7 @@ description: UAF 공식 진입점 /continue(기존 프로젝트 이어가기 —
 | Evidence 관측 물리 판정 수단(탐지 절차) | `uahf/framework/adapters/claude/entry-binding.md` §4 |
 | Contract 저장 위치·직렬화 | `uahf/framework/adapters/claude/contract-binding.md` §3·§4 |
 | Discovery Request 직렬화·전달 | `uahf/framework/adapters/claude/entry-binding.md` §5 (기록 백엔드 트리 = `discovery-binding.md` 예정) |
+| Eliciting 인터뷰 행동 규약 (하류 Discovery 진행 시) | `uahf/framework/adapters/claude/discovery-binding.md` §7.1 |
 | Entry 불변(EN-INV 1~6) | `entry/specs/01-entry.md` §3.3 |
 | 논리 식별자 주의(물리 발화 형태 = Adapter 소관) | `entry/specs/01-entry.md` §0·§4.1 · `uahf/framework/adapters/claude/entry-binding.md` §3 |
 | Discovery Request 상위 추상 {mode, inputs, policy} | `ARCHITECTURE.md` §12.2 |

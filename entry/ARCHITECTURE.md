@@ -70,7 +70,7 @@ entry Layer의 내부는 다음 요소로 구성된다. 각 요소의 상세 계
 
 - **파이프라인 위상.** entry Layer는 UAF 6요소 파이프라인의 **최상류 단계**다 — 사용자 입력을 수용해(진입점) Discovery Request를 방출하는 데서 멈춘다 (루트 §2.2). 내부적으로 Entry Resolution은 고정된 위상 순서 **매칭 → 증거 관측 → 우선순위 평가 → 결정성 검증 → 방출**로 흐른다. 이 5단계 위상은 "이 Layer가 파이프라인에서 차지하는 자리"를 가리키는 표지이며, 각 단계의 알고리즘 상세는 01 §3.2-A가 소유한다(본 문서는 복제하지 않는다).
 - **관측만·비수행 경계.** 증거 관측 단계는 Evidence의 유/무를 확정 관측할 뿐, 증거를 수집·해석하는 Discovery를 수행하지 않는다 (01 §3.2-A 2단계·§3.3). Entry는 Discovery Request 방출에서 멈춘다.
-- **Adapter 바인딩 (포인터만).** 진입 트리거의 물리 발화 형태·Workspace Evidence의 물리 탐지 수단·Discovery Request의 직렬화·전달은 전부 Adapter 소관이다. 소관 정본: 01 §4(바인딩 대상·이식 교체 지점) 및 해당 실행 환경 Adapter의 진입 바인딩(`uahf/framework/adapters/<adapter>/entry-binding.md`). 본 문서는 물리 형태를 지시하지 않는다.
+- **Adapter 바인딩 (포인터만).** 진입 트리거의 물리 발화 형태·Workspace Evidence의 물리 탐지 수단·Discovery Request의 직렬화·전달은 전부 Adapter 소관이다. 소관 정본: 01 §4(바인딩 대상·이식 교체 지점) 및 해당 실행 환경 Adapter의 진입 바인딩(`entry/adapters/<adapter>/entry-binding.md`). 본 문서는 물리 형태를 지시하지 않는다.
 
 ---
 
@@ -116,7 +116,7 @@ entry Layer는 다음을 **수행하지 않는다**(경계). 각 항목은 하�
 | 결정 테이블 8조합 · 판별 규칙 | `entry/specs/01-entry.md` §3.2-D |
 | mode 네임스페이스 | `entry/specs/01-entry.md` §3.2-E |
 | 불변 EN-INV 1~6 | `entry/specs/01-entry.md` §3.3 |
-| Adapter Binding(대상·이식 교체 지점) | `entry/specs/01-entry.md` §4 · `uahf/framework/adapters/<adapter>/entry-binding.md` |
+| Adapter Binding(대상·이식 교체 지점) | `entry/specs/01-entry.md` §4 · `entry/adapters/<adapter>/entry-binding.md` |
 | 최상위 Layer 지도 · Entry Resolution 귀속 | 루트 `ARCHITECTURE.md` §2.1 |
 | 6요소 파이프라인 의미론 · 의존 방향 | 루트 `ARCHITECTURE.md` §2.2 · §2.5 |
 | Layer 연결 계약(Discovery Request · Project Contract) | 루트 `ARCHITECTURE.md` §3 |

@@ -239,7 +239,7 @@ ArtifactRecord {             // ── 본 Layer 신규 소유 레코드
 |---|---|
 | 중립 Orchestrator 모듈 배치(원장·파생·게이트 평가·할당 매칭·artifact 인덱스 + 스키마 + 테스트) | `orchestration/framework/orchestrator/` **신설**(`uahf/framework/core/structure.md` §4 C-2 동형 규칙 — `uahf/framework/loop/step-host/` 중립 모듈 **라이브러리 무수정 import**). provider·언어·옵션 토큰 0 유지. |
 | RevisionEvent·GatePolicyEntry·AgentSpec·ArtifactRecord 직렬화 형식 | Adapter Binding 문서 소관(직렬화 형식명은 정본에 0). |
-| Adapter 물리 바인딩·게이트 큐 제시 채널·run 데이터 백엔드 경로 | `uahf/framework/adapters/<adapter>/project-orchestration-binding.md` **신설**(UAF 레벨 바인딩 5종째를 Adapter 물리 경계에 동거 — contract/entry/discovery/solution-design-binding 선례·`uahf/` 트리 접촉 2건 중 하나). dogfooding run 데이터 = `uahf/framework/adapters/<adapter>/orchestration-data/`(discovery-data·solution-design-data 선례 동거). |
+| Adapter 물리 바인딩·게이트 큐 제시 채널·run 데이터 백엔드 경로 | `orchestration/adapters/<adapter>/project-orchestration-binding.md` **신설**(UAF 레벨 바인딩 5종째를 Adapter 물리 경계에 동거 — contract/entry/discovery/solution-design-binding 선례·`uahf/` 트리 접촉 2건 중 하나). dogfooding run 데이터 = `uahf/framework/adapters/<adapter>/orchestration-data/`(discovery-data·solution-design-data 선례 동거). |
 | capability → 물리 호출 매핑·AgentSpec 실값 레지스트리 | Adapter Binding·정책 데이터 소관(PO-INV 6 — 코어는 capability 선언까지만). |
 | Model Selection 정책 실값·CP2 모델 독립 지정의 물리 구현 | Model Router 정책 데이터 + Provider Adapter 소관. CP2 모델 독립 지정(OQ-SH-4 해소)의 코드 수정·테스트 갱신은 **S4 구현 단계·Step Host 코드 1개소**(`uahf/` 트리 접촉 2건 중 하나 — §3.5·§6). |
 | Autonomy Policy 실값·provider 실행 옵션 매핑 | Adapter/정책 데이터 소관(step-hosting-protocol §6.2 — 실행 옵션 문자열은 해당 바인딩에만 등장). |

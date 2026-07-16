@@ -73,7 +73,7 @@ discovery Layer의 내부는 다음 요소로 구성된다. 각 요소의 상세
 - **파이프라인 위상.** discovery Layer는 UAF 6요소 파이프라인의 **중류 단계**다 — Discovery Request(+증거)를 입력받아 Project Contract로 컴파일하는 Compiler 단계다 (루트 §2.2). 내부적으로 State Machine은 고정된 위상 순서 **Contextualizing → Eliciting → Synthesizing → Validating → Compiling**(비종단 6상태)으로 흐르며 종단(Ready 등)에 이른다. 이 위상 순서는 "이 Layer가 파이프라인에서 차지하는 자리"를 가리키는 표지이며, 각 상태·전이·가드의 알고리즘 상세는 02 §3.3이 소유한다(본 문서는 전이표를 복제하지 않는다).
 - **Compiler 위상·Strategy Invariance 경계.** Front-end(Strategy)는 교체 가능한 증거 수집 계층이지만, 어떤 Strategy를 쓰든 Middle·Back-end의 출력 스키마·완결 기준은 불변이며 산출은 항상 동일한 Project Contract다 (02 §3.1, 루트 §8 UAF-INV ③). 방법론 지식은 교체 가능한 Strategy Provider만이 알고 Framework 정본으로 새지 않는다 (루트 §8 UAF-INV ⑥).
 - **확정 게이트 위상·비수행 경계.** Discovery는 `Validating` 단계의 **사용자 승인 게이트**를 통과해야만 Ready 종단에 이르며(02 §3.7 축3, 루트 §8 UAF-INV ⑤), 승인 없이는 어떤 Ready 종단에도 도달하지 않는다. discovery는 Project Contract를 산출한 지점에서 멈추고, 하류의 Agent 실행·Planning·Workflow 실행을 수행하지 않는다(§6).
-- **Adapter 바인딩 (포인터만).** Event 로그의 직렬화·저장, 사용자 확인·강제(Override) 채널, Contextualizing 증거 스캔·프레이밍의 물리 구현, Strategy 실행 호스팅은 전부 Adapter 소관이다. 소관 정본: 02 §4(바인딩 지점·이식 교체 지점) 및 해당 실행 환경 Adapter의 발견 바인딩(`uahf/framework/adapters/<adapter>/discovery-binding.md`). 본 문서는 물리 형태를 지시하지 않는다.
+- **Adapter 바인딩 (포인터만).** Event 로그의 직렬화·저장, 사용자 확인·강제(Override) 채널, Contextualizing 증거 스캔·프레이밍의 물리 구현, Strategy 실행 호스팅은 전부 Adapter 소관이다. 소관 정본: 02 §4(바인딩 지점·이식 교체 지점) 및 해당 실행 환경 Adapter의 발견 바인딩(`discovery/adapters/<adapter>/discovery-binding.md`). 본 문서는 물리 형태를 지시하지 않는다.
 
 ---
 
@@ -126,7 +126,7 @@ discovery Layer는 다음을 **수행하지 않는다**(경계). 각 항목은 �
 | Strategy Provider Interface(Capability 선언·입출력 계약) | `discovery/specs/02-discovery.md` §3.10 |
 | Discovery Dimension 5 · Confidence · Adaptive · Question Budget | `discovery/specs/02-discovery.md` §3.11~§3.14 |
 | Discovery Policy(Policy as Data) | `discovery/specs/02-discovery.md` §3.15 |
-| Adapter Binding(바인딩 지점·이식 교체 지점) | `discovery/specs/02-discovery.md` §4 · `uahf/framework/adapters/<adapter>/discovery-binding.md` |
+| Adapter Binding(바인딩 지점·이식 교체 지점) | `discovery/specs/02-discovery.md` §4 · `discovery/adapters/<adapter>/discovery-binding.md` |
 | 최상위 Layer 지도 · Project Discovery 귀속 | 루트 `ARCHITECTURE.md` §2.1 |
 | 6요소 파이프라인 의미론 · 의존 방향 | 루트 `ARCHITECTURE.md` §2.2 · §2.5 |
 | Layer 연결 계약(Discovery Request · Project Contract) | 루트 `ARCHITECTURE.md` §3 |

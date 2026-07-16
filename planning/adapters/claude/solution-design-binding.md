@@ -1,50 +1,34 @@
-# framework/adapters/claude/solution-design-binding — Claude Code Solution Design Adapter 바인딩
+# planning/adapters/claude/solution-design-binding — Claude Code Solution Design Adapter 바인딩
 
-작성일: 2026-07-13
-상태: v1.4 Baseline (CP2 독립 판정 Pass 10/0/0 · CP3 승인 · 사용자 Baseline 승인 2026-07-13)
+상태: v1.4 Baseline
 상위 규약: AGENT.md
 근거 정본:
 
 - planning/specs/04-solution-design.md §3(전문 — Core Contract)·§4.1(### 4.1 바인딩 지점 — 표 4행)·§4.2(### 4.2 이식 교체 지점). 본 문서가 물리 실현으로 바인딩하는 계약의 정본. **재정의·확장하지 않고 § 포인터로만 인용한다.** 특히 §3.1(단계 계약)·§3.2(복잡도 판정 — Policy as Data)·§3.3(역할 할당·개방 네임스페이스)·§3.4(협업 프로토콜 State Machine — 비종단 5·종단 3·전이 T1~T11)·§3.5(Projection)·§3.6(경계 기준)·§3.7(저장 스코프)·§3.8(SP-INV 1~8).
 - planning/specs/03-project-contract.md §3.1-B(생산자 2경로 — (ii) superseding 성숙 인스턴스)·§3.4(인스턴스 거버넌스 — append-only·supersedes·**Contract Maturation 갱신 유형**)·§3.5(UAHF Interface — 선택 입력·소비 지점)·§3.6 PC-INV 9(인스턴스 이력 append-only). 성숙 재발행이 소비·산출하는 스키마·거버넌스의 정본. **참조 인용만·재정의 0.**
 - ARCHITECTURE.md (루트, v1.3 — 라우터) §8 UAF-INV ①(UAHF 정본 무수정·유일 접점)·⑤(확정 게이트 = 사용자 승인)·⑥(Framework는 방법론·역할 카탈로그 모름)·§7.1(상시 불변 확인 2건). 근거 인용용·재정의 0.
-- framework/adapters/claude/contract-binding.md §4.1(저장 위치)·§4.2(저장 이원화 — 일반 관례 `.claude/project-contract/`·본 저장소 `framework/adapters/claude/discovery-data/contracts/uahf/`·파일명 `project-contract.v<N>.md`, DP-X2)·§5(버전 표기 — `schemaVersion`·`instanceVersion`·`supersedes`)·§6(Provenance 불투명 컨테이너 외형·must-ignore 경계 — DP-X6). **superseding 인스턴스 저장·버전 표기·Provenance 외형은 contract-binding 소유** — 본 문서는 참조 인용만 하고 재정의하지 않는다.
-- framework/adapters/claude/discovery-binding.md §3(append-only 레코드 로그·1 사건 = 1 레코드·§3.3 순서 값/물리 시각 성격 구분 L-09)·§4(백엔드 트리 정본 선언·run 단위 격리)·§5(주 세션 사용자 제시·응답 채널)·§7(역할 추상 호스팅 — 형태 A 규약 절차·물리 호스팅 설계 0)·§8(Policy 데이터 소스·최소 실값 1세트 정본 값 표 DP-X5)·§10(성숙 아닌 Discovery run 내부 형식 확정 — Provenance 내부 형식 소유 경계 선례)·§13(실측 대조 L-07). **핵심 골격 선례.** 본 문서는 이 골격과 동형으로 서술하되 Discovery 도메인 계약(Event 15종·State Machine·Dimension·Budget)을 차용하지 않는다.
-- framework/adapters/claude/entry-binding.md 머리·§0·memory-binding.md·loop-binding.md §5.2 — 자매 Adapter Binding 골격·사람 개입 채널·백엔드 격리·append-only 선례. `형태 A/B` 서술 라벨 인용 출처(structure.md §4).
-- framework/adapters/claude/adapter-conformance.md 근거 정본 비고(UAF 정본 바인딩 비합산 — DP-X4) — 본 문서의 "자매 계수 비합산" 성립 근거.
-- framework/core/structure.md §2(4경계 배치 — `framework/adapters/<adapter>/` = 환경 의존 격리 경계)·§5(금지 토큰 규칙 C-3 — Adapter 경계는 격리 보유로 비적용). 본 문서 경계·격리 토큰 허용의 근거.
+- planning/adapters/claude/contract-binding.md §4.1(저장 위치)·§4.2(저장 이원화 — 일반 관례 `.claude/project-contract/`·본 저장소 `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`·파일명 `project-contract.v<N>.md`, DP-X2)·§5(버전 표기 — `schemaVersion`·`instanceVersion`·`supersedes`)·§6(Provenance 불투명 컨테이너 외형·must-ignore 경계 — DP-X6). **superseding 인스턴스 저장·버전 표기·Provenance 외형은 contract-binding 소유** — 본 문서는 참조 인용만 하고 재정의하지 않는다.
+- discovery/adapters/claude/discovery-binding.md §3(append-only 레코드 로그·1 사건 = 1 레코드·§3.3 순서 값/물리 시각 성격 구분 L-09)·§4(백엔드 트리 정본 선언·run 단위 격리)·§5(주 세션 사용자 제시·응답 채널)·§7(역할 추상 호스팅 — 형태 A 규약 절차·물리 호스팅 설계 0)·§8(Policy 데이터 소스·최소 실값 1세트 정본 값 표 DP-X5)·§10(성숙 아닌 Discovery run 내부 형식 확정 — Provenance 내부 형식 소유 경계 선례)·§13(실측 대조 L-07). **핵심 골격 선례.** 본 문서는 이 골격과 동형으로 서술하되 Discovery 도메인 계약(Event 15종·State Machine·Dimension·Budget)을 차용하지 않는다.
+- entry/adapters/claude/entry-binding.md 머리·§0·memory-binding.md·loop-binding.md §5.2 — 자매 Adapter Binding 골격·사람 개입 채널·백엔드 격리·append-only 선례. `형태 A/B` 서술 라벨 인용 출처(structure.md §4).
+- uahf/framework/core/structure.md §2(4경계 배치 — `framework/adapters/<adapter>/` = 환경 의존 격리 경계)·§5(금지 토큰 규칙 C-3 — Adapter 경계는 격리 보유로 비적용). 본 문서 경계·격리 토큰 허용의 근거.
 - planning/ARCHITECTURE.md §0·§7 — 소유 Layer 개관(planning 이중 책임 — 성숙 활동 측). § 포인터로만 참조.
-- specs/00-glossary.md — UAHF 용어 정본. 본 문서는 새 용어를 신설하지 않는다. `형태 A/B`는 structure.md §4의 서술 라벨 인용이며 Glossary 표제어가 아니다.
+- uahf/specs/00-glossary.md — UAHF 용어 정본. 본 문서는 새 용어를 신설하지 않는다. `형태 A/B`는 structure.md §4의 서술 라벨 인용이며 Glossary 표제어가 아니다.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core·UAF 계약을 특정 실행 환경·직렬화 형식·물리 경로에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 직렬화 형식·물리 경로·환경 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — 자매 contract-binding.md §0·entry-binding.md §0·discovery-binding.md §0과 동형). 단 이 문서는 UAF 정본(planning/specs/04-solution-design.md §3·§4)과 자매 정본(03·02·루트 ARCHITECTURE)·UAHF 정본을 **재정의하지 않는다** — 계약(단계 계약·복잡도 판정·역할 할당·협업 프로토콜 State Machine·Projection·경계 기준·SP-INV)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
-
----
-
-## §9. 이력 (Revision History)
-
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-13 | v1.4 Draft (CP2 대기) | 최초 작성. `framework/adapters/claude/` 경계의 **UAF 정본(planning/specs/04-solution-design) 바인딩** 산출물 — contract-binding.md·entry-binding.md·discovery-binding.md에 이은 **4번째 UAF 레벨 바인딩**(접두 없는 자매 골격 동형·adapter-conformance "자매 11종" 계수 비합산 DP-X4 동형). 04 "### 4.1 바인딩 지점" 표 **4행 전건**(① Expert Role 실행 호스팅 ② 사용자 게이트 제시·응답 채널 ③ 산출물 저장 위치 ④ 복잡도 판정·역할 선택·Projection 선택 Policy 실값)을 Claude 환경 물리 실현으로 확정(§2 — 실재/규약 실현(형태 A)/형태 B 3구분). **DP-1**(저장) = `solution-design-data/` 백엔드 트리 정본 선언(events/maturation-<run-id>/·policy/)·superseding 인스턴스는 contract-binding §4.2 경로에 append(참조 인용·재정의 0)·이원화(DP-X2 동형)(§3). **DP-2**(기록) = run 단위 append-only 로그·1 사건 = 1 레코드·seq 순서 값 전속(물리 시각 별도 실측 성격 L-09)·전이 레코드는 04 §3.4-A 상태·§3.4-B T1~T11 정본 인용·SD 고유 최소 레코드 종류를 Adapter 기록 관례로 명명 확정(Discovery Event 15종 명칭 차용 0·새 코어 계약 요소 창설 0)(§4). **DP-4**(게이트) = 주 세션 제시·응답 채널(discovery-binding §5 동형)·T8/T9/T10/T11 실의미·승인 전 Matured 불가(SP-INV 4)(§5). **DP-3**(호스팅) = 04 §4.1 행1 정본 그대로 **역할 추상까지만**·주 세션(Advisor) Orchestrator 규약 절차·Expert Role 수행은 기존 위임 실행 관행 재사용·새 병렬 프레임워크 0·물리 호스팅 설계 0(discovery-binding §7 동형)(§6). **DP-5**(Policy) = `solution-design-data/policy/` 데이터 소스 + **최소 실값 1세트 정본 값 표**(성숙/스킵 판정 기준·역할 선택 규칙·Projection 선택 정책)(§7, DP-X5 동형). **Provenance** = 성숙 run 내부 형식(runId·이벤트 로그 경로·기준선 vN 참조)만 확정·외형·must-ignore 경계는 contract-binding §6 소유(재정의 0·discovery-binding §10 경계 동형)(§8). 책임 경계 문안(Solution Design 활동[04] / Contract Maturation 갱신 유형[03 §3.4]) 반영(§0). 04 §4.2 이식 교체 지점 대응 표(§10 — "유지되는 것" 열 = 04 §3 불변 재확인). 상시 불변 자기 점검(§11 — 재정의 0·창설 0·Discovery Event 명칭 차용 0·mention/use 경계). 상태 서술 실측 대조(§12 — `solution-design-data/` 현 시점 미존재·W2 E2E 생성 예정 정직 구분, L-07). 실행 코드 0(형태 A). 04·03·02·루트 재정의 0·§ 포인터 인용만·새 계약 요소(상태·전이·불변·필드·kind) 창설 0·방법론 고유명·고정 역할 카탈로그·타 AI 벤더·모델명 0(자가 전수 스캔). 동시 작성 중인 병렬 산출물 불인용(07 R2). | Worker (Advisor 위임, v1.4 W1) |
-
-| 2026-07-13 | v1.4 Baseline | **Baseline 승격** — W1 CP2 독립 판정 Pass 10/0/0(AC 10건 전건·전이표 1:1 대조 오전사 0·금지 토큰 독립 스캔 0)·CP3 승인·W2 dogfooding E2E(maturation-r001 — pc-uahf-001 v1→v2 성숙·CP2 증명 13/13)가 본 바인딩 정본 문면(백엔드 트리·레코드 어휘·게이트 채널·Policy 실값·Provenance 형식) 그대로 실주행됨을 실증한 뒤 **사용자 Baseline 승인(2026-07-13)**. §12의 "solution-design-data/ 미존재·W2 생성 예정" 서술은 작성 시점 스냅샷으로 보존 — W2가 정본 구조 그대로 생성해 현재 실재(백엔드 실측 = W2 CP2 리포트·contract-binding §10-A 동형 맥락). 본문 무변경(상태 라인·본 행만). | Advisor (사용자 승인) |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 자매 contract-binding.md §9·entry-binding.md §9·discovery-binding.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
+거버넌스: 이 문서는 `planning/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core·UAF 계약을 특정 실행 환경·직렬화 형식·물리 경로에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 직렬화 형식·물리 경로·환경 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — 자매 contract-binding.md §0·entry-binding.md §0·discovery-binding.md §0과 동형). 단 이 문서는 UAF 정본(planning/specs/04-solution-design.md §3·§4)과 자매 정본(03·02·루트 ARCHITECTURE)·UAHF 정본을 **재정의하지 않는다** — 계약(단계 계약·복잡도 판정·역할 할당·협업 프로토콜 State Machine·Projection·경계 기준·SP-INV)은 § 포인터로만 인용한다. 개정은 Advisor 승인으로 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **UAF 정본 바인딩 선언(DP-X1 동형).** 이 문서는 `framework/adapters/claude/` 경계의 Adapter Binding 문서이되, 그 **바인딩 대상 정본은 UAHF spec이 아니라 UAF 정본 `planning/specs/04-solution-design.md` §3·§4다.** 자매 바인딩(runtime·memory·verifier·loop·workflow·hooks·skills·plugins·agent·scaffold·harness-binding + adapter-conformance — adapter-conformance가 계수하는 UAHF spec 바인딩 "자매 11종")이 UAHF spec(specs/01~13)을 바인딩하는 것과 달리, 본 문서는 UAF 레벨의 Solution Design 정본을 바인딩한다. 이는 contract-binding.md(planning/specs/03)·entry-binding.md(entry/specs/01)·discovery-binding.md(discovery/specs/02)에 이은 **4번째 UAF 레벨 바인딩**이며, 파일명·골격 관례는 자매와 동형이다(접두 없음).
-
-- **자매 계수 비합산(DP-X4 동형).** 이 UAF 레벨 바인딩 4종(contract·entry·discovery·solution-design-binding)은 adapter-conformance.md의 "자매 11종" 계수에 **합산하지 않는다** — specs/11-adapters.md §3.2-A BP-1~17 커버리지 대상이 아니고, adapter-conformance Conformance 판정(verdict·C1~C3·6필드)에 무영향이다(adapter-conformance 근거 정본 비고 동형). 본 문서 신설이 그 판정을 바꾸지 않는다(단, adapter-conformance가 UAF 레벨 바인딩을 "3종"으로 열거한 문면의 "4종" 정합은 후속 소관이다 — 본 문서 §13 OQ-SD-3, 비차단).
+- **바인딩 대상 정본 선언.** 이 문서는 planning 레이어 자신의 Claude 어댑터 바인딩이며 `planning/specs/04-solution-design.md` §3·§4를 바인딩한다. 바인딩 대상 정본은 UAHF spec(uahf/specs/01~13)이 아니라 UAF 정본 `planning/specs/04-solution-design.md`이며, 본 문서는 그 계약 요소를 재정의·확장하지 않고 § 포인터로만 인용한다. 자매 어댑터 바인딩(contract-binding = `planning/specs/03`·entry-binding = `entry/specs/01`·discovery-binding = `discovery/specs/02`)과 파일명·골격 관례는 동형이다.
 
 - **정본은 planning/specs/04 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — 단계 계약(§3.1)·복잡도 판정(§3.2)·역할 할당·개방 네임스페이스(§3.3)·협업 프로토콜 State Machine(§3.4 — 비종단 5·종단 3·전이 T1~T11)·Projection(§3.5)·경계 기준(§3.6)·저장 스코프(§3.7)·SP-INV 1~8(§3.8) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 04 §4.1이 "Adapter 소관"으로 미룬 **네 지점 — ① Expert Role 실행 호스팅(역할 추상까지만) ② 사용자 게이트 제시·응답 채널 ③ 산출물 저장 위치·직렬화(실행 기록 포함) ④ Policy 실값** 과, 그 저장의 부속으로 성숙 인스턴스 `provenance` 컨테이너의 **성숙 run 내부 형식**뿐이다(§2).
 
-- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문, 그리고 UAF 정본(planning/specs/04) 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이다(structure.md §5 C-3 확장·04 §3 도입 "이 섹션에는 특정 AI 모델·실행 환경 의존 내용이 한 줄도 들어가지 않는다"). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식·물리 경로(`framework/adapters/claude/…`·`.claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(contract-binding.md §0·discovery-binding.md §0과 동형). 단 **UAF 정본이 명명하지 않은 것을 UAF 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다. 특정 설계 방법론 고유명·고정 역할 카탈로그·타 AI 벤더·모델명은 여기서도 명명하지 않는다(04 §4.1 말미·UAF-INV ⑥ 동형 — 격리 대상은 직렬화 형식·물리 경로·Policy 값뿐이다).
+- **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문, 그리고 UAF 정본(planning/specs/04) 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이다(structure.md §5 C-3 확장·04 §3 도입 "이 섹션에는 특정 AI 모델·실행 환경 의존 내용이 한 줄도 들어가지 않는다"). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식·물리 경로(`planning/adapters/claude/…`·`.claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(contract-binding.md §0·discovery-binding.md §0과 동형). 단 **UAF 정본이 명명하지 않은 것을 UAF 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다. 특정 설계 방법론 고유명·고정 역할 카탈로그·타 AI 벤더·모델명은 여기서도 명명하지 않는다(04 §4.1 말미·UAF-INV ⑥ 동형 — 격리 대상은 직렬화 형식·물리 경로·Policy 값뿐이다).
 
 - **하네스 Bootstrap 전제(형태 A).** 이 하네스는 현재 Bootstrap 상태다(자매 바인딩 §0). 본 문서의 바인딩은 **실행 코드 0**이다 — Solution Design의 협업 프로토콜 State Machine(04 §3.4)·복잡도 판정(04 §3.2)·역할 협업(04 §3.3)은 실행 스크립트가 아니라 **규약 절차·규약 역할**로 실현되며 주 세션이 실수행한다. 따라서 매핑은 (i) 물리 실재 표면(자매 바인딩·정본 문서·Ground Truth 인스턴스), (ii) 규약으로 확정된 정본 문면(형태 A — 백엔드 트리·기록 어휘·게이트 채널·Policy 값), (iii) 실행 코드 도입 시 로딩될 지점(형태 B — 로그 기록기·직렬화기·Policy 로더)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
 
-- **경계 분담 — 소유와 위임.** 성숙 산출이 걸치는 자매 정본과의 경계를 명시한다. (i) **superseding 인스턴스 자체**(v(N+1) 문서·버전 표기·저장 경로 `discovery-data/contracts/uahf/`·직렬화 = Markdown 본문 + YAML front-matter)는 **contract-binding §3·§4·§5 소유**다 — 03 v1.2 생산자 2경로(§3.1-B)상 Contract 저장은 생산자와 무관하며, 본 문서는 성숙 경로가 그 경로에 append됨만 참조 인용한다(재정의 0). (ii) `provenance` 컨테이너의 **외형·must-ignore 경계**는 **contract-binding §6 소유**다 — 본 문서는 성숙 run에 해당하는 **내부 형식**만 확정한다(§8, discovery-binding §10이 Discovery run 내부 형식을 확정한 것과 동형·경계 침범 0). (iii) 본 문서가 신설·소유하는 것은 **`solution-design-data/` 백엔드 트리**(성숙 실행 메타 — 이벤트 로그·실행 메타 파일·Policy)뿐이다.
+- **경계 분담 — 소유와 위임.** 성숙 산출이 걸치는 자매 정본과의 경계를 명시한다. (i) **superseding 인스턴스 자체**(v(N+1) 문서·버전 표기·저장 경로 `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`·직렬화 = Markdown 본문 + YAML front-matter)는 **contract-binding §3·§4·§5 소유**다 — 03 v1.2 생산자 2경로(§3.1-B)상 Contract 저장은 생산자와 무관하며, 본 문서는 성숙 경로가 그 경로에 append됨만 참조 인용한다(재정의 0). (ii) `provenance` 컨테이너의 **외형·must-ignore 경계**는 **contract-binding §6 소유**다 — 본 문서는 성숙 run에 해당하는 **내부 형식**만 확정한다(§8, discovery-binding §10이 Discovery run 내부 형식을 확정한 것과 동형·경계 침범 0). (iii) 본 문서가 신설·소유하는 것은 **`solution-design-data/` 백엔드 트리**(성숙 실행 메타 — 이벤트 로그·실행 메타 파일·Policy)뿐이다.
 
 - **책임 경계 문안 (Solution Design 활동 vs Contract Maturation 갱신 유형).** 본 문서가 물리화하는 대상을 다음 문안으로 못박는다(W0 §4.5·04 §0·03 §3.4 정합):
 
@@ -52,9 +36,9 @@
 
   본 문서는 이 구분의 **물리 측면**만 확정한다 — 활동(04)의 실행 메타·게이트·Policy·호스팅은 `solution-design-data/`(본 문서)에, 갱신 유형(03 §3.4)이 낳는 superseding 인스턴스는 contract-binding §4.2 경로에 놓인다. 두 물리 자리가 활동/갱신 유형의 구분을 그대로 반영한다.
 
-- **실측 기반 상태 서술(L-07).** "실재/미존재" 주장은 파일 시스템 확인 후에만 기입한다. 본 문서가 선언하는 `solution-design-data/` 백엔드 트리는 **현 시점 미존재**이며, 그 물리 생성은 v1.4 W2 dogfooding E2E Task 소관이다 — 본 문서는 경로·구조·형식·값의 **정본 문면만** 소유한다(contract-binding §10·discovery-binding §13 "지원 구조 — 시연 시 생성" 선례 동형). §12가 그 실측 대조 표다. 본 문서는 신규 1파일(solution-design-binding.md)만 생성하며 어떤 디렉터리·데이터 파일도 생성하지 않는다(07 R4).
+- **실측 기반 상태 서술(L-07).** "실재/미존재" 주장은 파일 시스템 확인 후에만 기입한다. 본 문서가 선언하는 `solution-design-data/` 백엔드 트리는 성숙 run E2E로 이미 실재하며, 현행 물리 위치는 `uahf/framework/adapters/claude/solution-design-data/`다(물리 위치는 2차 산출물 디커플링 트랙에서 확정). 본 문서는 경로·구조·형식·값의 **정본 문면만** 소유하고, §12가 그 실측 대조 표다.
 
-- **경로 표기 관례.** 본 문서 본문은 자매 UAF 레벨 바인딩(contract·entry·discovery-binding) 및 위임 브리프의 내부 경로 표기와 동형으로 **`framework/adapters/claude/…`**(저장소 루트 접두 없이)로 표기한다. 이 저장소의 현재 물리 루트는 v1.2.1 Layer 재구성 이후 `uahf/framework/adapters/claude/…`이며(자매 문서의 재베이스라인 실측 서브블록·라이브 데이터 파일 헤더와 정합), 본 문서 §12 실측 대조 절은 그 **현행 물리 경로**로 서술한다. 자매 문서의 표기 스타일은 "정정"하지 않는다(07 R4). 이 이중 표기의 정합 정리는 비차단 후속이다(§13 OQ-SD-2).
+- **경로 표기 관례.** 본 문서 자신은 `planning/adapters/claude/solution-design-binding.md`(planning 레이어 어댑터 경계)에 있다. 본 문서가 선언·소유하는 백엔드 데이터 트리(`solution-design-data/`·`discovery-data/contracts/uahf/`)의 현행 물리 위치는 `uahf/framework/adapters/claude/…` 아래이며(물리 위치는 2차 산출물 디커플링 트랙에서 확정), 본문에서는 그 잎 이름(`solution-design-data/` 등)으로 축약해 가리킨다. 소비 프로젝트 일반 관례 경로(`.claude/…`)는 소비 프로젝트 상대 경로다.
 
 - **네임스페이스·용어.** 본 문서가 확정하는 것은 물리 표기(백엔드 트리·기록 어휘·게이트 채널·Policy 값·Provenance 성숙 run 내부 형식)뿐이며, 04가 소유하는 계약 용어(`Assessing`·`Proposing`·`Reconciling`·`Reviewing`·`Validating`·`Matured`·`Skipped`·`Escalated`·전이 T1~T11·Expert Role·Capability·Projection·SP-INV 등)는 04 정의를 § 포인터로 참조하고 재정의하지 않는다. 새 UAHF 용어·새 계약 요소(상태·전이·불변·필드·kind)를 신설하지 않는다. 본 문서가 명명하는 **레코드 종류 명칭**(§4)은 04·03 코어 계약 요소가 아니라 이 Adapter의 **기록 관례**이며, Discovery Event 15종(02 §3.5 소유)의 명칭을 차용하지 않는다.
 
@@ -84,8 +68,8 @@
 |---|---|---|---|---|
 | 1 | Expert Role 실행 호스팅 (§3.3) | "논리 Expert Role을 어느 실행 주체가 호스팅하는가 — **역할 추상까지만** 정의하고 물리 호스팅은 설계하지 않는다(M5)." | 주 세션(Advisor)이 Orchestrator 역할을 규약 절차로 수행해 State Machine(04 §3.4)을 구동하고, Expert Role 수행은 **이 환경의 기존 위임 실행 관행**(서브에이전트 위임·완료 보고·독립 검증)을 재사용. 새 병렬 실행 프레임워크 창설 0·물리 호스팅(실행 코드·자동화) 설계 0. 상세 §6. | 역할 추상 확정(정본, 형태 A). 물리 호스팅 = **설계 안 함**(확장 포인트 04 §3.9). 실행 코드 = 형태 B. |
 | 2 | 사용자 게이트 제시·응답 채널 (§3.4 `Validating`) | "성숙/스킵 결과 제시와 승인/확인/수정 응답을 받는 개입 채널(강제 일시중단·재개 semantics 포함)." | 주 세션 사용자 제시·응답 수령 채널(discovery-binding §5 동형) — 게이트 제시·응답 각각 레코드로 기록. T8(승인→Matured)·T9(확인→Skipped)·T10(수정→Reviewing 재진입)·T11(강제→Escalated) 실의미. 승인 전 Matured 도달 불가(SP-INV 4). 상세 §5. | 채널·기록 확정(정본, 형태 A). 무인 자동 제시 UI = 형태 B. |
-| 3 | 산출물 저장 위치 (§3.7) | "Proposal·리뷰 기록·Projection·superseding 인스턴스가 워크스페이스에 배치·보관되는 물리 위치·경로 관례·직렬화 형식." | 성숙 실행 메타(이벤트 로그·Proposal·충돌/trade-off·리뷰 기록·Policy) = `solution-design-data/`(§3·§4); superseding 인스턴스 = contract-binding §4.2 경로 `discovery-data/contracts/uahf/project-contract.v<N>.md`에 append(참조 인용·재정의 0); Projection = 대상 워크스페이스 귀속(§3). 상세 §3·§4. | 경로·형식 정본 확정(형태 A). `solution-design-data/` 데이터 = **미존재**(W2 E2E 생성 예정, §12). |
-| 4 | 복잡도 판정·역할 선택·Projection 선택 Policy 실값 (§3.2·§3.3·§3.5) | "판정 임계·역할 선택 규칙·Projection 유형 선택 정책의 데이터 소스·직렬화(Policy as Data)." | `solution-design-data/policy/default-policy.yaml` 데이터 파일 + **최소 실값 1세트 정본 값 표**(성숙/스킵 판정 기준·역할 선택 규칙·Projection 선택 정책). Policy as Data — 값 조정 = 데이터 정정. 상세 §7. | 형식·값 정본 확정(형태 A). 물리 데이터 파일(`policy/`) = 미존재(W2 E2E 생성 예정). |
+| 3 | 산출물 저장 위치 (§3.7) | "Proposal·리뷰 기록·Projection·superseding 인스턴스가 워크스페이스에 배치·보관되는 물리 위치·경로 관례·직렬화 형식." | 성숙 실행 메타(이벤트 로그·Proposal·충돌/trade-off·리뷰 기록·Policy) = `solution-design-data/`(§3·§4); superseding 인스턴스 = contract-binding §4.2 경로 `discovery-data/contracts/uahf/project-contract.v<N>.md`에 append(참조 인용·재정의 0); Projection = 대상 워크스페이스 귀속(§3). 상세 §3·§4. | 경로·형식 정본 확정(형태 A). `solution-design-data/` 데이터 = 실재(현행 `uahf/framework/adapters/claude/…`, §12). |
+| 4 | 복잡도 판정·역할 선택·Projection 선택 Policy 실값 (§3.2·§3.3·§3.5) | "판정 임계·역할 선택 규칙·Projection 유형 선택 정책의 데이터 소스·직렬화(Policy as Data)." | `solution-design-data/policy/default-policy.yaml` 데이터 파일 + **최소 실값 1세트 정본 값 표**(성숙/스킵 판정 기준·역할 선택 규칙·Projection 선택 정책). Policy as Data — 값 조정 = 데이터 정정. 상세 §7. | 형식·값 정본 확정(형태 A). 물리 데이터 파일(`policy/`) = 실재(§12). |
 
 주:
 
@@ -101,16 +85,16 @@
 
 ### §3.1 성숙 실행 메타 백엔드 = `solution-design-data/` 신설 (DP-1)
 
-Solution Design의 **성숙 실행 메타**(이벤트 로그·Proposal·충돌/trade-off·리뷰 기록·Policy)의 물리 백엔드를 **Adapter 경계 이하 `framework/adapters/claude/solution-design-data/`로 확정한다**(자매 memory-binding §0 `memory-data/`·loop-binding §0 `loop-data/`·discovery-binding §4 `discovery-data/` 백엔드 격리 선언 동형).
+Solution Design의 **성숙 실행 메타**(이벤트 로그·Proposal·충돌/trade-off·리뷰 기록·Policy)의 물리 백엔드를 **Adapter 경계 이하 `uahf/framework/adapters/claude/solution-design-data/`로 확정한다**(자매 memory-binding §0 `memory-data/`·loop-binding §0 `loop-data/`·discovery-binding §4 `discovery-data/` 백엔드 격리 선언 동형).
 
 - **신설 근거(UAF-INV ① 안전).** `discovery-data/`는 discovery-binding §4가 소유한 **Discovery 전용 백엔드 정본**이다 — 여기에 성숙 실행 데이터를 혼입하면 책임 경계가 오염된다. 자매 `*-data/` 격리 관례 동형으로 별도 루트를 두는 것이 최소 변경이며, 성숙 산출 데이터가 하네스 규약·Core와 혼입되지 않도록 격리한다(UAF-INV ① 안전 — contract-binding §4.2 격리 근거 동형).
 - **이원화(DP-X2 동형).** 위 격리 배치는 본 UAHF 저장소 자신을 대상으로 하는 dogfooding 인스턴스의 관례다. **일반 관례**(소비 프로젝트)에서 성숙 실행 메타는 소비 프로젝트 내 `.claude/solution-design/` 아래에 귀속된다(04 §3.7 워크스페이스 귀속·contract-binding §4의 `.claude/project-contract/` 이원화 동형). 두 경로 모두 본 문서가 정본으로 확정한다.
 
-### §3.2 백엔드 트리 (정본 문면 — 현 시점 미존재)
+### §3.2 백엔드 트리 (정본 문면 · 물리 위치는 2차 산출물 디커플링 트랙에서 확정)
 
 ```
-framework/adapters/claude/
-└─ solution-design-data/                     # ★ SD 백엔드 격리 루트 — 현 시점 미존재(W2 E2E 생성 예정)
+uahf/framework/adapters/claude/               # 물리 위치는 2차 산출물 디커플링 트랙에서 확정
+└─ solution-design-data/                     # ★ SD 백엔드 격리 루트 — 성숙 run E2E로 실재
    ├─ events/                                # DP-2 — run 단위 append-only 기록 로그 + 실행 메타
    │  └─ maturation-<run-id>/                #   성숙 run 1건의 격리 디렉터리
    │     ├─ events.jsonl                     #     append-only 기록 로그(전이·게이트·산출·run 생애; §4)
@@ -126,9 +110,9 @@ framework/adapters/claude/
 
 ### §3.3 superseding 인스턴스·Projection 저장 (참조 인용 — 재정의 0)
 
-- **superseding 인스턴스(v(N+1))는 이 트리가 아니다.** 성숙 경로의 superseding Contract 인스턴스(03 §3.4·§3.1-B (ii))는 `solution-design-data/`가 아니라 **contract-binding §4.2가 소유한 Contract 저장 경로**에 append된다 — 본 저장소 dogfooding은 `discovery-data/contracts/uahf/project-contract.v<N>.md`, 일반 관례는 `.claude/project-contract/project-contract.v<N>.md`(파일명·직렬화·버전 표기 정본 = contract-binding §3·§4·§5). Contract 저장은 생산자(Discovery / Solution Design)와 무관하게 contract-binding 소유이며(03 v1.2 생산자 2경로·§3.1-B), 본 문서는 이 경로를 **참조 인용**만 하고 재정의하지 않는다. 예: Ground Truth `pc-uahf-001` v1을 기준선으로 성숙하면 v2는 `project-contract.v2.md`로 같은 경로에 append되고 v1 문면은 byte 불변이다(PC-INV 9·03 §3.4·append-only).
+- **superseding 인스턴스(v(N+1))는 이 트리가 아니다.** 성숙 경로의 superseding Contract 인스턴스(03 §3.4·§3.1-B (ii))는 `solution-design-data/`가 아니라 **contract-binding §4.2가 소유한 Contract 저장 경로**에 append된다 — 본 저장소 dogfooding은 `uahf/framework/adapters/claude/discovery-data/contracts/uahf/project-contract.v<N>.md`, 일반 관례는 `.claude/project-contract/project-contract.v<N>.md`(파일명·직렬화·버전 표기 정본 = contract-binding §3·§4·§5). Contract 저장은 생산자(Discovery / Solution Design)와 무관하게 contract-binding 소유이며(03 v1.2 생산자 2경로·§3.1-B), 본 문서는 이 경로를 **참조 인용**만 하고 재정의하지 않는다. 예: Ground Truth `pc-uahf-001` v1을 기준선으로 성숙하면 v2는 `project-contract.v2.md`로 같은 경로에 append되고 v1 문면은 byte 불변이다(PC-INV 9·03 §3.4·append-only).
 - **Projection 산출.** 동적 선택된 Projection(04 §3.5)은 **대상 프로젝트 워크스페이스에 귀속**된다(04 §3.7 SP-INV 7). 본 저장소 dogfooding에서 Projection이 산출되는 경우 그 물리 배치도 워크스페이스 귀속 원칙을 따르며, Contract를 Source of Truth로 하는 파생 산출이다(04 §3.5 — Contract 코어 스키마 재정의 0). 물리 배치 세부는 산출 시(E2E) 확정하며 본 문서는 귀속 원칙만 선언한다.
-- **`solution-design-data/`는 지원 구조(현 시점 미존재).** 이 트리·모든 하위 데이터는 본 문서가 확정한 **정본 문면(형태 A)**이며, 실제 디렉터리·데이터 파일 생성은 **v1.4 W2 dogfooding E2E Task 소관**이다(§12 실측 대조·L-07). 본 문서는 물리 데이터 자산을 생성하지 않는다 — 경로·구조·형식의 정본만 소유한다.
+- **`solution-design-data/`는 지원 구조(성숙 run E2E로 실재).** 이 트리·모든 하위 데이터의 **정본 문면(형태 A)**은 본 문서가 소유하며, 실제 디렉터리·데이터 파일은 성숙 run E2E로 생성되어 현행 `uahf/framework/adapters/claude/solution-design-data/` 아래 실재한다(§12 실측 대조·L-07 · 물리 위치는 2차 산출물 디커플링 트랙에서 확정). 본 문서는 경로·구조·형식의 정본 문면을 소유한다.
 
 ---
 
@@ -216,8 +200,8 @@ framework/adapters/claude/
 
 ### §7.1 데이터 소스·직렬화 형식
 
-- **데이터 소스.** Solution Design Policy 값은 규약 절차에 하드코딩되지 않고 `framework/adapters/claude/solution-design-data/policy/`의 **데이터 파일**(`default-policy.yaml`)에서 온다(Policy as Data, 04 §3.2). 값 조정은 데이터 정정일 뿐 Orchestrator 규약 절차·정본 계약(04 §3.2·§3.3·§3.5)을 변경하지 않는다.
-- **직렬화 형식.** 정책 파일은 자기서술 구조화 데이터로 직렬화한다(자매 discovery-binding §8.1 구조화 데이터 관례 동형·구체 형식은 Adapter 선택, 격리 지점 §10). 물리 정책 데이터 파일(`policy/`)의 생성은 W2 E2E Task 소관이며, 본 문서는 **형식·값 정본 문면만** 소유한다(L-07 — 미존재 정직 구분).
+- **데이터 소스.** Solution Design Policy 값은 규약 절차에 하드코딩되지 않고 `uahf/framework/adapters/claude/solution-design-data/policy/`의 **데이터 파일**(`default-policy.yaml`)에서 온다(Policy as Data, 04 §3.2). 값 조정은 데이터 정정일 뿐 Orchestrator 규약 절차·정본 계약(04 §3.2·§3.3·§3.5)을 변경하지 않는다.
+- **직렬화 형식.** 정책 파일은 자기서술 구조화 데이터로 직렬화한다(자매 discovery-binding §8.1 구조화 데이터 관례 동형·구체 형식은 Adapter 선택, 격리 지점 §10). 물리 정책 데이터 파일(`policy/default-policy.yaml`)은 성숙 run E2E로 실재하며, 본 문서는 **형식·값 정본 문면**을 소유한다(L-07).
 
 ### §7.2 최소 실값 1세트 (정본 값 표 — DP-X5 동형)
 
@@ -254,7 +238,7 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 | 유형 카탈로그 | 개방 레지스트리·비정본 부록 소관 — 본 값 표는 유형 카탈로그를 열거하지 않는다(SP-INV 5) |
 
 - **Policy as Data 불변.** 위 값(판정 신호·역할 선택 상한·Projection 정책)은 전부 데이터이며, 값을 바꾸는 것만으로 성숙 거동이 조정된다 — Orchestrator 규약 절차나 정본 계약(04 §3.2·§3.3·§3.5·SP-INV)은 변경되지 않는다. 이 값 세트는 **E2E 구동을 위한 최소 실값**이며, 다른 임계·상한이 필요하면 `policy/` 데이터 정정으로 조정한다.
-- **미존재 정직 구분(L-07).** 위 값은 본 문서가 소유하는 **정본 값 문면(형태 A)**이며, 물리 데이터 파일(`solution-design-data/policy/default-policy.yaml`)은 현 시점 미존재로 W2 E2E Task가 이 값 그대로 생성할 예정이다(§12 실측).
+- **실측 기반 구분(L-07).** 위 값은 본 문서가 소유하는 **정본 값 문면(형태 A)**이며, 물리 데이터 파일(`solution-design-data/policy/default-policy.yaml`, 현행 `uahf/framework/adapters/claude/…`)은 성숙 run E2E로 이 값 기반으로 실재한다(§12 실측).
 
 ---
 
@@ -315,7 +299,7 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 
 ### §11.3 방법론·역할 카탈로그·타 벤더·모델명 0 (UAF-INV ⑥)
 
-- **자가 전수 스캔.** 본문 전체에 특정 설계 방법론 고유명·고정 역할 카탈로그(구체 역할명 열거)·타 AI 벤더·모델명이 **0건**임을 자가 스캔했다. §6·§7은 역할을 개방 네임스페이스·Capability 파생으로만 다루고 구체 역할명을 명명하지 않으며(SP-INV 5·8·UAF-INV ⑥), Policy 값(§7)은 판정 신호·상한·정책 스위치만 담고 방법론명을 담지 않는다. 격리 지점 허용 토큰(직렬화 형식·물리 경로 `framework/adapters/claude/…`·`.claude/…`·"주 세션"·"Advisor"·"Worker"·"서브에이전트 위임")은 이 Adapter 환경 자체의 토큰이므로 배제 대상이 아니다(C-3 비적용·자매 동형).
+- **자가 전수 스캔.** 본문 전체에 특정 설계 방법론 고유명·고정 역할 카탈로그(구체 역할명 열거)·타 AI 벤더·모델명이 **0건**임을 자가 스캔했다. §6·§7은 역할을 개방 네임스페이스·Capability 파생으로만 다루고 구체 역할명을 명명하지 않으며(SP-INV 5·8·UAF-INV ⑥), Policy 값(§7)은 판정 신호·상한·정책 스위치만 담고 방법론명을 담지 않는다. 격리 지점 허용 토큰(직렬화 형식·물리 경로 `planning/adapters/claude/…`·`uahf/framework/adapters/claude/…`·`.claude/…`·"주 세션"·"Advisor"·"Worker"·"서브에이전트 위임")은 이 Adapter 환경 자체의 토큰이므로 배제 대상이 아니다(C-3 비적용·자매 동형).
 
 ### §11.4 mention/use 경계·SP-INV 정합
 
@@ -326,25 +310,25 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 
 ## §12. 상태 서술 실측 대조 (L-07 — 미존재를 실재로 쓰지 않음)
 
-본 문서의 "실재/미존재" 서술을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-13 작성 시 `ls`/`find`/`git status` 직접 실측.** 실재를 주장하는 모든 행은 파일 시스템 직접 실측 후에만 기입했다. 현행 물리 경로는 `uahf/framework/adapters/claude/…`이다(§0 경로 표기 관례).
+본 문서의 "실재/미존재" 서술은 파일 시스템 직접 실측 후에만 기입한다(L-07). 현행 물리 위치: 본 문서는 `planning/adapters/claude/`(planning 레이어 어댑터 경계)에, 본 문서가 선언·소유하는 백엔드 데이터 트리는 `uahf/framework/adapters/claude/…` 아래에 있다(물리 위치는 2차 산출물 디커플링 트랙에서 확정).
 
-| 대상 (현행 물리 경로) | 본 문서 서술 | 실측 결과 (2026-07-13, 직접 실측) |
+| 대상 (현행 물리 경로) | 본 문서 서술 | 실측 결과 |
 |---|---|---|
-| `uahf/framework/adapters/claude/solution-design-binding.md` | 실재 (본 문서) | 실재 (이 파일 — 신규 생성). |
-| `uahf/framework/adapters/claude/contract-binding.md` (선행 확정 — 저장·버전·Provenance 외형 소유) | 실재 (§3·§4·§5·§6 참조·경계 인용 대상) | 실재 — 확인(무수정, § 포인터 대상). |
-| `uahf/framework/adapters/claude/discovery-binding.md` (핵심 골격 선례) | 실재 (§3·§4·§5·§7·§8·§10·§13 골격 선례) | 실재 — 확인(무수정, § 포인터 대상). |
-| `uahf/framework/adapters/claude/entry-binding.md`·memory-binding.md·loop-binding.md (자매 골격·채널 선례) | 실재 (자매 문서) | 실재 — 확인(무수정). |
-| planning/specs/04-solution-design.md (바인딩 대상 정본) | 실재 (v1.3 Baseline) | 실재 — §3·§4 확인(무수정, § 포인터 대상). |
-| planning/specs/03-project-contract.md (참조 정본) | 실재 (v1.2 Baseline) | 실재 — §3.1-B·§3.4·§3.5·§3.6 확인(무수정, § 포인터 대상). |
-| `discovery-data/contracts/uahf/project-contract.v1.md` (성숙 기준선 = Ground Truth) | 실재 (pc-uahf-001·instanceVersion 1·supersedes null·Ready — 성숙 입력) | 실재 — front-matter `id: pc-uahf-001`·`schemaVersion: "1.0"`·`instanceVersion: 1`·`supersedes: null` 실측(성숙 경로 v1→v2의 입력 기준선). |
-| `uahf/framework/adapters/claude/solution-design-data/` (SD 백엔드 루트) | **지원 구조 — 현 시점 미존재, W2 E2E Task 생성 예정** | **미존재** — 디렉터리 부재 확인(delegation 전제 정합). 경로·구조·형식·값은 본 문서 정본 문면. 생성하지 않음. |
-| `solution-design-data/events/maturation-<run-id>/`·`policy/default-policy.yaml` 하위 데이터 | **미존재** (W2 E2E Task 생성 예정) | **미존재** — 상위 `solution-design-data/` 자체가 부재. |
-| `discovery-data/contracts/uahf/project-contract.v2.md` (성숙 산출 — superseding 인스턴스) | **미존재** (W2 E2E Task 생성 예정; 경로 정본 = contract-binding §4.2) | **미존재** — v1만 실재, v2 부재(성숙 미실행). W2 E2E가 이 경로에 append 예정. |
-| 소비 프로젝트 `.claude/solution-design/` (일반 관례) | 경로 관례 확정(정본); 실행 메타는 성숙 실행 시 배치 | 본 저장소에는 해당 경로 미존재(정상 — 일반 관례는 소비 프로젝트 배치 대상). |
+| `planning/adapters/claude/solution-design-binding.md` | 실재 (본 문서) | 실재 (이 파일). |
+| `planning/adapters/claude/contract-binding.md` (저장·버전·Provenance 외형 소유) | 실재 (§3·§4·§5·§6 참조·경계 인용 대상) | 실재 — § 포인터 대상(무수정). |
+| `discovery/adapters/claude/discovery-binding.md` (핵심 골격 선례) | 실재 (§3·§4·§5·§7·§8·§10 골격 선례) | 실재 — § 포인터 대상(무수정). |
+| `entry/adapters/claude/entry-binding.md`·`uahf/framework/adapters/claude/`(memory·loop-binding 등) (채널·격리 선례) | 실재 | 실재 — § 포인터 대상(무수정). |
+| `planning/specs/04-solution-design.md` (바인딩 대상 정본) | 실재 (v1.3 Baseline) | 실재 — §3·§4 확인(무수정). |
+| `planning/specs/03-project-contract.md` (참조 정본) | 실재 (v1.2 Baseline) | 실재 — §3.1-B·§3.4·§3.5·§3.6 확인(무수정). |
+| `uahf/framework/adapters/claude/discovery-data/contracts/uahf/project-contract.v1.md` (성숙 기준선 = Ground Truth) | 실재 (pc-uahf-001·instanceVersion 1·supersedes null·Ready — 성숙 입력) | 실재 — 성숙 경로 v1→v2의 입력 기준선. |
+| `uahf/framework/adapters/claude/solution-design-data/` (SD 백엔드 루트) | 실재 (정본 문면 소유) | 실재 — `events/maturation-r001…r003/`·`policy/default-policy.yaml` 실측(물리 위치는 2차 산출물 디커플링 트랙에서 확정). |
+| `…/solution-design-data/events/maturation-<run-id>/events.jsonl`·`policy/default-policy.yaml` | 실재 (형식·값 정본 문면 소유) | 실재 — 성숙 run E2E 생성. |
+| `uahf/framework/adapters/claude/discovery-data/contracts/uahf/project-contract.v2.md` (성숙 산출 — superseding 인스턴스) | 실재 (경로 정본 = contract-binding §4.2) | 실재 — 성숙 경로 v1→v2 append(v1 문면 byte 불변, PC-INV 9). |
+| 소비 프로젝트 `.claude/solution-design/` (일반 관례) | 경로 관례 확정(정본) | 본 저장소에는 미존재(정상 — 일반 관례는 소비 프로젝트 배치 대상). |
 | 성숙 실행 규약 절차 로더·기록기·Policy 로더(형태 B) | 미도입 (형태 B 예정) | 미도입 — Bootstrap 상태(형태 A). |
 
-- **핵심 구분.** 본 문서가 확정한 백엔드 트리·기록 직렬화 어휘·게이트 채널·Policy 값·Provenance 성숙 run 내부 형식은 **정본 문면(형태 A)**이며, 물리 데이터 자산(`solution-design-data/…`·superseding v2)은 **현 시점 미존재**로 v1.4 W2 dogfooding E2E Task가 이 정본 구조·값 그대로 생성할 예정이다. 데이터 생성 주체는 W2 E2E Task이며, 본 문서는 구조·형식·경로·값의 정본만 소유한다(contract-binding §10·discovery-binding §13 선례 동형, L-07).
-- 실측과 불일치하는 서술은 0건이다 — 미존재(`solution-design-data/`·v2)를 실재로, 실재(자매 바인딩·04·03 정본·Ground Truth v1)를 미존재로 쓰지 않았다.
+- **핵심 구분.** 본 문서가 확정한 백엔드 트리·기록 직렬화 어휘·게이트 채널·Policy 값·Provenance 성숙 run 내부 형식은 **정본 문면(형태 A)**이며, 물리 데이터 자산(`solution-design-data/…`·superseding v2)은 성숙 run E2E로 이미 실재한다. 본 문서는 구조·형식·경로·값의 정본 문면을 소유하고, 그 물리 위치(현행 `uahf/framework/adapters/claude/…`)의 최종 확정은 2차 산출물 디커플링 트랙 소관이다(L-07).
+- 실측과 불일치하는 서술은 0건이다 — 미존재를 실재로, 실재를 미존재로 쓰지 않는다(L-07).
 
 ---
 
@@ -352,22 +336,21 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 
 - **재정의·확장 0.** 본 문서의 모든 매핑은 planning/specs/04 §3·§4의 물리 실현이다. 어떤 상태·전이·SP-INV·단계 계약·판정 형태·역할 추상·Projection 관계·경계 기준도 이 문서에서 진위가 새로 확정되지 않는다 — 판정 기준은 04 §3이다. 새 계약 요소(상태·전이·불변·필드·kind)를 창설하지 않았다. 방법론 고유명·고정 역할 카탈로그·타 AI 벤더·모델명 0건(UAF-INV ⑥ — 정본 청정).
 - **본 문서가 소유·확정하는 것.** 04 §4.1이 "Adapter 소관"으로 미룬 지점 — ① Expert Role 실행 호스팅 **역할 추상**(§6) ② 사용자 게이트 제시·응답 채널(§5) ③ `solution-design-data/` 백엔드 트리·기록 직렬화(§3·§4) ④ Policy 값 데이터 소스·직렬화 + 최소 실값(§7) — 과, 저장의 부속으로 ⑤ Provenance 성숙 run 내부 형식(§8)을 확정한다. Expert Role 물리 호스팅은 **설계하지 않는다**(04 §3.9 확장 포인트). superseding 인스턴스 저장·버전 표기·Provenance 외형·must-ignore 경계는 contract-binding §3·§4·§5·§6 소유이며 참조 인용만 한다(재정의 0).
-- **격리 토큰의 단일 자리.** 구체 직렬화 형식·물리 경로(`framework/adapters/claude/solution-design-data/…`·`.claude/solution-design/…`)·파일 확장자·Policy 값은 이 Adapter 경계 문서에 둔다. UAF 정본(planning/specs/04)은 이 토큰을 "Adapter 소관" 포인터로만 미뤘고, 본 문서가 그 소관자다(structure.md §5 C-3는 이 경계에 비적용 — 격리 보유).
-- **동시 작성 문서 경계(07 R2·R4).** 본 산출은 이 1개 파일(`framework/adapters/claude/solution-design-binding.md`)만 생성하며, 동시 작성 중일 수 있는 병렬 Task의 미완성 산출물(예: W2 E2E 데이터·`solution-design-data/` 트리 내용·superseding v2)을 인용·추측하지 않았다 — 위치·구조·형식·값의 정본 문면만 소유했다(07 R2). 확정된 인터페이스 계약(planning/specs/04 §3·§4·03 §3.1-B·§3.4·§3.5·§3.6·contract-binding §4.2·§5·§6·discovery-binding §3·§4·§5·§7·§8·§10·루트 UAF-INV)만 참조했다. UAF 정본·UAHF 정본·기존 바인딩·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 아래 open_questions로 에스컬레이션했다(추측 금지, 02-agent O4).
+- **격리 토큰의 단일 자리.** 구체 직렬화 형식·물리 경로(`uahf/framework/adapters/claude/solution-design-data/…`·`.claude/solution-design/…`)·파일 확장자·Policy 값은 이 Adapter 경계 문서에 둔다. UAF 정본(planning/specs/04)은 이 토큰을 "Adapter 소관" 포인터로만 미뤘고, 본 문서가 그 소관자다(structure.md §5 C-3는 이 경계에 비적용 — 격리 보유).
+- **동시 작성 문서 경계(07 R2·R4).** 본 문서는 `planning/adapters/claude/solution-design-binding.md` 1개 파일이며, 위치·구조·형식·값의 정본 문면을 소유한다(07 R2). 확정된 인터페이스 계약(planning/specs/04 §3·§4·03 §3.1-B·§3.4·§3.5·§3.6·contract-binding §4.2·§5·§6·discovery-binding §3·§4·§5·§7·§8·§10·루트 UAF-INV)만 참조했다. UAF 정본·UAHF 정본·기존 바인딩·물리 데이터를 수정·생성하지 않았다(07 R4·INV-2). 불확실 지점은 아래 open_questions로 에스컬레이션했다(추측 금지, 02-agent O4).
 
 ### open_questions (Advisor 에스컬레이션 — 전건 비차단)
 
 - **OQ-SD-1 (Policy 최소 실값 — 비차단).** §7.2 최소 실값 1세트(성숙 신호 4종·역할 상한 3·Projection 동적 선택)는 E2E 구동을 위한 본 문서의 Adapter 재량 확정이며(DP-5가 "최소 실값 1세트 정본 값 표로 확정"으로 위임·DP-X5 동형), Policy as Data이므로 값 조정은 데이터 정정일 뿐 정본 계약(04 §3.2·§3.3·§3.5) 변경이 아니다. W2 E2E 시나리오가 다른 상한·판정 신호를 요구하면 Advisor 재확정 또는 `policy/` 데이터 정정으로 조정 가능하다 — 계약 변경이 아니므로 비차단이다.
-- **OQ-SD-2 (경로 표기 이중성 — 비차단·후속 정합).** 본 문서 본문은 자매 UAF 레벨 바인딩과 위임 브리프의 표기 관례에 따라 `framework/adapters/claude/…`(접두 없음)로 표기하고, §12 실측 절만 현행 물리 경로 `uahf/framework/adapters/claude/…`로 서술했다. W0 설계 정본(§4.2 백엔드 트리)은 `uahf/` 접두를 붙여 표기한다 — 두 표기는 같은 경로의 저장소-루트 상대/절대 표현 차이일 뿐이며(자매 discovery-binding 재베이스라인 실측 서브블록도 동일 이중성 보유), 계약 내용 충돌은 아니다. 표기 정합(전 자매 바인딩 통일 여부)은 마일스톤 스코프 밖 후속 소관이므로 비차단이다.
-- **OQ-SD-3 (adapter-conformance UAF 레벨 바인딩 계수 — 비차단·후속).** adapter-conformance.md 근거 정본 비고는 UAF 레벨 바인딩을 "3종"(contract·entry·discovery-binding)으로 열거한다. 본 문서 신설로 UAF 레벨 바인딩은 **4종**이 된다. 이 계수 정합(3종→4종)은 adapter-conformance.md 소관이며 본 문서 단일 파일 스코프 밖이다(07 R4 — 타 파일 무촉). DP-X4대로 이 4종은 "자매 11종" 계수에 비합산이고 specs/11 BP-1~17 커버리지·Conformance 판정(verdict·C1~C3·6필드)에 무영향이므로, 계수 문면 갱신은 판정을 바꾸지 않는 비차단 후속 정합이다.
+- **OQ-SD-2 (백엔드 데이터 트리 물리 위치 — 비차단·2차 트랙).** 본 문서는 planning 레이어 어댑터 경계(`planning/adapters/claude/`)로 이동했으나, 본 문서가 선언·소유하는 백엔드 데이터 트리(`solution-design-data/`·성숙 산출 `discovery-data/contracts/uahf/`)는 1차 이동 범위 밖으로 현행 `uahf/framework/adapters/claude/…` 아래에 잔류한다. 그 최종 물리 위치 확정은 2차 산출물 디커플링 트랙 소관이며(본문 인라인 플래그와 정합), 계약 내용 변경이 아니므로 비차단이다.
 
 ---
 
 ## §14. 요약 (한눈에 보기)
 
-- 이 문서 = `framework/adapters/claude/` 경계의 **UAF 정본(planning/specs/04-solution-design) 바인딩** 산출물 — contract·entry·discovery-binding에 이은 **4번째 UAF 레벨 바인딩**(접두 없는 자매 골격 동형·adapter-conformance "자매 11종" 계수 비합산 DP-X4 동형). 정본 = 04 §3·§4(본 문서는 물리 실현, 재정의 아님 — §0).
+- 이 문서 = planning 레이어 자신의 Claude 어댑터 바인딩(`planning/adapters/claude/solution-design-binding.md`)이며 `planning/specs/04-solution-design.md` §3·§4를 바인딩한다. 정본 = 04 §3·§4(본 문서는 물리 실현, 재정의 아님 — §0).
 - **§2:** 04 "### 4.1 바인딩 지점" 표 **4행 전건**(호스팅·게이트 채널·저장 위치·Policy 실값)을 물리 실현으로 매핑(실재/규약 실현(형태 A)/형태 B 3구분). 실행 기록 직렬화는 행3의 일부(04 §3.2·§3.7 실현).
-- **§3 (DP-1):** `solution-design-data/` 백엔드 트리 정본 선언(events/maturation-<run-id>/·policy/)·실행 메타 파일은 코어 밖(SP-INV 2·3)·이원화(`.claude/solution-design/`, DP-X2 동형). superseding 인스턴스는 contract-binding §4.2 경로 append(참조 인용·재정의 0). 현 시점 미존재·W2 E2E 생성(L-07).
+- **§3 (DP-1):** `solution-design-data/` 백엔드 트리 정본 선언(events/maturation-<run-id>/·policy/)·실행 메타 파일은 코어 밖(SP-INV 2·3)·이원화(`.claude/solution-design/`, DP-X2 동형). superseding 인스턴스는 contract-binding §4.2 경로 append(참조 인용·재정의 0). 성숙 run E2E로 실재(현행 `uahf/framework/adapters/claude/…`, 물리 위치는 2차 산출물 디커플링 트랙에서 확정 — L-07).
 - **§4 (DP-2):** append-only 기록 로그(`events.jsonl` 동형·1 사건 = 1 레코드·seq 순서 값 전속·물리 시각 별도 실측 성격 L-09). 최소 레코드 6종(`MaturationRunStarted`·`StateTransition`·`GatePresented`·`UserResponded`·`OutputRecorded`·`MaturationRunConcluded`) = Adapter 기록 관례·04 §3.4 상태/전이 T1~T11 payload 인용·Discovery Event 15종 명칭 차용 0·새 코어 계약 요소 0.
 - **§5 (DP-4):** 주 세션 사용자 제시·응답 채널(discovery-binding §5 동형)·T8(→Matured)·T9(→Skipped)·T10(→Reviewing 재진입)·T11(→Escalated) 실의미·제시/응답 각 레코드. 승인 전 Matured 불가(SP-INV 4 — `UserResponded`가 T8/T9 전이에 선행).
 - **§6 (DP-3):** 주 세션(Advisor) Orchestrator 규약 절차·Expert Role 수행 = 기존 위임 실행 관행 재사용·새 병렬 프레임워크 0·물리 호스팅 설계 0(04 §3.9). 역할 추상까지만·최소 할당·개방 네임스페이스(SP-INV 5·6·8). 04 코어 문면 무촉.
@@ -375,5 +358,5 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 - **§8:** Provenance 성숙 run 내부 형식(run 식별자·이벤트 로그 참조·기준선 vN 참조·Policy 참조)만 확정. 외형·must-ignore 경계는 contract-binding §6 소유(재정의 0·discovery-binding §10 경계 동형)·성숙 활동 측 소비 전용·누출 차단(SP-INV 2·3).
 - **§10:** 04 "### 4.2" 이식 교체 지점 대응 표 — 유지 열 = §3.1·§3.2·§3.3·§3.4·§3.5·§3.6·§3.8(C-1 동형).
 - **§11:** 상시 불변 자기 점검 — 재정의 0·새 계약 요소 창설 0·Discovery Event 15종 명칭 차용 0(mention/use 경계)·방법론·역할 카탈로그·타 벤더·모델명 0·SP-INV 1~8 정합.
-- **§12:** 실측 대조 — `solution-design-data/`·superseding v2 현 시점 미존재(W2 E2E 생성 예정), 자매 바인딩·04·03 정본·Ground Truth v1 실재. 미존재를 실재로 쓰지 않음(L-07).
+- **§12:** 실측 대조 — `solution-design-data/`·superseding v2 실재(성숙 run E2E 생성, 현행 `uahf/framework/adapters/claude/…`), 바인딩·04·03 정본·Ground Truth v1 실재. 실측과 불일치 서술 0(L-07).
 - 04·03·02·루트 재정의 0, Glossary 용어 신설 0, 새 계약 요소 창설 0, 실행 코드 0(형태 A). 구체 직렬화 형식·물리 경로·Policy 값 토큰은 이 Adapter 경계에서 허용된다(격리 지점).

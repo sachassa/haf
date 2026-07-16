@@ -1,7 +1,7 @@
-# framework/adapters/claude/project-orchestration-binding — Claude Project Orchestration Adapter 바인딩
+# orchestration/adapters/claude/project-orchestration-binding — Claude Project Orchestration Adapter 바인딩
 
 작성일: 2026-07-13
-상태: v1.6 Baseline (CP2 5단계 전건 첫 판정 Pass — S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0 · CP3 승인 · 사용자 승인 2026-07-13) — 게이트 큐 제시 채널(§3)·Model Selection 실값 매핑·OQ-SH-4 해소(§4)·직렬화·capability→물리 호출 매핑·run 데이터 백엔드·AgentSpec 실값 레지스트리 관례·Artifact Record 직렬화(§5) 확정. 축소판 종단 dogfooding E2E(시나리오 j) 실 CLI 5 세션으로 실증. 직전 기준선: S5 확정(CP2 판정 대기).
+상태: 05 계약(§3.3 Gate Policy·§3.5 Model Selection·§3.6 Artifact Record·§2.2 게이트 큐)의 claude 환경 물리 실현 매핑 — 게이트 큐 제시 채널(§3)·Model Selection 실값 매핑·OQ-SH-4 해소(§4)·직렬화·capability→물리 호출 매핑·run 데이터 백엔드·AgentSpec 실값 레지스트리·Artifact Record 직렬화(§5) 확정. 축소판 종단 dogfooding E2E(시나리오 j)로 실증.
 상위 규약: AGENT.md
 근거 정본:
 
@@ -13,27 +13,14 @@
 - `uahf/framework/adapters/claude/loop-binding.md`·`verifier-binding.md` — 사람 개입 채널(03 §3.1-D 사람 승인 요청이 Claude Code 세션에서 사용자에게 제시된다)·역할 = 서브에이전트 디스패치 관례의 선행 표본.
 - `uahf/framework/core/structure.md` §4·§5 — Adapter 경계 = 격리 지점(C-3 비적용·구체 토큰 허용)의 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 중립 계약(05·gates.py)을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 AI·환경·직렬화 형식·물리 경로·실행 옵션 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용·자매 바인딩 §0 동형). 단 이 문서는 05·gates.py 의 계약을 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
-
----
-
-## §9. 이력 (Revision History)
-
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-13 | S3 Draft (부분) | 최초 작성. `framework/adapters/claude/` 경계의 신규 산출물(UAF 레벨 바인딩 5종째를 Adapter 물리 경계에 동거 — contract/entry/discovery/solution-design-binding 선례·05 §5). **본 판은 게이트 큐 제시 채널(§3)만 확정**한다: `pending_gates` 파생 뷰를 이 환경에서 사용자에게 제시하는 물리 채널(Claude Code 세션 표면·구조화 제시)과, 사용자·Advisor 의 해소 응답을 게이트 해소 이벤트로 append 하는 물리 관례(`gate::<gate_id>` cycle·`append_gate_resolution` actor 매핑)를 바인딩한다. 정지 신호(종료 코드 2)·Autonomy→권한 플래그 매핑은 step-hosting-binding 확정분을 상속·인용한다. 직렬화 형식·capability→물리 호출 매핑·run 데이터 백엔드 경로·모델 정책 실값은 **S4·S5 소관으로 미확정**(§1·§4 스텁). 05·gates.py 계약 재정의 0, 새 계약·새 용어·새 개입 조건 0. 신설 경로 밖 파일 무수정. | Worker (Advisor 위임, Task S3) |
-| 2026-07-13 | S4 Draft (부분) | **§4 신설(Model Selection 실값 매핑 관례·OQ-SH-4 해소 기록)** + 절 재베이스라인(구 §4 미확정→§5·구 §5 실측→§6·구 §6 OQ→§7 — BPD-17 재베이스라인 패턴·과거 §9 행 문면 불변 보존). §4.1 = 불투명 슬롯(중립 정책·`tier-a` 등)→claude 모델 별칭(`haiku`/`sonnet`/`opus`) 매핑 관례(Policy as Data·격리 지점 구체 토큰 허용)·hysteresis/재선택은 중립 코드(`allocation.RESELECTION_TRIGGER_KINDS`) 소유. §4.2 = CP2 독립 슬롯(`cp2ModelSlot`)→`StepHost(cp2_model=...)`→`--model` 전달 경로. §4.3 = **OQ-SH-4 해소 기록**(중립 Host `host.py _dispatch_cp2` 최소 개정 1개소·`cp2_model` 기본 None 시 기존 거동 바이트 동일·step-host 회귀 17건 무손상·`config_schema.json` 선택 필드 추가). §5 갱신(S5 스텁으로 축소·allocation/model-selection 스키마 실재 반영)·§6 실측 대조 S4 재기술(orchestration 94·step-host 20 전건 Pass·전수 스캔 0). **step-hosting-binding §7 OQ-SH-4 문면 자체 갱신은 트랙 종단 정합 소관 — 미접촉.** 05·중립 코드 계약 재정의 0·새 계약·새 gateKind·새 개입 조건 0. `uahf/` 접촉 = 이 문서 + host.py(+config_schema·테스트) 2건뿐(§6 실측). | Worker (Advisor 위임, Task S4) |
-| 2026-07-13 | S5 확정 (CP2 판정 대기) | **§5 재저술(S5 스텁 → 확정)** — Artifact Registry(`artifacts.py`·§0 표 5종째 중립 모듈) 완성에 맞춰 직렬화·capability→물리 호출 매핑·run 데이터 백엔드·AgentSpec 실값 레지스트리·Artifact Record 직렬화 관례를 확정한다(과거 §9 행·§3·§4 문면 불변·BPD-17). §5.1 = 직렬화 형식(events.jsonl·revisions.jsonl·**artifacts.jsonl**·graph.json·gate_policy.json·steps/·정책 JSON — 1행 1레코드 append-only·events.py/revision.py/artifacts.py JsonlStore 관례). §5.2 = capability→물리 호출 매핑(step-invoker `ClaudeInvoker` 무수정 재사용·역할 디스패치 Worker/Verifier/Advisor·게이트 리뷰/승인 단위도 동일 경로). §5.3 = run 데이터 백엔드 = `orchestration-data/runs/<run-id>/`(discovery-data·solution-design-data·step-data 선례 동거). §5.4 = AgentSpec 실값 레지스트리 관례(불투명 modelPolicyClass→§4.1 별칭·PO-INV 6). §5.5 = **Artifact Record 직렬화 + 파생 인덱스**(approvalState = 게이트/검증 이벤트 파생 뷰·레지스트리 저장 0). **축소판 종단 dogfooding E2E(시나리오 j) 실증**: `orchestration-data/e2e/`(비프로덕션 드라이버) 실 claude CLI headless **5 세션**(haiku)로 설계 단위 user_decision 게이트 **물리 정지(exit 2)**→시뮬레이션 라벨 해소→구현 revision→구현 step→review 게이트→완주·deterministic replay 동일·상류 재실행 흔적 0. §6 실측 대조 S5 재기술(orchestration 126·step-host 20·step-invoker 19 전건 Pass). 05·중립 코드 계약 재정의 0·새 계약·새 gateKind·새 개입 조건 0. `uahf/` 접촉 = 이 문서 + host.py(S4·불변) + `orchestration-data/` 신설(§6 git 실측). | Worker (Advisor 위임, Task S5) |
-| 2026-07-13 | v1.6 Baseline | 마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 사용자 승인 — 기준선 확정(상태행 승격). CP2 5단계 전건 첫 판정 Pass(S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0)·CP3 승인. 본문 §3·§4·§5 계약 매핑·실측 대조 무변경. | Advisor |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행·자매 바인딩 §9 동형. 이후 개정은 이 표에 append-only 로 기록한다.)
+거버넌스: 이 문서는 `orchestration/adapters/claude/` 소속 **Adapter Binding 문서**다 — orchestration 레이어 자신의 Claude 어댑터 바인딩이며 `orchestration/specs/05-project-orchestration.md`(§3.3 등)와 `orchestration/framework/orchestrator/gates.py`를 바인딩한다. 이 경계는 중립 계약(05·gates.py)을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 AI·환경·직렬화 형식·물리 경로·실행 옵션 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용·자매 바인딩 §0 동형). 단 이 문서는 05·gates.py 의 계약을 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인으로 이뤄진다.
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
 - **정본은 `orchestration/specs/05-project-orchestration.md`(§3.3)와 `orchestration/framework/orchestrator/gates.py`다.** 이 문서는 그 계약의 **claude 환경 실현 매핑**이며, 계약 요소(gateKind 5종·심각도 전순서·게이트 단조성·해소 적격성·게이트 이벤트 필드 관례)를 **재정의·확장하지 않는다**. 계약 요소는 정본 § 포인터·심볼 참조로만 인용한다.
-- 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 05 §5 가 "게이트 큐 제시 채널·직렬화 형식·capability→물리 호출 매핑·run 데이터 백엔드 경로·정책 실값은 Adapter Binding 문서 소관"이라며 미룬 지점이 실재하는(부분 확정되는) 자리다.
+- 이 문서는 `orchestration/adapters/claude/` 소속 **Adapter Binding 문서**다. 05 §5 가 "게이트 큐 제시 채널·직렬화 형식·capability→물리 호출 매핑·run 데이터 백엔드 경로·정책 실값은 Adapter Binding 문서 소관"이라며 미룬 지점이 실재하는(확정되는) 자리다.
 - **격리 지점의 방향 반전(C-3 비적용).** 중립 경계(`orchestration/framework/orchestrator/`·05 본문)는 특정 AI·provider·실행 옵션 토큰이 0건이어야 한다(PO-INV 8). 이 문서는 그 **반대편**이다 — 구체 토큰(`claude` CLI·세션 표면·종료 코드·물리 경로)의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(자매 바인딩 §0 동형).
 - **범위 = 다섯 책임 전부 확정(S5).** 이 문서는 §3(게이트 큐 제시 채널)·§4(Model Selection 실값 매핑·OQ-SH-4 해소)에 더해 **§5(직렬화·capability→물리 호출 매핑·run 데이터 백엔드·AgentSpec 실값 레지스트리·Artifact Record 직렬화)를 확정**한다. §5 는 축소판 종단 dogfooding E2E(시나리오 j)로 **실 데이터 실증**되었다 — 데이터·물리 실현이 실재하며 그 실측 상태는 §6 이 정직하게 대조한다(L-07). 미실증분은 §7 OQ 로 남긴다.
 - **창설 금지.** 이 문서는 05 §3.3·§5·gates.py 를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. 새 gateKind·새 상태·새 개입 조건·새 이벤트 필드를 만들지 않는다. 게이트 이벤트는 03 §3.2-A 10필드 무수정 재사용이다.
@@ -41,7 +28,7 @@
 
 ---
 
-## §1. 목적 (본 판 = 부분)
+## §1. 목적
 
 이 문서는 05(§3.3 Gate Policy·§3.5 Model Selection·§3.6 Artifact Record·§2.2 게이트 큐)와 중립 코드(`gates.py`·`allocation.py`·`artifacts.py`·`orchestrator.py`)를 claude 환경 위에 **S5 시점의 구체 물리 실현**으로 매핑한다. **다섯 책임 전부 확정**한다:
 
@@ -122,7 +109,7 @@
 
 - **OQ-SH-4 — 해소됨 (본 트랙 S4, 2026-07-13).** step-hosting-binding §7 OQ-SH-4(중립 Host `host.py _dispatch_cp2` 가 CP2 를 `model=step.model` 로 디스패치해 검증 전용 모델 독립 지정 불가)는 본 트랙 S4 에서 **중립 Host 최소 개정으로 해소**되었다. 개정 = `StepHost` 생성자에 `cp2_model` 파라미터 추가(기본 `None`)·`_dispatch_cp2` 의 CP2 모델을 `self.cp2_model if self.cp2_model is not None else step.model` 로 변경(1개소). **기본값 `None` 시 기존 거동(model=step.model) 바이트 동일 보존** — 기존 step-host 회귀 전건 무손상. `config_schema.json` 에 선택 필드 `cp2_model`(불투명 슬롯·형태만) 추가. 계약 무변(02 §4 슬롯 의미 그대로)·중립 Host 는 슬롯 값을 해석하지 않는다(SH-INV-8 동형).
 - **정본 문면 갱신 위치.** step-hosting-binding §7 OQ-SH-4 문면 자체의 상태 갱신은 **트랙 종단 정합 소관**이며 본 문서가 대신 갱신하지 않는다(무수정 경계 — 05 §6). 해소 사실은 이 § 이 기록한다.
-- **`uahf/` 트리 접촉 2건(본 트랙 누계).** (i) 이 바인딩 문서(S3 신설·S4 §4 추가). (ii) `framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(+`config_schema.json`·step-host 테스트) — OQ-SH-4 해소. 그 외 `uahf/` 정본·중립 코드·append-only 데이터 무촉(형상 관리 상태 조회로 확인·§6 실측 대조).
+- **`uahf/` 트리 접촉(본 트랙).** `uahf/framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(+`config_schema.json`·step-host 테스트) — OQ-SH-4 해소. 그 외 `uahf/` 정본·중립 코드·append-only 데이터 무촉(형상 관리 상태 조회로 확인·§6 실측 대조).
 
 ---
 
@@ -142,7 +129,7 @@
 - **실행 주체 = fresh 세션(claude CLI headless)**. Orchestrator 가 직렬화한 단위는 중립 Step Host 를 통해 `step-invoker/claude_invoker.py`(`ClaudeInvoker`·무수정)로 디스패치된다. capability 슬롯은 매칭 입력이고(§5.4), 물리 호출은 role 슬롯이 주도한다 — Worker(실행)·Verifier(CP2·`review_required` 추가 리뷰)·Advisor(`approval_required` CP3)는 전부 `--append-system-prompt` 역할 브리프로 fresh 세션에 실린다(step-hosting-binding §5.1·§5.2 동형·신설 0). 게이트 리뷰/승인 단위도 같은 디스패치 경로를 쓴다(orchestrator `_dispatch_gate_step`).
 - **산출물 포집 = 투명 래퍼.** Orchestrator 가 실행 invoker 를 `ArtifactCapturingInvoker`(중립·투명)로 감싸 Worker 완료 보고의 artifacts 를 선언 원장에 포집한다. 래퍼는 반환을 변경하지 않으며(재정의 0) CP2/CP3 verdict 반환은 포집하지 않는다.
 
-### §5.3 run 데이터 백엔드 = `framework/adapters/claude/orchestration-data/runs/<run-id>/`
+### §5.3 run 데이터 백엔드 = `uahf/framework/adapters/claude/orchestration-data/runs/<run-id>/` (물리 위치는 2차 산출물 디커플링 트랙에서 확정)
 
 discovery-data·solution-design-data·step-data 선례 동거. 구조:
 
@@ -188,7 +175,7 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 - **중립 코드 실재 (S5).** S5 는 `orchestration/framework/orchestrator/artifacts.py`·`artifact_record_schema.json`·`tests/test_artifacts.py` 를 신설하고, `orchestrator.py`(선택 `artifact_store`·투명 포집 래퍼 배선·`artifact_registry()`/`resolve_references()` 파생 메서드)를 최소 개정했다(`artifact_store=None` 기본 시 S2~S4 거동 바이트 동일 보존). 자체 테스트는 표준 라이브러리 `unittest` 만으로 통과한다 — **orchestration 126건(신규 32 + S2~S4 회귀 94)·step-host 20건·step-invoker 19건 = 전건 Pass**(실행 출력 실측).
 - **PO-INV 8(중립성) 실측.** `orchestration/framework/orchestrator/`(artifacts.py 포함 전 `.py`·전 `.json`·테스트)에 provider·모델·CLI 옵션 토큰 0건(전수 스캔). approvalState 어휘(draft/verified/approved/user_approved)·verdict `Pass` 는 05 §3.6·06 계약 어휘다. 구체 토큰(`claude`·모델 별칭 `haiku`/`sonnet`/`opus`·`--model`·권한 플래그)은 이 바인딩 문서·step-invoker 코드·`orchestration-data/e2e/` 드라이버(격리 지점)에만 존재한다.
 - **축소판 종단 E2E 실측 (시나리오 j).** `orchestration-data/e2e/`(비프로덕션 드라이버) 실 claude CLI headless **5 세션**(haiku)로 종단 흐름 실증 — Phase 1(exit 2 게이트 정지·2 세션)·Phase 2(exit 0 완주·3 세션). run 데이터 = `runs/orch-j-e2e/`(events.jsonl 8 이벤트·revisions.jsonl 1·artifacts.jsonl 2·워크스페이스 실 산출 2). 상류 재실행 흔적 0·replay 2회 동일·최종 레지스트리 approvalState 파생(user_approved/verified) 실측. 실 세션 stdout·argv 는 `logs/invoke-*.json` 에 캡처(은폐 0·O5).
-- **`uahf/` 접촉 실측(본 트랙 누계).** (i) 이 바인딩 문서(S3 신설·S4·S5 §5 확정). (ii) `framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(S4·**S5 무촉**·`cp2_model=None` 시 기존 거동). (iii) `framework/adapters/claude/orchestration-data/` **신설**(바인딩 물리 경계 동거 run 데이터·E2E 드라이버 — UAF 레벨 바인딩 선례 4건 동형). 그 외 `uahf/` 정본·중립 코드·append-only 데이터(discovery-data·solution-design-data·step-data·memory-data·loop-data) 무촉(형상 관리 상태 조회로 확인·git 실측).
+- **`uahf/` 접촉 실측(본 트랙 누계).** (i) `uahf/framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(S4·**S5 무촉**·`cp2_model=None` 시 기존 거동). (ii) `uahf/framework/adapters/claude/orchestration-data/` **신설**(run 데이터 백엔드·E2E 드라이버 — 2차 산출물 디커플링 트랙까지 `uahf/` 잔류). 그 외 `uahf/` 정본·중립 코드·append-only 데이터(discovery-data·solution-design-data·step-data·memory-data·loop-data) 무촉(형상 관리 상태 조회로 확인·git 실측).
 - **정직 구분 (L-07).** 시나리오 j 의 사용자 게이트 해소·구현 단위 제안은 **드라이버 픽스처**이며 실 사용자·실 LLM 제안 step 이 아니다(§5.6·`gate-resolution-record.json`·`annotation::sim` 이벤트에 명시). 실증 대상은 게이트 물리 정지·사용자 actor 적격성·revision 인과 사슬·deterministic 재개이며 그 축들은 실 데이터로 남는다. 산출 내용은 CP2 재현성을 위해 정확 내용으로 고정한 픽스처다(설계 메모를 exact-content 설계 결정 레코드로 축약).
 
 ---

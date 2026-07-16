@@ -72,7 +72,7 @@ orchestration Layer의 내부는 다음 요소로 구성된다. 각 요소의 �
 - **파이프라인 위상.** orchestration Layer는 루트 §2.3 "Agentic Runtime (향후)" slot을 실현하는 UAF 레벨 컴포넌트다 — 상류 산출물을 인수해 프로젝트 완료까지 실행 lifecycle을 무인 조율하는 자리다(루트 §2.2 파이프라인 하류·§2.3). UAHF의 Runtime Layer(`uahf/specs/00-glossary.md` §3.2-A)와는 **별개 네임스페이스**다(루트 §2.3 주의·§12).
 - **단일 run 무인 관리는 Step Host 소관·재구현 0.** 본 Layer는 단일 run의 사이클 구동·상태 파생·결정적 재개를 신설하지 않고 UAHF Step Host에 위임한다(05 §2.2). 디스패치 입도는 run/작업 단위이지 개별 step이 아니다.
 - **대화 주체 분리 — Discovery 대화를 흡수하지 않음.** Orchestrator는 headless이며 사용자 대화 주체와 분리된다. 대화형 단위(Discovery Eliciting류)는 규칙의 예외가 아니라 "사용자 채널에 위임되는 capability"로 정책 데이터에 선언된다 — 본 Layer가 Discovery 대화를 흡수·재수행하지 않는다(05 §2.2·§3.7).
-- **Adapter 바인딩 (포인터만).** 직렬화 형식·물리 배치·게이트 큐 제시 채널·capability→물리 호출 매핑·정책 실값은 전부 Adapter 소관이다. 소관 정본: 05 §5 및 `uahf/framework/adapters/<adapter>/project-orchestration-binding.md`(신설 예정). 본 문서는 물리 형태를 지시하지 않는다.
+- **Adapter 바인딩 (포인터만).** 직렬화 형식·물리 배치·게이트 큐 제시 채널·capability→물리 호출 매핑·정책 실값은 전부 Adapter 소관이다. 소관 정본: 05 §5 및 `orchestration/adapters/<adapter>/project-orchestration-binding.md`(신설 예정). 본 문서는 물리 형태를 지시하지 않는다.
 
 ---
 
@@ -120,7 +120,7 @@ orchestration Layer는 다음을 **수행하지 않는다**(경계). 각 항목�
 | 할당 3층(Role/AgentSpec/Instance) · Model Selection | `orchestration/specs/05-project-orchestration.md` §3.4 · §3.5 |
 | Artifact Record·Registry | `orchestration/specs/05-project-orchestration.md` §3.6 |
 | 불변 PO-INV 1~8 | `orchestration/specs/05-project-orchestration.md` §4 |
-| Adapter Binding(바인딩 지점·무수정 경계) | `orchestration/specs/05-project-orchestration.md` §5 · §6 · `uahf/framework/adapters/<adapter>/project-orchestration-binding.md` |
+| Adapter Binding(바인딩 지점·무수정 경계) | `orchestration/specs/05-project-orchestration.md` §5 · §6 · `orchestration/adapters/<adapter>/project-orchestration-binding.md` |
 | substrate 계약(단일 run 무인 관리) | `uahf/framework/runtime/step-hosting-protocol.md` |
 | Agentic Runtime slot · 의존 방향 | 루트 `ARCHITECTURE.md` §2.3 · §2.5 |
 | Layer 연결·오케스트레이션 정식화 예약 | 루트 `ARCHITECTURE.md` §11 |

@@ -90,7 +90,7 @@ planning Layer의 내부는 다음 요소로 구성된다. 각 요소의 상세 
 - **이중 지위.** Project Contract는 (i) 파이프라인의 한 **요소**(Discovery의 산출)이면서 동시에 (ii) UAF↔UAHF의 **계약 접점**(Stable Contract·Public API·유일 접점)이다 (루트 §2.2 "Project Contract의 이중 지위 주의"·§8 UAF-INV ①). 이 이중 지위의 상세(정본 배치·논리 스키마 전용 경계)는 03 §0·§3.1이 소유한다.
 - **파이프라인 위상.** planning Layer(Project Contract 요소)는 파이프라인의 **접점 단계**다 — 상류 Discovery의 종단 산출을 받아 하류 UAHF의 선택 입력으로 흐르며, 이 지점에서 UAF와 UAHF가 만난다 (루트 §2.2). 이 위상은 "이 Layer가 파이프라인에서 차지하는 자리"를 가리키는 표지이며, 계약의 알고리즘·필드 상세는 03이 소유한다(본 문서는 복제하지 않는다).
 - **버저닝 위상 (개관).** Contract는 Public API로서 **장기 호환을 유지**한다 — 이것이 이 Layer의 위상적 책임이다. 버전 규율(schemaVersion/instanceVersion 분리·SemVer·tolerant reader·필드 제거 금지)의 상세 계약은 03 §3.3·§3.4가 소유하고, 본 문서는 요지와 포인터까지만 둔다 (루트 §7.1 ②).
-- **Adapter 바인딩 (포인터만).** Contract의 직렬화 형식·물리 포맷·저장 위치·버전 표기·Provenance 물리 형식은 전부 Adapter 소관이다. 소관 정본: 03 §4(바인딩 대상·이식 교체 지점) 및 해당 실행 환경 Adapter의 Contract 바인딩(`uahf/framework/adapters/<adapter>/contract-binding.md`). 본 문서는 물리 형태를 지시하지 않는다.
+- **Adapter 바인딩 (포인터만).** Contract의 직렬화 형식·물리 포맷·저장 위치·버전 표기·Provenance 물리 형식은 전부 Adapter 소관이다. 소관 정본: 03 §4(바인딩 대상·이식 교체 지점) 및 해당 실행 환경 Adapter의 Contract 바인딩(`planning/adapters/<adapter>/contract-binding.md`). 본 문서는 물리 형태를 지시하지 않는다.
 
 ---
 
@@ -138,13 +138,13 @@ planning Layer는 다음을 **수행하지 않는다**(경계). 각 항목은 �
 | 인스턴스 거버넌스(append-only·supersedes 계보) | `planning/specs/03-project-contract.md` §3.4 |
 | UAHF Interface(선택 입력·두 소비 지점·정식 등재 확장 포인트) | `planning/specs/03-project-contract.md` §3.5 |
 | 불변 PC-INV 1~12 | `planning/specs/03-project-contract.md` §3.6 |
-| Adapter Binding(직렬화·저장 위치·버전 표기·Provenance 물리 형식) | `planning/specs/03-project-contract.md` §4 · `uahf/framework/adapters/<adapter>/contract-binding.md` |
+| Adapter Binding(직렬화·저장 위치·버전 표기·Provenance 물리 형식) | `planning/specs/03-project-contract.md` §4 · `planning/adapters/<adapter>/contract-binding.md` |
 | Solution Design 단계(성숙 활동) 상세 계약 — 단계 계약·복잡도 판정·협업 프로토콜 | `planning/specs/04-solution-design.md` §3 |
 | 역할 할당(Expert Role·Capability 선언·개방 네임스페이스·최소 할당) | `planning/specs/04-solution-design.md` §3.3 |
 | Projection(Contract=Source of Truth·파생 산출·동적 선택·워크스페이스 귀속) | `planning/specs/04-solution-design.md` §3.5 |
 | 성숙 경계 기준(vs Discovery — 미결 해소·신규 설계 결정 창출) | `planning/specs/04-solution-design.md` §3.6 |
 | 불변 SP-INV 1~8 | `planning/specs/04-solution-design.md` §3.8 |
-| Solution Design Adapter Binding(실행 호스팅·게이트 채널·저장 위치·Policy 실값·성숙 run provenance) | `planning/specs/04-solution-design.md` §4 · `uahf/framework/adapters/<adapter>/solution-design-binding.md` |
+| Solution Design Adapter Binding(실행 호스팅·게이트 채널·저장 위치·Policy 실값·성숙 run provenance) | `planning/specs/04-solution-design.md` §4 · `planning/adapters/<adapter>/solution-design-binding.md` |
 | 방법론 대응(비정본 부록 — P5·UAF-INV ⑥) | `planning/docs/appendix/methodology-mapping.md` |
 | Expert Role 예시 카탈로그(비정본 부록 — 계약·용어 미확정) | `planning/docs/appendix/expert-role-catalog.md` |
 | Projection 유형 예시 카탈로그(비정본 부록 — 계약·용어 미확정) | `planning/docs/appendix/projection-catalog.md` |

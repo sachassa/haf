@@ -1,0 +1,11 @@
+{
+  "cp3_model": "sonnet",
+  "verdicts": [
+    {
+      "step_id": "s1",
+      "kind": "completion",
+      "final_verdict": "Pass",
+      "rework": null
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-review",
+  "gateKind": "user_decision_required",
+  "phase": "final",
+  "resolved_by_actor": "human",
+  "simulated": false,
+  "user_response": "승인 — v2 발행 (T8 Validating 게이트, 주 세션 게이트 제시에 대한 실 사용자 응답 2026-07-14: 통합 설계·후보 v2 승인·Matured 종결·발행 진행)",
+  "note": "T8 Validating — 실 사용자 승인(04 §3.4 T8·05 §3.7). 게이트 해소만(revision 0). 성숙 산출(v2 발행)은 T8 승인 후 Advisor 소관."
+}

@@ -1,0 +1,36 @@
+{
+  "capability": "cap-proposal",
+  "delegation": {
+    "constraints": "워크스페이스 밖 파일 생성·수정 금지",
+    "context": [
+      "Project Orchestration (k) 비픽스처 스모크 — 제안 단위·user_decision 게이트",
+      "산출 artifact 는 실 사용자 게이트 해소 후 resolve_k.py 가 검증·승격한다"
+    ],
+    "done": "python -c \"import json;d=json.load(open('impl-proposal.json',encoding='utf-8'));ks=['id','task','done','interfaceContract','ownedBoundary','dependsOn','delegation','capability','role','model','unitType'];miss=[k for k in ks if k not in d];assert not miss,miss;assert d['id']=='impl',d['id'];assert d['dependsOn']==['d1'],d['dependsOn']\" (종료 코드 0 = 통과)",
+    "from": "Advisor",
+    "input": "design-decision.md",
+    "output": "impl-proposal.json",
+    "task": "워크스페이스의 design-decision.md 를 읽고, 그 결정을 구현하는 **단일 소형 구현 task 1개**를 JSON 으로 제안해 impl-proposal.json 에 기록하라. JSON 최상위는 단일 객체이며 필수 키는 다음 11종이다:\n  - id: 정확히 'impl'.\n  - task: 자족적 지시문(fresh-context 전제) — 구현 대상 파일명·내용 요건·워크스페이스 밖 파일 생성/수정 금지·Execute 종료 시 CP1 자체 점검(done AC 실행) 지시를 모두 포함.\n  - done: 단일 `python -c` 한 줄 실행형 AC(종료 코드 0 = 통과) — 네가 제안한 산출 파일을 검사한다.\n  - interfaceContract: {\"produces\": [<산출 파일 1개>], \"consumes\": [\"design-decision.md\"]}.\n  - ownedBoundary: [<산출 파일 1개>](상대경로).\n  - dependsOn: 정확히 [\"d1\"].\n  - delegation: {\"from\":\"Advisor\",\"to\":\"Worker\",\"task\":<task 와 동일>,\"input\":\"design-decision.md\",\"output\":<산출 파일>,\"done\":<done 과 동일>,\"context\":[...],\"constraints\":\"워크스페이스 밖 파일 생성·수정 금지\"}.\n  - capability: 'cap-impl'.\n  - role: 'Worker'.\n  - model: 'haiku'.\n  - unitType: 'implementation'.\n구현 task 는 **파일 1개 생성 규모**를 넘지 마라. 산출 파일명은 impl-proposal.json 와 겹치지 않게 하라. impl-proposal.json 외의 다른 파일은 생성하지 마라. 기록 후 done 의 AC 를 실제로 실행하여 종료 코드 0 을 확인한 뒤에만 완료 보고를 내라. 완료 보고 artifacts 에 impl-proposal.json 경로를 실어라.",
+    "to": "Worker"
+  },
+  "dependsOn": [
+    "d1"
+  ],
+  "done": "python -c \"import json;d=json.load(open('impl-proposal.json',encoding='utf-8'));ks=['id','task','done','interfaceContract','ownedBoundary','dependsOn','delegation','capability','role','model','unitType'];miss=[k for k in ks if k not in d];assert not miss,miss;assert d['id']=='impl',d['id'];assert d['dependsOn']==['d1'],d['dependsOn']\" (종료 코드 0 = 통과)",
+  "id": "p1",
+  "interfaceContract": {
+    "consumes": [
+      "design-decision.md"
+    ],
+    "produces": [
+      "impl-proposal.json"
+    ]
+  },
+  "model": "sonnet",
+  "ownedBoundary": [
+    "impl-proposal.json"
+  ],
+  "role": "Worker",
+  "task": "워크스페이스의 design-decision.md 를 읽고, 그 결정을 구현하는 **단일 소형 구현 task 1개**를 JSON 으로 제안해 impl-proposal.json 에 기록하라. JSON 최상위는 단일 객체이며 필수 키는 다음 11종이다:\n  - id: 정확히 'impl'.\n  - task: 자족적 지시문(fresh-context 전제) — 구현 대상 파일명·내용 요건·워크스페이스 밖 파일 생성/수정 금지·Execute 종료 시 CP1 자체 점검(done AC 실행) 지시를 모두 포함.\n  - done: 단일 `python -c` 한 줄 실행형 AC(종료 코드 0 = 통과) — 네가 제안한 산출 파일을 검사한다.\n  - interfaceContract: {\"produces\": [<산출 파일 1개>], \"consumes\": [\"design-decision.md\"]}.\n  - ownedBoundary: [<산출 파일 1개>](상대경로).\n  - dependsOn: 정확히 [\"d1\"].\n  - delegation: {\"from\":\"Advisor\",\"to\":\"Worker\",\"task\":<task 와 동일>,\"input\":\"design-decision.md\",\"output\":<산출 파일>,\"done\":<done 과 동일>,\"context\":[...],\"constraints\":\"워크스페이스 밖 파일 생성·수정 금지\"}.\n  - capability: 'cap-impl'.\n  - role: 'Worker'.\n  - model: 'haiku'.\n  - unitType: 'implementation'.\n구현 task 는 **파일 1개 생성 규모**를 넘지 마라. 산출 파일명은 impl-proposal.json 와 겹치지 않게 하라. impl-proposal.json 외의 다른 파일은 생성하지 마라. 기록 후 done 의 AC 를 실제로 실행하여 종료 코드 0 을 확인한 뒤에만 완료 보고를 내라. 완료 보고 artifacts 에 impl-proposal.json 경로를 실어라.",
+  "unitType": "proposal"
+}

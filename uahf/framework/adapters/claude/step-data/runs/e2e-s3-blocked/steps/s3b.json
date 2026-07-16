@@ -1,0 +1,30 @@
+{
+  "capability": "impl",
+  "delegation": {
+    "constraints": "값 추측 금지(O4)·워크스페이스 밖 금지",
+    "context": [
+      "형태 B W3 E2E s3 — blocked→정지 신호→Advisor 해소 대기"
+    ],
+    "done": "answer.txt 의 내용이 spec-s3.txt 의 값과 일치. (spec-s3.txt 부재 시 착수 불가)",
+    "from": "Advisor",
+    "input": "spec-s3.txt (이 워크스페이스의 사양 파일 — answer.txt 값의 원천)",
+    "output": "answer.txt",
+    "task": "input 이 가리키는 사양 파일 spec-s3.txt 를 읽고, 그 내용 그대로 answer.txt 를 생성하라. 만약 spec-s3.txt 가 존재하지 않으면 O4(추측 금지)에 따라 값을 절대 추측하지 마라 — answer.txt 를 만들지 말고, 실패 보고를 blocking='차단됨' 으로 제출하라. reason 에 무엇이 필요한지(사양 파일 spec-s3.txt 제공)를 scoped question 으로 명확히 적어라. 이것이 차단 선언이다.",
+    "to": "Worker"
+  },
+  "dependsOn": [],
+  "done": "answer.txt 의 내용이 spec-s3.txt 의 값과 일치. (spec-s3.txt 부재 시 착수 불가)",
+  "id": "s3b",
+  "interfaceContract": {
+    "depends_input": "spec-s3.txt",
+    "produces": [
+      "answer.txt"
+    ]
+  },
+  "model": "haiku",
+  "ownedBoundary": [
+    "answer.txt"
+  ],
+  "role": "Worker",
+  "task": "input 이 가리키는 사양 파일 spec-s3.txt 를 읽고, 그 내용 그대로 answer.txt 를 생성하라. 만약 spec-s3.txt 가 존재하지 않으면 O4(추측 금지)에 따라 값을 절대 추측하지 마라 — answer.txt 를 만들지 말고, 실패 보고를 blocking='차단됨' 으로 제출하라. reason 에 무엇이 필요한지(사양 파일 spec-s3.txt 제공)를 scoped question 으로 명확히 적어라. 이것이 차단 선언이다."
+}

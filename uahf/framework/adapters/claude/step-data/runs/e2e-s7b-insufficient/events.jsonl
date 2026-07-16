@@ -1,0 +1,1 @@
+{"actor": "Worker", "at": 1, "cycle_id": "s7b1", "from_stage": null, "outcome": "escalated", "ref": {"kind": "scoped-query", "missing": ["done", "delegation.done", "delegation.context"]}, "retry_count": 0, "seq": 1, "to_stage": "Consult", "trigger": "에스컬레이션"}

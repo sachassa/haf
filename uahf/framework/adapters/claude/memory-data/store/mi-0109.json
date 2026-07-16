@@ -1,0 +1,25 @@
+{
+  "id": "mi-0109",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-23",
+    "status": "Candidate",
+    "practice": "소비 프로젝트를 대상으로 UAF/UAHF 전 파이프라인을 실동작으로 관통하는 dogfooding 패턴(BPD-14 Architecture 실동작 검증·BPD-20 형태 A 성숙 run의 확장 계열): (1) Entry /new 규약 절차로 진입, (2) Greenfield Discovery를 실사용자와 질문 루프(G2)로 수행, (3) Contract v1을 소비 프로젝트 관례로 배치, (4) Scaffold를 형태 A로 설치, (5) orchestration을 형태 B로 호스팅하는 성숙 run 수행 — 비종단 4단계 headless step·Validating=user_decision에서 물리 정지·실사용자 해소·SD 정본 로그 이중 기록·사용자 수정 요구는 task_superseded로 append-only 반영, (6) 구현 run 수행 — 실 LLM 제안 step→게이트→revision(OQ-PO-B4 패턴), (7) 실동작 검증·Handoff. 드라이버(k/m/w)는 orchestration-data/e2e 격리 지점의 재사용 자산으로 활용한다.",
+    "evidence": "v1.7 「첫 실제 신규 외부 소비 프로젝트(UAHF Control Plane) + OQ-PO-B4 해소」에서 7요소 관통 실증 — Entry /new→Greenfield Discovery(실사용자 질문 루프)→Contract v1 배치→Scaffold 형태 A 설치→orchestration 형태 B 성숙 run(headless 4단계·Validating 물리 정지·실사용자 해소·SD 이중 기록·task_superseded append-only)→구현 run(실 LLM 제안·게이트·revision)→실동작 검증·Handoff. Baseline 사용자 승인 2026-07-14.",
+    "rationale": "형태 A/B 컴포넌트를 개별 단위로만 검증하면 파이프라인 이음새(Entry→Discovery→Contract→Scaffold→orchestration→구현)의 실접속과 게이트·append-only 계보가 관통 상황에서 성립하는지가 확인되지 않는다. 실사용자 게이트·물리 정지·append-only 반영을 포함한 관통 run은 각 단계 계약이 실접속에서 유지됨을 반증 가능하게 만들고, e2e 드라이버(k/m/w)는 격리 재사용 자산으로 후속 소비 프로젝트에 재활용된다.",
+    "applicability": "UAF/UAHF를 실제 외부 소비 프로젝트에 적용해 Entry→Discovery→Contract→Scaffold→orchestration→구현 전 파이프라인을 관통 검증하는 상황 — 신규 소비 프로젝트 온보딩·성숙/구현 run dogfooding·OQ-PO-B4류 비픽스처 성숙 run 재현. BPD-14(Architecture 실동작)·BPD-20(형태 A 성숙 run)의 소비 프로젝트 풀 파이프라인 확장.",
+    "provenance": {
+      "task_ref": "v1.7 첫 실제 신규 외부 소비 프로젝트(UAHF Control Plane) + OQ-PO-B4 해소 — Baseline 사용자 승인 2026-07-14",
+      "report_ref": "v1.7 파이프라인 관통 실증(Entry→Discovery→Contract→Scaffold→orchestration 성숙 run→구현 run→실동작 검증·Handoff)·e2e 드라이버 k/m/w 재사용",
+      "origin_role": "수행 Advisor+Worker(파이프라인 관통)·확정 사용자 게이트·심사 대기 Candidate",
+      "ordering_ref": "v1.7 세션 (mi-0108 다음)"
+    }
+  },
+  "source": "v1.7-external-consuming-project",
+  "timestamp": "2026-07-14T08:40:02.000+09:00",
+  "labels": {
+    "stable_id": "BPD-23",
+    "status": "Candidate",
+    "situation": ["consuming-project-full-pipeline-dogfooding", "entry-to-implementation-traversal", "maturation-and-implementation-run", "user-gate-physical-stop", "e2e-driver-reuse"]
+  }
+}

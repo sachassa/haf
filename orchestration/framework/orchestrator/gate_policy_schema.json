@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "orchestration/orchestrator/gate_policy_schema.json",
+  "title": "GatePolicy",
+  "description": "Gate Policy 데이터의 형태 정의(05 §3.3 — 본 Layer 신규 소유 계약·Policy as Data). 형태(shape)만 규정하며 provider·모델·상류 Layer 고유명 실값은 두지 않는다(PO-INV 8). 중요: 게이트 단조성 하한(floor)은 이 스키마가 아니라 코드(gates.py floor())가 소유한다 — 정책 데이터로 하한을 약화(내림)할 수 없고 effective_gate = max(floor, policy) 로 강화만 가능하다(PO-INV 4). 이 스키마의 어떤 값도 floor 를 낮추지 못한다. CP2 는 게이트 정책과 무관하다 — Step Host 가 policy·gate 무관하게 무조건 별도 디스패치하며 우회 경로가 없다(SH-INV-4). 직렬화 형식(JSON 등)·물리 배치·게이트 큐 제시 채널은 Adapter Binding 소관이다(05 §5).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "entries": {
+      "type": "array",
+      "description": "GatePolicyEntry 목록. 매칭 우선순위(gates.py evaluate): 명시 target(전이·artifact class·tier 2) > 단위 유형 기본(unitType·tier 1) > 전역 기본(빈 target·tier 0). 같은 tier 복수 매칭은 가장 심각한 gateKind 로 tie-break 한다(안전측·단조성 보존). 매칭 0 이면 auto_continue.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gate"],
+        "properties": {
+          "target": {
+            "type": "object",
+            "description": "descriptor 필드에 대한 등가 제약 집합(05 §3.3 target 차원: 단위 유형 | 전이 | artifact class). 빈 객체 또는 생략 = 전역 기본. 인식 키: unitType(tier 1) · transition(tier 2) · artifactClass(tier 2). 그 외 키도 등가 매칭에 쓰이나 tier 는 이 세 키로만 결정된다.",
+            "additionalProperties": true,
+            "properties": {
+              "unitType": {"type": "string", "description": "작업 단위 유형(개방 네임스페이스·데이터). 단위 유형 기본 tier."},
+              "transition": {"type": "string", "description": "전이 지점. 명시 target tier."},
+              "artifactClass": {"type": "string", "description": "artifact class. 명시 target tier."}
+            }
+          },
+          "gate": {
+            "type": "string",
+            "enum": [
+              "auto_continue",
+              "review_required",
+              "approval_required",
+              "escalation_required",
+              "user_decision_required"
+            ],
+            "description": "gateKind 5종(05 §3.3 어휘·심각도 오름차순). auto_continue < review_required < approval_required < escalation_required < user_decision_required."
+          },
+          "requireIndependentReview": {
+            "type": "boolean",
+            "default": false,
+            "description": "review_required 를 유효 CP2 evidence(cp2-pass) 재사용으로 해소하지 않고 항상 독립 2차 검증(추가 Verifier 리뷰 단위)을 디스패치할지 여부(05 §3.3·T2). 고위험 단위 유형 등에서 참으로 지정한다. 기본 false = evidence 재사용 허용. gateKind 심각도·코드 하한(floor)과 무관하며 PO-INV 4 를 훼손하지 않는다(review 는 floor 게이트가 아니다). 다른 gateKind 엔트리에서는 무의미(무시)하다."
+          }
+        }
+      }
+    },
+    "userActorClass": {
+      "type": "string",
+      "default": "human",
+      "description": "user_decision_required 정지 게이트를 해소할 수 있는 유일한 actor 클래스(확정 권위 보존·UAF-INV ⑤). 부적격 actor 의 해소 시도는 무효다(파생 뷰에 여전히 pending). 03 §3.2-A actor 어휘. 미지정 시 코드 fallback('human')."
+    },
+    "escalationResolvers": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": ["Advisor", "human"],
+      "description": "escalation_required 정지 게이트를 해소할 수 있는 actor 집합(03 §3.1-D — Advisor/사람). 02 §3.2-A 역할 어휘·03 actor 어휘. 미지정 시 코드 fallback(['Advisor','human'])."
+    },
+    "gateRaiser": {
+      "type": "string",
+      "default": "Advisor",
+      "description": "정지 게이트 요구 이벤트를 append 하는 권위 actor(03 §3.2-A actor 필드). 미지정 시 코드 fallback('Advisor')."
+    }
+  }
+}

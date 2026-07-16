@@ -1,4 +1,4 @@
-# uaf/specs/01-entry — Entry Layer & Entry Resolution 정본
+# entry/specs/01-entry — Entry Layer & Entry Resolution 정본
 
 작성일: 2026-07-07
 상태: v1.1 Baseline (CP2 첫 판정 Pass 15/0/0 · CP3 승인 · 사용자 승인 2026-07-07)
@@ -6,9 +6,9 @@
 근거 정본:
 
 - 사용자 승인 v1.1 실행 계획 (Project Discovery & Entry Layer Architecture) — 본 문서가 확정하는 내용(Entry 추상·Entry Descriptor 등록 모델·결정 테이블·판별 규칙·Evidence Source 확장 스키마)의 상위 정본. 특히 §"설계 골격 > uaf/specs/01-entry.md" 절과 결정 D3(Entry 판별)·D5(P1~P5)·D6-C1(Entry Resolution 확장성).
-- uaf/ARCHITECTURE.md (v1.1 Draft) — UAF 상위 구조 정본. 특히 §2(구조·의존 방향)·§3(설계 원칙 9종)·§4(P1~P5·상시 불변 확인)·§5(UAF-INV 6건)·§6(책임 경계표)·§8(용어)·§8.2(Discovery Request 인터페이스 추상). **본 문서는 이 정본을 재정의·확장하지 않고 § 포인터로만 참조한다.**
-- specs/00-glossary.md 0.2 (UAHF 용어 정본) — INV-3(Layer 정확히 6개)·용어 네임스페이스 분리의 근거. § 포인터로만 참조하며 UAHF 정본을 변경하지 않는다.
-- specs/TEMPLATE.md 0.1 — spec 문서 구조(§0~§9) 관행 참고.
+- ARCHITECTURE.md (v1.3) — UAF 상위 구조 정본. 특히 §2(구조·의존 방향)·§6(설계 원칙 10종)·§7(P1~P5·상시 불변 확인)·§8(UAF-INV 6건)·§10(책임 경계표)·§12(용어)·§12.2(Discovery Request 인터페이스 추상). **본 문서는 이 정본을 재정의·확장하지 않고 § 포인터로만 참조한다.**
+- uahf/specs/00-glossary.md 0.2 (UAHF 용어 정본) — INV-3(Layer 정확히 6개)·용어 네임스페이스 분리의 근거. § 포인터로만 참조하며 UAHF 정본을 변경하지 않는다.
+- uahf/specs/TEMPLATE.md 0.1 — spec 문서 구조(§0~§9) 관행 참고.
 
 ---
 
@@ -19,23 +19,23 @@
 | 2026-07-07 | v1.1 Draft | 최초 작성 — `uaf/specs/` 경계 최초 산출물. Entry Layer & Entry Resolution 정본 신설: Entry = 추상 연산·Entry Resolution만 담당·Discovery 비수행(P1·UAF-INV ④)·출력은 Discovery Request까지(§3.1); Entry Descriptor 등록 모델·Entry Registry·고정 Resolution 엔진(우선순위 + 결정성 검증)(D6-C1·§3.2); Workspace Evidence 2종(Contract 유무·Repository 유무)·Evidence Source 확장 스키마(Capability 선언형)(§3.2); Entry 2종 `/new`(순수 Greenfield 전용)·`/continue`(Incremental/Brownfield) 등재(§3.1·§3.2); Entry Resolution 결정 테이블 전 8조합(2종 × Contract 유무 × Repo 유무) 전수 열거·각 단일 결과(결정성 불변)(§3.2); 판별 규칙 D3 3건 문면화(§3.2); Discovery Request 정합(mode = 확장 네임스페이스·inputs = Evidence 참조 목록 — uaf/ARCHITECTURE.md §8.2 재정의 0·§ 포인터만)(§3.2·§3.3); Entry Registry 확장 포인트·가상 `/import` 등록 워크스루(변경 = Registry 행 + Policy 데이터(+ Evidence Source 선언)뿐·Layer·엔진 무변경)(§8); 상시 불변(Entry는 Discovery 비수행·Project Contract 직접 생성 안 함) 훼손 서술 0(§3.3). UAHF 정본 무수정(§ 포인터만·재정의 0)·특정 AI 실명·모델명·제품 기능명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.1 W2 T2) |
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, uaf/ARCHITECTURE.md §9·framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·uahf/framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본 배치.** 이 문서는 `uaf/specs/` 경계의 최초 산출물이며, **UAF Entry Layer와 Entry Resolution의 정본**이다. 상위 구조 정본은 uaf/ARCHITECTURE.md이고, 본 문서는 그 §2.1의 요소 "Entry Layer → Entry Resolution"의 상세 계약을 소유한다. 상위 구조·원칙·불변·용어는 uaf/ARCHITECTURE.md가 소유하며, 본 문서는 그것을 **§ 포인터로만 참조**하고 재정의하지 않는다.
+- **정본 배치.** 이 문서는 **UAF specs 경계**의 최초 산출물이며, **UAF Entry Layer와 Entry Resolution의 정본**이다. 상위 구조 정본은 ARCHITECTURE.md이고, 본 문서는 그 §2.2의 요소 "Entry Layer → Entry Resolution"의 상세 계약을 소유한다. 상위 구조·원칙·불변·용어는 ARCHITECTURE.md가 소유하며, 본 문서는 그것을 **§ 포인터로만 참조**하고 재정의하지 않는다.
 
-- **UAHF 정본 무수정.** 본 문서의 신설은 UAHF 정본(ARCHITECTURE.md·specs/·framework/·상위 규약)을 변경하지 않는다. UAHF 계약 요소는 § 포인터로만 참조한다 (UAF-INV ①, uaf/ARCHITECTURE.md §5).
+- **UAHF 정본 무수정.** 본 문서의 신설은 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 변경하지 않는다. UAHF 계약 요소는 § 포인터로만 참조한다 (UAF-INV ①, ARCHITECTURE.md §8).
 
-- **INV-3 무촉 (Layer 어휘 주의).** "Entry Layer"의 "Layer"는 UAHF 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter, specs/00-glossary.md §3.2-A)의 지층(stratum)이 아니라, UAF 파이프라인의 한 **단계(stage)** 명칭이다 (uaf/ARCHITECTURE.md §0 용어 주의·§2.3). 본 문서는 UAHF Layer 수를 늘리는 어떤 서술도 두지 않으며, Glossary INV-3("Layer는 정확히 6개다", specs/00-glossary.md §3.3)는 무촉이다.
+- **INV-3 무촉 (Layer 어휘 주의).** "Entry Layer"의 "Layer"는 UAHF 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter, uahf/specs/00-glossary.md §3.2-A)의 지층(stratum)이 아니라, UAF 파이프라인의 한 **단계(stage)** 명칭이다 (ARCHITECTURE.md §0 용어 주의·§2.4). 본 문서는 UAHF Layer 수를 늘리는 어떤 서술도 두지 않으며, Glossary INV-3("Layer는 정확히 6개다", uahf/specs/00-glossary.md §3.3)는 무촉이다.
 
-- **논리 식별자 주의.** 본 문서에서 `/new`·`/continue`·`/import`는 Entry의 **논리 식별자(name)**다. 이들의 **물리 진입 형태**(어떤 진입 명령·선택·추론으로 발화되는가)는 Adapter 소관이며(§4, AI-Agnostic — uaf/ARCHITECTURE.md §3 원칙 1), 본 문서는 특정 실행 환경의 명령 구문을 지시하지 않는다.
+- **논리 식별자 주의.** 본 문서에서 `/new`·`/continue`·`/import`는 Entry의 **논리 식별자(name)**다. 이들의 **물리 진입 형태**(어떤 진입 명령·선택·추론으로 발화되는가)는 Adapter 소관이며(§4, AI-Agnostic — ARCHITECTURE.md §6 원칙 1), 본 문서는 특정 실행 환경의 명령 구문을 지시하지 않는다.
 
-- **Core 문서 관행.** 본문 전체에 특정 AI 이름·모델명·제품 기능명을 두지 않는다 (uaf/ARCHITECTURE.md §0 Core 문서 관행 동형). 구체 실현(진입 명령의 물리 형태·직렬화 형식·환경 경로 관례)은 Adapter Binding 소관이며, 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
+- **Core 문서 관행.** 본문 전체에 특정 AI 이름·모델명·제품 기능명을 두지 않는다 (ARCHITECTURE.md §0 Core 문서 관행 동형). 구체 실현(진입 명령의 물리 형태·직렬화 형식·환경 경로 관례)은 Adapter Binding 소관이며, 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
 
-- **병렬 경계 주의.** Discovery Request의 소비자인 Project Discovery의 상세 계약은 `uaf/specs/02-discovery.md`(예정) 소관이다. 본 문서는 그 미완성 계약을 참조·추측하지 않으며, 두 문서가 공유하는 유일한 확정 인터페이스는 uaf/ARCHITECTURE.md §8.2의 Discovery Request 추상뿐이다.
+- **병렬 경계 주의.** Discovery Request의 소비자인 Project Discovery의 상세 계약은 `discovery/specs/02-discovery.md`(예정) 소관이다. 본 문서는 그 미완성 계약을 참조·추측하지 않으며, 두 문서가 공유하는 유일한 확정 인터페이스는 ARCHITECTURE.md §12.2의 Discovery Request 추상뿐이다.
 
 ---
 
@@ -51,14 +51,14 @@
 
 ### 본 문서가 실현하는 사용자 고정 원칙
 
-- **P1 (uaf/ARCHITECTURE.md §4).** Entry Layer는 UAF 공식 진입점으로서 사용자 입력으로 진입 종류를 판별하고 **Entry Resolution만 담당**한다. Discovery를 수행하지 않으며, 출력은 **Discovery Request까지**다. 본 문서는 이 원칙을 재정의하지 않고 그 실현 계약을 확정한다.
+- **P1 (ARCHITECTURE.md §7).** Entry Layer는 UAF 공식 진입점으로서 사용자 입력으로 진입 종류를 판별하고 **Entry Resolution만 담당**한다. Discovery를 수행하지 않으며, 출력은 **Discovery Request까지**다. 본 문서는 이 원칙을 재정의하지 않고 그 실현 계약을 확정한다.
 - **D6-C1 (승인 계획 §Context D6).** Entry Resolution 확장성 — 신규 Entry는 Entry Layer·Resolution 엔진 **무변경**으로, **Registry 행·Policy 데이터 추가만으로** 확장 가능해야 한다. 검증 수단은 **Entry Descriptor 등록 모델(§3.2) + Evidence Source 확장 스키마(§3.2) + 가상 `/import` 등록 워크스루(§8)**다. 본 문서가 이 확장성 계약의 소유 정본이다.
 
 ### Non-Goals
 
-- **Discovery 수행 제외.** Entry는 Discovery를 수행하지 않는다. 증거 수집·확신 판정·Project Contract 생성은 Project Discovery 소관이다 (uaf/ARCHITECTURE.md §6 책임 경계표, UAF-INV ④).
-- **Discovery Request 추상 재정의 제외.** Discovery Request의 3요소 구조({mode, inputs, policy})는 uaf/ARCHITECTURE.md §8.2가 확정한 정본 추상이다. 본 문서는 이를 재정의·확장하지 않고 Entry Resolution 산출이 그 추상에 정합함만 보인다.
-- **Discovery Policy 값 상세 제외.** 임계값·예산·종료 규칙 등 정책 값의 상세 정본은 `uaf/specs/02-discovery.md`(예정) 소관이다. 본 문서는 policy를 참조로만 다룬다.
+- **Discovery 수행 제외.** Entry는 Discovery를 수행하지 않는다. 증거 수집·확신 판정·Project Contract 생성은 Project Discovery 소관이다 (ARCHITECTURE.md §10 책임 경계표, UAF-INV ④).
+- **Discovery Request 추상 재정의 제외.** Discovery Request의 3요소 구조({mode, inputs, policy})는 ARCHITECTURE.md §12.2가 확정한 정본 추상이다. 본 문서는 이를 재정의·확장하지 않고 Entry Resolution 산출이 그 추상에 정합함만 보인다.
+- **Discovery Policy 값 상세 제외.** 임계값·예산·종료 규칙 등 정책 값의 상세 정본은 `discovery/specs/02-discovery.md`(예정) 소관이다. 본 문서는 policy를 참조로만 다룬다.
 - **사용자 흐름 시나리오 제외.** 진입부터 종단까지의 운용 시나리오는 후속 운용 문서 소관이다. 본 문서의 `/import` 워크스루는 **등록 모델 수준**까지만이다 (§8).
 - **물리 실현 제외.** 진입 명령의 물리 형태·직렬화 형식은 Adapter 소관이다 (§4).
 
@@ -66,34 +66,34 @@
 
 ## §2. 위치 (Position)
 
-- **아키텍처 상 위치.** UAF 파이프라인의 최상류 단계다 — Entry Layer → Entry Resolution (uaf/ARCHITECTURE.md §2.1 6요소 중 첫 두 요소). UAHF 6-Layer 스택의 **외부**, 그보다 상위의 UAF 레벨 구조이며 UAHF Layer를 늘리지 않는다 (§0, uaf/ARCHITECTURE.md §2.3).
+- **아키텍처 상 위치.** UAF 파이프라인의 최상류 단계다 — Entry Layer → Entry Resolution (ARCHITECTURE.md §2.2 6요소 중 첫 두 요소). UAHF 6-Layer 스택의 **외부**, 그보다 상위의 UAF 레벨 구조이며 UAHF Layer를 늘리지 않는다 (§0, ARCHITECTURE.md §2.4).
 - **의존하는 정본 (읽기 전 이해 필요).**
-  - uaf/ARCHITECTURE.md — §2(구조·의존 방향)·§3(원칙)·§4(P1~P5)·§5(UAF-INV)·§8(용어)·§8.2(Discovery Request 추상). 본 문서의 상위 계약.
-  - specs/00-glossary.md — §3.2-A(UAHF 6-Layer)·§3.3(INV-3). Layer 어휘 네임스페이스 분리 근거.
+  - ARCHITECTURE.md — §2(구조·의존 방향)·§6(원칙)·§7(P1~P5)·§8(UAF-INV)·§12(용어)·§12.2(Discovery Request 추상). 본 문서의 상위 계약.
+  - uahf/specs/00-glossary.md — §3.2-A(UAHF 6-Layer)·§3.3(INV-3). Layer 어휘 네임스페이스 분리 근거.
 - **이 문서에 의존하는 정본 (하류 소비자).**
-  - `uaf/specs/02-discovery.md`(예정) — Entry Resolution의 출력 Discovery Request를 소비한다. **단, 두 문서의 공유 계약은 uaf/ARCHITECTURE.md §8.2 확정 추상뿐이며, 본 문서는 하류의 미완성 계약을 참조·추측하지 않는다.**
-- **순환 의존 없음.** 의존은 항상 본 문서 → uaf/ARCHITECTURE.md 방향이다 (uaf/ARCHITECTURE.md §2.4 의존 방향 단방향).
+  - `discovery/specs/02-discovery.md`(예정) — Entry Resolution의 출력 Discovery Request를 소비한다. **단, 두 문서의 공유 계약은 ARCHITECTURE.md §12.2 확정 추상뿐이며, 본 문서는 하류의 미완성 계약을 참조·추측하지 않는다.**
+- **순환 의존 없음.** 의존은 항상 본 문서 → ARCHITECTURE.md 방향이다 (ARCHITECTURE.md §2.5 의존 방향 단방향).
 
 ---
 
 ## §3. Core Contract (AI 비의존)
 
-이 절에는 특정 AI 의존 내용이 한 줄도 들어가지 않는다 (specs/TEMPLATE.md §3, uaf/ARCHITECTURE.md §0 Core 문서 관행).
+이 절에는 특정 AI 의존 내용이 한 줄도 들어가지 않는다 (uahf/specs/TEMPLATE.md §3, ARCHITECTURE.md §0 Core 문서 관행).
 
 ### §3.1 Interface — Entry & Entry Resolution 연산
 
 **Entry (추상 연산).**
 
-- **정의.** Entry는 UAF 공식 진입점으로서 사용자 입력을 수용하는 **추상 연산**이다 (uaf/ARCHITECTURE.md §8.1). 물리 실현(진입 명령의 형태)은 Adapter 소관이다 (§4, AI-Agnostic).
-- **책임 한계.** Entry Layer가 수행하는 연산은 **Entry Resolution 하나뿐**이다. Entry는 Discovery를 수행하지 않고 Project Contract를 생성하지 않는다 (P1, UAF-INV ④; uaf/ARCHITECTURE.md §2.4·§4·§5).
+- **정의.** Entry는 UAF 공식 진입점으로서 사용자 입력을 수용하는 **추상 연산**이다 (ARCHITECTURE.md §12.1). 물리 실현(진입 명령의 형태)은 Adapter 소관이다 (§4, AI-Agnostic).
+- **책임 한계.** Entry Layer가 수행하는 연산은 **Entry Resolution 하나뿐**이다. Entry는 Discovery를 수행하지 않고 Project Contract를 생성하지 않는다 (P1, UAF-INV ④; ARCHITECTURE.md §2.5·§7·§8).
 
 **Entry Resolution (연산 계약).**
 
 | 항목 | 계약 |
 |---|---|
 | **입력** | (i) **명시 Entry** — 발화된 Entry의 논리 식별자(name). (ii) **Workspace Evidence** — 판별에 필요한 확정 증거 집합. v1.1 정본 증거는 2종이다: Project Contract 유무, Repository 유무 (§3.2 Evidence 스키마). |
-| **출력** | **Discovery Request 하나** — uaf/ARCHITECTURE.md §8.2가 확정한 3요소 구조 {mode, inputs, policy}. 그 이상(Discovery 수행·Project Contract·질문·전략)을 산출하지 않는다. |
-| **완료 조건** | 입력 (명시 Entry × Workspace Evidence) 조합이 Entry Registry의 결정 테이블에서 **정확히 한 결과**로 해소되고, 그 결과가 §8.2 추상에 정합하는 Discovery Request로 방출된다 (결정성 불변, §3.3 EN-INV 3). |
+| **출력** | **Discovery Request 하나** — ARCHITECTURE.md §12.2가 확정한 3요소 구조 {mode, inputs, policy}. 그 이상(Discovery 수행·Project Contract·질문·전략)을 산출하지 않는다. |
+| **완료 조건** | 입력 (명시 Entry × Workspace Evidence) 조합이 Entry Registry의 결정 테이블에서 **정확히 한 결과**로 해소되고, 그 결과가 §12.2 추상에 정합하는 Discovery Request로 방출된다 (결정성 불변, §3.3 EN-INV 3). |
 | **실패 보고** | 해소 불가·미확정 입력은 임의 해석하지 않는다. 판별 실패 유형과 대응은 §6가 정의한다. 충돌·모호 입력은 policy에 **사용자 확인 게이트**를 표기해 하류로 전달하며(Preserve Human Authority, UAF-INV ⑤), Entry가 스스로 확정하지 않는다. |
 
 **Entry 2종 (v1.1 등재).**
@@ -117,7 +117,7 @@ Entry는 코드에 고정된 열거가 아니라 **Entry Registry의 데이터 �
 | **trigger** | 진입 트리거의 **논리** 서술. 물리 발화 형태(진입 명령의 형태)는 Adapter 소관이며 Descriptor는 논리 트리거만 담는다 (§4). |
 | **requiredEvidence** | 이 Entry가 판별에 참조하는 **Evidence Source 종류 목록** (§3.2-C). 신규 Source 종류는 Evidence Source 확장 스키마로 추가된다. |
 | **decisionRows** | 이 Entry의 **결정 테이블 행** — (Evidence 조합 → 결과) 매핑. 코드가 아닌 **데이터(Policy as Data)**다 (§3.2-D). |
-| **modeMapping** | Evidence 조건별 **Discovery mode 매핑** — 이 Entry가 산출할 Discovery Request의 mode를 Evidence 조건에 따라 지정한다. mode는 확장 네임스페이스의 값이다 (§3.2-E, uaf/ARCHITECTURE.md §8.2). |
+| **modeMapping** | Evidence 조건별 **Discovery mode 매핑** — 이 Entry가 산출할 Discovery Request의 mode를 Evidence 조건에 따라 지정한다. mode는 확장 네임스페이스의 값이다 (§3.2-E, ARCHITECTURE.md §12.2). |
 
 **Entry Registry.** Entry Descriptor 레코드의 집합이다. **신규 Entry 등록 = Registry에 Descriptor 행 1개 + 그 행이 참조하는 Policy 데이터(decisionRows·modeMapping·필요 시 Evidence Source 선언) 추가**뿐이다. Entry Layer와 Resolution 엔진은 변경되지 않는다 (§3.3 EN-INV 4).
 
@@ -127,19 +127,19 @@ Entry는 코드에 고정된 열거가 아니라 **Entry Registry의 데이터 �
 2. **증거 수집.** Descriptor의 requiredEvidence가 지정한 Evidence Source들의 값을 관측한다 (관측만 — Entry는 증거를 수집·해석하는 Discovery를 수행하지 않는다; 유무 값의 확정 관측까지다).
 3. **우선순위 평가.** Descriptor의 decisionRows를 **우선순위 순서**로 관측 증거에 대조하여 매칭되는 단일 결과 행을 선택한다.
 4. **결정성 검증.** decisionRows는 각 Entry의 Evidence 값 공간을 **전수·상호배타로 분할**해야 한다 — 어떤 증거 조합도 두 개 이상의 결과 행에 매칭되지 않고(상호배타), 매칭되는 행이 없는 조합이 존재하지 않는다(전수). 이 검증은 등록 시점의 무결성 조건이며, 위반 Registry는 유효하지 않다.
-5. **방출.** 선택된 결과를 §8.2 추상에 정합하는 Discovery Request {mode, inputs, policy}로 방출한다.
+5. **방출.** 선택된 결과를 §12.2 추상에 정합하는 Discovery Request {mode, inputs, policy}로 방출한다.
 
-엔진은 이 5단계 외의 정책 분기를 갖지 않는다. 정책(어느 조합이 어느 결과가 되는가)은 전부 decisionRows·modeMapping·policy 데이터에 있다 (Policy as Data — uaf/ARCHITECTURE.md §3).
+엔진은 이 5단계 외의 정책 분기를 갖지 않는다. 정책(어느 조합이 어느 결과가 되는가)은 전부 decisionRows·modeMapping·policy 데이터에 있다 (Policy as Data — ARCHITECTURE.md §6).
 
-#### §3.2-B Discovery Request 매핑 (§8.2 정합 — 재정의 0)
+#### §3.2-B Discovery Request 매핑 (§12.2 정합 — 재정의 0)
 
-Entry Resolution 산출의 3요소는 uaf/ARCHITECTURE.md §8.2 정본 추상에 다음과 같이 정합한다. **본 문서는 §8.2를 재정의하지 않고 채움 규칙만 명시한다.**
+Entry Resolution 산출의 3요소는 ARCHITECTURE.md §12.2 정본 추상에 다음과 같이 정합한다. **본 문서는 §12.2를 재정의하지 않고 채움 규칙만 명시한다.**
 
-| §8.2 요소 | Entry Resolution의 채움 규칙 |
+| §12.2 요소 | Entry Resolution의 채움 규칙 |
 |---|---|
-| **mode** | Entry Descriptor의 modeMapping을 관측 증거에 적용한 값. **닫힌 열거가 아니라 확장 네임스페이스**의 값이다 (§8.2). v1.1 초기 등재값: `greenfield` / `incremental` / `brownfield`. |
-| **inputs** | 관측된 Workspace Evidence의 **참조 목록**. §8.2가 정한 대로 "Evidence 참조 목록"으로 일반화되며, 확정된 참조만 담는다(미완성·동시 작성 산출물 비참조). 신규 Evidence Source의 등록으로 확장된다 (§3.2-C). |
-| **policy** | Discovery Policy **참조** (Policy as Data). 정책 값의 상세 정본은 `uaf/specs/02-discovery.md`(예정) 소관이며, Entry는 참조만 담는다. 충돌 조합에서는 **사용자 확인 게이트를 포함하는 정책 번들**을 가리킨다 (§3.2-D 충돌 처리). |
+| **mode** | Entry Descriptor의 modeMapping을 관측 증거에 적용한 값. **닫힌 열거가 아니라 확장 네임스페이스**의 값이다 (§12.2). v1.1 초기 등재값: `greenfield` / `incremental` / `brownfield`. |
+| **inputs** | 관측된 Workspace Evidence의 **참조 목록**. §12.2가 정한 대로 "Evidence 참조 목록"으로 일반화되며, 확정된 참조만 담는다(미완성·동시 작성 산출물 비참조). 신규 Evidence Source의 등록으로 확장된다 (§3.2-C). |
+| **policy** | Discovery Policy **참조** (Policy as Data). 정책 값의 상세 정본은 `discovery/specs/02-discovery.md`(예정) 소관이며, Entry는 참조만 담는다. 충돌 조합에서는 **사용자 확인 게이트를 포함하는 정책 번들**을 가리킨다 (§3.2-D 충돌 처리). |
 
 #### §3.2-C Workspace Evidence & Evidence Source 확장 스키마 (D6-C1)
 
@@ -148,7 +148,7 @@ Entry Resolution 산출의 3요소는 uaf/ARCHITECTURE.md §8.2 정본 추상에
 | 선언 항목 | 정의 |
 |---|---|
 | **sourceType** | Evidence Source의 식별자. |
-| **capability** | 이 Source가 **무엇을 관측·판정하는가**의 Capability 선언 (Capability First — uaf/ARCHITECTURE.md §3). |
+| **capability** | 이 Source가 **무엇을 관측·판정하는가**의 Capability 선언 (Capability First — ARCHITECTURE.md §6). |
 | **valueDomain** | 관측 값의 도메인 (예: 유/무 이진값, 또는 향후 등급·집합값). |
 
 **v1.1 정본 Evidence 2종.**
@@ -160,7 +160,7 @@ Entry Resolution 산출의 3요소는 uaf/ARCHITECTURE.md §8.2 정본 추상에
 
 **Workspace Evidence.** Entry Resolution 시점에 관측된 Evidence Source 값들의 집합이다. v1.1에서는 위 2종의 유/무 값이다.
 
-**확장 개방.** 신규 Source 타입(예: 요구 문서·원격 저장소·외부 산출물)은 위 등록 스키마에 sourceType·capability·valueDomain을 **선언 등록**하는 것만으로 참여한다. Evidence Source의 추가는 Entry Layer·Resolution 엔진을 변경하지 않으며, Discovery Request의 inputs가 "Evidence 참조 목록"으로 일반화되어 있으므로 계약을 깨지 않는다 (§8.2 닫힘 없음 원칙, §3.3 EN-INV 4·5).
+**확장 개방.** 신규 Source 타입(예: 요구 문서·원격 저장소·외부 산출물)은 위 등록 스키마에 sourceType·capability·valueDomain을 **선언 등록**하는 것만으로 참여한다. Evidence Source의 추가는 Entry Layer·Resolution 엔진을 변경하지 않으며, Discovery Request의 inputs가 "Evidence 참조 목록"으로 일반화되어 있으므로 계약을 깨지 않는다 (§12.2 닫힘 없음 원칙, §3.3 EN-INV 4·5).
 
 #### §3.2-D Entry Resolution 결정 테이블 (전 8조합 전수 열거 — 결정성 불변)
 
@@ -190,22 +190,22 @@ Entry Resolution 산출의 3요소는 uaf/ARCHITECTURE.md §8.2 정본 추상에
 
 **충돌 처리 정합.** 충돌 조합(행 2·3·4·5)에서도 Entry는 여전히 **Discovery Request 하나를 방출**한다 — 다만 그 policy가 사용자 확인 게이트를 포함하는 정책 번들을 가리킨다. Entry는 게이트를 **데이터로 표기**할 뿐 확정 결정을 내리지 않으며, 확정 게이트(사용자 승인)는 하류에서 존중된다 (P1 — Entry는 Resolution만; UAF-INV ⑤). 잠정 mode는 명시 Entry의 기본값이며, 사용자 확인의 결과로 다른 Entry가 재발화되면 결정 테이블이 다시 결정적으로 재해소된다(재해소도 단일 결과).
 
-#### §3.2-E mode 네임스페이스 (§8.2 정합)
+#### §3.2-E mode 네임스페이스 (§12.2 정합)
 
-Discovery Request의 mode는 **닫힌 열거가 아니라 확장 가능한 네임스페이스**다 (uaf/ARCHITECTURE.md §8.2 — 재정의 0). v1.1 초기 등재값은 `greenfield` / `incremental` / `brownfield`다. 신규 진입·신규 발견 모드는 열거 변경 없이 네임스페이스에 등재되며, 이는 §8 확장 워크스루에서 실증된다.
+Discovery Request의 mode는 **닫힌 열거가 아니라 확장 가능한 네임스페이스**다 (ARCHITECTURE.md §12.2 — 재정의 0). v1.1 초기 등재값은 `greenfield` / `incremental` / `brownfield`다. 신규 진입·신규 발견 모드는 열거 변경 없이 네임스페이스에 등재되며, 이는 §8 확장 워크스루에서 실증된다.
 
 ### §3.3 Invariants (EN-INV — Entry 불변)
 
-본 문서는 다음 불변을 어떤 구현·확장에서도 유지한다. 이들은 uaf/ARCHITECTURE.md의 상위 불변을 Entry 계약 수준에서 구속한다.
+본 문서는 다음 불변을 어떤 구현·확장에서도 유지한다. 이들은 ARCHITECTURE.md의 상위 불변을 Entry 계약 수준에서 구속한다.
 
-- **EN-INV 1 — Entry Resolution만.** Entry Layer의 산출은 **Discovery Request 하나**다. Entry는 Discovery를 수행하지 않으며 그 이상을 산출하지 않는다 (P1, UAF-INV ④; uaf/ARCHITECTURE.md §4·§5).
-- **EN-INV 2 — Contract 직접 생성 금지.** Entry는 Project Contract를 직접 생성·수정하지 않는다. Contract 생성은 Project Discovery의 책임이다 (uaf/ARCHITECTURE.md §2.4·§6). Entry는 Contract를 Evidence(유/무)로만 **관측**한다.
+- **EN-INV 1 — Entry Resolution만.** Entry Layer의 산출은 **Discovery Request 하나**다. Entry는 Discovery를 수행하지 않으며 그 이상을 산출하지 않는다 (P1, UAF-INV ④; ARCHITECTURE.md §7·§8).
+- **EN-INV 2 — Contract 직접 생성 금지.** Entry는 Project Contract를 직접 생성·수정하지 않는다. Contract 생성은 Project Discovery의 책임이다 (ARCHITECTURE.md §2.5·§10). Entry는 Contract를 Evidence(유/무)로만 **관측**한다.
 - **EN-INV 3 — 결정성.** 동일 (명시 Entry × Workspace Evidence) 입력 조합은 항상 **단일** Discovery Request로 해소된다. Registry의 decisionRows는 각 Entry의 Evidence 값 공간을 전수·상호배타로 분할한다 (§3.2-A 결정성 검증, §3.2-D 8조합 전수 열거).
-- **EN-INV 4 — Layer·엔진 불변 확장.** 신규 Entry·신규 Evidence Source·신규 mode의 추가는 **Registry 행·Policy 데이터·Evidence Source 선언의 추가로만** 이뤄지며, Entry Layer와 Resolution 엔진의 고정 알고리즘을 변경하지 않는다 (Future Extensibility·Capability First·Policy as Data — uaf/ARCHITECTURE.md §3; D6-C1).
-- **EN-INV 5 — Discovery Request 정합·재정의 0.** Entry Resolution의 산출은 uaf/ARCHITECTURE.md §8.2가 확정한 Discovery Request 추상({mode, inputs, policy})에 정합하며, 본 문서는 그 추상을 재정의·확장하지 않는다. mode는 확장 네임스페이스, inputs는 Evidence 참조 목록이다.
+- **EN-INV 4 — Layer·엔진 불변 확장.** 신규 Entry·신규 Evidence Source·신규 mode의 추가는 **Registry 행·Policy 데이터·Evidence Source 선언의 추가로만** 이뤄지며, Entry Layer와 Resolution 엔진의 고정 알고리즘을 변경하지 않는다 (Future Extensibility·Capability First·Policy as Data — ARCHITECTURE.md §6; D6-C1).
+- **EN-INV 5 — Discovery Request 정합·재정의 0.** Entry Resolution의 산출은 ARCHITECTURE.md §12.2가 확정한 Discovery Request 추상({mode, inputs, policy})에 정합하며, 본 문서는 그 추상을 재정의·확장하지 않는다. mode는 확장 네임스페이스, inputs는 Evidence 참조 목록이다.
 - **EN-INV 6 — 확정 게이트 보존.** Entry는 확정 결정을 내리지 않는다. 충돌·모호 입력은 policy에 사용자 확인 게이트로 표기하여 Preserve Human Authority(UAF-INV ⑤)를 하류로 전달한다.
 
-**상시 불변 확인 정합 (uaf/ARCHITECTURE.md §4.6).** 본 문서는 uaf/ARCHITECTURE.md §4.6의 상시 불변 확인 2건을 훼손하지 않는다 — (i) Project Discovery는 교체 가능한 Compiler로 남으며, 본 문서는 Discovery 내부 개념(질문·전략·예산)을 Entry 계약에 끌어들이지 않는다(EN-INV 1·2). (ii) Project Contract의 Stable Contract 지위를 건드리지 않는다 — Entry는 Contract를 유/무 증거로만 관측하고 그 스키마·내용을 다루지 않는다(EN-INV 2). Entry가 Discovery를 수행하거나 Contract를 컴파일한다는 서술은 본 문서에 0건이다.
+**상시 불변 확인 정합 (ARCHITECTURE.md §7.1).** 본 문서는 ARCHITECTURE.md §7.1의 상시 불변 확인 2건을 훼손하지 않는다 — (i) Project Discovery는 교체 가능한 Compiler로 남으며, 본 문서는 Discovery 내부 개념(질문·전략·예산)을 Entry 계약에 끌어들이지 않는다(EN-INV 1·2). (ii) Project Contract의 Stable Contract 지위를 건드리지 않는다 — Entry는 Contract를 유/무 증거로만 관측하고 그 스키마·내용을 다루지 않는다(EN-INV 2). Entry가 Discovery를 수행하거나 Contract를 컴파일한다는 서술은 본 문서에 0건이다.
 
 ---
 
@@ -225,7 +225,7 @@ Discovery Request의 mode는 **닫힌 열거가 아니라 확장 가능한 네�
 
 ## §5. Memory Access (해당 시)
 
-**해당 없음.** Entry Resolution은 Memory Service를 회수·기록하지 않는다. Memory Consult는 하류 UAHF 소관(비담당)이며 Discovery조차 Memory 활용은 v1.1에서 **확장 포인트로만** 열려 있다 (uaf/ARCHITECTURE.md §6 책임 경계표·§7 Non-Goals). Entry는 그보다 상류이므로 Memory에 접근하지 않는다.
+**해당 없음.** Entry Resolution은 Memory Service를 회수·기록하지 않는다. Memory Consult는 하류 UAHF 소관(비담당)이며 Discovery조차 Memory 활용은 v1.1에서 **확장 포인트로만** 열려 있다 (ARCHITECTURE.md §10 책임 경계표·§11 Non-Goals). Entry는 그보다 상류이므로 Memory에 접근하지 않는다.
 
 ---
 
@@ -236,7 +236,7 @@ Discovery Request의 mode는 **닫힌 열거가 아니라 확장 가능한 네�
 | **미등록 Entry 발화** — 명시 name이 Registry에 없다. | 임의 해석하지 않는다. 판별 실패로 보고하고, 확장이 필요하면 Registry 등록 절차(§3.2-A)로 처리한다. Entry Layer·엔진은 변경하지 않는다. | 후보 |
 | **증거-의도 충돌** — 명시 Entry의 전제와 관측 증거가 상충한다(예: `/new` + 기존 Contract). | 결정 테이블이 정의한 충돌 행으로 해소하되, policy에 사용자 확인 게이트를 표기해 하류에 위임한다. Entry가 임의 재라우팅·덮어쓰기를 결정하지 않는다 (D3 ①, EN-INV 6). | 후보 |
 | **결정성 위반 Registry** — decisionRows가 어떤 조합에 대해 결과가 없거나 둘 이상이다. | 결정성 검증(§3.2-A 4단계)에서 무효 Registry로 거부한다. 전수·상호배타 분할을 만족하도록 Policy 데이터를 정정한다. | 후보 |
-| **미완성 하류 계약 추측 유혹** — Discovery 측 상세 계약이 필요해 보인다. | 추측하지 않는다. 공유 계약은 uaf/ARCHITECTURE.md §8.2 확정 추상뿐이며, 그 이상이 필요하면 Advisor에게 에스컬레이션한다 (병렬 경계, §0). | 후보 |
+| **미완성 하류 계약 추측 유혹** — Discovery 측 상세 계약이 필요해 보인다. | 추측하지 않는다. 공유 계약은 ARCHITECTURE.md §12.2 확정 추상뿐이며, 그 이상이 필요하면 Advisor에게 에스컬레이션한다 (병렬 경계, §0). | 후보 |
 
 ---
 
@@ -248,7 +248,7 @@ Discovery Request의 mode는 **닫힌 열거가 아니라 확장 가능한 네�
 - **등록 모델 시연.** Entry가 Entry Registry의 데이터 레코드(Entry Descriptor 5필드)이고 Resolution 엔진이 고정 5단계 알고리즘(우선순위 + 결정성 검증)임을 §3.2-A로 보인다.
 - **전수 열거·결정성 시연.** §3.2-D 결정 테이블을 열어 8조합(2×2×2)이 각각 정확히 한 결과를 가짐을 센다 — 중복·누락 0.
 - **D3 3건 시연.** 결정 테이블에서 D3 ①(행 3·4)·②(행 6)·③(행 7·8)을 지목한다.
-- **Discovery Request 정합 시연.** §3.2-B 매핑 표가 uaf/ARCHITECTURE.md §8.2의 3요소(mode 확장 네임스페이스·inputs Evidence 참조 목록·policy 참조)와 1:1 정합하며 재정의가 0임을 대조한다 (done 8).
+- **Discovery Request 정합 시연.** §3.2-B 매핑 표가 ARCHITECTURE.md §12.2의 3요소(mode 확장 네임스페이스·inputs Evidence 참조 목록·policy 참조)와 1:1 정합하며 재정의가 0임을 대조한다 (done 8).
 - **Evidence Source 확장 시연.** §3.2-C가 v1.1 Evidence 2종을 정의하고 신규 Source의 Capability 선언형 등록 스키마를 개방함을 보인다 (done 7).
 - **확장 무변경 시연.** §8 가상 `/import` 워크스루에서 변경 목록이 Registry 행 + Policy 데이터(+ Evidence Source 선언) 추가뿐이고 Entry Layer·Resolution 엔진 문면 변경이 0임을 대조한다 (done 9, D6-C1).
 
@@ -256,7 +256,7 @@ Discovery Request의 mode는 **닫힌 열거가 아니라 확장 가능한 네�
 
 - Verifier가 §3.2-D 표의 행 수(8)와 각 행의 단일 결과를 센다.
 - Verifier가 D3 3건과 결정 테이블 행의 대응을 대조한다.
-- Verifier가 §3.2-B와 uaf/ARCHITECTURE.md §8.2를 직접 대조해 재정의 0을 확인한다.
+- Verifier가 §3.2-B와 ARCHITECTURE.md §12.2를 직접 대조해 재정의 0을 확인한다.
 - Verifier가 §8 워크스루의 변경 목록에 Entry Layer·엔진 변경이 없음을 확인한다.
 - Verifier가 본문 전체를 특정 AI 실명·모델명·제품 기능명 다중 패턴으로 전수 스캔해 0건을 확인한다.
 
@@ -304,7 +304,7 @@ Discovery Request의 mode는 **닫힌 열거가 아니라 확장 가능한 네�
 - decisionRows: (external-deliverable 유 + Contract 무 → import 정상) / (external-deliverable 유 + Contract 유 → 충돌·사용자 확인) / (external-deliverable 무 → 판별 실패) — 각 조합 단일 결과로 전수·상호배타 분할.
 - modeMapping: external-deliverable 유 → mode `import`.
 
-**변경 3 — mode 네임스페이스 등재 (§3.2-E).** `import`를 확장 네임스페이스에 등재. **열거 변경 아님** — §8.2가 mode를 확장 네임스페이스로 확정했으므로 Discovery Request 계약은 불변이다.
+**변경 3 — mode 네임스페이스 등재 (§3.2-E).** `import`를 확장 네임스페이스에 등재. **열거 변경 아님** — §12.2가 mode를 확장 네임스페이스로 확정했으므로 Discovery Request 계약은 불변이다.
 
 **변경 4 — policy 데이터 추가.** `/import`의 결정 행이 참조할 정책 번들(정상·충돌 게이트) 추가.
 
@@ -312,6 +312,6 @@ Discovery Request의 mode는 **닫힌 열거가 아니라 확장 가능한 네�
 
 - **Entry Layer** — 무변경. 진입점 추상은 그대로다.
 - **Resolution 엔진** — 무변경. 고정 5단계 알고리즘(매칭 → 증거 수집 → 우선순위 평가 → 결정성 검증 → 방출)이 그대로 새 Descriptor를 처리한다.
-- **Discovery Request 추상** — 무변경. mode는 확장 네임스페이스(§8.2)이므로 `import` 추가에 스키마 변경 없음; inputs는 Evidence 참조 목록이므로 external-deliverable-presence 참조를 담아도 계약 불변.
+- **Discovery Request 추상** — 무변경. mode는 확장 네임스페이스(§12.2)이므로 `import` 추가에 스키마 변경 없음; inputs는 Evidence 참조 목록이므로 external-deliverable-presence 참조를 담아도 계약 불변.
 
 **결론.** 신규 Entry `/import` 도입의 변경 목록 = **Registry 행 + Policy 데이터 + Evidence Source 선언의 추가뿐**이며, Entry Layer·Resolution 엔진은 변경되지 않는다 — D6-C1(Entry Resolution 확장성)이 등록 모델 수준에서 실증된다 (EN-INV 4).

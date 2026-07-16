@@ -1,0 +1,22 @@
+{
+  "id": "mi-0095",
+  "kind": "recurrence-judgment",
+  "content": {
+    "verdict": "Recurrence",
+    "target": "v1.3 마일스톤(Solution Design 단계 신설 — 04 spec 신설·03 v1.2·루트 v1.4·planning 이중 책임·부록 3종) 중 W1 CP2가 검출한 결함 2건의 재발 판정",
+    "judgment": "Recurrence — L-20/L-25 커널(인용 취지·분류의 실측 대조)의 신규 facet 재발. 신설 spec(04) 저술 시 Worker가 상류 정본(02 §3.3-A)의 상태 분류 체계를 인용하며 '비Ready 종단' 3종(Suspended·Escalated·Aborted)을 '비종단'으로 오전사(라벨 오분류 — 02는 이 셋을 종단 5 중 비Ready 종단으로 분류). 독립 Verifier가 02 문면 직접 대조로 포착(V2 Fail)·1구 정정 후 재검증 Pass. 기존 축(L-20=복합 인용 귀속 실측·L-25=카운트 본문 재계수)과 커널 동일하나 대상이 '분류 라벨 전사'로 신규. 검증 체계는 설계대로 작동(W2 교차 CP2는 첫 Pass 8/8·rework 0).",
+    "scope_note": "부수: 글리프 중복(①②②) 1건 — 단순 오식. Gap Analysis(사용자 Target Architecture 대조)에서 불변 충돌 0 재확증·기존 L-21/L-24 규율(전수 스윕·범위 명시) 전 CP2에 적용됨.",
+    "provenance": {
+      "task_ref": "v1.3 W1 CP2 독립 검증(04-solution-design) — 커밋 3a22a28(정정 반영)·f26b581(Baseline)",
+      "report_ref": "W1 CP2 판정서(Pass 7/8·V2 Fail 경미 2건·재검증 기준 명시) · W2 CP2 교차 판정서(Pass 8/8)",
+      "origin_role": "포착 독립 Verifier(W1 CP2 V2 § 포인터 전수 실측)·정정·재검증 Advisor",
+      "ordering_ref": "v1.3 세션 (mi 시퀀스 연속·mi-0094 다음)"
+    }
+  },
+  "source": "v1.3-solution-design",
+  "timestamp": "2026-07-13T07:40:16.469+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "situation": ["citation-label-transcription", "state-classification-drift", "l-20-l-25-kernel", "new-spec-authoring", "cp2-catch"]
+  }
+}

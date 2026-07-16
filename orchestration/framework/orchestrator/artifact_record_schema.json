@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "orchestration/orchestrator/artifact_record_schema.json",
+  "title": "ArtifactRecord",
+  "description": "Artifact Record·Registry 형태 정의(05 §3.6 — 본 Layer 신규 소유 레코드). 형태(shape)만 규정하며 provider·모델·상류 Layer 고유명 실값은 두지 않는다(PO-INV 8). approvalState 는 mutable 필드가 아니라 게이트/검증 이벤트의 파생 뷰이며(PO-INV 7), 레지스트리는 완료 보고 선언과 이벤트에서 파생되는 인덱스로 제2 진리원천이 아니다(05 §3.6). 직렬화 형식(JSONL 등)·물리 배치는 Adapter Binding 소관이다(05 §5).",
+  "type": "object",
+  "required": ["artifactId", "version", "approvalState"],
+  "additionalProperties": false,
+  "properties": {
+    "artifactId": {
+      "type": "string",
+      "description": "논리 식별자. 같은 artifactId 의 버전열이 하나의 계보를 이룬다."
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "append-only 인스턴스 버전(단조). supersedes 계보에서 최신 = 최고 version."
+    },
+    "supersedes": {
+      "type": ["string", "integer", "null"],
+      "description": "직전 버전 참조. 삭제가 아니라 계보 append 이며 과거 버전 문면(location+contentHash 내용)은 불변이다(PC-INV 9 동형). 최초 버전은 null."
+    },
+    "derivedFrom": {
+      "type": "array",
+      "description": "입력 artifact 참조 목록(07 interfaceContract consumes 의 실측치).",
+      "items": {"type": ["string", "object"]}
+    },
+    "producedBy": {
+      "type": "object",
+      "description": "provenance {runId·stepId·attempt·role·capability·model} — 불투명 부속(SP-INV 3 동형). 소비 조건으로 쓰지 않는다. 필드는 형태 예시이며 실값(모델 슬롯 등)은 Adapter 소관이다.",
+      "additionalProperties": true,
+      "properties": {
+        "runId": {"type": ["string", "null"]},
+        "stepId": {"type": ["string", "null"]},
+        "attempt": {"type": ["integer", "null"]},
+        "role": {"type": ["string", "null"]},
+        "capability": {"type": ["string", "object", "null"]},
+        "model": {"type": ["string", "null"]}
+      }
+    },
+    "approvalState": {
+      "type": "string",
+      "enum": ["draft", "verified", "approved", "user_approved"],
+      "description": "게이트/검증 이벤트의 파생 뷰(PO-INV 7·mutable 필드 아님). draft → verified(CP2 Pass 이벤트) → approved(CP3 승인 이벤트) → user_approved(사용자 게이트 해소 이벤트). 각 등급은 대응 이벤트 실재에서만 파생된다."
+    },
+    "location": {
+      "type": ["string", "null"],
+      "description": "워크스페이스 물리 경로(Adapter 소관·SP-INV 7 귀속). Artifact 는 파일 경로만이 아니라 임의 형태를 수용하며, 형태는 location+contentHash 뒤의 불투명 내용이다."
+    },
+    "contentHash": {
+      "type": ["string", "null"],
+      "description": "선택 — 문면 불변 증빙(결정적 해시). 없으면 null."
+    }
+  }
+}

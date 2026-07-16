@@ -1,0 +1,15 @@
+{
+  "allowed_tools": [
+    "Write",
+    "Read",
+    "Edit",
+    "Bash(python:*)"
+  ],
+  "note": "SD 성숙 run 의 orchestration 형태 B 호스팅 **첫 사례**(05 §3.7) — Assessing/Proposing/Reconciling/Reviewing = headless step·Validating = user_decision 게이트. 대상 = pc-uahf-control-plane-001 v1(Ready). 산출 내용 비고정(실 LLM 산출)·2단 사용자 게이트(구조·T8)는 실 사용자가 해소(시뮬레이션 0·resolve_m). workspace_dir = UAHF 저장소 내부 SD 선례 위치(events/maturation-r003/)·run 디렉터리 밖 외부 워크스페이스. **주의**: workspace 의 events.jsonl 은 Solution Design 정본 로그(Advisor 가 규약 절차로 append)이며 드라이버·step 은 쓰지 않는다.",
+  "output_format": "json",
+  "policy": "auto_approve",
+  "retry_limit": 2,
+  "run_id": "orch-m-maturation-cp",
+  "timeout": 420,
+  "workspace_dir": "C:\\my-claude-project\\universa-agentic-harness-framework\\uahf\\framework\\adapters\\claude\\solution-design-data\\events\\maturation-r003"
+}

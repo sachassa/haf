@@ -1,5 +1,5 @@
-# Discovery Policy — 기본 프로파일 (Policy as Data — uaf/specs/02-discovery.md §3.15)
-# 정본 값 문면: framework/adapters/claude/discovery-binding.md §8.2 (E2E 구동용 최소 실값 1세트)
+# Discovery Policy — 기본 프로파일 (Policy as Data — discovery/specs/02-discovery.md §3.15)
+# 정본 값 문면: uahf/framework/adapters/claude/discovery-binding.md §8.2 (E2E 구동용 최소 실값 1세트)
 # 값 조정 = 데이터 정정 — 엔진·정본 계약 무변경 (02 §3.15)
 policyId: default-policy
 

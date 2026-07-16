@@ -1,66 +1,64 @@
-# 다음 세션 부트스트랩 프롬프트 (v1.2.1 이후 — Tier 2 진입)
+# 다음 세션 상태 앵커 + 부트스트랩
 
-작성: Advisor · 2026-07-09 · v1.2.1 Baseline 확정(커밋 `c09184f`) 직후
-용도: 새 세션에서 아래를 붙여넣으면 재분석 없이 이어감. (물리 발화 = `/uaf-continue`)
+작성: Advisor · 2026-07-14 · **Performance Tuning Track 종료 시점(사용자 확정)**
+용도: 새 세션은 **본 파일 하나로 상태를 인수**한다. 원문 전체 정독 강제 없음 — demand-driven(§단위·필요 시점) 규칙을 따른다. (물리 발화 = `/uaf-continue`)
 
----
+## §1. 상태 앵커 (git log 대조 가능)
 
-## 붙여넣을 프롬프트
+- **Performance Tuning Track = 종료** (2026-07-14 사용자 확정). Core Tuning 구현·CP2 검증 결과 유지. **T6/T7 동형 벤치마크·Before/After는 미실시**(사용자 결정 — 아래 §2 결정 기록).
+- 완료 단계·커밋:
 
-```
-너는 Universal Agentic Framework(UAF/UAHF)의 메인 Advisor다.
+| 단계 | 커밋 | 요지 |
+|---|---|---|
+| T0 Baseline Freeze | `013e532` | 앵커 동결(UAHF `ad451ee`·consumer `dd2fd73`) |
+| T1 Minimal Telemetry | `d9b2ac6` | collect_metrics.py·산식 고정·stop-signal 위상 아카이브 |
+| T2 Review 게이트 evidence 재사용 | `f47ce91` | 재검증 세션 소비 대체·stale 3규칙 fail-closed |
+| T3+T4-① 검증 아키텍처·delegation 참조형 | `891e9aa` | verify_run.py(LLM 0)·Risk Routing 배선·섀도 장치(기본 off)·sentinel 표준 |
+| T3-② cp2ModelSlots 스키마 등재 | `adaafe9` | 위험도별 CP2 모델 차등 활성화(dormant 해소) |
+| T1-② payload 계측 + R3 러너 | `e1147c4` | bundle_payload 지표(baseline 343,183B/37세션)·run_all_tests.py |
+| T4-② 핸드오프 재구조화 | `2342659` | 착수 강제 read-set 61,145B→5,331B(-91.3%)·상태 앵커·갱신 규율 |
+| 트랙 종료 마감 | (본 커밋) | 본 파일 종료 상태 기록·Memory 갱신 |
 
-직전 세션에서 v1.2.1 Repository Refactoring이 완전히 종료되었다 —
-구조 이동(Phase 1·2·3)에 더해 마감(밀레스톤 Memory Update · 명령 프리픽스 uaf: 확정 ·
-root ROADMAP/README Baseline 기록)까지 완료하고, 사용자 Baseline 승인을 받았다.
-CP2 독립검증 Pass 7/0/0 · CP3 승인 · 커밋 c09184f · 작업트리 clean.
+- 번호 표기 주의: plan §4 항목-ID는 T0~T7(T6=벤치마크+Before/After 통합·T7=Concurrency — **T8은 §4 항목-ID에 부존**), §5 순서 번호는 0~9. 본 파일은 두 체계를 병기한다.
+- Baseline 앵커(불변): UAHF `ad451ee` · consumer `dd2fd73` · Freeze `013e532`. Baseline run evidence(orch-k/m/w·maturation-r003·greenfield-r003) immutable.
+- consumer(`uahf-control-plane`) 워킹트리: 사용자 변경분 미커밋 보존 — 수정 금지.
 
-반드시 다음 순서로 착수하라.
+## §2. 트랙 종료 결정 기록 (사용자 확정 2026-07-14)
 
-1. Read-First: docs/v1.2.1-context-and-design.md 를 정독한다.
-   (상태=완결·Baseline 확정. 비전·아키텍처 2축·Layer 연결 설계(A)·오케스트레이션 모델(B)·
-   상태분리·확정 결정·§7.1 stale uaf/ 마이그레이션 노트의 정본. 재분석 불요.)
-2. git log --oneline + git status 로 커밋 체인(…6764465→63b3b03→c09184f)·clean 실측.
-3. Memory Consult: [[uahf-active-track-v1.2.1]](완결·Baseline) + [[uahf-session-entrypoint]]
-   (store 84·Active 22·Candidate 21·다음 트랙 미정 Tier 2/3).
-   ※ uahf/docs/session-handoff-v1.2.md는 리팩토링 이전 구조이니 현혹되지 마라.
+1. 현재 구현·CP2 검증 결과 유지(재작업 없음).
+2. 추가 A/B·동형 벤치마크(plan §4 T6 = §5 순서 6·7)는 지금 수행하지 않음.
+3. **측정 인프라 유지 + 실사용 누적**: 향후 실제 UAHF 사용(신규 orchestration run)마다 `collect_metrics.py`(bundle_payload 포함)·`verify_run.py`를 신규 runId 산출물에 실행해 `e2e/metrics/`에 누적한다.
+4. **재개 조건**: 실사용에서 실제 병목이 관찰되면 누적 측정 데이터를 근거로 **별도 Performance Tuning 트랙을 새로 연다**(느낌 기반 재개 금지 — Measurement First 유지).
+5. Post-Tuning Backlog(A~G·우선순위 B+C→D→G→A+F→E) 미구현 항목은 향후 후보로 유지.
+6. 본 핸드오프에 상태·다음 시작점 기록(이 문서).
 
-4. 다음 트랙은 스스로 채택하지 말고 사용자에게 확인하라(선취 금지).
-   ★ Advisor 권장 시작점 = Tier 2 「.claude Global Default vs uahf override 재설계」.
-     - 이유: (1) 사용자가 직접 짚은 미해결 숙제(루트 .claude가 uahf 거였는데 미이동),
-       (2) 범위 명확·빠른 성과, (3) '설치형 도구(Global Default=도구 / override=Layer·프로젝트)'
-       북극성 뼈대라 뒤이을 루트 ARCHITECTURE 재저술에 필요한 결정을 선확정한다.
-     - Tier 2 권장 순서: .claude 재설계 → 루트 ARCHITECTURE 완전 재저술 →
-       각 Layer(entry/discovery/planning) 저술 → stale uaf/ 참조 정식 개정(§7.1).
-     - Tier 3(북극성: 상태분리 설계[브리프 C]·Layer 연결/오케스트레이션 정식화·
-       uaf:<layer> 명령·Layer별 LLM·설치형 패키징)은 후속.
+## §3. 다음 작업 (별도 새 세션 — 본 세션 미착수)
 
-5. .claude 재설계 착수 확정 시:
-   현재 루트 .claude/(AGENT.md·CLAUDE.md·agents/{advisor,worker,verifier,planner}·
-   commands/{uaf-new,uaf-continue}·hooks·skills) + uahf/.claude/(빈 override 스텁 README) 실측 →
-   "무엇이 도구 전체 Global Default이고 무엇이 uahf Layer 전용 override인가" 경계 설계 →
-   검증·커밋.
+- **Interview Entry-to-Runtime Audit** (사용자 지정 2026-07-14). 정의·범위·성공 기준은 착수 세션에서 사용자 지시로 확정한다 — 본 파일은 명칭과 시작점만 기록하며 범위를 추정하지 않는다.
+- 착수 시 최소 read-set: 본 §1 앵커 + 착수 세션의 사용자 지시. 관련 정본은 필요 §만 demand-driven(후보 포인터: `entry/specs/01-entry.md`·`discovery`/`orchestration` specs — 실제 선택은 지시 범위 확정 후).
 
-작업 규칙: 구현은 Worker(Opus) 위임 · 완료 보고 불신 · Verifier 독립 검증(CP2) ·
-Advisor 승인(CP3) · 정본·append-only 데이터 무편집(바이트 보존) · 구조 변경은 git 안전망 하.
-```
+## §4. 미결·이월 항목 (다음 관련 세션에서 참조)
 
----
+- **번호 표기 이중 체계(주의)**: plan §4 항목-ID(T0~T7)와 §5 순서 번호(0~9)가 병존 — 본 파일·후속 기록은 두 체계를 병기한다(T4-② CP2 r1~r3 경위). plan 파일 자체에는 "T0~T8" 문자열이 없음(CP2 전수 스윕 확증 — 과거 Memory 색인의 "(T0~T8)" 표기가 오기였고 Memory 측을 정정).
+- **Continuous Telemetry / Lifecycle Observability = 백로그 §H 등재**(2026-07-14 사용자 지시 — **기록만·구현 보류**): 전체 lifecycle 지속 누적 관측·Telemetry Session Skill + deterministic script/CLI 후보·미해결 질문 5종 = `docs/post-tuning-improvement-backlog.md` §H 참조. 재개 트리거 = 실사용 병목 반복 관찰.
+- T5 Gate Notification = 보류(그룹 B·C지표 전용 — Operational UX 트랙 후보·백로그 유지).
+- 첫 실 적용 대기: T2 evidence 재사용 섀도 대조·descriptor-aware CP2(cp2ModelSlots) 첫 사용·섀도 장치 기동 — 향후 실 orchestration run에서(§2-3 누적과 병행).
+- Skill Extraction P1(Post-Tuning G 시딩): CP2 게이트워크 Skill·하네스 CP2 evidence packet 표준화·소비측 Skill 표면(Scaffold 선행 필요).
 
-## 🪶 짧은 버전 (이것만으로도 됨)
+## §5. 갱신 규율 (stale 재발 방지 — 유지)
 
-Memory(MEMORY.md)가 자동 로드되므로 사실 이거면 충분하다:
+- **각 단계/트랙 경계 커밋에 본 파일 §1 상태 앵커 갱신을 포함한다.**
+- 본 파일은 값 중복 최소·정본 포인터 우선. 본 파일과 정본이 충돌하면 정본(git log·해당 spec/plan)이 우선한다.
 
-> v1.2.1 끝났고 Baseline 확정됐어. 다음은 Tier 2로 가자 —
-> `docs/v1.2.1-context-and-design.md` 먼저 읽고, git log로 상태 확인한 뒤,
-> **`.claude` Global Default vs uahf override 재설계**부터 착수 제안해줘.
+## 정본 포인터
 
----
-
-## 현재 상태 스냅샷 (2026-07-09)
-
-- **완결**: v1.2.1 Repository Refactoring — 구조 이동(Phase 1·2·3) + 마감. Baseline 확정(사용자 승인).
-- **커밋**: `692c4ca`→`ffe71a6`→`e1b36c4`→`3951407`→`6764465`→`63b3b03`→**`c09184f`**(마감). 작업트리 clean.
-- **Memory**: store 84(mi-0082 BPD-15·mi-0083 재발판정 Novel·mi-0084 L-21 신규 등록). Active 22·Candidate 21. BP-04 승격 보류.
-- **확정 결정**: 명령 프리픽스 = `uaf:`. UAHF 개발 baseline = v1.2 불변(uahf/ROADMAP 무변경). v1.2.1은 저장소 구조 트랙.
-- **다음 트랙 = 미정(사용자 결정)** — Advisor 권장 = Tier 2 `.claude` 재설계.
+| 항목 | 위치 |
+|---|---|
+| 튜닝 정본 (§4 항목 T0~T7·§5 순서 0~9·항목별 10필드) | `docs/performance-tuning-plan.md` |
+| 1차 실측 (역사·불변) | `docs/baseline-performance-cost-analysis.md` |
+| 백로그 (Post-Tuning A~G) | `docs/post-tuning-improvement-backlog.md` |
+| Baseline run evidence (immutable) | `orchestration-data/runs/{orch-k-nonfixture-smoke,orch-m-maturation-cp,orch-w-impl-cp}/` · `solution-design-data/events/maturation-r003/` · `discovery-data/events/greenfield-r003/` |
+| 측정·검증 도구 (유지·누적 대상) | `orchestration-data/e2e/{run_all_tests.py,collect_metrics.py,verify_run.py,delegation_check.py}` · 산출 = `e2e/metrics/` |
+| Risk Routing 정책 | `orchestration-data/e2e/policy/{allocation.json,README.md}` |
+| UAHF Contract | `discovery-data/contracts/uahf/project-contract.v3.md` |
+| 직전 핸드오프 이력 | git `2342659` 및 이전의 본 파일 이력 참조 |

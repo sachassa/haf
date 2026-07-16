@@ -1,0 +1,21 @@
+{
+  "id": "mi-0104",
+  "kind": "recurrence-judgment",
+  "content": {
+    "incident": "v1.6 S3 커밋(c65d20f)에 Verifier의 pytest 실행이 남긴 __pycache__ 바이트코드 8건(*.cpython-314.pyc — gates/orchestrator/revision/stephost_bridge + test_gates/test_orchestrator/test_revision, pytest-9.1.0 캐시 포함)이 `git add` 일괄 스테이징으로 우발 유입. 소스·계약 무변경이나 저장소에 실행 부산물이 커밋됨. 즉시 검출 → 정정 커밋 04b8f6e로 8건 제거 + .gitignore 신설(__pycache__/·*.pyc). uahf/ git 트리 무촉(디스크 캐시만 정리).",
+    "verdict": "Novel",
+    "kernel_analysis": "기존 커널과 상이한 신규 커널 — 'VCS 스테이징 위생: 실행 코드 도입 저장소에서 일괄 스테이징 전 빌드/실행 부산물 스캔 또는 .gitignore 선행'. L-26(비멱등 연산 재시도 전 저장소 실측 — 실행 도구 규율)과 인접하나 상이한 축이다: L-26은 '재시도 멱등성', 본 건은 'VCS 스테이징 대상 선별'. MEMORY.md 도구 교훈(Git Bash CR 카운트)과도 상이(계수 vs 스테이징). 근본 원인 = 실행 코드(형태 B) 도입 이후에도 문서 저장소 시절의 무차별 `git add` 습관이 잔존 — 테스트 실행이 생성하는 부산물의 존재를 스테이징 시점에 고려하지 않음. 방어선: 저장소 위생 규칙 부재가 유입을 허용했으나 즉시 검출·정정·.gitignore 신설로 재발 봉쇄(후속 S4·S5 유입 0). 예방 규칙 = 실행 코드가 도입된 저장소는 (1) 부산물 패턴을 .gitignore로 선(先)등록하고 (2) 일괄 스테이징 전 `git status`로 부산물 유무를 스캔한다 → L-27 Candidate 파생(mi-0105).",
+    "provenance": {
+      "task_ref": "v1.6 S3 커밋 오염·정정 — 커밋 c65d20f(유입)·04b8f6e(제거+.gitignore 신설)",
+      "report_ref": "정정 커밋 04b8f6e diff 실측(9 files·pyc 8 제거·.gitignore +2)·git show --stat",
+      "origin_role": "검출·정정 Advisor — 심사 대기(재발 판정 Novel)",
+      "ordering_ref": "v1.6 세션 (mi-0103 다음)"
+    }
+  },
+  "source": "v1.6-project-orchestration",
+  "timestamp": "2026-07-13T22:10:01.000+09:00",
+  "labels": {
+    "verdict": "Novel",
+    "situation": ["build-artifact-commit-pollution", "vcs-staging-hygiene", "pycache-pytest-byproduct", "bulk-git-add-scan", "gitignore-first"]
+  }
+}

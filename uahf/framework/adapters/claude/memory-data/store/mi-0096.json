@@ -1,0 +1,25 @@
+{
+  "id": "mi-0096",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-19",
+    "status": "Candidate",
+    "practice": "외부 Target Architecture 수용은 분석-우선 Gap 재해석으로: 사용자가 별도 논의된 설계 의도(개념 흐름·Capability 목록)를 추가 입력으로 제공하면 (1) 기존 구현을 수정·폐기하지 않고 분석을 선행하고, (2) 개념 흐름을 문자 그대로 복원하지 않고 기존 불변 위에 재매핑하며(예: Draft/Final mutable 모델 → append-only 인스턴스 계보·supersedes), (3) A~F 분류(Current Implementation / Already Covered / Missing but Necessary / Better Solved Differently / Defer to Future / Recommendation)로 전 Capability를 실측 귀속시키고, (4) 누락분은 최소 보완만 — 코어에는 의미론 1~2문, 카탈로그성 지식은 비정본 부록(UAF-INV ⑥ 격리)으로, (5) 옵션(그대로 승인/최소 보완/구조 수정)을 사용자 게이트로 확정한다.",
+    "evidence": "v1.3 실증 — 사용자 Target Architecture 7 Capability(Interview·Orchestration·Dynamic Allocation·Collaborative Design·Integrated Review·Maturation·Isolation) 중 6이 기반영/재해석 해결로 판정·누락 2건만 최소 보완(04 §3.1-D Handoff 의미론 1항 + review-dimension-catalog 비정본 부록)·불변 충돌 0·기존 커밋 무손실·옵션 2 사용자 확정 후 Baseline.",
+    "rationale": "외부 설계 의도를 문자 구현하면 기존 불변(PC-INV 7·9 등)과 충돌하거나 중복 Layer가 생기고, 무시하면 실제 누락 Capability를 놓친다. 분석-우선 재해석은 의도를 보존하면서 최소 구조 변화로 수용하며, 사용자 자신이 재해석 모델을 원안보다 적합하다고 채택하는 수렴을 만든다.",
+    "applicability": "Baseline/설계 확정 직전 사용자가 과거 논의·외부 프레임워크 분석 등에서 온 Target Architecture를 재공급하는 상황. 크래시·세션 단절로 설계 대화가 유실된 후의 재공급에 특히 적합.",
+    "provenance": {
+      "task_ref": "v1.3 Gap Analysis(Target Architecture 대조) — 커밋 6256290(보완)·f26b581(Baseline)",
+      "report_ref": "Gap Analysis A~F 보고(Already Covered 7·Missing 2·충돌 0) · 사용자 옵션 2 확정",
+      "origin_role": "수행 Advisor·확정 사용자 게이트·심사 대기 Candidate",
+      "ordering_ref": "v1.3 세션 (mi 시퀀스 연속·mi-0095 다음)"
+    }
+  },
+  "source": "v1.3-solution-design",
+  "timestamp": "2026-07-13T07:40:17.469+09:00",
+  "labels": {
+    "stable_id": "BPD-19",
+    "status": "Candidate",
+    "situation": ["target-architecture-intake", "gap-analysis-first", "reinterpret-over-transcribe", "minimal-supplement", "invariant-preserving-adoption"]
+  }
+}

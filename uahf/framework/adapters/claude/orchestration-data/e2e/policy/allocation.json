@@ -1,0 +1,24 @@
+{
+  "registry": {
+    "specs": [
+      {"specId": "spec-lowrisk-mechanical", "capabilitySelector": "cap-impl-mechanical", "modelPolicyClass": "low-risk-semantic", "version": 1},
+      {"specId": "spec-sd-assess", "capabilitySelector": "cap-sd-assess", "modelPolicyClass": "high-risk-semantic", "version": 1},
+      {"specId": "spec-sd-propose", "capabilitySelector": "cap-sd-propose", "modelPolicyClass": "high-risk-semantic", "version": 1},
+      {"specId": "spec-sd-reconcile", "capabilitySelector": "cap-sd-reconcile", "modelPolicyClass": "high-risk-semantic", "version": 1},
+      {"specId": "spec-sd-review", "capabilitySelector": "cap-sd-review", "modelPolicyClass": "high-risk-semantic", "version": 1},
+      {"specId": "spec-impl-plan", "capabilitySelector": "cap-impl-plan", "modelPolicyClass": "high-risk-semantic", "version": 1},
+      {"specId": "spec-default", "capabilitySelector": "*", "modelPolicyClass": "high-risk-semantic", "version": 1}
+    ],
+    "tieBreak": ["specificity", "version"]
+  },
+  "modelSelection": {
+    "slots": {
+      "low-risk-semantic": "haiku",
+      "high-risk-semantic": "sonnet"
+    },
+    "fallbackChain": ["haiku", "sonnet"],
+    "cp2ModelSlot": "sonnet",
+    "cp2ModelSlots": {"low-risk-semantic": "haiku", "high-risk-semantic": "sonnet"},
+    "defaultSlot": "sonnet"
+  }
+}

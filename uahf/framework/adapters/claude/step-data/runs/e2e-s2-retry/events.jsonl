@@ -1,0 +1,4 @@
+{"actor": "Worker", "at": 1, "cycle_id": "s2r", "from_stage": null, "outcome": "pass", "ref": {"kind": "dispatch"}, "retry_count": 0, "seq": 1, "to_stage": "Execute", "trigger": "완료 조건 충족"}
+{"actor": "Worker", "at": 2, "cycle_id": "s2r", "from_stage": "Execute", "outcome": "fail", "ref": {"kind": "failure", "reason": "part2.txt(P2)이 필요하나 첫 실행 지시상 생성 불가", "repro": "FileNotFoundError: [Errno 2] No such file or directory: 'part2.txt' — AC 실행 시 part1.txt 후 part2.txt 읽기 시도에서 발생"}, "retry_count": 0, "seq": 2, "to_stage": "Verify", "trigger": "Verify 실패"}
+{"actor": "Worker", "at": 3, "cycle_id": "s2r", "from_stage": "Failed", "outcome": "pass", "ref": {"kind": "dispatch"}, "retry_count": 1, "seq": 3, "to_stage": "Execute", "trigger": "재작업 되돌림"}
+{"actor": "Verifier", "at": 4, "cycle_id": "s2r", "from_stage": "Verify", "outcome": "pass", "ref": {"kind": "cp2-pass", "verdict_ref": "verdict"}, "retry_count": 1, "seq": 4, "to_stage": "Complete", "trigger": "완료 조건 충족"}

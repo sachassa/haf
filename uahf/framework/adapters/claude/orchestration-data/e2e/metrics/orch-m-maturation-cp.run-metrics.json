@@ -1,0 +1,222 @@
+{
+  "bundle_payload": {
+    "by_class_bytes": {
+      "CP2": 43338,
+      "Worker step": 38391,
+      "gate re-verification": 16564
+    },
+    "grade": "확인",
+    "per_session": {
+      "max": 15793,
+      "median": 5819,
+      "min": 3264
+    },
+    "sessions_counted": 13,
+    "sessions_missing_argv": 0,
+    "total_bytes": 98293
+  },
+  "classification_crosscheck": {
+    "consistent": true,
+    "gate_reverification_sessions": 3,
+    "gate_review_events": 3,
+    "grade": "확인"
+  },
+  "cost": {
+    "by_class_usd": {
+      "CP2": 2.7714,
+      "Worker step": 4.0636,
+      "gate re-verification": 1.4767
+    },
+    "by_model_alias_grade": "확인",
+    "by_model_alias_usd": {
+      "sonnet": 8.3116
+    },
+    "total_usd": {
+      "grade": "확인",
+      "value": 8.3117
+    }
+  },
+  "counts": {
+    "cp2": {
+      "grade": "확인",
+      "value": 5
+    },
+    "gate_reverification": {
+      "grade": "확인",
+      "value": 3
+    },
+    "worker_step": {
+      "grade": "확인",
+      "value": 5
+    }
+  },
+  "critical_path": {
+    "cli_serial_ms": {
+      "grade": "계산",
+      "value": 2091615
+    },
+    "cli_serial_seconds": {
+      "grade": "계산",
+      "value": 2091.6
+    },
+    "scope_note": "CLI 구간 한정·invoke_seq 직렬 합산 수준. 이 run 은 물리 동시 디스패치 미실행(직렬)이므로 CLI critical path = 총 CLI wall-time. 전체 E2E critical path(주 세션·하네스 서브에이전트 포함)는 불가(로그 미노출)."
+  },
+  "duration": {
+    "by_class_grade": "확인",
+    "by_class_seconds": {
+      "CP2": 594.5,
+      "Worker step": 1180.1,
+      "gate re-verification": 317.1
+    },
+    "total_ms": {
+      "grade": "확인",
+      "value": 2091615
+    },
+    "total_seconds": {
+      "grade": "확인",
+      "value": 2091.6
+    }
+  },
+  "gate_wait": {
+    "computable_count": 1,
+    "gates": [
+      {
+        "gate_id": "gate-unit-review",
+        "grade": "계산",
+        "note": "wait = resolution mtime - stop-signal mtime (벽시계·mtime 기반). metrics 출력 전용(원장 무기재).",
+        "phase": "final",
+        "resolution_file": "gate-resolution-record-final.json",
+        "resolution_mtime_iso": "2026-07-14T06:31:41.947734",
+        "stop_mtime_iso": "2026-07-14T01:14:55.840751",
+        "stop_signal_file": "stop-signal.json",
+        "stop_signal_source": "live",
+        "wait_minutes": 316.77,
+        "wait_seconds": 19006.107
+      },
+      {
+        "gate_id": "gate-unit-assess",
+        "grade": "소실",
+        "phase": "structure",
+        "reason": "stop-signal 이 후속 게이트로 덮어써졌고 위상 아카이브가 없어 정지 시각 소실 — 추정하지 않는다(값 없음).",
+        "resolution_file": "gate-resolution-record-structure.json",
+        "wait_seconds": null
+      }
+    ],
+    "lost_count": 1,
+    "total_wait_seconds": 19006.107
+  },
+  "impossible_metrics": {
+    "harness_subagent_usd": {
+      "grade": "불가",
+      "note": "하네스 서브에이전트 USD — 완료 통지는 토큰만. 수치 전사 자리 = e2e/metrics/harness-subagent-metrics.json."
+    },
+    "main_session_tokens_cost": {
+      "grade": "불가",
+      "note": "주 세션(Advisor) 토큰·비용 — 하네스 미노출."
+    }
+  },
+  "invoke_count": 13,
+  "model_breakdown": {
+    "by_model_usage": {
+      "claude-haiku-4-5-20251001": {
+        "cache_read": 0,
+        "cache_write": 0,
+        "cost_usd": 0.0478,
+        "input_tokens": 46010,
+        "output_tokens": 332
+      },
+      "claude-sonnet-5": {
+        "cache_read": 7665373,
+        "cache_write": 558967,
+        "cost_usd": 8.264,
+        "input_tokens": 21609,
+        "output_tokens": 169720
+      }
+    },
+    "grade": "확인",
+    "note": "modelUsage(실제 underlying 모델) 기준 — 세션 by_model_alias(주 모델)와 다를 수 있다(sonnet 세션이 소량 haiku 토큰을 포함)."
+  },
+  "parse_errors": [],
+  "ready_set_concurrency": {
+    "grade": "계산",
+    "note": "그래프 성장 인지 최대 동시 ready 폭 — 추가 task 실질선행 = dependsOn ∪ {proposingStepRef}. 물리 동시 디스패치는 미실행(직렬 소비)이므로 이는 '동시 실행 가능했던' 기회 폭이다.",
+    "unreached_tasks": [],
+    "unsupported_revisions": [
+      {
+        "kind": "task_superseded",
+        "revisionSeq": 5
+      }
+    ],
+    "value": 2,
+    "waves": [
+      [
+        "assess"
+      ],
+      [
+        "propose-data-layer-designer",
+        "propose-ui-view-designer"
+      ],
+      [
+        "reconcile"
+      ],
+      [
+        "review"
+      ]
+    ]
+  },
+  "retry": {
+    "grade": "확인",
+    "max_retry_count_field": 0,
+    "note": "retry 수 = events 의 ref.kind=='rework' 개수. max retry_count 필드·Worker feedback_present 수와 교차 일관.",
+    "value": 0,
+    "worker_feedback_present_count": 0
+  },
+  "run_dir": "C:\\my-claude-project\\universa-agentic-harness-framework\\uahf\\framework\\adapters\\claude\\orchestration-data\\runs\\orch-m-maturation-cp",
+  "run_id": "orch-m-maturation-cp",
+  "sessions": {
+    "by_class": {
+      "CP2": 5,
+      "Worker step": 5,
+      "gate re-verification": 3
+    },
+    "by_model_alias": {
+      "sonnet": 13
+    },
+    "by_role": {
+      "Verifier": 8,
+      "Worker": 5
+    },
+    "fresh": {
+      "grade": "확인",
+      "note": "각 invoke = 독립 headless CLI 세션(고유 session_id). 고유 session_id 수 == 총 세션 수 이면 전부 fresh-context.",
+      "value": 13
+    },
+    "fresh_equals_total": true,
+    "total": {
+      "grade": "확인",
+      "value": 13
+    }
+  },
+  "tokens": {
+    "cache_read": {
+      "grade": "확인",
+      "value": 7665373
+    },
+    "cache_read_per_session_avg": {
+      "grade": "계산",
+      "value": 589644.1
+    },
+    "cache_write": {
+      "grade": "확인",
+      "value": 558967
+    },
+    "input_noncache": {
+      "grade": "확인",
+      "value": 21609
+    },
+    "output": {
+      "grade": "확인",
+      "value": 169720
+    }
+  }
+}

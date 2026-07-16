@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "orchestration/orchestrator/allocation_schema.json",
+  "title": "AgentSpecRegistry",
+  "description": "AgentSpec 레지스트리 + capability 매칭 정책의 형태 정의(05 §3.4 — 본 Layer 신규 소유 계약). 형태(shape)만 규정하며 실값(실제 모델명·provider·하네스 역할 정의 파일 경로 등)은 Adapter/프로젝트 데이터 소관이다 — 이 스키마·중립 코드는 불투명 문자열만 안다(PO-INV 8). AgentSpec 의 briefTemplateRef·defaultConstraints·toolPolicyClass·modelPolicyClass 는 전부 불투명 참조다: 중립 코드는 그 실값의 의미를 해석하지 않고 매칭·키 사용·전달만 한다(PO-INV 6 — 어느 실행 주체가 호스팅하는가는 Adapter 소관). Role 층(04 §3.3 Expert Role)은 재정의하지 않는다 — AgentSpec 은 그 위의 실행 프로파일이다. 직렬화 형식(JSON 등)·물리 경로는 Adapter Binding 소관이다(05 §5).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "specs": {
+      "type": "array",
+      "description": "AgentSpec 레코드 목록. 각 레코드는 05 §3.4 의 7필드를 갖는 버전 있는 데이터다.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["specId"],
+        "properties": {
+          "specId": {"type": "string", "description": "AgentSpec 식별자(불투명·진짜 동률 시 최종 tie-break 키)."},
+          "capabilitySelector": {
+            "description": "capability 매칭 selector. \"*\"(전역·특이도 0) · 정확 문자열(특이도 1) · 매처 dict(특이도 = 제약 키 수). 구조적 등가 매칭만 하며 selector 실값의 의미는 해석하지 않는다.",
+            "default": "*"
+          },
+          "briefTemplateRef": {"description": "brief 템플릿 참조(불투명 — 코드가 해석하지 않음)."},
+          "defaultConstraints": {"description": "기본 constraints(불투명 — Adapter/실행 단위 소비)."},
+          "toolPolicyClass": {"type": ["string", "null"], "description": "도구 정책 클래스(불투명 정책 키)."},
+          "modelPolicyClass": {"type": ["string", "null"], "description": "모델 정책 클래스(불투명 정책 키). Model Selection(model_selection_schema.json)의 slots 키로 소비된다 — 물리 실행 주체 매핑은 해석하지 않는다(PO-INV 6)."},
+          "version": {"type": "integer", "minimum": 1, "default": 1, "description": "버전(단조). tie-break \"최고 version\" 차원."}
+        }
+      }
+    },
+    "tieBreak": {
+      "type": "array",
+      "items": {"type": "string", "enum": ["specificity", "version"]},
+      "default": ["specificity", "version"],
+      "description": "capability 매칭 tie-break 규칙(데이터 오버라이드 가능·05 §9 OQ 8 S4 확정분). 기본값 = 더 구체적인 selector 우선(\"specificity\") → 같으면 최고 version(\"version\"). 두 차원 모두 값이 클수록 선호된다. 순서를 바꾸면(예: [\"version\",\"specificity\"]) 우선순위가 뒤바뀐다. 진짜 동률(모든 차원 동일)은 specId 사전순으로 결정적 해소한다(코드 소유). floor 처럼 스키마 default 는 코드 fallback(gates 관례 동형)과 일치해야 한다(allocation.DEFAULT_TIE_BREAK)."
+    }
+  }
+}

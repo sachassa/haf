@@ -1,0 +1,32 @@
+{
+  "capability": "impl",
+  "delegation": {
+    "constraints": "값 추측 금지(O4)",
+    "context": [
+      "형태 B W3 E2E s5 — unrestricted 에서도 게이트 보존"
+    ],
+    "done": "s5-answer.txt 가 spec-s5.txt 값과 일치. (spec-s5.txt 부재 시 착수 불가)",
+    "from": "Advisor",
+    "input": "spec-s5.txt (부재 시 착수 불가)",
+    "output": "s5-answer.txt",
+    "task": "input 이 가리키는 사양 파일 spec-s5.txt 를 읽고 그 내용대로 s5-answer.txt 를 생성하라. spec-s5.txt 가 존재하지 않으면 O4(추측 금지)에 따라 값을 추측하지 말고 실패 보고를 blocking='차단됨' 으로 제출하라(reason 에 spec-s5.txt 필요를 명기). 이것이 차단 선언이다. unrestricted policy 여도 추측하지 마라.",
+    "to": "Worker"
+  },
+  "dependsOn": [
+    "s5a"
+  ],
+  "done": "s5-answer.txt 가 spec-s5.txt 값과 일치. (spec-s5.txt 부재 시 착수 불가)",
+  "id": "s5b",
+  "interfaceContract": {
+    "depends_input": "spec-s5.txt",
+    "produces": [
+      "s5-answer.txt"
+    ]
+  },
+  "model": "haiku",
+  "ownedBoundary": [
+    "s5-answer.txt"
+  ],
+  "role": "Worker",
+  "task": "input 이 가리키는 사양 파일 spec-s5.txt 를 읽고 그 내용대로 s5-answer.txt 를 생성하라. spec-s5.txt 가 존재하지 않으면 O4(추측 금지)에 따라 값을 추측하지 말고 실패 보고를 blocking='차단됨' 으로 제출하라(reason 에 spec-s5.txt 필요를 명기). 이것이 차단 선언이다. unrestricted policy 여도 추측하지 마라."
+}

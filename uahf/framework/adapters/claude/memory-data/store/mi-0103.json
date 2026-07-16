@@ -1,0 +1,21 @@
+{
+  "id": "mi-0103",
+  "kind": "recurrence-judgment",
+  "content": {
+    "incident": "v1.6 S1 설계 초안이 v1.5 형태 B Step Host 확장 패턴의 '형태'(프로토콜 정본 + loop 중립 코드 + claude 바인딩 3분리)를 따르면서 '위치'(uahf/framework/ 내부)까지 문자 복제 → Project Orchestration을 'UAHF 내부 v1.6 컴포넌트'로 프레이밍. 그러나 의미론(Discovery·Solution Design 산출물을 인수해 프로젝트 전체 lifecycle을 관리하고 UAHF를 execution substrate로 소비하는 UAF 레벨 상위 컴포넌트)과 물리 정체성(uahf/ 내부면 루트 §2.5 위반 외양)이 불일치. 루트 §2.5(상위만이 하위를 안다 — 단방향 의존)·§2.3('Agentic Runtime (향후)' 예약 slot) 실측 재검증으로 검출 → 사용자 배치 재검증 게이트에서 UAF 레벨 신규 Layer orchestration/(6번째 최상위 Layer·§2.3 slot 실현)로 정정(구조 대안 3안 중 대안 B 채택). uahf/ 접촉은 step-host 중립 모듈 무수정 라이브러리 재사용 + 바인딩 5종째 동거 2건으로 한정.",
+    "verdict": "Recurrence",
+    "kernel_analysis": "기존 커널 BPD-16(개념 귀속 ≠ 물리 위치 — 개념 명찰은 확정하되 물리 위치는 소속 레벨/환경 경계로 판정)의 재발(matched=BPD-16). 신규 facet = '선례 적용 시 형태-위치 분리': 선례(v1.5 step-host)에서 재사용 가능한 것은 '형태'(deterministic 구동자+append-only+게이트 코드 강제 패턴)이지 '위치'가 아니다 — 위치는 선례가 메운 공백의 소속 레벨(v1.5=UAHF 내부 예약 자리 / v1.6=UAF 레벨 §2.3 예약 자리)로 재도출해야 하며, 선례 위치를 문자 복제하면 형태와 배치가 융합돼 레벨 오귀속이 발생한다. L-23(concept-vs-path — 동형 토큰도 소유 Layer로 목적지 갈림) 인접. 방어선: 초안 저술 예방은 실패했으나 루트 ARCH §2.5/§2.3 실측 재검증 + 사용자 배치 재검증 게이트가 포착·정정(구조 B). 예방 규칙 = 선례를 적용할 때 '형태'와 '위치'를 분리하고, 배치는 선례 위치 복제가 아니라 공백의 소속 레벨 판정으로 결정한다. 이 재발은 BPD-16 승격(Candidate→Active) 재상정 근거 — 승격 판정은 Advisor 소관(05 INV-4).",
+    "provenance": {
+      "task_ref": "v1.6 S1 설계 확정·orchestration Layer 신설 — 커밋 fd112cd(설계 정본 docs/project-orchestration-design.md·배치 재검증 게이트 사용자 결정 2026-07-13)",
+      "report_ref": "docs/project-orchestration-design.md 도입부(구조 3안 중 대안 B)·배치 재검증 게이트 표(UAF-INV ①+루트 §2.5)·S1 CP2 Pass 8/0/0",
+      "origin_role": "검출·정정 Advisor(루트 ARCH 실측 재검증)·확정 사용자 배치 재검증 게이트",
+      "ordering_ref": "v1.6 세션 (mi 시퀀스 연속·mi-0102 다음)"
+    }
+  },
+  "source": "v1.6-project-orchestration",
+  "timestamp": "2026-07-13T22:10:00.000+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "situation": ["precedent-form-vs-location", "conceptual-vs-physical-placement", "bpd-16-kernel", "layer-level-misattribution", "user-placement-gate-caught"]
+  }
+}

@@ -1,7 +1,7 @@
 # framework/adapters/claude/adapter-conformance — Claude Code Adapter 적합성(Conformance) 판정
 
 작성일: 2026-07-06
-상태: v1.2 Baseline (개정 — 자매 바인딩 계수 실측 정합 · UAF 정본 바인딩 3종 구분 표기 · CP2 Pass — 첫 판정 Pass · CP3 승인 · 사용자 승인 2026-07-07). 직전 기준선: v0.9 Baseline (r2 — W2 정식화 실재 반영 · CP2 Pass — 첫 판정 Pass · CP3 승인 · 사용자 승인 2026-07-06)
+상태: v1.2 Baseline (r3 — UAF 정본 바인딩 계수 3종→4종 정합 2026-07-13; 직전: 개정 — 자매 바인딩 계수 실측 정합 · UAF 정본 바인딩 3종 구분 표기 · CP2 Pass — 첫 판정 Pass · CP3 승인 · 사용자 승인 2026-07-07). 직전 기준선: v0.9 Baseline (r2 — W2 정식화 실재 반영 · CP2 Pass — 첫 판정 Pass · CP3 승인 · 사용자 승인 2026-07-06)
 상위 규약: AGENT.md
 근거 정본:
 
@@ -11,7 +11,7 @@
 - framework/core/structure.md §2·§5·§8 — 4경계 배치(Adapter 경계 = 격리 지점, C-3 비적용)·금지 토큰 규칙·§8 트리. 본 문서 경계·물리 분리(BP-5)의 근거.
 - framework/adapters/claude/ **자매 Adapter Binding 문서 11종**(UAHF spec 바인딩 — 전부 Baseline). 그중 8종: runtime-binding.md(v0.3)·memory-binding.md(v0.4)·verifier-binding.md(v0.5)·loop-binding.md(v0.7)·workflow-binding.md(v0.8)·hooks-binding.md(v0.9)·skills-binding.md(v0.8)·plugins-binding.md(v0.9); 나머지 3종(agent·harness·scaffold-binding)은 아래 W2 정식화 산출물 행. 각 BP의 물리 실현 소스. 본 문서는 그 실현을 커버리지로 대조만 하고 재정의하지 않는다.
 - framework/adapters/claude/ W2 정식화 산출물 3종(위 자매 11종의 잔여 3종 — 현행 Baseline) — agent-binding.md(v0.9 Baseline · BP-7~11·02 §4.1 표·SP-1~5, T3)·harness-binding.md(v0.9 Baseline · 13 §4.1 조합, T3)·scaffold-binding.md(v1.0 Baseline · 12 §4.1·scaffold-template/ 정본, T4). BP-7~11·13 §4.1 조합·12 §4.1 Scaffold 표면의 정식화 실현 소스(§2·§4가 § 포인터로 대조 — r2 반영). 계약 표면은 02·13·12가 소유하며 본 문서는 재정의하지 않는다.
-- framework/adapters/claude/ **UAF 정본(uaf/specs) 바인딩 3종**(전부 v1.2 Draft) — contract-binding.md(uaf/specs/03 Project Contract)·entry-binding.md(uaf/specs/01 Entry Layer)·discovery-binding.md(uaf/specs/02 Project Discovery). **비고: 이 3종은 위 "자매 11종" 계수에 합산하지 않는다** — uaf/ 정본의 물리 실현이며 specs/11-adapters.md §3.2-A BP-1~17 커버리지 대상이 아니고, 본 문서 Conformance 판정(verdict·C1~C3·6필드)에 무영향이다(DP-X4). 본 문서는 이 3종을 실현 소스로 인용·대조하지 않는다.
+- framework/adapters/claude/ **UAF 정본(entry/·discovery/·planning/specs) 바인딩 4종**(contract·entry·discovery = v1.2 Baseline·solution-design = v1.4 Baseline[사용자 승인 2026-07-13] — 2026-07-13 재실측) — contract-binding.md(planning/specs/03 Project Contract)·entry-binding.md(entry/specs/01 Entry Layer)·discovery-binding.md(discovery/specs/02 Project Discovery)·solution-design-binding.md(planning/specs/04 Solution Design — v1.4 신설). **비고: 이 4종은 위 "자매 11종" 계수에 합산하지 않는다** — UAF 정본의 물리 실현이며 specs/11-adapters.md §3.2-A BP-1~17 커버리지 대상이 아니고, 본 문서 Conformance 판정(verdict·C1~C3·6필드)에 무영향이다(DP-X4). 본 문서는 이 4종을 실현 소스로 인용·대조하지 않는다.
 - docs/delegation-protocol.md §3 — 위임/보고 물리 채널 운용(서브에이전트 위임 §3.1·최종 응답 §3.2·병렬 Wave §3.3·반환·에스컬레이션 §3.4). BP-10·BP-11 실현의 정본 근거 소스(agent-binding.md §4가 정식화 — r2).
 - .claude/AGENT.md(상위 규약)·.claude/CLAUDE.md(Advisor 진입점)·.claude/agents/ 4종(advisor·planner·verifier·worker.md) — BP-7·BP-8·BP-9의 실물 실측 대상.
 - specs/00-glossary.md §3.2 — Adapter Interface·바인딩 지점(Binding Point)·Conformance·완전/최소 구현 Adapter·핵심 루프(Core Loop) 표제어 정본. 본 문서는 새 용어를 신설하지 않는다.
@@ -33,6 +33,8 @@
 | 2026-07-06 | v0.9 Baseline | v0.9 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 20/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-07 | v1.2 Draft (개정 — 계수 실측 정합) | 자매 바인딩 계수 표현 8→**11** 실측 정합(이월 후보 해소 — 핸드오프 v1.1 §1.6-b#3 "자매 8문서 계수 표현 정합"). 갱신 지점: 상태 라인·§0 근거 정본(자매 11종 목록+W2 3종 Baseline 라벨)·거버넌스 문단·§0 격리 문단·§1 목적·§2 주(형태 A/B)·C2 근거·§6 실측 대조 표 등 전 지점의 "자매 8문서/8파일"을 실측 11종(runtime·memory·verifier·loop·workflow·hooks·skills·plugins·agent·harness·scaffold-binding.md — 각 문서 머리 버전 직접 실측 병기: hooks·plugins v0.9·scaffold v1.0 정정 포함)으로 갱신. UAF 정본(uaf/specs) 바인딩 3종(contract·entry·discovery-binding, v1.2 Draft)을 "자매 11종" 계수와 **구분되는 비고**로 표기 — specs/11 §3.2-A BP-1~17 커버리지 대상 아님·Conformance 판정 무영향(DP-X4). **verdict(Valid(Full))·BP-1~17 매트릭스·C1~C3 판정 논리·6필드·specs/11 계약 인용 일절 불변** — 계수·열거 표현만 정합. 기존 이력 행 문면 불변(L-10 — T1 행의 "선행 자매 8문서"는 T1 창작 시점 사실로 보존). 병렬 집합 형제 Task(ROADMAP.md·structure.md) 불인용(07 R2). 이 1파일만 수정(07 R4). | Worker (Advisor 위임, Task T-A) |
 | 2026-07-07 | v1.2 Baseline | v1.2 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass 16/0/0; CP3 Advisor 승인) | Advisor |
+| 2026-07-13 | v1.2 Baseline (r3 — UAF 정본 바인딩 계수 4종 정합) | **UAF 정본 바인딩 계수 3종→4종 정합(v1.4 W1 solution-design-binding.md 신설 파생 — OQ-SD-3 해소).** 갱신 지점 4곳: 상태 라인·근거 정본 불릿(3종→4종·solution-design-binding 등재·상태 라벨 재실측 병기[contract·entry·discovery = v1.2 Baseline / "(전부 v1.2 Draft)" 시점 서술 현행화]·"이 4종 인용·대조하지 않는다")·§6 도입 문단(r3 재실측 1문 append)·§6 표(4종째 행 신규 append — 기존 3종 행은 2026-07-07 스냅샷으로 byte 불변, BPD-17). **verdict(Valid(Full))·BP-1~17 매트릭스·C1~C3 판정·6필드·specs/11 계약 인용 일절 불변 — 계수·열거 표현만 정합(DP-X4대로 판정 무영향·시맨틱 개정 아님·버전 미상승).** 기존 §9 행 byte 불변(L-10). | Advisor (v1.4 W3) |
+| 2026-07-13 | v1.2 Baseline (r4 — SDB Baseline 라벨 반영) | 근거 정본 불릿의 solution-design 상태 라벨 "v1.4 Draft[CP2 Pass·Baseline 대기]" → "v1.4 Baseline[사용자 승인 2026-07-13]" 1구 갱신(같은 날 Baseline 승격 즉시 반영 — "(전부 v1.2 Draft)" 유형의 알려진 stale 재생성 방지). §6 4종째 행은 재실측 시점(승격 전) 스냅샷으로 byte 보존(BPD-17). 그 외 무변·판정 무영향. | Advisor (v1.4 Baseline) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -169,12 +171,13 @@ BP-7~11의 정식화와 인접 표면(13 §4.1 조합·12 §4.1 Scaffold·Presen
 
 ## §6. 상태 서술 실측 대조 (done 6 — A5/L-07 재발 방지)
 
-session-handoff-v0.3.md §1.4(A5 사례 — 미존재를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록, 이월 L-07)에 따라, 본 문서의 "실재/존재/부재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: r2(2026-07-06) 파일 열거(`ls`/`find`) 직접 재실측.** r2에서 최초(T1) 시점 "예정 — 미존재"였던 §4 배정 대상 4종을 재실측해 실재로 전환된 상태를 반영했다(L-06). **v1.2(2026-07-07) 계수 실측 정합 개정 시 자매 11문서 행·UAF 정본 바인딩 3종 행은 그 시점 직접 재실측으로 갱신·추가했다(각 행에 "2026-07-07" 명기; hooks·plugins v0.9·scaffold v1.0 버전 라벨 실측 반영).**
+session-handoff-v0.3.md §1.4(A5 사례 — 미존재를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록, 이월 L-07)에 따라, 본 문서의 "실재/존재/부재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: r2(2026-07-06) 파일 열거(`ls`/`find`) 직접 재실측.** r2에서 최초(T1) 시점 "예정 — 미존재"였던 §4 배정 대상 4종을 재실측해 실재로 전환된 상태를 반영했다(L-06). **v1.2(2026-07-07) 계수 실측 정합 개정 시 자매 11문서 행·UAF 정본 바인딩 3종 행은 그 시점 직접 재실측으로 갱신·추가했다(각 행에 "2026-07-07" 명기; hooks·plugins v0.9·scaffold v1.0 버전 라벨 실측 반영).** **v1.2 r3(2026-07-13) 개정 시 UAF 정본 바인딩 4종째(solution-design-binding.md) 행을 그 시점 직접 재실측으로 추가했다(기존 3종 행은 2026-07-07 시점 스냅샷으로 byte 보존).**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|
 | `framework/adapters/claude/` 자매 바인딩 11문서 (§2 실현 소스 — UAHF spec 바인딩) | 실재 (전부 Baseline) | 실재 — runtime·memory·verifier·loop·workflow·hooks·skills·plugins·agent·harness·scaffold-binding.md 11파일 확인(agent·harness·scaffold는 §4 배정·아래 별도 행 상세; 직접 재실측 2026-07-07). |
 | `framework/adapters/claude/` UAF 정본 바인딩 3종 (contract·entry·discovery-binding) | 실재하나 자매 11종 계수에 **미합산**(DP-X4) | 실재 — contract·entry·discovery-binding.md 3파일 확인(전부 v1.2 Draft, 직접 재실측 2026-07-07). specs/11 BP-1~17 커버리지 대상 아님·Conformance 판정 무영향. |
+| `framework/adapters/claude/` UAF 정본 바인딩 4종째 (solution-design-binding) | 실재하나 자매 11종 계수에 **미합산**(DP-X4 동형) | 실재 — solution-design-binding.md 확인(v1.4 Draft·CP2 Pass 10/0/0, 직접 재실측 2026-07-13). planning/specs/04 §4의 물리 실현(UAF 레벨 바인딩 계 4종). specs/11 BP-1~17 커버리지 대상 아님·Conformance 판정 무영향. |
 | `framework/adapters/claude/adapter-conformance.md` (본 문서) | 실재 (본 산출로 생성) | 실재 (이 파일). 생성 전 미존재였음(사전 실측 확인). |
 | `.claude/agents/` 4역할 정의 파일 (BP-7) | 실재 (advisor·planner·worker·verifier.md) | 실재 — 4파일 확인(advisor.md·planner.md·worker.md·verifier.md). |
 | `.claude/AGENT.md`·`.claude/CLAUDE.md` (BP-8) | 실재 (상위 규약·Advisor 진입점) | 실재 — 2파일 확인. |

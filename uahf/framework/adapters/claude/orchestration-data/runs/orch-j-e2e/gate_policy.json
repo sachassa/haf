@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "gate": "user_decision_required",
+      "target": {
+        "unitType": "design_maturation"
+      }
+    },
+    {
+      "gate": "review_required",
+      "target": {
+        "unitType": "implementation"
+      }
+    }
+  ],
+  "escalationResolvers": [
+    "Advisor",
+    "human"
+  ],
+  "gateRaiser": "Advisor",
+  "userActorClass": "human"
+}

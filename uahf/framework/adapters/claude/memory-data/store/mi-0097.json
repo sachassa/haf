@@ -1,0 +1,16 @@
+{
+  "id": "mi-0097",
+  "kind": "recurrence-judgment",
+  "content": {
+    "verdict": "Novel",
+    "finding": "v1.4 전 CP2에서 계약·산출 결함 0. 유일 실결함급 = W3 CP2 비차단 관찰: 핸드오프가 adapter-conformance의 stale 지점을 '행번호(line 183)'로 인용했으나 같은 W3에서 본인이 §6 표에 행을 삽입해 실제 위치가 이동(+1·원기점 오차 포함 off-by-2) — 자기 편집이 유발한 위치 포인터 드리프트. 커밋 전 § 앵커 표기('§6 표 BP-16 행')로 정정.",
+    "kernel_comparison": "L-22(§ 앵커 stale)·L-25(카운트 본문 재계수) 인접이나 상이 — 기존 커널은 '남의/과거 개정이 만든 anchor 이동을 놓침'이고 본 건은 '같은 Wave 내 자기 삽입이 자기 인용을 이동시킴'. 행번호 인용 자체가 취약 anchor라는 신규 facet → 예방: 살아있는 문서 상호 인용은 행번호가 아니라 구조 앵커(§·표·라벨)로.",
+    "prevention_confirmed": "mi-0095 커널('분류 라벨 전사')은 재발 0 — W1 CP2 브리프에 집중 점검을 명시 지시했고 Verifier가 전이표 1:1 대조로 '비Ready/비종단 혼동 0'을 실측 확증. 예방 지시가 작동한 사례.",
+    "process_note": "W1 CP2 첫 판정 Pass 10/0/0(rework 0)·W2 CP2 증명 13/13·W3 CP2 6/6 — v0.5부터 이어진 첫 판정 Pass 계보 유지."
+  },
+  "source": "v1.4-binding-e2e",
+  "timestamp": "2026-07-13T10:29:23.291+09:00",
+  "labels": {
+    "verdict": "Novel"
+  }
+}

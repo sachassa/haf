@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "orchestration/orchestrator/model_selection_schema.json",
+  "title": "ModelSelectionPolicy",
+  "description": "Model Selection Policy 데이터의 형태 정의(05 §3.5 — Policy as Data). 형태(shape)만 규정한다 — 실값(실제 모델명)은 Adapter/프로젝트 정책 데이터 소관이며, 이 스키마·중립 코드는 불투명 슬롯 문자열(예: \"tier-a\")만 안다(PO-INV 8·C-3). hysteresis(05 §3.5): 모델 선택은 Step 직렬화 시점 1회 고정이다. select_model 은 순수 함수이므로 같은 입력 → 같은 슬롯(정상 재실행에서 재선택 없음). 슬롯을 바꾸는 재선택 트리거는 정확히 2건뿐이며(allocation.RESELECTION_TRIGGER_KINDS = retry 한도 도달·명시적 모델 정책 이벤트), 그 판정은 orchestrator 가 이벤트 로그에서 수행한다. CP2 Verifier 모델은 대상 step 슬롯을 상속하지 않고 독립 슬롯(cp2ModelSlot·capability class 별 오버라이드 cp2ModelSlots)으로 지정된다(OQ-SH-4 해소). 직렬화 형식·물리 경로는 Adapter Binding 소관이다(05 §5).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "slots": {
+      "type": "object",
+      "description": "capability class → 기본 모델 슬롯 매핑. 키(capability class)는 AgentSpec.modelPolicyClass(불투명 정책 키)와 대응한다. 값은 불투명 슬롯 문자열이다 — 실제 모델명은 이 스키마 밖(Adapter 정책 실값)에만 등장한다.",
+      "additionalProperties": {"type": "string"}
+    },
+    "fallbackChain": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "티어 순서 리스트(약 → 강). 재선택 시 base 슬롯을 이 체인에서 찾아 재선택 차수(level)만큼 차상위로 진행한다(끝은 clamp). base 가 체인 밖이면 재선택하지 않고 base 를 유지한다(정의되지 않은 fallback 추측 0·O4). 값은 전부 불투명 슬롯 문자열."
+    },
+    "cp2ModelSlot": {
+      "type": ["string", "null"],
+      "description": "CP2 검증 단위(Verifier)의 독립 모델 슬롯(OQ-SH-4 해소). null 또는 생략(기본) = Step Host 가 대상 step 슬롯 상속(기존 거동 보존). 지정 시 orchestrator 가 StepHost(cp2_model=...)로 전달하고 CP2 만 그 슬롯을 쓴다 — 검증 단위가 피검증 단위와 동일 모델에 묶이지 않는다. 불투명 슬롯 문자열."
+    },
+    "cp2ModelSlots": {
+      "type": "object",
+      "additionalProperties": {"type": "string"},
+      "description": "capability class → CP2 모델 슬롯 오버라이드(선택·가법 확장 — 05 §3.5 \"CP2 = 독립 정책 참조\"의 위험도별 차등 데이터 실현·OQ-SH-4 계보). 키 = AgentSpec.modelPolicyClass(불투명 정책 키)·값 = 불투명 슬롯 문자열. 매칭 class 부재 시 cp2ModelSlot(전역 기본) 폴백·생략/빈 객체(기본) = 전역 단일 거동 완전 보존(기존 데이터 무회귀). 이 필드는 검증 단위의 모델 슬롯만 지정 — CP2 존치(상시 CP2·SH-INV-4)와 직교."
+    },
+    "defaultSlot": {
+      "type": ["string", "null"],
+      "description": "slots 에 없는 capability class 의 기본 슬롯(선택). 미지정 시 매칭 실패는 슬롯 부재(None)로 귀결한다. 불투명 슬롯 문자열."
+    }
+  }
+}

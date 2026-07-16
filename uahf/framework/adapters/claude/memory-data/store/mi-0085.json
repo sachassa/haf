@@ -1,0 +1,24 @@
+{
+  "id": "mi-0085",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-16",
+    "status": "Candidate",
+    "success": "Tier 2 「.claude Global Default vs uahf override 재설계」 — 환경(Claude Code)이 루트 .claude/만 네이티브 로드하고 하위 Layer override(uahf/.claude/ 등)는 자동 소비하지 않는다는 경계를 실측 확인. override 계약(ADD/REPLACE/MERGE)과 12항목 G/U 귀속을 형태 A(계약·명찰)로 확정하되 물리 재배치는 형태 B(합성·스캐폴드)로 유보 — 개념 귀속≠물리 위치 분리로 라이브 세션 파손·정본 개정 유발 0. 무위험 정합(agents stale specs 경로·uahf/.claude/README 명칭)만 반영, CP2 Pass·정본/append-only 무편집·작업트리 clean(커밋 6fa5bd0).",
+    "practice": "환경 의존 설정·override·확장 표면 재설계의 안전 패턴 — (1) 환경이 실제로 무엇을 로드하는가를 문서 가정이 아니라 실측으로 확인한다(예: 루트 .claude만 로드, 하위 미로드=논리 구성물이지 환경 기능 아님). (2) 개념 귀속(어디에 속하는가)과 물리 위치(지금 어디 두는가)를 분리 — 개념 명찰은 지금 확정하고, 물리 실현이 환경 기능 부재로 불가하면 형태 A(계약·명찰)로 두고 물리 이동은 형태 B(합성 메커니즘 존재 시)로 유보한다. (3) 물리 이동이 무수정 정본의 참조 표면(선례 포인터 등)을 깨뜨려 정본 개정을 유발하면 그 결합을 유보 근거로 명문화한다. (4) 이번 세션엔 무위험 정합만 반영하고 위험 재배치는 후속 트랙으로 분리한다.",
+    "applicability": "환경(툴/런타임)에 종속된 설정·override·확장 표면을 재설계하는 상황 — 논리 계층 모델(Layer override 등)이 환경 네이티브 기능과 어긋나 물리 실현이 합성 단계를 요구하고, 개념 경계 확정과 물리 재배치를 분리해야 하며, 물리 이동이 무수정 정본 참조를 깨뜨릴 위험이 있는 경우.",
+    "provenance": {
+      "task_ref": "Tier 2 .claude Global Default vs uahf override 재설계 (커밋 6fa5bd0)",
+      "report_ref": "docs/tier2-claude-override-design.md §2·§3·§4·§5 · 계획 zippy-launching-boole.md",
+      "origin_role": "도출 Advisor(Planner 초안 채택·사용자 결정 2축 2026-07-09)·심사 Advisor(Candidate 보류 — 1개 트랙 발생·형태 B 실현/유사 환경 경계 재설계 재발 시 재상정)",
+      "ordering_ref": "Tier 2 세션 (mi 시퀀스 연속·mi-0084 다음)"
+    }
+  },
+  "source": "tier2-review",
+  "timestamp": "2026-07-05T22:21:11.602+09:00",
+  "labels": {
+    "stable_id": "BPD-16",
+    "status": "Candidate",
+    "situation": ["claude-config-design", "override-boundary", "environment-native-loading", "conceptual-vs-physical", "form-a-form-b"]
+  }
+}

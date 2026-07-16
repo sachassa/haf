@@ -1,0 +1,21 @@
+{
+  "id": "mi-0100",
+  "kind": "recurrence-judgment",
+  "content": {
+    "incident": "v1.5 W3 s3 게이트 해소 중 Advisor 도구 사건: 인라인 스크립트가 UnicodeEncodeError(cp949 콘솔 print)로 exit 1 → Advisor가 연산 전체 실패로 오인, 부수효과(append-only 이벤트 로그에 해소 이벤트 append 성공)를 미확정한 채 동일 연산 재시도 → 해소 이벤트 중복 append(at 3·4) → append-only 규율로 수정 없이 보존 → prior_failures 부풀림으로 retry 예산 1 소모 → retry-limit-exceeded Escalated 조기 유발(seq 7) → Advisor 해소 #2로 회복·완주. 전 과정이 로그만으로 재구성 가능(정직 기록 실증 사례이기도 함).",
+    "verdict": "Novel",
+    "kernel_analysis": "기존 커널(L-20/L-22 인용·앵커, L-21/L-24 전수 스윕, L-25 재계수, mi-0095 분류 라벨 전사)과 상이한 신규 커널 — '예외의 발생 단계 오귀속·부수효과 미확정 재시도'. 예외가 연산 단계가 아닌 출력(표시) 단계에서 났음에도 연산 실패로 판정해 비멱등 연산을 재시도한 것이 원인. 특히 append-only 저장소 대상 연산은 중복이 되돌릴 수 없고 파생 상태·예산에 파장을 남기므로 재시도 전 저장소 실측이 필수 → L-26 Candidate 등록(mi-0101).",
+    "provenance": {
+      "task_ref": "v1.5 W3 s3 해소 — 커밋 94bc97e(step-data/runs/e2e-s3-blocked/events.jsonl seq 3·4·7·8)",
+      "report_ref": "W3 CP2 독립 Verifier 리포트(중복이 retry 슬롯 소모함이 로그만으로 재구성 가능 — 관찰 O-2 연계) + Advisor 자기 보고(사건 당사자)",
+      "origin_role": "사건 Advisor(자기 판정 — Worker 보고 불신 원칙을 자기 사건에 적용)·확증 Verifier(W3 CP2)",
+      "ordering_ref": "v1.5 세션 (mi-0099 다음)"
+    }
+  },
+  "source": "v1.5-form-b-step-hosting",
+  "timestamp": "2026-07-13T15:49:27.000+09:00",
+  "labels": {
+    "verdict": "Novel",
+    "situation": ["exception-stage-misattribution", "side-effect-unverified-retry", "append-only-irreversible", "retry-budget-consumption"]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "mi-0090",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-17",
+    "status": "Candidate",
+    "success": "동결 측정 스냅샷(날짜 명시 '실측 대조' 표 — entry-binding §10·discovery-binding §13, 2026-07-07)이 리팩토링 후 사실과 어긋났으나, in-place 수정(L-22 위반) 없이 갱신: 원 스냅샷을 byte 그대로 보존하고 같은 § 끝에 '재베이스라인 — 2026-07-09 재측정' 날짜 라벨 서브블록을 append(새 top-level § 번호 미신설 → §앵커 정합 보존). 서브블록은 상태가 바뀐 행만 `ls`/`test`/`git rev-parse` 직접 재실측(L-07)해 채우고 '판정 계약 불변'을 명기. CP2 독립 재측정 대조·frozen 표 삭제 0(순수 append)·CR=0. 커밋 a032c52.",
+    "practice": "동결 영역(날짜 명시 측정 스냅샷·이력)이 시간 경과·구조 변경으로 사실과 어긋날 때의 갱신 패턴 — (1) 원 스냅샷은 작성 시점 역사로 byte 보존한다(in-place 정정=시대착오, L-22). (2) 같은 문서·같은 § 안에 날짜 라벨을 붙인 재측정 서브블록을 append하고, 새 top-level § 번호는 신설하지 않는다(하위 §앵커 정합 보존). (3) 서브블록의 모든 '실재/미존재' 주장은 현시점 직접 실측 후에만 기입한다(L-07 — 추정 복붙 금지). (4) 상태만 바뀌고 계약/판정 논리는 불변임을 명기해, 재측정이 정본 계약 개정으로 오독되지 않게 한다. (5) 검증은 diff가 원 스냅샷에 대해 삭제 0·순수 append인지, 서브블록 서술이 독립 재측정과 일치하는지 확인한다.",
+    "applicability": "날짜 명시 측정 스냅샷·상태 서술 표·이력 등 동결 기록이 시간 경과나 구조 변경으로 stale가 되어 갱신이 필요하지만 in-place 수정이 역사 왜곡이 되는 상황 — 재측정 가능한 관측값이고, 하위 §앵커 정합·바이트 보존 규율이 걸려 있는 경우.",
+    "provenance": {
+      "task_ref": "Tier 2 v1.2-era 잔존물 정리 항목 (a) 재베이스라인 (커밋 a032c52)",
+      "report_ref": "[[uahf-active-track-v1.2-era-cleanup]] · entry-binding.md §10·discovery-binding.md §13 재측정 서브블록 · CP2 판정서(C5 재측정 정직성 PASS·C3 동결 보존 PASS)",
+      "origin_role": "도출 Advisor(D1 재베이스라인 방식 사용자 확정·append 설계)·심사 Advisor(Candidate 보류 — 1개 트랙 발생·동결 스냅샷 재갱신 재발 시 재상정)",
+      "ordering_ref": "v1.2-era 잔존물 정리 세션 (mi 시퀀스 연속·mi-0089 다음)"
+    }
+  },
+  "source": "v1.2-era-cleanup-review",
+  "timestamp": "2026-07-05T22:21:16.602+09:00",
+  "labels": {
+    "stable_id": "BPD-17",
+    "status": "Candidate",
+    "situation": ["frozen-snapshot-rebaseline", "append-dated-remeasurement", "anchor-preservation", "live-measurement", "l-07-l-22-alignment"]
+  }
+}

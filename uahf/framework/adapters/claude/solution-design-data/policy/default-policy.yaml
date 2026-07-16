@@ -1,0 +1,25 @@
+# Solution Design Policy — 기본 프로파일 (Policy as Data — planning/specs/04-solution-design.md §3.2)
+# 정본 값 문면: uahf/framework/adapters/claude/solution-design-binding.md §7.2 (최소 실값 1세트)
+# 값 조정 = 데이터 정정 — 규약 절차·정본 계약 무변경 (04 §3.2)
+policyId: default-policy
+
+# (가) 성숙/스킵 판정 기준 (04 §3.2 — 산출은 이진 분기·판정 근거 기록)
+maturationSignals:
+  - "architectureDirection.open 비공집합 (미결 설계 결정 존재)"      # 03 §3.2-A 그룹 6
+  - "readiness.openQuestions 비공집합 (미해결 질문 존재)"            # 03 §3.2-A 그룹 8
+  - "assumptionLedger 비공집합 (미해결 가정 — ReadyWithAssumptions)" # 03 §3.2-A 그룹 7
+  - "다관심사 지표 (설계 관심사 2개 이상 교차)"
+skipRule: "위 신호 전부 부재 ∧ 단일 관심사 → 스킵 (T2 Assessing→Validating · T9 확인→Skipped · 경량 사용자 확인 D6)"
+
+# (나) 역할 선택 규칙 (04 §3.3 — Capability 선언·개방 네임스페이스·최소 할당)
+roleSelection:
+  basis: "판정 근거가 식별한 설계 관심사에서 파생"
+  perConcern: 1        # 관심사당 최소 필요 역할만
+  maxRoles: 3          # SP-INV 8 — 불필요 다중 역할 구성 금지
+  fixedTeam: "금지"    # SP-INV 5 — 개방 네임스페이스·고정 역할 카탈로그 0
+
+# (다) Projection 선택 정책 (04 §3.5 — 동적 선택·전 유형 강제 금지)
+projectionSelection:
+  mode: "프로젝트 유형·복잡도에 따라 동적 선택"
+  forceAllTypes: "금지"
+  existingCanonical: "대상 워크스페이스에 해당 유형 정본 실재 시 신규 강제 0"

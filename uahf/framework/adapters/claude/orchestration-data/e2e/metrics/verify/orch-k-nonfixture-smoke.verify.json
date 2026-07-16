@@ -1,0 +1,74 @@
+{
+  "checks": [
+    {
+      "check": "ledger_hygiene",
+      "detail": {
+        "cycles": 7,
+        "event_count": 11,
+        "refs_without_kind_at": [],
+        "simulated_false": 1,
+        "simulated_true": 0,
+        "simulation_annotations": 0
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "revision_integrity",
+      "detail": {
+        "final_task_count": 3,
+        "kinds": [
+          "task_added"
+        ],
+        "revision_count": 1
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "plan_schema",
+      "detail": "stage-plan.json·impl-plan.json 부재(plan 산출 run 아님)",
+      "findings": [],
+      "status": "skip"
+    },
+    {
+      "check": "delegation",
+      "detail": {
+        "tasks_checked": 3
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "artifact_counts",
+      "detail": {
+        "approval_states": [
+          "verified"
+        ],
+        "artifact_count": 3,
+        "declaration_count": 3,
+        "distinct_id_version": 3,
+        "record_count": 3
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "replay_determinism",
+      "detail": {
+        "identical": true,
+        "run_id": "orch-k-nonfixture-smoke"
+      },
+      "findings": [],
+      "status": "pass"
+    }
+  ],
+  "run_dir": "C:\\my-claude-project\\universa-agentic-harness-framework\\uahf\\framework\\adapters\\claude\\orchestration-data\\runs\\orch-k-nonfixture-smoke",
+  "run_id": "orch-k-nonfixture-smoke",
+  "status": "pass",
+  "summary": {
+    "fail": 0,
+    "pass": 5,
+    "skip": 1
+  }
+}

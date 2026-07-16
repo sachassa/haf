@@ -1,0 +1,30 @@
+{
+  "capability": "impl",
+  "delegation": {
+    "constraints": "워크스페이스 밖 금지",
+    "context": [
+      "형태 B W3 E2E s7a — Standalone 충분 → 즉시 디스패치"
+    ],
+    "done": "python -c \"import io;d=io.open('s7a.txt',encoding='utf-8').read();assert d=='S7A',repr(d)\" (종료 코드 0 = 통과)",
+    "from": "Advisor",
+    "input": "빈 워크스페이스(신규)",
+    "output": "s7a.txt",
+    "task": "현재 워크스페이스에 s7a.txt 파일을 생성하라. 내용은 정확히 S7A (후행 개행 없이). 워크스페이스 밖 파일 금지. CP1 에서 done 의 AC 를 실제 실행해 확인하라.",
+    "to": "Worker"
+  },
+  "dependsOn": [],
+  "done": "python -c \"import io;d=io.open('s7a.txt',encoding='utf-8').read();assert d=='S7A',repr(d)\" (종료 코드 0 = 통과)",
+  "id": "s7a1",
+  "interfaceContract": {
+    "content": "S7A",
+    "produces": [
+      "s7a.txt"
+    ]
+  },
+  "model": "haiku",
+  "ownedBoundary": [
+    "s7a.txt"
+  ],
+  "role": "Worker",
+  "task": "현재 워크스페이스에 s7a.txt 파일을 생성하라. 내용은 정확히 S7A (후행 개행 없이). 워크스페이스 밖 파일 금지. CP1 에서 done 의 AC 를 실제 실행해 확인하라."
+}

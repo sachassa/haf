@@ -1,0 +1,24 @@
+{
+  "id": "mi-0108",
+  "kind": "lesson",
+  "content": {
+    "id": "L-28",
+    "status": "Candidate",
+    "lesson": "Wave/단계 산출물의 저장소 확정(커밋)은 해당 산출물의 독립 검증(CP2) 통과 이후에 수행한다. run이 생성한 산출을 CP2 이전에 커밋하면 거짓 완료(미검증·결함 산출)가 이력에 편입되어 되돌림 비용과 이력 오염을 남긴다. 순서 규율 = 산출 → 독립 CP2 통과 → 커밋. run-증거(산출물 자체를 근거로 한 CP2)가 저장소 확정에 선행해야 한다(02 INV-4 조기 완료 보고 금지의 저장소 확정 축).",
+    "evidence": "v1.7 — W3까지 run 산출 커밋이 run-증거 CP2에 선행 → W3 독립 Verifier가 관찰로 검출 → W4부터 'CP2 통과 후 커밋' 순서로 교정 적용. 교정 이후 조기 커밋 재발 0.",
+    "applicability": "Wave/단계로 분해된 위임 파이프라인에서 run·산출물을 저장소에 커밋하는 전 상황 — 특히 실행 코드·성숙 run·dogfooding처럼 산출물의 정합성이 독립 검증 후에야 확정되는 경우. 조기 완료 보고 금지(02 INV-4)의 저장소 확정 대응 축.",
+    "provenance": {
+      "task_ref": "v1.7 W3 관찰·W4 교정 — run 산출 커밋 순서 규율",
+      "report_ref": "v1.7 W3 CP2 독립 Verifier 관찰(커밋이 run-증거 CP2에 선행)·W4 이후 순서 교정(CP2 후 커밋)",
+      "origin_role": "검출 독립 Verifier(W3 관찰)·교정·등록 Advisor — 심사 대기 Candidate",
+      "ordering_ref": "v1.7 세션 (mi-0107 다음)"
+    }
+  },
+  "source": "v1.7-external-consuming-project",
+  "timestamp": "2026-07-14T08:40:01.000+09:00",
+  "labels": {
+    "stable_id": "L-28",
+    "status": "Candidate",
+    "situation": ["commit-after-cp2", "run-evidence-before-commit", "false-completion-history-pollution", "wave-artifact-staging-order", "early-commit-prevention"]
+  }
+}

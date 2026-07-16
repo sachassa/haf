@@ -1,0 +1,21 @@
+{
+  "id": "mi-0110",
+  "kind": "recurrence-judgment",
+  "content": {
+    "incident": "v1.7 W2 CP2(독립 Verifier)가 검출 — scaffold-binding.md 내부 정합 모순: §2 행4·§6.1 '설치 대상 경로' 열은 `.claude/settings.json`(활성 파일)로 표기하나, 같은 문서 §3.1 Install 단계3 규칙은 `dot-claude/*`→`.claude/*`로 suffix 보존 매핑(→ `.example`)을 규정 → 표(§2/§6.1)의 대상 경로 값과 절차 규칙(§3.1)이 상호 모순. 산출물 결함이 아니라 정본(binding) 문서의 자기(섹션 간) 불일치. 정정은 Baseline 개정 게이트 필요 → 유지보수 트랙 이월(정정 후보 등재).",
+    "verdict": "Recurrence",
+    "kernel_analysis": "기존 커널 L-25(mi-0094 — Frozen/정본 문서의 자기 불일치: 요약 카운트와 본문 열거 drift를 섹션 간 교차 대조로 검출, blind 전파 금지·본문 근거·자기 불일치는 이월/추적 항목으로 표면화[동결 spec 개정은 버전 상승+Revision History 별도 트랙])의 재발(matched=L-25). 일치 커널 = 'source-self-inconsistency'(정본 문서 섹션 간 자기 불일치)를 독립 Verifier의 섹션 교차 대조(CP2)로 검출하고 blind 전파 없이 이월/베이스라인 개정 게이트로 표면화하는 처리. 신규 facet = 불일치의 종(種)이 '요약-본문 카운트 drift'가 아니라 '표(§2/§6.1) 값 ↔ 절차 규칙(§3.1)의 규범 값 상호 모순'이다 — 파생 카운트 지표 drift가 아니라 두 규범 서술의 값 충돌. 판정: 커널(정본 자기 불일치·섹션 교차 검출·이월 처리)이 동일하므로 mi-0103의 '커널 일치+신규 facet=Recurrence' 관례를 준용해 Recurrence로 판정하되, '규범 값 상호 모순'이라는 새 facet을 기록한다. L-25는 Candidate이며 본 재발은 L-25 승격(Candidate→Active) 재상정 신호가 된다 — 승격 판정은 Advisor 소관(05 INV-4). 처리는 Baseline 개정 게이트 필요로 유지보수 트랙 이월(어느 쪽 값도 blind 확정 금지).",
+    "provenance": {
+      "task_ref": "v1.7 W2 CP2 — scaffold-binding.md 내부 모순 검출·유지보수 트랙 이월(정정 후보)",
+      "report_ref": "v1.7 W2 독립 Verifier 리포트(scaffold-binding §2 행4/§6.1 설치 대상 경로 `.claude/settings.json` vs §3.1 단계3 dot-claude/*→.claude/* suffix 보존 규칙 상호 모순)",
+      "origin_role": "검출 독립 Verifier(W2 CP2)·이월 판정 Advisor — 심사 대기(재발 판정 Recurrence)",
+      "ordering_ref": "v1.7 세션 (mi-0109 다음)"
+    }
+  },
+  "source": "v1.7-external-consuming-project",
+  "timestamp": "2026-07-14T08:40:03.000+09:00",
+  "labels": {
+    "verdict": "Recurrence",
+    "situation": ["scaffold-binding-internal-contradiction", "source-self-inconsistency", "table-value-vs-procedural-rule", "cp2-cross-section-detection", "l-25-kernel"]
+  }
+}

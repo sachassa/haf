@@ -1,0 +1,25 @@
+{
+  "id": "mi-0098",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-20",
+    "status": "Candidate",
+    "practice": "형태 A 성숙 run 규약 구동 패턴(BPD-14의 Solution Design 확장): 실행 코드 0 환경에서 성숙 State Machine을 실동작으로 검증하려면 (1) 주 세션(Advisor)이 Orchestrator 규약 절차로 전이를 실집행하고, (2) Expert Role은 새 실행 프레임워크 없이 기존 위임 관행(역할별 Worker 위임·Proposal 파일 산출·완료 보고)으로 호스팅하며 — 역할은 policy 신호에서 파생된 최소 구성만 —, (3) 사용자 게이트는 실승인으로 수행하되 게이트 불가침을 '레코드 순서'(UserResponded가 종단 전이 레코드에 선행)라는 물리 증거로 남기고, (4) 모든 전이·게이트·산출을 append-only 이벤트 로그(정본 전이 라벨 T# 어휘·seq 전속)로 기록해 '기록만으로 run 재구성'을 성립시키고, (5) superseding 인스턴스 발행 시 기준선 vN의 blob 해시 대조로 byte 불변을 실측 증명한다.",
+    "evidence": "v1.4 W2 실증 — maturation-r001: pc-uahf-001 v1→v2, Assessing→Proposing(역할 2·Worker 위임)→Reconciling(실충돌 0·trade-off 6)→Reviewing(RD-1~12)→Validating(사용자 승인 T8)→Matured. 이벤트 로그 seq 1~10·v1 blob e40874e9 불변·CP2 독립 판정 증명 13/13·필수 8/8 (커밋 bf3820b).",
+    "rationale": "형태 A에서 E2E를 문서 시뮬레이션으로 축소하면 게이트·전이·불변이 검증되지 않는다. 규약 실집행 + 물리 증거(레코드 순서·해시)의 조합은 실행 코드 없이도 '실제로 동작했는가'를 반증 가능하게 만들며, 형태 B 전환 시 동일 어휘의 자동화로 승계된다.",
+    "applicability": "형태 A(문서·규약) 하네스에서 상태기계·사용자 게이트·append-only 계보를 포함한 프로토콜의 실동작 검증 전반. Discovery E2E(BPD-14)·Solution Design 성숙 E2E(본 건)에서 2회 실증 — 후속 UAF 레벨 활동 E2E에 재적용 가능.",
+    "provenance": {
+      "task_ref": "v1.4 W2 dogfooding E2E — 커밋 bf3820b(성숙 완주)·0c44b56(Baseline)",
+      "report_ref": "W2 CP2 독립 Verifier 리포트(증명 13/13·seq 7<8 선행·blob 일치 재실측)",
+      "origin_role": "수행 Advisor(Orchestrator 규약)+Worker 2(역할 호스팅)·확정 사용자 게이트 T8·심사 대기 Candidate",
+      "ordering_ref": "v1.4 세션 (mi 시퀀스 연속·mi-0097 다음)"
+    }
+  },
+  "source": "v1.4-binding-e2e",
+  "timestamp": "2026-07-13T10:29:24.291+09:00",
+  "labels": {
+    "stable_id": "BPD-20",
+    "status": "Candidate",
+    "situation": ["form-a-protocol-e2e", "state-machine-live-run", "user-gate-physical-evidence", "append-only-event-log", "superseding-instance-issuance"]
+  }
+}

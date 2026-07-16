@@ -1,0 +1,25 @@
+{
+  "id": "mi-0094",
+  "kind": "lesson",
+  "content": {
+    "id": "L-25",
+    "status": "Candidate",
+    "failure": "Frozen 정본 `03-project-contract.md`의 §9 이력(요약)은 '불변 PC-INV 11건'이라 적었으나 §3.6 본문은 PC-INV 1~12=12 고유를 열거(12번=AI 비의존). 문서의 자기 요약 카운트가 본문 열거와 drift. 하류 planning ARCH가 '1~12'로 인용할 때 요약(11)을 믿었다면 오인용했을 것 — 독립 Verifier가 본문을 직접 재계수해 12를 확정, Advisor가 재grep으로 재확증.",
+    "cause": "정본 개정(예: PC-INV 12 AI 비의존 추가) 시 본문 열거는 갱신됐으나 §9 이력의 요약 카운트('11건')는 함께 갱신되지 않아 drift. 요약 카운트는 본문의 파생 지표인데 §9 이력이 append-only라 사후 정정되지 않음.",
+    "lesson": "정본 문서를 인용/개관할 때 카운트('N건'·'1~N')는 그 문서의 §9 이력/머리 요약이 아니라 §N '본문 열거'를 직접 대조·재계수해 인용한다(요약은 개정 시 drift 가능). 원천 문서의 요약-본문 카운트 불일치를 발견하면 (1) blind 전파 금지 — 어느 쪽 숫자도 그대로 옮기지 말고 본문 열거를 근거로, (2) 원천의 자기 불일치는 이월/추적 항목으로 표면화(동결 spec 개정은 버전 상승 + Revision History 규율 소관이라 별도 트랙), (3) 하류 인용은 본문 근거임을 명기. L-24(완전성·카운트 주장 독립 검증)·L-21(요약/감사 목록 불신·독립 재계수) 커널의 원천-요약 대상 facet.",
+    "applicability": "Frozen/append-only 정본을 인용·개관·검증하는 상황에서 그 문서가 자기 요약 카운트(§9 이력·머리 요약)와 본문 열거를 함께 갖는 경우 — 특히 개정으로 본문이 늘었는데 요약이 append-only라 갱신 안 된 경우.",
+    "provenance": {
+      "task_ref": "Tier 2 T-a — planning CP2 독립 Verifier 카운트 재계수·Advisor CP3 재확증 (커밋 d14788d)",
+      "report_ref": "planning CP2 판정서(PC-INV 1~12=12·필드 그룹 9종 대조·03 내부 불일치 부수 검출) · Advisor CP3 독립 grep(§9 11 vs §3.6 12=12 고유)",
+      "origin_role": "포착 독립 Verifier(planning CP2 카운트 재계수)·확증 Advisor(CP3 재grep)·심사 대기 Candidate",
+      "ordering_ref": "T-a 세션 (mi 시퀀스 연속·mi-0093 다음)"
+    }
+  },
+  "source": "ta-layer-arch-review",
+  "timestamp": "2026-07-05T22:21:20.602+09:00",
+  "labels": {
+    "stable_id": "L-25",
+    "status": "Candidate",
+    "situation": ["frozen-doc-summary-drift", "count-verification", "cite-body-not-summary", "source-self-inconsistency", "l-21-l-24-kernel"]
+  }
+}

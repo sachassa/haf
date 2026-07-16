@@ -1,0 +1,25 @@
+{
+  "id": "mi-0106",
+  "kind": "best-practice",
+  "content": {
+    "id": "BPD-22",
+    "status": "Candidate",
+    "practice": "단계별(S1~SN) Worker 위임 파이프라인에서 CP2 전건 첫 판정 Pass·rework 0을 재현하는 규율(BPD-18 exemplar-first·BPD-20 형태 A run·mi-0097 첫-판정-Pass 계보의 위임-검증 축 정식화): (1) 각 단계 위임 브리프에 '검증 가능한 done-list'(9~15항, 각 항이 산출물로 확인 가능)를 명시하고 이를 CP2 판정 기준으로 삼는다 — Verifier가 done-list 항별로 Met/Not을 독립 판정. (2) 매 단계 독립 Verifier가 완료 보고를 신뢰하지 않고 테스트를 직접 재실행(스위트 전건 재구동)하고 완전성·사실 주장은 독립 후보 집합 토큰 스윕으로 재검증한다. (3) 선행 단계 CP2의 관찰(예: 절대 표현·경계 인용)을 다음 단계 브리프에 즉시 반영해 동형 결함을 예방한다. (4) 배치·프레이밍 같은 상위 결정은 CP2 앞의 별도 게이트(사용자/Advisor)로 처리하고 CP2 Fail로 오분류하지 않는다.",
+    "evidence": "v1.6 Project Orchestration — S1~S5 + 마감 = CP2 6회 전건 첫 판정 Pass·rework 0: S1 8/0/0(fd112cd)·S2 7/0/0(ce0cdba, step-host 회귀 17 전건 Pass)·S3 10/0/0(c65d20f, 테스트 79/79)·S4 9/0/0(745f26e, 133/133)·S5 9/0/0(5e843dc, 165/165)·마감 Part1(7da5c97)/Part2(41ce16f) 전건 Met. S1 r2는 CP2 전 배치 재검증 게이트 반영 재작업이지 CP2 Fail 아님. mi-0097(v1.4)이 관찰한 '첫 판정 Pass 계보' 유지·강화.",
+    "rationale": "완료 보고를 신뢰하지 않는 독립 CP2가 실효를 내려면 판정 기준이 사전에 검증 가능해야 한다. done-list를 CP2 기준으로 고정하면 Verifier 판정이 재현·반증 가능해지고, 테스트 직접 재실행·토큰 스윕이 '보고≠실측' 격차를 차단한다. 선행 관찰 피드포워드는 결함의 단계 간 전파를 끊는다. 이 조합이 다단계 파이프라인에서 rework 0을 물리적으로 재현한다.",
+    "applicability": "여러 단계로 분해된 위임 파이프라인(S1~SN)의 각 단계를 독립 CP2로 검증하는 전 상황 — 실행 코드·spec·바인딩이 섞인 트랙에 특히 유효. 후속 트랙(외부 프로젝트 적용·동시성 invoker·Module 코드 형태 B 전환)의 위임 설계에 재적용 가능.",
+    "provenance": {
+      "task_ref": "v1.6 Project Orchestration S1~S5+마감 — 커밋 fd112cd·ce0cdba·c65d20f·745f26e·5e843dc·7da5c97·41ce16f",
+      "report_ref": "각 단계 CP2 독립 Verifier 리포트(8/7/10/9/9 + 마감 Part1/Part2 전건 Met)·테스트 재실행 실측(79/133/165)",
+      "origin_role": "설계 Advisor(브리프 done-list·게이트 분리)·검증 독립 Verifier(단계별 CP2)·심사 대기 Candidate",
+      "ordering_ref": "v1.6 세션 (mi-0105 다음)"
+    }
+  },
+  "source": "v1.6-project-orchestration",
+  "timestamp": "2026-07-13T22:10:03.000+09:00",
+  "labels": {
+    "stable_id": "BPD-22",
+    "status": "Candidate",
+    "situation": ["cp2-first-pass-discipline", "delegation-pipeline-verification", "verifiable-done-list-as-cp2-criteria", "independent-verifier-test-rerun", "prior-cp2-observation-feedforward"]
+  }
+}

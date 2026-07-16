@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-assess",
+  "gateKind": "user_decision_required",
+  "phase": "structure",
+  "resolved_by_actor": "human",
+  "simulated": false,
+  "user_response": "승인 + Wireframe 요구 추가 — assess 판정·역할 2종·잔여 4단계 계획을 승인해 편입하되, ui-view-designer의 propose 산출에 텍스트 기반 Wireframe(화면 레이아웃 스케치) 절을 포함하도록 수정을 요구함 (구조 승인 게이트, 주 세션 게이트 제시에 대한 실 사용자 응답 2026-07-14)",
+  "note": "구조 승인 게이트(assess 뒤 user_decision) — 실 사용자 승인. 해소 후 stage-plan 잔여 단계(propose×N·reconcile·review)를 task_added revision 으로 일괄 append(동적 그래프 성장). 판정이 'skip' 이면 revision 0건(04 T2→T9)."
+}

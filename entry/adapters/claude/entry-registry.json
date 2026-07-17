@@ -1,0 +1,67 @@
+{
+  "_canonical": "정본 = entry/specs/01-entry.md §3.2-D(결정 테이블 전 8조합)·§3.2-C(Evidence Source 2종·유/무 값 도메인)·§3.2-A(Entry Descriptor 5필드·Resolution 엔진 고정 5단계). 본 파일은 그 계약의 물리 직렬화이며 재정의·확장 0 — 진위 판정 기준은 01 §3이다. JSON은 주석을 지원하지 않으므로 본 헤더 키(_canonical·_engine·_binding)로 정본 경계를 명시한다.",
+  "_engine": "정본 = 01 §3.2-A Resolution 엔진 고정 5단계(매칭→증거 수집(관측)→우선순위 평가→결정성 검증→방출). 엔진(entry_resolve.py)은 이 데이터를 소비할 뿐 정책(어느 조합이 어느 결과인가)을 코드에 담지 않는다(Policy as Data — ARCHITECTURE.md §6). 결정 테이블·mode 매핑·게이트 정책은 전부 이 파일에 있다.",
+  "_binding": "물리 판정 수단(경로 관례·존재 판정)은 entry/adapters/claude/entry-binding.md §4(관측)·§4.0 하이브리드(사용자 폴더 주입)·§5(직렬화)에서 확정된 Adapter 소관 물리 실현이다(01 §4.1 위임). contractLocations·repositoryBody는 그 물리 정책의 데이터화이며 01 §3 계약을 재정의하지 않는다. 게이트는 decisionRows[*].policy(canonical·정본 = 01 §3.2-D)로만 구동한다(_gateNote 참조·병행 imperative conflict 판정 없음).",
+
+  "evidenceSources": [
+    {
+      "sourceType": "contract-presence",
+      "capability": "워크스페이스에 Project Contract가 존재하는가를 관측한다.",
+      "valueDomain": ["유", "무"],
+      "_canonicalRef": "01 §3.2-C v1.1 정본 Evidence 2종"
+    },
+    {
+      "sourceType": "repository-presence",
+      "capability": "워크스페이스에 Repository가 존재하는가를 관측한다.",
+      "valueDomain": ["유", "무"],
+      "_canonicalRef": "01 §3.2-C v1.1 정본 Evidence 2종"
+    }
+  ],
+
+  "entries": [
+    {
+      "name": "/new",
+      "trigger": "순수 Greenfield 진입 — 빈 워크스페이스에서 새 프로젝트 시작 (논리 트리거·물리 발화 형태는 uaf-new 명령, entry-binding §3)",
+      "requiredEvidence": ["contract-presence", "repository-presence"],
+      "defaultIntent": "new",
+      "_canonicalRef": "01 §3.1 Entry 2종·§3.2-A Descriptor 필드"
+    },
+    {
+      "name": "/continue",
+      "trigger": "기존 프로젝트 이어가기 — Incremental(Contract 존재) 또는 Brownfield(Contract 부재·Repo 존재) (물리 발화 형태는 uaf-continue 명령, entry-binding §3)",
+      "requiredEvidence": ["contract-presence", "repository-presence"],
+      "defaultIntent": "existing",
+      "_canonicalRef": "01 §3.1 Entry 2종·§3.2-A Descriptor 필드"
+    }
+  ],
+
+  "decisionRows": [
+    {"row": 1, "entry": "/new",      "contract": "무", "repo": "무", "mode": "greenfield", "provisional": false, "policy": {"ref": "default"},                                                    "basis": "P-C (순수 Greenfield — /new 정상 경로)"},
+    {"row": 2, "entry": "/new",      "contract": "무", "repo": "유", "mode": "greenfield", "provisional": true,  "policy": {"ref": "user-confirmation-gate", "conflict": "repository-present"},   "basis": "P-D (Repo가 순수 Greenfield 전제와 상충)"},
+    {"row": 3, "entry": "/new",      "contract": "유", "repo": "무", "mode": "greenfield", "provisional": true,  "policy": {"ref": "user-confirmation-gate", "conflict": "contract-present"},     "basis": "D3 ① (/new + 기존 Contract → 사용자 확인)"},
+    {"row": 4, "entry": "/new",      "contract": "유", "repo": "유", "mode": "greenfield", "provisional": true,  "policy": {"ref": "user-confirmation-gate", "conflict": "contract-present"},     "basis": "D3 ① (/new + 기존 Contract → 사용자 확인)"},
+    {"row": 5, "entry": "/continue", "contract": "무", "repo": "무", "mode": "greenfield", "provisional": true,  "policy": {"ref": "user-confirmation-gate", "conflict": "nothing-to-continue"}, "basis": "P-D (이어갈 증거 부재)"},
+    {"row": 6, "entry": "/continue", "contract": "무", "repo": "유", "mode": "brownfield", "provisional": false, "policy": {"ref": "default"},                                                    "basis": "D3 ② (/continue + Contract 부재 + Repo 존재 → Brownfield Full Discovery, 최초 Contract 생성)"},
+    {"row": 7, "entry": "/continue", "contract": "유", "repo": "무", "mode": "incremental", "provisional": false, "policy": {"ref": "default"},                                                   "basis": "D3 ③ (/continue + Contract 존재 → Incremental Discovery)"},
+    {"row": 8, "entry": "/continue", "contract": "유", "repo": "유", "mode": "incremental", "provisional": false, "policy": {"ref": "default"},                                                   "basis": "D3 ③ (Contract 우선 — Contract 존재 시 Incremental)"}
+  ],
+
+  "_gateNote": "게이트는 canonical 결정 테이블 policy(decisionRows[*].policy.ref == 'user-confirmation-gate' — 행 2·3·4·5)로만 구동한다(Policy as Data 단일 소스). 게이트 이유는 policy.conflict(repository-present/contract-present/nothing-to-continue·정본 = 01 §3.2-D). 하이브리드 선언↔상태 충돌(entry-binding §4.2)은 별도 신호가 아니라 이 canonical policy에 포섭된다('신규인데 콘텐츠'=행 2·4·'기존인데 이어갈 실체 전무'=행 5). Contract 존재 시(행 7·8)는 D3 ③에 따라 incremental·게이트 없음이다 — 병행 imperative conflict 판정을 두지 않는다(행 7 거짓 게이트 정정·CP2). defaultIntent는 --intent 미지정 시 provenance 에코 기본값일 뿐 게이트를 구동하지 않는다.",
+
+  "observation": {
+    "_note": "물리 존재 판정 수단(01 §4.1이 Adapter 소관으로 위임 → entry-binding §4 확정)의 데이터화. 코드 하드코딩이 아니라 데이터로 소비(Policy as Data). 경로는 <주입 폴더> 기준 상대 glob. contract·repo 축을 직교로 유지하기 위해 repository-presence 관측은 Contract 저장 위치를 본체(body)에서 제외한다(D3 ② '프로젝트 본체' 의미·01 §3.2-C 2축 독립).",
+    "contractLocations": [
+      ".claude/project-contract/project-contract.v*.md",
+      "uahf/framework/adapters/claude/discovery-data/contracts/*/project-contract.v*.md"
+    ],
+    "repositoryBody": {
+      "_note": "repository-presence 유 판정 = <주입 폴더>에 '이어갈 실질 프로젝트 본체' 파일이 하나라도 실재하는가. 부재/빈/맨 초기화(.git init·메타데이터만)·Contract 저장 위치는 본체에서 제외 → 무. 엣지 임계값(단일 README 등)은 Adapter 재량이며 상충 시 사용자 확인 게이트로 라우팅(OQ-TE-1·entry-binding §11 open_questions).",
+      "excludePrefixes": [
+        ".git/",
+        ".claude/project-contract/",
+        "uahf/framework/adapters/claude/discovery-data/contracts/"
+      ],
+      "ignoreBasenames": [".gitkeep", ".DS_Store", "Thumbs.db"]
+    }
+  }
+}

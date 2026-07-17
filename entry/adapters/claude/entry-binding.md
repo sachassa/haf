@@ -1,7 +1,7 @@
 # entry/adapters/claude/entry-binding — Claude Code Entry Layer Adapter 바인딩
 
 작성일: 2026-07-07
-상태: Baseline · 2026-07-18 관측 수단 개정(Evidence 관측 = 사용자 폴더 주입 하이브리드) — CP2 통과(충족 9/위반 0/판정불가 1: OQ-2)·CP3 승인(OQ-2 = (a) Adapter 물리 addressing·spec 무변경 확정)
+상태: Baseline · 2026-07-18 관측 수단 개정(Evidence 관측 = 사용자 폴더 주입 하이브리드) — CP2 통과(충족 9/위반 0/판정불가 1: OQ-2)·CP3 승인(OQ-2 = (a) Adapter 물리 addressing·spec 무변경 확정) · 2026-07-18 형태 B 도입(`entry_resolve.py` 결정적 실행 로더·`entry-registry.json` 결정 테이블 데이터 — E1/E2/E3 예약 슬롯 실현·형태 A 공존·01 §3 계약 변경 0·structure.md §7 C-1) · 2026-07-18 CP2 정정(게이트 = canonical 결정 테이블 policy 단일 소스 — 병행 imperative conflict 판정 제거·행 7 거짓 게이트 정정; `--entry new|continue` 정규화·OQ-7) · CP2 재판정 통과·CP3 승인(2026-07-18 — 게이트 행 {2,3,4,5}=01 §3.2-D 1:1·mode/policy 8/8·entry 22 pass·baseline 236 회귀 0·01 무접촉)
 상위 규약: AGENT.md
 근거 정본:
 
@@ -22,7 +22,8 @@
 - **바인딩 대상 정본 선언.** 이 문서는 entry 레이어 자신의 Claude 어댑터 바인딩(`entry/adapters/claude/entry-binding.md`)이며, 그 **바인딩 대상 정본은 `entry/specs/01-entry.md` §3·§4다.** 본 문서는 그 Entry Layer & Entry Resolution 정본을 이 환경 위의 물리 실현으로 바인딩한다.
 - **정본은 entry/specs/01 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — Entry Descriptor 등록 모델·5필드(§3.2-A)·Resolution 엔진 고정 5단계(§3.2-A)·Discovery Request 매핑(§3.2-B)·Evidence Source 확장 스키마(§3.2-C)·결정 테이블 8조합·D3(§3.2-D)·mode 네임스페이스(§3.2-E)·불변 EN-INV 1~6(§3.3) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 01 §4.1이 "Adapter 소관"으로 미룬 **3불릿(E1 진입 트리거 물리 형태·E2 Evidence 관측 물리 실현·E3 Discovery Request 직렬화)**뿐이다(§2).
 - **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`uahf/framework/core/`·`uahf/framework/runtime/`)와 Module 구현 디렉터리 문서 본문, 그리고 UAF 정본(entry/specs/01) 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이다(structure.md §5 C-3 확장·01 §0 Core 문서 관행). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식·물리 경로(`entry/adapters/claude/…`·`.claude/…`)·파일 확장자·명령 이름의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(memory-binding.md §0·contract-binding.md §0과 동형). 단 **UAF 정본이 명명하지 않은 것을 UAF 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다.
-- **하네스 Bootstrap 전제(형태 A, D-v1.2-1).** 이 하네스는 현재 Bootstrap 상태다(Glossary J-13, 자매 바인딩 §0). 본 문서의 바인딩은 **실행 코드 0**이다 — Entry Resolution 엔진(고정 5단계)은 실행 스크립트가 아니라 **규약 절차**로 실현되며 주 세션이 실수행한다(D-v1.2-1). 따라서 매핑은 (i) 물리 실재 표면(신규 명령 파일 2개), (ii) 규약으로 확정된 정본 문면(형태 A — 판정 수단·직렬화 형식·전달 방식), (iii) 실행 코드 도입 시 로딩될 지점(형태 B — 관측 로더·직렬화기)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
+- **하네스 Bootstrap 전제(형태 A, D-v1.2-1).** 이 하네스는 현재 Bootstrap 상태다(Glossary J-13, 자매 바인딩 §0). 본 문서의 바인딩은 (초기) **실행 코드 0**으로 확정되었다 — Entry Resolution 엔진(고정 5단계)은 실행 스크립트가 아니라 **규약 절차**로 실현되며 주 세션이 실수행한다(D-v1.2-1). 따라서 매핑은 (i) 물리 실재 표면(신규 명령 파일 2개), (ii) 규약으로 확정된 정본 문면(형태 A — 판정 수단·직렬화 형식·전달 방식), (iii) 실행 코드 도입 시 로딩될 지점(형태 B — 관측 로더·직렬화기)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
+- **형태 B 도입(2026-07-18 — 예약 슬롯 실현).** 위 (iii)의 예약 슬롯이 `entry/adapters/claude/entry_resolve.py`(Entry Resolution 결정적 실행 로더·LLM 0·순수 판독)와 `entry/adapters/claude/entry-registry.json`(결정 테이블 8조합·Evidence 2종·관측 규칙의 물리 직렬화·Policy as Data)으로 실현되어 형태 A와 **공존**한다. 형태 B는 형태 A(규약 절차)를 대체하지 않고 그 판정 수단(§4)·직렬화(§5)를 실행 코드로 실현하며, 규약 절차는 폴백으로 유지된다. **형태 A→B 전환에도 01 §3 Core Contract(Descriptor 모델·엔진 5단계·결정 테이블·Evidence 스키마·EN-INV) 변경은 0이다**(structure.md §7 C-1 동형·§8 "유지되는 것" 열). 실현 상세는 §2 "실재 여부" 열·§4.4·§5.2·§10에 있다.
 - **경계 분담.** Discovery Request의 **직렬화 형식·전달 방식**은 본 문서(§5)가 소유·확정한다. 그 물리 기록이 놓일 **백엔드 트리(`uahf/framework/adapters/claude/discovery-data/` 하위 구조; 물리 위치는 2차 산출물 디커플링 트랙에서 확정)**는 본 문서 밖이며, 본 문서는 직렬화 형식·전달 방식 확정에서 멈춘다.
 - **실측 기반 상태 서술(L-07).** "실재/미존재" 주장은 파일 시스템 확인 후에만 기입한다. 본 문서가 참조하는 `uahf/framework/adapters/claude/discovery-data/` 트리의 상태는 §10에서 확인한다.
 - **네임스페이스·용어.** 본 문서가 확정하는 것은 물리 표기(명령 파일 형태·판정 수단·직렬화 형식·전달 방식)뿐이며, 01이 소유하는 스키마 용어(`name`·`trigger`·`requiredEvidence`·`decisionRows`·`modeMapping`·`sourceType`·`capability`·`valueDomain` 등)는 01 정의를 § 포인터로 참조하고 재정의하지 않는다. 새 UAHF 용어·새 계약 요소(Descriptor 필드·연산·불변·kind)를 신설하지 않는다.
@@ -49,9 +50,9 @@
 
 | # | 01 §3 계약 요소 (정본 §) | 01 §4.1 바인딩 지점 (정본 인용) | 물리 실현 (claude 환경) | 실재 여부 |
 |---|---|---|---|---|
-| E1 | 진입 트리거 (Entry Descriptor `trigger` — §3.1·§3.2-A) | "진입 트리거의 물리 형태 … 그 물리 발화 형태(어떤 진입 명령·선택·추론으로 Entry가 발화되는가)는 Adapter가 바인딩한다. Core Contract는 논리 name·trigger만 소유한다." | 논리 Entry `/new`·`/continue`(01 §3.1·§0 논리 식별자)의 물리 발화 형태 = `.claude/commands/uaf-new.md`·`uaf-continue.md` **문서 명령**. 상세 §3. | **물리 실재**: 두 명령 파일 신규 생성(형태 A 문서 명령). **규약 실현(형태 A)**: Entry Resolution 엔진 고정 5단계 = 규약 절차(주 세션 실수행). **형태 B**: 진입 발화→해소 실행 로더 — 미도입. |
-| E2 | Workspace Evidence 관측 (Evidence Source capability·유/무 값 도메인 — §3.2-C) | "Workspace Evidence 관측의 물리 실현 … contract-presence·repository-presence를 실제 환경에서 어떻게 탐지하는가(경로 관례·직렬화 형식·존재 판정 수단)는 Adapter 소관이다. Core Contract는 capability 선언과 유/무 값 도메인만 소유한다." | §4.0 사용자가 주입한 대상 폴더 + 신규/기존 의도로 관측 로커스 확정(구 ambient 자동 스캔 대체). contract-presence = 주입 폴더로 스코프한 Contract 저장 위치의 인스턴스 파일(`project-contract.v<N>.md`) 유무 실측(존재 판정 수단 = 본 문서 확정, §4.1). repository-presence = 사용자 신규/기존 선언 기반 유/무(§4.2). Entry는 유/무만 관측(01 EN-INV 2). 상세 §4. | **규약 실현(형태 A)**: 판정 수단(탐지 절차) = 정본 문면 확정. **규약 실현(형태 A)**: 실제 관측 = 규약 절차(주 세션). **형태 B**: 탐지 로더 — 미도입. Contract 인스턴스 데이터·`uahf/framework/adapters/claude/discovery-data/`는 본 문서 밖(§10 실측). |
-| E3 | Discovery Request 산출 (§3.2-B 매핑·§3.2-E mode 네임스페이스) | "Discovery Request 직렬화. {mode, inputs, policy}의 물리 직렬화·전달 방식은 Adapter 소관이다." | {mode, inputs, policy} = 자기서술 **구조화 레코드**로 직렬화(§5.1)·전달(§5.2). ARCHITECTURE §12.2·01 §3.2-B 추상 정합·재정의 0. 기록 백엔드 트리(`uahf/framework/adapters/claude/discovery-data/` 하위)의 물리 위치는 2차 산출물 디커플링 트랙에서 확정. 상세 §5. | **규약 실현(형태 A)**: 직렬화 형식·전달 방식 = 정본 문면 확정. **형태 B**: 직렬화기/로더 — 미도입. 기록 데이터·백엔드 트리는 본 문서 밖(§10 실측). |
+| E1 | 진입 트리거 (Entry Descriptor `trigger` — §3.1·§3.2-A) | "진입 트리거의 물리 형태 … 그 물리 발화 형태(어떤 진입 명령·선택·추론으로 Entry가 발화되는가)는 Adapter가 바인딩한다. Core Contract는 논리 name·trigger만 소유한다." | 논리 Entry `/new`·`/continue`(01 §3.1·§0 논리 식별자)의 물리 발화 형태 = `.claude/commands/uaf-new.md`·`uaf-continue.md` **문서 명령**. 상세 §3. | **물리 실재**: 두 명령 파일 신규 생성(형태 A 문서 명령). **규약 실현(형태 A)**: Entry Resolution 엔진 고정 5단계 = 규약 절차(주 세션 실수행). **형태 B**: 진입 발화→해소 실행 로더 — **도입**: `entry/adapters/claude/entry_resolve.py`(결정적 실행 로더·LLM 0). 명령(§3)이 이 로더를 호출해 해소 결과를 수령한다. |
+| E2 | Workspace Evidence 관측 (Evidence Source capability·유/무 값 도메인 — §3.2-C) | "Workspace Evidence 관측의 물리 실현 … contract-presence·repository-presence를 실제 환경에서 어떻게 탐지하는가(경로 관례·직렬화 형식·존재 판정 수단)는 Adapter 소관이다. Core Contract는 capability 선언과 유/무 값 도메인만 소유한다." | §4.0 사용자가 주입한 대상 폴더 + 신규/기존 의도로 관측 로커스 확정(구 ambient 자동 스캔 대체). contract-presence = 주입 폴더로 스코프한 Contract 저장 위치의 인스턴스 파일(`project-contract.v<N>.md`) 유무 실측(존재 판정 수단 = 본 문서 확정, §4.1). repository-presence = 사용자 신규/기존 선언 기반 유/무(§4.2). Entry는 유/무만 관측(01 EN-INV 2). 상세 §4. | **규약 실현(형태 A)**: 판정 수단(탐지 절차) = 정본 문면 확정. **규약 실현(형태 A)**: 실제 관측 = 규약 절차(주 세션). **형태 B**: 탐지 로더 — **도입**: `entry_resolve.py`가 §4 판정 수단을 실행 — contract-presence·repository-presence 를 파일시스템 실측(순수 판독·유/무만·내용 파싱 0·EN-INV 2)하고 경로·직교 관측 규칙은 `entry-registry.json` observation 데이터로 소비(§4.4). Contract 인스턴스 데이터·`uahf/framework/adapters/claude/discovery-data/`는 본 문서 밖(§10 실측). |
+| E3 | Discovery Request 산출 (§3.2-B 매핑·§3.2-E mode 네임스페이스) | "Discovery Request 직렬화. {mode, inputs, policy}의 물리 직렬화·전달 방식은 Adapter 소관이다." | {mode, inputs, policy} = 자기서술 **구조화 레코드**로 직렬화(§5.1)·전달(§5.2). ARCHITECTURE §12.2·01 §3.2-B 추상 정합·재정의 0. 기록 백엔드 트리(`uahf/framework/adapters/claude/discovery-data/` 하위)의 물리 위치는 2차 산출물 디커플링 트랙에서 확정. 상세 §5. | **규약 실현(형태 A)**: 직렬화 형식·전달 방식 = 정본 문면 확정. **형태 B**: 직렬화기/로더 — **도입**: `entry_resolve.py`가 {mode, inputs, policy}(§5.1 레코드)를 구조화 JSON 으로 방출(stdout)한다 — matchedRow·gate(= `policy.ref == user-confirmation-gate` 의 투영·별도 판정 아님) 는 엔진 메타로 병기(Discovery Request 자체 아님). 기록 백엔드 트리(`uahf/framework/adapters/claude/discovery-data/` 하위)의 물리 위치는 본 문서 밖·2차 산출물 디커플링 트랙(§10 실측). |
 
 주:
 
@@ -79,7 +80,7 @@
 
 - **골격 준거.** 두 명령은 `.claude/commands/uahf-status.md` 선례와 동형이다 — (i) YAML front-matter(`description:`), (ii) 형태 A(실행 코드 0), (iii) **정본 포인터 전용**(값 하드코딩 0 — 정본이 진행돼도 명령이 낡지 않음). `.claude/commands/`는 환경 의존 격리 표면이므로 구체 환경 토큰이 허용된다(structure.md §2 Adapter 경계, uahf-status.md §0).
 - **재정의 0.** 두 명령은 01·본 entry-binding 정본을 **재정의하지 않는다** — 안내 포인터만 담는다. 각 명령은 Entry Resolution **규약 절차**(엔진 고정 5단계·결정 테이블 대조)와 **사용자 개입 지점**(Preserve Human Authority 게이트)을 정본 § 포인터로 안내한다: `uaf-new.md`는 `/new` 결정 행(01 §3.2-D 행 1~4)·D3 ①을, `uaf-continue.md`는 `/continue` 결정 행(행 5~8)·D3 ②·③을 가리킨다.
-- **엔진 실현 = 규약 절차(형태 A).** 명령은 실행 코드를 담지 않으므로, Entry Resolution 엔진 고정 5단계(01 §3.2-A)는 호출 시 **주 세션이 규약 절차로 실수행**한다(D-v1.2-1). 실행 로더는 형태 B로 미도입이다(§10).
+- **엔진 실현 = 형태 B 로더 + 규약 절차 폴백.** 명령 파일 자체는 실행 코드를 담지 않으나, Entry Resolution 엔진 고정 5단계(01 §3.2-A)는 이제 형태 B 로더 `entry_resolve.py`(2026-07-18 도입·§4.4·§5.2) 호출로 실현되며, 로더 미가용 시 **주 세션이 규약 절차로 실수행**한다(형태 A 폴백·D-v1.2-1). 어느 경로든 판별 결과·01 §3 계약은 동일하다(§10).
 
 ---
 
@@ -118,11 +119,21 @@
   - **기존 폴더 주입 → 유.** 사용자가 기존 폴더 주입 → repository-presence = **유**(그 폴더의 실질 프로젝트 콘텐츠 실재 확인; 예: 본 UAF 저장소를 주입하면 유, §10 실측).
 - **관측 한계.** Entry는 콘텐츠의 **유무만** 관측하며 그 내용을 수집·해석하지 않는다(01 §3.2-A 2단계·EN-INV 1). 기존 프로젝트 콘텐츠의 실제 이해·분석은 하류 Project Discovery(Brownfield Full Discovery) 소관이다.
 
-**충돌 처리 note — 선언 ↔ 실제 상태 상충 (사용자 확인 게이트, EN-INV 6).** §4.0 주입 선언과 실제 폴더 상태가 상충할 수 있다 — 예: "신규" 선언인데 주입 폴더에 실질 콘텐츠 존재 / "기존" 선언인데 주입 폴더가 부재·빈 상태. 이때 Entry는 관측값을 **임의로 덮어쓰지 않고** policy에 **사용자 확인 게이트**를 데이터로 표기한다(기존 확정 게이트 재사용 — 01 §3.2-D 충돌 처리·EN-INV 6). Entry는 게이트를 데이터로 표기만 하고 확정 결정을 내리지 않는다(EN-INV 6·ARCHITECTURE.md §8 UAF-INV ⑤). 충돌 해소 과정에서도 Entry는 폴더를 생성·scaffold하지 않는다(EN-INV 1) — "신규 폴더명"은 의도 기록일 뿐 실제 생성은 하류 Discovery 소관이다.
+**충돌 처리 note — 선언 ↔ 실제 상태 상충은 canonical 결정 테이블 policy에 포섭 (EN-INV 6).** §4.0 주입 선언과 실제 폴더 상태가 상충할 수 있다 — 예: "신규" 선언인데 주입 폴더에 실질 콘텐츠 존재 / "기존" 선언인데 주입 폴더가 부재·빈 상태. 이 충돌은 **별도 신호가 아니라 확인 관측이 해소되는 canonical 결정 테이블 행의 policy로 구동**된다(Policy as Data 단일 소스) — "신규인데 콘텐츠"는 확인 관측이 **행 2·4**로 해소되어 그 canonical policy(repository-present/contract-present)가 이미 사용자 확인 게이트이고, "기존인데 이어갈 실체 전무(Contract 무·Repo 무)"는 **행 5**(nothing-to-continue)로 해소된다. **단 Contract가 존재하면(행 7·8) repo 유무와 무관하게 incremental·게이트 없음이다**(D3 ③ — Contract 자체가 이어갈 대상; "기존 선언인데 repo 무"라도 거짓 게이트를 만들지 않는다). Entry는 관측값을 **임의로 덮어쓰지 않으며**(01 §3.2-D 충돌 처리·EN-INV 6), 게이트를 canonical policy로 표면화만 하고 확정 결정을 내리지 않는다(ARCHITECTURE.md §8 UAF-INV ⑤). **병행 imperative conflict 판정을 두지 않는다**(행 7 거짓 게이트 정정·CP2). 충돌 해소 과정에서도 Entry는 폴더를 생성·scaffold하지 않는다(EN-INV 1) — "신규 폴더명"은 의도 기록일 뿐 실제 생성은 하류 Discovery 소관이다.
 
 ### §4.3 관측 결과의 소비
 
 관측된 두 Evidence(contract-presence·repository-presence의 유/무)는 Entry Resolution 엔진 3단계(우선순위 평가, 01 §3.2-A)에서 명시 Entry의 결정 행(§3.2-D)에 대조되며, Discovery Request의 `inputs`(Evidence 참조 목록, §5·01 §3.2-B)에 확정 참조로 담긴다.
+
+### §4.4 형태 B 실현 — 판정 수단의 실행 코드화 (가법·재정의 0)
+
+본 §4가 확정한 판정 수단(§4.0 주입 로커스·§4.1 contract-presence 탐지·§4.2 repository-presence 판정)의 **정본 문면은 그대로 유지**되며, 아래는 그 form-B 실현 경로를 가법으로 명시한다(정본 재정의·확장 0 — 이 절은 §4.0~§4.3의 판정 수단 정의를 실행 코드로 실현하는 경로만 기록한다).
+
+- **실현 산출물.** `entry/adapters/claude/entry_resolve.py`(결정적 실행 로더·LLM 0·순수 판독)가 §4 판정 수단을 실행한다. 경로 관례·직교 관측 규칙은 코드에 하드코딩하지 않고 `entry-registry.json`의 `observation` 데이터로 소비한다(Policy as Data).
+- **contract-presence(§4.1 실현).** `observation.contractLocations`(주입 폴더 기준 상대 glob — `.claude/project-contract/project-contract.v*.md` 및 dogfooding `.../discovery-data/contracts/*/project-contract.v*.md`)에 인스턴스 파일이 하나라도 실재하면 유, 없으면 무. **파일 유무만 실측하며 front-matter·본문을 파싱하지 않는다**(EN-INV 2).
+- **repository-presence(§4.2 실현).** 주입 폴더에 '이어갈 실질 프로젝트 본체' 파일이 하나라도 실재하면 유, 부재/빈/맨 초기화면 무. **Contract 저장 위치·`.git/`·OS 메타데이터는 본체에서 제외**(`observation.repositoryBody.excludePrefixes`·`ignoreBasenames`)하여 contract·repo 두 축을 직교로 유지한다(D3 ② '프로젝트 본체' 의미·01 §3.2-C 2축 독립). 엣지 임계값(단일 README 등)은 여전히 Adapter 재량이며 상충 시 사용자 확인 게이트로 라우팅된다(§11 OQ-TE-1).
+- **게이트 = canonical 결정 테이블 policy(별도 conflict 신호 아님·§4.2 note 실현).** 게이트는 매칭 행의 **`policy.ref == user-confirmation-gate`**(canonical 결정 테이블 행 2·3·4·5·정본 = 01 §3.2-D)로만 구동되며, 게이트 이유는 그 행의 `policy.conflict`(repository-present/contract-present/nothing-to-continue)에 있다. 로더는 이 값을 방출 필드 `gate`(policy.ref 의 투영)로 표면화만 하고 확정 결정을 내리지 않는다(게이트 제시는 주 세션 소관·EN-INV 6). **하이브리드 선언↔상태 충돌(§4.2 note)은 별도 imperative 판정이 아니라 이 canonical policy에 포섭된다** — "신규인데 콘텐츠 존재"=행 2·4, "기존인데 이어갈 실체 전무"=행 5. **Contract 존재 시(행 7·8)는 D3 ③에 따라 incremental·게이트 없음**이다(거짓 게이트 방지·CP2 정정). 병행 imperative conflict 판정을 두지 않는다(Policy as Data 단일 소스).
+- **불변.** 로더는 폴더를 생성·scaffold 하지 않으며(순수 판독·EN-INV 1), 결정 테이블·mode 매핑·게이트를 재정의하지 않는다(전부 `entry-registry.json` 데이터·정본 = 01 §3.2-D). 형태 A(규약 절차)는 폴백으로 유지된다.
 
 ---
 
@@ -152,7 +163,7 @@ policy: <Discovery Policy 참조>     # Policy as Data. 충돌 조합은 사용�
 ### §5.2 전달 방식
 
 - **형태 A(Bootstrap).** Discovery Request는 Entry Resolution 규약 절차(주 세션)가 5단계 방출(01 §3.2-A 5단계)에서 위 레코드로 산출하고, 하류 Project Discovery 소비자에게 전달한다. 전달은 요소 간 인터페이스(ARCHITECTURE §2.2 Entry Resolution → Project Discovery)의 구조화 레코드 이관이다.
-- **형태 B(향후).** 직렬화기·로더 실행 코드가 도입되면 같은 레코드 형식을 방출·소비한다. 형태 B 도입 시에도 §12.2·01 §3.2-B 계약 변경은 0이다(structure.md §7 C-1 동형).
+- **형태 B(도입 — 2026-07-18).** 직렬화기·로더 실행 코드 `entry_resolve.py`가 도입되어 같은 레코드 형식을 방출한다 — {mode, inputs, policy}를 구조화 JSON(stdout)으로 산출하고, matchedRow·gate(= canonical `policy.ref == user-confirmation-gate` 의 투영·별도 판정 아님) 를 엔진 메타로 병기한다(엔진 메타는 Discovery Request 자체가 아니다 — §5.1 3요소만이 Discovery Request다). 형태 B 도입에도 §12.2·01 §3.2-B 계약 변경은 0이다(structure.md §7 C-1 동형). 형태 A(규약 절차 방출)는 폴백으로 유지된다.
 
 ### §5.3 경계 분담 — 백엔드 트리 위치 확정 위임
 
@@ -203,7 +214,7 @@ policy: <Discovery Policy 참조>     # Policy as Data. 충돌 조합은 사용�
 - **EN-INV 2 — Contract 직접 생성·해석 금지.** §4.1의 contract-presence 판정 수단은 §4.0 주입 폴더로 스코프한 인스턴스 파일 **유무만** 실측하며 front-matter·본문을 파싱·해석·생성하지 않는다. §4.2의 repository-presence도 사용자 신규/기존 선언 기반의 콘텐츠 **유무만** 관측한다(값 도메인 유/무 불변 — 관측 수단이 사용자 주입으로 바뀌어도 관측되는 값은 유/무 그대로). Entry는 Contract를 Evidence(유/무)로만 관측한다(01 EN-INV 2). **준수 — 위반 서술 0.**
 - **EN-INV 3 — 결정성.** §6 두 예시(행 1·행 6)에서 각 관측 조합이 01 §3.2-D 결정 테이블의 **단일 행**으로 해소됨을 보였다. 본 문서는 결정 테이블(8조합)을 재정의하지 않고 **행 인용만** 한다(01 §3.2-A 4단계·EN-INV 3). **준수 — 위반 서술 0.**
 - **EN-INV 5 — Discovery Request 정합·재정의 0.** §5.1 레코드의 3요소({mode, inputs, policy})는 ARCHITECTURE §12.2·01 §3.2-B 추상에 1:1 정합하며 — `mode` = 확장 네임스페이스(01 §3.2-E), `inputs` = Evidence 참조 목록, `policy` = 참조 — 추상을 재정의·확장하지 않는다(01 EN-INV 5). **준수 — 위반 서술 0.**
-- **EN-INV 6 — 확정 게이트 보존.** 두 명령(§3)이 사용자 확인 게이트를 정본 포인터로 안내하며, §4.2 말미 충돌 처리 note가 **§4.0 선언 ↔ 실제 폴더 상태 상충**(예: "신규" 선언인데 콘텐츠 존재 / "기존" 선언인데 폴더 부재·빈 상태)을 **기존 확정 게이트로 라우팅**한다 — Entry는 관측값을 임의로 덮어쓰지 않고 policy에 게이트를 데이터로 표기만 한다(01 EN-INV 6·§3.2-D 충돌 처리·ARCHITECTURE.md §8 UAF-INV ⑤). **준수 — 위반 서술 0.**
+- **EN-INV 6 — 확정 게이트 보존.** 두 명령(§3)이 사용자 확인 게이트를 정본 포인터로 안내하며, 게이트는 **canonical 결정 테이블 policy(`policy.ref == user-confirmation-gate`·행 2·3·4·5) 단일 소스**로만 구동된다(§4.2 note·§4.4). §4.0 선언↔실제 상태 상충(예: "신규"인데 콘텐츠 존재=행 2·4 / "기존"인데 이어갈 실체 전무=행 5)은 별도 신호가 아니라 그 canonical policy에 포섭되며, Contract 존재 시(행 7·8)는 incremental·게이트 없음이다(거짓 게이트 방지·CP2 정정). 로더는 관측값을 임의로 덮어쓰지 않고 canonical policy를 `gate`(policy.ref 투영)로 표면화만 한다(01 EN-INV 6·§3.2-D 충돌 처리·ARCHITECTURE.md §8 UAF-INV ⑤·병행 imperative 판정 없음). **준수 — 위반 서술 0.**
 
 (EN-INV 4 — Layer·엔진 불변 확장 — 는 신규 Entry·Evidence Source·mode 추가의 확장성 계약이며, 본 문서는 기존 2 Entry의 물리 실현만 다루므로 별도 확장 서술을 두지 않는다.)
 
@@ -226,7 +237,7 @@ policy: <Discovery Policy 참조>     # Policy as Data. 충돌 조합은 사용�
 
 ## §10. 상태 서술 실측 대조 (L-07 — 미존재를 실재로 쓰지 않음)
 
-본 문서는 `entry/adapters/claude/`에 실재하며, 물리 생성물은 진입 명령 파일 2개(`.claude/commands/uaf-new.md`·`.claude/commands/uaf-continue.md`)다. 본 문서가 확정한 진입 명령 형태(§3)·Evidence 판정 수단(§4)·Discovery Request 직렬화 형식·전달 방식(§5)은 실행 코드가 아닌 정본 문면(형태 A)이다. Discovery Request 기록의 백엔드 데이터 트리는 `uahf/framework/adapters/claude/discovery-data/`이며, 그 물리 위치는 2차 산출물 디커플링 트랙에서 확정한다. "실재/미존재" 주장은 파일 시스템 직접 실측 후에만 기입한다 — 미존재를 실재로 쓰지 않는다(L-07).
+본 문서는 `entry/adapters/claude/`에 실재하며, 물리 생성물은 진입 명령 파일 2개(`.claude/commands/uaf-new.md`·`.claude/commands/uaf-continue.md`)와 **형태 B 실행 산출물 2개(`entry/adapters/claude/entry_resolve.py` 결정적 실행 로더·`entry/adapters/claude/entry-registry.json` 결정 테이블 데이터)**, 그리고 결정적 테스트(`entry/adapters/claude/tests/`)다. 본 문서가 확정한 진입 명령 형태(§3)·Evidence 판정 수단(§4)·Discovery Request 직렬화 형식·전달 방식(§5)은 정본 문면(형태 A)이며, §4.4·§5.2가 그 form-B 실현 경로다 — 형태 A와 공존하며 01 §3 계약 변경은 0이다(structure.md §7 C-1). Discovery Request 기록의 백엔드 데이터 트리는 `uahf/framework/adapters/claude/discovery-data/`이며, 그 물리 위치는 2차 산출물 디커플링 트랙에서 확정한다(로더는 stdout 방출까지이며 백엔드 기록 위치를 창설하지 않는다). "실재/미존재" 주장은 파일 시스템 직접 실측 후에만 기입한다 — 미존재를 실재로 쓰지 않는다(L-07). 위 form-B 산출물의 실재·동작은 8조합 실행(행 1~8 각 단일 결과·mode·게이트 = canonical policy)과 행 7(contract 유·repo 무 → incremental·게이트 없음) 거짓 게이트 부재 회귀로 확인되었다(CP2 정정 트랙 실측).
 
 ---
 
@@ -255,4 +266,4 @@ policy: <Discovery Policy 참조>     # Policy as Data. 충돌 조합은 사용�
 - **§7:** EN-INV 1·2·3·5·6 자기 점검(준수·위반 서술 0). 자체 점검은 최종 승인 아님(Verifier CP2·Advisor CP3 뒤따름).
 - **§8:** 01 "### §4.2" 이식 교체 지점 3건 대응 표("교체되는 것 / 유지되는 것") — 유지 열이 01 §3 불변(C-1 동형) 재확인.
 - **§10:** 실측 대조(L-07) — 본 문서는 `entry/adapters/claude/`에 실재, 물리 생성물 = 진입 명령 파일 2개. 백엔드 데이터 트리 `uahf/framework/adapters/claude/discovery-data/`의 물리 위치는 2차 산출물 디커플링 트랙에서 확정. 미존재를 실재로 쓰지 않음.
-- 01 §3·§4·UAHF 정본 재정의 0, Glossary 용어 신설 0, 새 계약 요소 창설 0, 실행 코드 0(형태 A). 구체 명령 이름·물리 경로·직렬화 형식 토큰은 이 Adapter 경계에서 허용된다(격리 지점).
+- 01 §3·§4·UAHF 정본 재정의 0, Glossary 용어 신설 0, 새 계약 요소 창설 0. **형태 B 도입(2026-07-18)** — `entry_resolve.py`(결정적 실행 로더·LLM 0)·`entry-registry.json`(결정 테이블 데이터)이 §2 E1/E2/E3 예약 슬롯을 실현하며 형태 A(규약 절차)와 공존한다(01 §3 계약 변경 0·§4.4·§5.2·§10). 구체 명령 이름·물리 경로·직렬화 형식·실행 코드 토큰은 이 Adapter 경계에서 허용된다(격리 지점).

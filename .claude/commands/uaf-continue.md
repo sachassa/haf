@@ -5,7 +5,7 @@ description: UAF 공식 진입점 /continue(기존 프로젝트 이어가기 —
 # /continue — UAF 이어가기 진입 (물리 발화: uaf-continue 명령)
 
 작성일: 2026-07-07
-상태: v1.2 Baseline (CP2 첫 판정 Pass 16/0/0 · CP3 승인 · 사용자 승인 2026-07-07)
+상태: v1.2 Baseline (CP2 첫 판정 Pass 16/0/0 · CP3 승인 · 사용자 승인 2026-07-07) · 2026-07-18 관측 수단 개정(사용자 폴더 주입) — CP2 통과·CP3 승인(OQ-2 = (a) spec 무변경)
 상위 규약: .claude/AGENT.md
 성격: UAF 진입 명령 — 형태 A(문서 명령), 실행 코드 0 (D-v1.2-1)
 
@@ -31,7 +31,7 @@ description: UAF 공식 진입점 /continue(기존 프로젝트 이어가기 —
 호출되면 Entry Resolution 엔진 **고정 5단계**(01 §3.2-A)를 규약 절차로 수행한다. 각 단계·판별·게이트는 정본에서 회수한다(값 하드코딩 없음).
 
 1. **매칭.** 명시 Entry = `/continue`의 Entry Descriptor를 Entry Registry에서 찾는다 (01 §3.2-A).
-2. **증거 수집(관측).** `/continue` Descriptor의 requiredEvidence(contract-presence·repository-presence)를 관측한다. 물리 판정 수단(탐지 절차)은 **entry-binding.md §4**에 있다 — contract-presence = 저장 위치(`.claude/project-contract/` 등, contract-binding.md §4)의 인스턴스 파일(`project-contract.v<N>.md`) 유무; repository-presence = 워크스페이스 내 기존 프로젝트 콘텐츠 유무. **Entry는 유/무만 관측하며 Contract 내용을 해석하지 않는다**(01 EN-INV 2; §3.2-A 2단계 "관측만").
+2. **증거 수집(관측).** 관측의 출발점은 **사용자 주입**이다 — 진입 시 사용자가 **대상 폴더(경로/폴더명)와 신규/기존 의도**를 주입하며, 이것이 `/continue` Descriptor의 requiredEvidence(contract-presence·repository-presence) 관측의 위치·방식을 확정한다. 물리 판정 수단(탐지 절차)은 **entry-binding.md §4**에 있다(재정의 0) — **기존 폴더 주입** 시 repository-presence = 유로 확정하고 그 폴더로 스코프해 Contract 저장 위치(`<주입 폴더>/.claude/project-contract/` 등, contract-binding.md §4)의 인스턴스 파일(`project-contract.v<N>.md`) 유무를 스캔한다(존재→incremental, 부재→brownfield); **신규 폴더명 주입** 시 repository-presence = 무로 확정하고 폴더 부재/빈 상태를 확인한다. 주입한 신규/기존 선언과 실제 폴더 상태가 상충하면 임의로 덮어쓰지 않고 사용자 확인 게이트로 안내한다(EN-INV 6, entry-binding.md §4 충돌 처리 note). **Entry는 유/무만 관측하며 Contract 내용을 해석하지 않는다**(01 EN-INV 2; §3.2-A 2단계 "관측만").
 3. **우선순위 평가.** `/continue`의 결정 행(01 §3.2-D 결정 테이블 행 5~8)을 관측 증거에 대조해 매칭되는 단일 결과 행을 선택한다. Contract 존재가 우선한다 — 존재 시 `incremental`(행 7·8), 부재·Repository 존재 시 `brownfield`(행 6).
 4. **결정성 검증.** 관측 조합이 단일 행에만 매칭됨을 확인한다 (01 §3.2-A 4단계·EN-INV 3).
 5. **방출.** 선택 결과를 단일 Discovery Request {mode, inputs, policy}로 방출한다(직렬화·전달 = entry-binding.md §5). **Entry는 여기서 멈춘다** — Discovery 수행·Contract 생성은 하지 않는다 (01 EN-INV 1·2).
@@ -44,6 +44,7 @@ description: UAF 공식 진입점 /continue(기존 프로젝트 이어가기 —
 ### 사용자 개입 지점 (Preserve Human Authority, 01 EN-INV 6)
 
 - 이어갈 증거가 부재(Contract 무 + Repository 무, 01 §3.2-D 행 5 — P-D)하면 사용자 의도와 증거가 상충한다. 이때 Entry는 **스스로 확정하지 않고** policy에 **사용자 확인 게이트**를 표기한다(01 §3.2-D 충돌 처리·EN-INV 6). 확정 게이트(사용자 승인)는 하류에서 존중된다(ARCHITECTURE.md §8 UAF-INV ⑤).
+- **주입한 "기존" 의도 ↔ 실제 폴더 상태 상충도 게이트 대상이다.** 주입한 기존 의도와 달리 그 폴더가 부재·빈 상태(이어갈 콘텐츠 없음)이면, Entry는 관측값을 임의로 덮어쓰지 않고 policy에 사용자 확인 게이트를 표기한다(01 EN-INV 6, entry-binding.md §4 충돌 처리 note). 물리 판정·게이트 표기 수단은 entry-binding.md §4 소관이다(재정의 0).
 
 ---
 

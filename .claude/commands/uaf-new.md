@@ -5,7 +5,7 @@ description: UAF 공식 진입점 /new(순수 Greenfield 전용)의 물리 발�
 # /new — UAF Greenfield 진입 (물리 발화: uaf-new 명령)
 
 작성일: 2026-07-07
-상태: v1.2 Baseline (CP2 첫 판정 Pass 16/0/0 · CP3 승인 · 사용자 승인 2026-07-07)
+상태: v1.2 Baseline (CP2 첫 판정 Pass 16/0/0 · CP3 승인 · 사용자 승인 2026-07-07) · 2026-07-18 관측 수단 개정(사용자 폴더 주입) — CP2 통과·CP3 승인(OQ-2 = (a) spec 무변경)
 상위 규약: .claude/AGENT.md
 성격: UAF 진입 명령 — 형태 A(문서 명령), 실행 코드 0 (D-v1.2-1)
 
@@ -31,7 +31,7 @@ description: UAF 공식 진입점 /new(순수 Greenfield 전용)의 물리 발�
 호출되면 Entry Resolution 엔진 **고정 5단계**(01 §3.2-A)를 규약 절차로 수행한다. 각 단계·판별·게이트는 정본에서 회수한다(값 하드코딩 없음).
 
 1. **매칭.** 명시 Entry = `/new`의 Entry Descriptor를 Entry Registry에서 찾는다 (01 §3.2-A).
-2. **증거 수집(관측).** `/new` Descriptor의 requiredEvidence(contract-presence·repository-presence)를 관측한다. 물리 판정 수단(탐지 절차)은 **entry-binding.md §4**에 있다 — contract-presence = 저장 위치(`.claude/project-contract/` 등, contract-binding.md §4)의 인스턴스 파일(`project-contract.v<N>.md`) 유무; repository-presence = 워크스페이스 내 기존 프로젝트 콘텐츠 유무. **Entry는 유/무만 관측하며 Contract 내용을 해석하지 않는다**(01 EN-INV 2; §3.2-A 2단계 "관측만").
+2. **증거 수집(관측).** 관측의 출발점은 **사용자 주입**이다 — 진입 시 사용자가 **대상 폴더(경로/폴더명)와 신규/기존 의도**를 주입하며, 이것이 `/new` Descriptor의 requiredEvidence(contract-presence·repository-presence) 관측의 위치·방식을 확정한다. 물리 판정 수단(탐지 절차)은 **entry-binding.md §4**에 있다(재정의 0) — **신규 폴더명 주입** 시 repository-presence = 무로 확정하고 그 폴더가 부재/빈 상태인지 확인하며 contract-presence도 그 폴더 기준 무; **기존 폴더 주입** 시 그 폴더로 스코프해 Contract 저장 위치(`<주입 폴더>/.claude/project-contract/` 등, contract-binding.md §4)의 인스턴스 파일(`project-contract.v<N>.md`) 유무를 스캔한다. 주입한 신규/기존 선언과 실제 폴더 상태가 상충하면 임의로 덮어쓰지 않고 사용자 확인 게이트로 안내한다(EN-INV 6, entry-binding.md §4 충돌 처리 note). **Entry는 유/무만 관측하며 Contract 내용을 해석하지 않는다**(01 EN-INV 2; §3.2-A 2단계 "관측만").
 3. **우선순위 평가.** `/new`의 결정 행(01 §3.2-D 결정 테이블 행 1~4)을 관측 증거에 대조해 매칭되는 단일 결과 행을 선택한다.
 4. **결정성 검증.** 관측 조합이 단일 행에만 매칭됨을 확인한다 (01 §3.2-A 4단계·EN-INV 3).
 5. **방출.** 선택 결과를 단일 Discovery Request {mode, inputs, policy}로 방출한다(직렬화·전달 = entry-binding.md §5). **Entry는 여기서 멈춘다** — Discovery 수행·Contract 생성은 하지 않는다 (01 EN-INV 1·2).
@@ -39,6 +39,7 @@ description: UAF 공식 진입점 /new(순수 Greenfield 전용)의 물리 발�
 ### 사용자 개입 지점 (Preserve Human Authority, 01 EN-INV 6)
 
 - `/new`는 **순수 Greenfield 전용**이므로, 관측 증거에 기존 Contract 또는 Repository가 나타나면 사용자 의도와 증거가 상충한다(01 §3.2-D 행 2·3·4). 이때 Entry는 **스스로 재라우팅·덮어쓰기를 결정하지 않고** policy에 **사용자 확인 게이트**를 표기한다(01 §3.2-D 판별 규칙 D3 ①·충돌 처리·EN-INV 6). 사용자가 `/continue`를 재발화하면 결정 테이블이 결정적으로 재해소된다(01 §8 예2).
+- **주입 선언 ↔ 실제 폴더 상태 상충도 게이트 대상이다.** 주입한 "신규" 의도와 달리 그 폴더에 실질 콘텐츠가 존재하면(또는 반대로 "기존" 의도인데 폴더가 부재·빈 상태이면), Entry는 관측값을 임의로 덮어쓰지 않고 policy에 사용자 확인 게이트를 표기한다(01 EN-INV 6, entry-binding.md §4 충돌 처리 note). 물리 판정·게이트 표기 수단은 entry-binding.md §4 소관이다(재정의 0).
 - 확정 게이트(사용자 승인)는 하류에서 존중된다 — Entry는 게이트를 데이터로 표기할 뿐 확정 결정을 내리지 않는다(01 EN-INV 6, ARCHITECTURE.md §8 UAF-INV ⑤).
 
 ---

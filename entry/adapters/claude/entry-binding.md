@@ -90,7 +90,7 @@
 ### §4.1 contract-presence — 존재 판정 수단 (contract-binding §4.1 위임 해소)
 
 - **capability(정본 소유).** "워크스페이스에 Project Contract가 존재하는가"를 관측한다. 값 도메인 = 유/무 (01 §3.2-C).
-- **저장 위치(선행 확정 — contract-binding §4).** Contract 인스턴스는 `project-contract.v<N>.md` 파일로 직렬화되며(Markdown 본문 + YAML front-matter, contract-binding §3), 저장 위치는 이원화되어 있다 — 일반 관례 = 소비 프로젝트 내 `.claude/project-contract/`, 본 UAHF 저장소 인스턴스 = `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`(contract-binding §4).
+- **저장 위치(선행 확정 — contract-binding §4).** Contract 인스턴스는 `project-contract.v<N>.md` 파일로 직렬화되며(Markdown 본문 + YAML front-matter, contract-binding §3), 저장 위치는 이원화되어 있다 — 일반 관례 = 소비 프로젝트 내 `.claude/project-contract/`, 본 UAF 저장소 인스턴스 = `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`(contract-binding §4).
 - **존재 판정 수단(본 문서 확정 — 탐지 절차).** contract-presence의 유/무는 위 저장 위치에 **인스턴스 파일(`project-contract.v<N>.md`)이 하나라도 존재하는지**의 실측으로 판정한다.
   - **유** — 해당 저장 위치(소비 프로젝트: `.claude/project-contract/`; 본 저장소: `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`)에 `project-contract.v<N>.md` 인스턴스 파일이 하나 이상 존재한다.
   - **무** — 그러한 인스턴스 파일이 존재하지 않는다(디렉터리 부재 포함).
@@ -103,10 +103,10 @@
 - **존재 판정 수단(본 문서 확정 — 탐지 절차).** repository-presence의 유/무는 **워크스페이스에 이어갈 기존 프로젝트 콘텐츠(선재하는 프로젝트 산출물의 비어 있지 않은 본체)가 실재하는지**의 실측으로 판정한다. 다음 지표 중 **하나라도 충족되면 유**다(충분 조건의 논리합):
   1. 워크스페이스에 선재하는 실질 프로젝트 콘텐츠(소스·문서·설정 등 프로젝트 산출물)가 빈/맨 초기화를 넘어 존재한다, 또는
   2. 워크스페이스에 버전 관리 저장소 마커가 존재한다.
-  - **VCS 마커는 충분 지표일 뿐 필요 지표가 아니다.** repository-presence를 **VCS 마커 단독으로 정의하지 않는다** — 본 UAHF 저장소는 비git 저장소(`.git` 부재, §10 실측)이면서도 방대한 기존 프로젝트 콘텐츠(`framework/`·`specs/`·`entry/`·`discovery/`·`planning/`·`orchestration/`·`uahf/`·`docs/` 등)를 실재로 보유하므로, VCS 마커 단독 정의는 이 저장소를 "무"로 오판해 결정 테이블 행 6(Brownfield)의 매칭을 깨뜨린다. 지표 1(기존 프로젝트 콘텐츠)이 1차 판정이며, VCS 마커는 그것을 보강하는 충분 지표다.
+  - **VCS 마커는 충분 지표일 뿐 필요 지표가 아니다.** repository-presence를 **VCS 마커 단독으로 정의하지 않는다** — 워크스페이스가 버전 관리 마커를 갖지 않으면서도(예: 아직 VCS를 도입하지 않은 초기 저장소) 방대한 기존 프로젝트 콘텐츠를 실재로 보유할 수 있으며, 그 경우 VCS 마커 단독 정의는 그 워크스페이스를 "무"로 오판해 결정 테이블 행 6(Brownfield)의 매칭을 깨뜨린다. 본 UAF 저장소도 `entry/`·`discovery/`·`planning/`·`orchestration/`·`knowledge/`·`uahf/`·`docs/` 등 방대한 기존 프로젝트 콘텐츠를 실재로 보유한다. 지표 1(기존 프로젝트 콘텐츠)이 1차 판정이며, VCS 마커는 그것을 보강하는 충분 지표다.
 - **두 E2E 시나리오 실관측(문면 시연).**
   - **신규 빈 프로젝트 디렉터리 → 무.** 선재 프로젝트 콘텐츠 없음 ∧ VCS 마커 없음 → repository-presence = **무**.
-  - **본 UAHF 저장소(기존 프로젝트 콘텐츠 실재) → 유.** 루트에 `ARCHITECTURE.md`·`framework/`·`specs/`·`entry/`·`discovery/`·`planning/`·`orchestration/`·`uahf/`·`docs/`·`ROADMAP.md` 등 실질 프로젝트 콘텐츠 실재(지표 1 충족; VCS 마커는 부재해도 무방) → repository-presence = **유**(§10 실측).
+  - **본 UAF 저장소(기존 프로젝트 콘텐츠 실재) → 유.** 루트에 `ARCHITECTURE.md`·`entry/`·`discovery/`·`planning/`·`orchestration/`·`knowledge/`·`uahf/`·`docs/`·`ROADMAP.md` 등 실질 프로젝트 콘텐츠 실재(지표 1 충족; VCS 마커는 부재해도 무방) → repository-presence = **유**(§10 실측).
 - **관측 한계.** Entry는 콘텐츠의 **유무만** 관측하며 그 내용을 수집·해석하지 않는다(01 §3.2-A 2단계·EN-INV 1). 기존 프로젝트 콘텐츠의 실제 이해·분석은 하류 Project Discovery(Brownfield Full Discovery) 소관이다.
 
 ### §4.3 관측 결과의 소비
@@ -170,17 +170,17 @@ policy: <Discovery Policy 참조>     # Policy as Data. 충돌 조합은 사용�
 
 ### 예 B — 결정 테이블 행 6 (contract 무 · repo 유 → brownfield, D3 ②)
 
-**시나리오.** 기존 프로젝트 콘텐츠가 실재하나 아직 Contract가 없는 워크스페이스(본 UAHF 저장소 dogfooding 포함). 명시 Entry = `/continue`(물리 발화: `uaf-continue` 명령, §3).
+**시나리오.** 기존 프로젝트 콘텐츠가 실재하나 아직 Contract가 없는 워크스페이스(본 UAF 저장소 dogfooding 포함). 명시 Entry = `/continue`(물리 발화: `uaf-continue` 명령, §3).
 
 **해소 (Resolution 엔진 5단계, 01 §3.2-A — 물리 관측).**
 
 1. 매칭 — `/continue` Descriptor를 Registry에서 찾는다.
-2. 증거 수집(관측) — contract-presence: 두 저장 위치(`.claude/project-contract/` 및 `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`)에 인스턴스 파일 없음 → **무**(§4.1); repository-presence: 워크스페이스에 실질 프로젝트 콘텐츠 실재(`framework/`·`specs/`·`entry/`·`discovery/`·`planning/`·`orchestration/`·`uahf/`·`docs/` 등, §10 실측) → **유**(§4.2 — VCS 마커 부재와 무관, 지표 1 충족).
+2. 증거 수집(관측) — contract-presence: 두 저장 위치(`.claude/project-contract/` 및 `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`)에 인스턴스 파일 없음 → **무**(§4.1); repository-presence: 워크스페이스에 실질 프로젝트 콘텐츠 실재(`entry/`·`discovery/`·`planning/`·`orchestration/`·`knowledge/`·`uahf/`·`docs/` 등, §10 실측) → **유**(§4.2 — VCS 마커 부재와 무관, 지표 1 충족).
 3. 우선순위 평가 — 관측 {무, 유}을 `/continue` 결정 행에 대조 → **01 §3.2-D 행 6** 매칭.
 4. 결정성 검증 — 이 조합은 단일 행(6)에만 매칭.
 5. 방출 — 단일 Discovery Request `{ mode: brownfield, inputs: [contract-presence(무), repository-presence(유)], policy: 기본 정책 참조 }`(§5.1 레코드).
 
-**결과.** Brownfield Full Discovery, 최초 Project Contract 생성 요청(01 §3.2-D 행 6, 판별 규칙 **D3 ②**). Entry는 여기서 멈춘다 — 최초 Contract 생성은 하류 Project Discovery 소관이다(EN-INV 1·2). **이 예가 §4.2 판정 수단의 필요성을 실증한다** — repository-presence를 VCS 마커 단독으로 정의했다면 비git 저장소인 본 저장소가 "무"로 오판되어 행 5(P-D 충돌)로 잘못 해소되었을 것이나, 기존 프로젝트 콘텐츠 판정으로 "유"가 관측되어 행 6(Brownfield)로 결정적으로 해소된다.
+**결과.** Brownfield Full Discovery, 최초 Project Contract 생성 요청(01 §3.2-D 행 6, 판별 규칙 **D3 ②**). Entry는 여기서 멈춘다 — 최초 Contract 생성은 하류 Project Discovery 소관이다(EN-INV 1·2). **이 예가 §4.2 판정 수단의 필요성을 실증한다** — repository-presence를 VCS 마커 단독으로 정의했다면 VCS 마커가 아직 없는(버전 관리 미도입) 워크스페이스가 "무"로 오판되어 행 5(P-D 충돌)로 잘못 해소되었을 것이나, 기존 프로젝트 콘텐츠 판정으로는 "유"가 관측되어 행 6(Brownfield)로 결정적으로 해소된다.
 
 ---
 

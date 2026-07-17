@@ -1,10 +1,14 @@
 # Universal Agentic Harness Framework (UAHF)
 
-Version: 0.2 (Draft)
+Version: 0.3 (Draft)
 
 ---
 
 # 1. Vision
+
+UAHF는 UAF(Universal Agentic Framework — 이 리포 최상위 프레임워크, 6 Layer:
+entry/discovery/planning/orchestration/knowledge/uahf)의 `uahf/` 하네스 실행
+Layer 구현체다. 아래 비전·OS 지향 서술은 이 하네스 Layer의 비전이다.
 
 Universal Agentic Harness Framework (UAHF)는
 AI 에이전트를 위한 범용 Development Operating System이다.
@@ -245,3 +249,4 @@ Framework는 시간이 지나도
 
 - 0.1: 최초 Draft
 - 0.2: Memory를 Layer에서 Cross-cutting Service로 재정의 (설계 검토 후 승인)
+- 0.3: 동결 폐지 후 위계 자기서술 최소 정정 — # 1 Vision 서두에 UAF 6 Layer 위계 문장 병기 (2026-07-17 · 사용자 결정 · 주체 Worker(Advisor 위임))

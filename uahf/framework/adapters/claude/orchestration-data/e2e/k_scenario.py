@@ -36,7 +36,7 @@ PROPOSAL_FILE = "impl-proposal.json"
 # 외부 워크스페이스는 config 데이터로만 실현한다(중립 코드 무수정).
 WORKSPACE_DIR = (
     r"C:\Users\aime8\AppData\Local\Temp\claude"
-    r"\C--my-claude-project-universa-agentic-harness-framework"
+    r"\C--my-claude-project-universal-agentic-framework"
     r"\d9d393c9-726b-4364-bd4f-77e02970747d\scratchpad\orch-k-workspace"
 )
 

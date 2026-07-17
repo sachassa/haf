@@ -25,7 +25,7 @@ HERE = Path(__file__).resolve().parent                 # .../claude/step-data/e2
 CLAUDE_DIR = HERE.parents[1]                            # .../framework/adapters/claude
 STEP_INVOKER_DIR = CLAUDE_DIR / "step-invoker"          # .../claude/step-invoker
 STEP_HOST_DIR = CLAUDE_DIR.parents[1] / "loop" / "step-host"  # .../framework/loop/step-host
-REPO_ROOT = CLAUDE_DIR.parents[3]                       # .../universa-agentic-harness-framework
+REPO_ROOT = CLAUDE_DIR.parents[3]                       # .../universal-agentic-framework
 RUNS_DIR = CLAUDE_DIR / "step-data" / "runs"
 
 for p in (str(STEP_HOST_DIR), str(STEP_INVOKER_DIR)):

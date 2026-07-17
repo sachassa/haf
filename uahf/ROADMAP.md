@@ -11,6 +11,10 @@ Status: Approved Baseline (v0.1 → v1.2)
 이 문서는 Universal Agentic Harness Framework(UAHF)의
 개발 단계를 정의한다.
 
+이 로드맵은 v1.2.1(uahf/ Layer 승격) 이후의 UAF 레벨 마일스톤(entry/orchestration
+Layer 신설 등) 기록도 포함한다. UAF(리포 최상위 프레임워크) 로드맵의 정본은 리포 루트
+`ROADMAP.md`다.
+
 ROADMAP은 ARCHITECTURE.md를 최우선 기준으로 따른다.
 
 모든 버전은 Worker(Opus)가 병렬로 개발하기 쉬운 형태로 분해되어 있다.
@@ -635,5 +639,6 @@ ARCHITECTURE.md의 6개 설계 원칙은 다음 버전에서 검증된다.
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass 15/0/0 · CP3 Advisor 승인). 상태 라인 승격 (Approved Baseline v0.1 → v1.1). | Advisor |
 | 2026-07-07 | v1.2 등재 Draft | v1.2(Project Discovery Implementation) 트랙 등재 — 상태 라인·#3 표·#4 맵·#5 절 갱신·이력 절 append. 사용자 승인 대기 | Worker (Advisor 위임, Task T-R) |
 | 2026-07-07 | v1.2 Baseline | v1.2 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass 16/0/0 · CP3 Advisor 승인). 상태 라인 승격 (Approved Baseline v0.1 → v1.2). | Advisor |
+| 2026-07-17 | v1.2 (유지) | 동결 폐지 후 위계 자기서술 최소 정정 — # 1 Purpose 범위 문장에 UAF 레벨 마일스톤 포함·UAF 로드맵 정본=리포 루트 ROADMAP.md 병기. 마일스톤 이력·산출물 목록 무촉(append-only). 사용자 결정. | Worker (Advisor 위임) |
 
 (이력 절은 문서 말미에 둔다 — 루트 ARCHITECTURE.md # 9 이력 관행 동형. 이후 개정은 이 표에 append-only로 기록한다.)

@@ -78,7 +78,7 @@ REVIEWING_PATH = str(_R003 / "reviewing-record.md")
 
 # UAHF 저장소 경로(대시보드 fs-reader 가 orchestration-data/runs/ 를 정독할 소스 루트).
 # 소스 하드코딩 금지 — 구현 계획은 이를 .env.local 로 주입하도록 지시한다.
-UAHF_REPO_PATH = r"C:\my-claude-project\universa-agentic-harness-framework"
+UAHF_REPO_PATH = r"C:\my-claude-project\universal-agentic-framework"
 
 
 def _implplan_ac() -> str:

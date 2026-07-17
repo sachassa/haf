@@ -2,6 +2,12 @@
 
 ## Overview
 
+UAHF is the harness-execution Layer of the **Universal Agentic Framework
+(UAF)** — this repository's top-level framework, organized into six Layers
+(`entry`, `discovery`, `planning`, `orchestration`, `knowledge`, `uahf`). It is
+the implementation that lives in the `uahf/` Layer; the vision below is that
+harness Layer's vision.
+
 Universal Agentic Harness Framework (UAHF) is a reusable, AI-agnostic
 Development Operating System for AI agents. Rather than a bundle of settings for
 one AI tool, it defines the contracts, roles, and loops that let an agentic
@@ -37,6 +43,11 @@ UAHF(Universal Agentic Harness Framework)는 AI 에이전트를 위한 범용 De
 Operating System이다. 특정 AI 모델이나 개발 환경에 종속되지 않는, 재사용 가능한
 Agentic Development Framework를 목표로 한다 (ARCHITECTURE.md §1 Vision).
 
+UAHF는 UAF(Universal Agentic Framework — 이 저장소의 최상위 프레임워크, 6 Layer:
+entry/discovery/planning/orchestration/knowledge/uahf)의 `uahf/` 하네스 실행 Layer
+구현체이며, 위 서술은 이 하네스 Layer의 비전이다. 리포 전체 구조의 정본은 리포
+루트 ARCHITECTURE.md다.
+
 "설계 → 구현 → 검증 → 학습"이 자동으로 반복되며, 프로젝트가 커질수록 안정적으로
 동작하고 실패를 학습해 시간이 지날수록 더 똑똑해지는 것을 지향한다
 (ARCHITECTURE.md §2 Mission).
@@ -55,17 +66,18 @@ Core는 AI 비의존을 유지하고, 환경 의존 요소는 Adapter Layer 뒤�
 
 ---
 
-## 리포지토리 구조
+## uahf/ Layer 내부 구조
 
-프로젝트는 네 자리로 나뉜다. 아래는 지도이며, `framework/` 내부 경계의 정본 트리는
-`framework/core/structure.md` §8이다 (structure.md §2·§8 정합).
+`uahf/` Layer(UAHF 하네스 구현체)의 내부는 네 자리로 나뉜다. 아래는 `uahf/` 내부
+지도이며, 리포 전체 구조의 정본은 리포 최상위 `ARCHITECTURE.md`(루트)다. `framework/`
+내부 경계의 정본 트리는 `framework/core/structure.md` §8이다 (structure.md §2·§8 정합).
 
 | 자리 | 무엇이 있는가 | 정본 포인터 |
 |---|---|---|
 | `specs/` | Core Contract 스펙 — Frozen 기준선. `00-glossary.md`(용어 정본)부터 `13-harness.md`까지 번호 스펙 14개 + `TEMPLATE.md` = **15개**. 계약의 최종 정본. | specs/00-glossary.md · 각 spec |
 | `framework/` | 4경계: `core/`(계약·스키마 문서)·`runtime/`(모듈 시스템·수명주기 문서)·Module 구현 디렉터리(`loop`·`memory`·`verifier`·`workflow`·`plugins/`)·`adapters/<adapter>/`(환경 의존 바인딩 격리). | framework/core/structure.md §8 (정본 트리) |
-| `docs/` | 운용 문서 — 세션 핸드오프·검증 리포트·시연 기록·프로토콜·정책·가이드. | docs/session-handoff-v0.X.md(최신본) 등 |
-| `.claude/` | Agent 정의(`agents/` 4종)·상위 규약(`AGENT.md`)·Advisor 진입점(`CLAUDE.md`)·확장 표면(`commands`·`hooks`·`skills/`) — 환경 의존(Adapter 경계). | .claude/AGENT.md · specs/11-adapters.md |
+| `docs/` | 운용 문서 — 검증 리포트·시연 기록·프로토콜·정책·가이드. 세션 진입 최신 상태 포인터는 리포 루트 `docs/next-session-prompt.md`. | docs/next-session-prompt.md(리포 루트) 등 |
+| `.claude/` | uahf/ 로컬 override 설정 표면 — 현재 override 없음(v1.2.1 스텁, `uahf/.claude/README.md`뿐). Agent 정의(`agents/` 4종)·상위 규약(`AGENT.md`)·Advisor 진입점(`CLAUDE.md`)·확장 표면(`commands`·`hooks`·`skills/`) 실물은 리포 루트 `.claude/`(Global Default). 환경 의존(Adapter 경계). | 리포 루트 .claude/AGENT.md · specs/11-adapters.md |
 
 - Core 경계(`framework/core`·`framework/runtime`)와 Module 구현 디렉터리의 문서
   본문은 특정 AI·언어·툴체인 토큰 0건을 유지하고, 환경 의존 토큰은
@@ -144,12 +156,12 @@ Advisor에게 보고한다 (CLAUDE.md — Architecture·Spec 충돌 시 사용�
 | 위임·보고 운용 프로토콜 | docs/delegation-protocol.md |
 | 검증 체크리스트(게이트 A~D) | docs/verification-checklist.md |
 | 역할 빠른 참조(Advisor·Planner·Worker·Verifier) | docs/roles-quick-reference.md |
-| 세션 진입·직전 상태 | docs/session-handoff-v0.X.md(최신본) |
+| 세션 진입·직전 상태 | docs/next-session-prompt.md(리포 루트) |
 | 신규 프로젝트 설치 | docs/v0.9-install-guide.md · specs/12-scaffold.md |
 | 용어 정본 | specs/00-glossary.md |
 | 상위 규약 | .claude/AGENT.md |
 
 ---
 
-이 문서는 **v1.0 기준**이다. 최신 상태는 `docs/session-handoff-v0.X.md`(최신본)를
+이 문서는 **v1.0 기준**이다. 세션 진입 최신 상태는 리포 루트 `docs/next-session-prompt.md`를
 따른다.

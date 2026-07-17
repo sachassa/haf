@@ -7,7 +7,7 @@ set -eu
 
 # auto-memory 색인 경로 ($HOME 사용 — 사용자명 하드코딩 없음).
 # 프로젝트 인코딩 디렉터리는 이 저장소 고정값. 다른 머신/클론에서 부재 시 조용히 종료(무해).
-MEM="$HOME/.claude/projects/C--my-claude-project-universa-agentic-harness-framework/memory/MEMORY.md"
+MEM="$HOME/.claude/projects/C--my-claude-project-universal-agentic-framework/memory/MEMORY.md"
 BUDGET=6000      # 색인 총 바이트 예산
 LINE_CAP=400     # 항목당 바이트 상한
 

@@ -8,7 +8,7 @@
 - `planning/specs/03-project-contract.md` — Project Contract의 **상세 계약 정본**(지위·논리 스키마·버저닝·인스턴스 거버넌스·UAHF Interface·불변). 본 문서가 개관하고 위임하는 대상. 특히 §0·§1·§3.1(Interface)·§3.2(Data Format)·§3.3(버저닝)·§3.4(인스턴스 거버넌스)·§3.5(UAHF Interface)·§3.6(PC-INV 1~12)·§4(Adapter Binding).
 - `planning/specs/04-solution-design.md` — Solution Design 단계(성숙 활동)의 **상세 계약 정본**(단계 계약·복잡도 판정·역할 할당·협업 설계 프로토콜·Projection·경계 기준·불변 SP-INV). 본 문서가 개관하고 위임하는 **이중 책임의 성숙 활동 측** 대상이다. 특히 §0(C2 3항)·§3.1(단계 계약)·§3.2(복잡도 판정)·§3.3(역할 할당)·§3.4(협업 프로토콜)·§3.5(Projection)·§3.6(경계 기준)·§3.8(SP-INV)·§4(Adapter Binding).
 - 루트 `ARCHITECTURE.md` (라우터) — UAF 상위 구조 정본. 특히 §2.1(최상위 Layer 지도 — Project Contract = `planning/`)·§2.2(6요소 파이프라인 의미론·Contract 이중 지위)·§2.5(의존 방향)·§3(Layer 연결 계약)·§5(`.claude` 경계)·§7(P2·P3·P5)·§7.1(상시 불변 확인 2건)·§8(UAF-INV ①②③⑤)·§10(책임 경계표 — 비담당② 구현 Planning)·§11(Non-Goals)·§12(용어).
-- `uahf/specs/00-glossary.md` §3.3 — UAHF 용어 정본. INV-3("Layer는 정확히 6개다") 무촉 근거. § 포인터로만 참조하며 UAHF 정본을 변경하지 않는다.
+- `uahf/specs/00-glossary.md` §3.3 — UAHF 용어 정본. INV-3("Layer는 정확히 6개다") 무촉 근거. § 포인터로만 참조한다.
 
 ---
 
@@ -20,6 +20,7 @@
 | 2026-07-13 | v1.3 · 이중 책임 정합 | Solution Design 마일스톤(W2c) 개정 — planning Layer를 **이중 책임**(① Project Contract 설계[데이터 계약·정본 03] + ② Solution Design 성숙 활동[정본 04])으로 정합. **Δ1** §0 C2 2항→**3항** 재서술(①②③ — 04 §0 정합, ② Solution Design ≠ ③ UAHF 구현 Planning)·§6 구현 Planning 문면 3항 정합. **Δ2** §1 목적 이중 책임 선언·근거 정본에 04 등재·§6 Memory 문면 04 §5 정합(성숙 활동도 v1.3 Memory 무접근). **Δ3** §2 구조 실측 재확인(2026-07-13) — `specs/04-solution-design.md`·부록 2종(`docs/appendix/expert-role-catalog.md`·`projection-catalog.md`) 등재. **Δ4** §7 정본 포인터 표에 04 라우팅 5행·부록 2행 추가. **Δ5** 본 이력 append·상태/작성 라인 갱신. 새 계약·불변·용어 창설 0(전부 04 § 포인터)·UAHF 정본 무수정(UAF-INV ①)·특정 AI/모델/제품 기능명·방법론 고유명 0·기존 §9 행 byte 불변(L-22). | Worker (Advisor 위임, v1.3 W2c) |
 | 2026-07-13 | v1.3 · 보완 C-2 등재 | Gap Analysis(사용자 Target Architecture 대조, 옵션 2 승인) 보완 — §2 디렉터리 실측·§7 라우팅 표에 `docs/appendix/review-dimension-catalog.md`(Integrated Design Review 관점 차원 예시 **비정본 부록**) 등재. 새 계약·불변·용어 창설 0·기존 §9 행 byte 불변. | Advisor (사용자 승인) |
 | 2026-07-13 | v1.3 · v1.4 바인딩 라우팅 등재 | v1.4 W3 — §7 라우팅 표에 **Solution Design Adapter Binding** 1행 추가(정본 = 04 §4 · `uahf/framework/adapters/<adapter>/solution-design-binding.md` — v1.4 W1 신설·CP2 Pass의 등재 반영). 새 계약·불변·용어 창설 0(라우팅 1행만)·기존 §9 행 byte 불변. | Advisor (v1.4 W3) |
+| 2026-07-17 | v1.3 · 참조 정합 | 루트 v1.7 UAF-INV ① 재정의(무수정 폐지·접점 원칙 존치) 정합 — 보호 문면 제거·인용 라벨 갱신, 접점·§ 포인터·계약 무변경·substrate 소비 서술 존치. §0 접점 절·§3 폐쇄성·§5 상위 불변 정합 라벨을 접점 원칙으로 갱신하고 PC-INV 8·UAHF Interface·역참조 금지(의미 2)는 존치. 기존 §9 행 byte 불변·버전 무상승. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 루트 `ARCHITECTURE.md` §9·`planning/specs/03-project-contract.md` §9·`entry/ARCHITECTURE.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -29,7 +30,7 @@
 
 - **개관 고도 선언.** 이 문서는 루트 `ARCHITECTURE.md`(라우터)와 하위 spec `planning/specs/03-project-contract.md`(상세 계약) **사이의 Layer 개관**이다. "무엇이 어디에 있고 어떻게 연결되는가"를 서술하며, "그것이 정확히 무엇인가"의 상세 계약 — 논리 스키마 필드 그룹 표·필수 코어 필드 목록·Dimension 매핑 표·버저닝 규칙 문면·불변 문면 — 은 03이 소유한다. 본 문서는 그 계약을 **§ 포인터로만 참조**하고 재정의·복제하지 않는다(재정의 0).
 
-- **UAHF 정본 무수정 (UAF-INV ①).** 본 문서의 저술은 UAHF 정본(`uahf/`·상위 규약)을 변경하지 않는다. UAF와 UAHF의 접점은 **Project Contract 하나뿐**이며(유일 접점), 본 문서가 다루는 UAHF Interface(Contract가 어떻게 소비되는가)는 UAHF spec의 어떤 연산·필드·불변도 추가·변경하지 않고 **§ 포인터로만 참조**한다 (루트 §8 UAF-INV ①; 상세 정본 03 §3.5). Contract가 UAHF 접점이라는 특성상 이 재정의 0 규율은 특히 엄격히 유지된다.
+- **접점 원칙 (UAF-INV ①).** UAF와 UAHF의 접점은 **Project Contract 하나뿐**이며(유일 접점), 본 문서가 다루는 UAHF Interface(Contract가 어떻게 소비되는가)는 UAHF spec의 어떤 연산·필드·불변도 추가·변경하지 않고 재정의·복제 없이 **§ 포인터로만 참조**한다 (루트 §8 UAF-INV ①; 상세 정본 03 §3.5). Contract가 UAHF 접점이라는 특성상 이 재정의 0 규율은 특히 엄격히 유지된다.
 
 - **INV-3 무촉 (Layer 어휘 주의).** "planning **Layer**"의 "Layer"는 UAHF 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter)의 지층(stratum)이 아니라, UAF 파이프라인의 한 **요소(Project Contract)** 를 소유하는 최상위 물리 Layer 명칭이다. Project Contract는 UAHF 6-Layer의 **외부·상류의 UAF 레벨 구조**이며(루트 §0·§2.4), `planning/` 물리 Layer 역시 UAF 파이프라인 축의 지도 단위로 UAHF 수직 스택과 직교한다. 본 문서는 UAHF Layer 수를 늘리는 어떤 서술도 두지 않으며, Glossary INV-3("Layer는 정확히 6개다", `uahf/specs/00-glossary.md` §3.3)는 무촉이다.
 
@@ -80,7 +81,7 @@ planning Layer의 내부는 다음 요소로 구성된다. 각 요소의 상세 
 - **이 Layer의 요소 = Project Contract.** planning Layer는 UAF 파이프라인의 **Project Contract** 요소를 소유한다. Contract는 (i) 상류 Project Discovery(Compiler)의 **산출**이자 (ii) 하류 UAHF의 **선택 입력**이라는 이중 지위를 갖는다 (루트 §2.2·§3). 위상의 상세 개관은 §4.
 - **produces (하류 방향) — Project Contract → UAHF (선택 입력).** planning Layer의 요소인 Project Contract는 하류 UAHF에 **선택 입력**으로 주어진다. **부재 시 UAHF는 기존 방식으로 운용된다(하위 호환)** — Contract 없이도 UAHF 운용은 불변이다. 이것이 UAF↔UAHF의 **유일 접점**이다 (루트 §3·§2.2, P3·UAF-INV ①②; 채움 상세 03 §3.5-A).
 - **consumes (상류 방향) — Discovery 산출.** Project Contract 인스턴스는 상류 Project Discovery의 Back-end(Contract Compiler)가 planning이 소유한 **단일 타깃 스키마**로 컴파일해 산출한다. **어떤 Discovery Strategy를 쓰든 산출은 동일한 Contract다**(Strategy Invariance) (루트 §2.2·§8 UAF-INV ③, P2; 상세 03 §3.1-B·§3.2-C).
-- **의존 방향.** 연결은 위→아래 **단방향**이며, planning(Contract)은 하류 UAHF를 역참조하지 않고, Contract는 Discovery 내부 개념(질문·전략·예산)을 역참조하지 않는다 (루트 §2.5; 03 §3.6 PC-INV 2). 이 폐쇄성이 Discovery 교체 가능성과 UAHF 무수정을 함께 성립시킨다.
+- **의존 방향.** 연결은 위→아래 **단방향**이며, planning(Contract)은 하류 UAHF를 역참조하지 않고, Contract는 Discovery 내부 개념(질문·전략·예산)을 역참조하지 않는다 (루트 §2.5; 03 §3.6 PC-INV 2). 이 폐쇄성이 Discovery 교체 가능성과 접점 원칙(UAHF 인터페이스 안정)을 함께 성립시킨다.
 - **스키마 소유.** Project Contract 논리 스키마·버저닝·UAHF Interface의 정본은 03 §3이며, 본 문서는 그 계약을 재정의하지 않는다(재정의 0). 연결 payload는 서술(narrative)이 아니라 **타입 계약(schema)**이므로(루트 §3), 계약이 파일로 남아 하류가 독립적으로 파싱·소비한다.
 
 ---
@@ -107,7 +108,7 @@ planning Layer의 불변은 **PC-INV 1~12**(정본: 03 §3.6)가 소유한다. �
 - **PC-INV 10·11 — 상시 불변 2건 반영.** Discovery 교체 가능성 보존·장기 호환 훼손 0(루트 §7.1 ①②).
 - **PC-INV 12 — AI 비의존.** 계약은 특정 AI 모델·실행 환경·방법론에 의존하지 않으며, 환경 바인딩은 Adapter 소관이다.
 
-**상위 불변 정합.** 위 PC-INV는 상위 UAF 불변·원칙을 Project Contract 수준에서 구속한다 — 특히 **P3**(Contract = UAF↔UAHF 공식 Stable Contract, 루트 §7)·**UAF-INV ①②**(UAHF 정본 무수정·Contract 교체 불가, 루트 §8)와 정합한다. **역참조 금지·Provenance 불투명**(PC-INV 2·3)은 **P2·UAF-INV ③**(Strategy Invariance)의 스키마 측 성립 조건이다. Contract가 Execution Ready로 확정되는 게이트가 **사용자 승인**이라는 원칙은 **UAF-INV ⑤**(Preserve Human Authority, 루트 §8)다. **P5**(설계 순서 — Contract는 마지막 고정 지점, 루트 §7)에 따라 방법론 상세는 정본이 아니라 비정본 부록(`planning/docs/appendix/`, UAF-INV ⑥) 소관이다. 상시 불변 확인 2건(루트 §7.1 — Discovery 교체 가능성 보존·장기 호환 훼손 0)은 PC-INV 10·11이 반영한다.
+**상위 불변 정합.** 위 PC-INV는 상위 UAF 불변·원칙을 Project Contract 수준에서 구속한다 — 특히 **P3**(Contract = UAF↔UAHF 공식 Stable Contract, 루트 §7)·**UAF-INV ①②**(접점 원칙·Contract 교체 불가, 루트 §8)와 정합한다. **역참조 금지·Provenance 불투명**(PC-INV 2·3)은 **P2·UAF-INV ③**(Strategy Invariance)의 스키마 측 성립 조건이다. Contract가 Execution Ready로 확정되는 게이트가 **사용자 승인**이라는 원칙은 **UAF-INV ⑤**(Preserve Human Authority, 루트 §8)다. **P5**(설계 순서 — Contract는 마지막 고정 지점, 루트 §7)에 따라 방법론 상세는 정본이 아니라 비정본 부록(`planning/docs/appendix/`, UAF-INV ⑥) 소관이다. 상시 불변 확인 2건(루트 §7.1 — Discovery 교체 가능성 보존·장기 호환 훼손 0)은 PC-INV 10·11이 반영한다.
 
 ---
 

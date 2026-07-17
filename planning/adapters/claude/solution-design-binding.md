@@ -6,7 +6,7 @@
 
 - planning/specs/04-solution-design.md §3(전문 — Core Contract)·§4.1(### 4.1 바인딩 지점 — 표 4행)·§4.2(### 4.2 이식 교체 지점). 본 문서가 물리 실현으로 바인딩하는 계약의 정본. **재정의·확장하지 않고 § 포인터로만 인용한다.** 특히 §3.1(단계 계약)·§3.2(복잡도 판정 — Policy as Data)·§3.3(역할 할당·개방 네임스페이스)·§3.4(협업 프로토콜 State Machine — 비종단 5·종단 3·전이 T1~T11)·§3.5(Projection)·§3.6(경계 기준)·§3.7(저장 스코프)·§3.8(SP-INV 1~8).
 - planning/specs/03-project-contract.md §3.1-B(생산자 2경로 — (ii) superseding 성숙 인스턴스)·§3.4(인스턴스 거버넌스 — append-only·supersedes·**Contract Maturation 갱신 유형**)·§3.5(UAHF Interface — 선택 입력·소비 지점)·§3.6 PC-INV 9(인스턴스 이력 append-only). 성숙 재발행이 소비·산출하는 스키마·거버넌스의 정본. **참조 인용만·재정의 0.**
-- ARCHITECTURE.md (루트, v1.3 — 라우터) §8 UAF-INV ①(UAHF 정본 무수정·유일 접점)·⑤(확정 게이트 = 사용자 승인)·⑥(Framework는 방법론·역할 카탈로그 모름)·§7.1(상시 불변 확인 2건). 근거 인용용·재정의 0.
+- ARCHITECTURE.md (루트, v1.3 — 라우터) §8 UAF-INV ①(접점 원칙·유일 접점)·⑤(확정 게이트 = 사용자 승인)·⑥(Framework는 방법론·역할 카탈로그 모름)·§7.1(상시 불변 확인 2건). 근거 인용용·재정의 0.
 - planning/adapters/claude/contract-binding.md §4.1(저장 위치)·§4.2(저장 이원화 — 일반 관례 `.claude/project-contract/`·본 저장소 `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`·파일명 `project-contract.v<N>.md`, DP-X2)·§5(버전 표기 — `schemaVersion`·`instanceVersion`·`supersedes`)·§6(Provenance 불투명 컨테이너 외형·must-ignore 경계 — DP-X6). **superseding 인스턴스 저장·버전 표기·Provenance 외형은 contract-binding 소유** — 본 문서는 참조 인용만 하고 재정의하지 않는다.
 - discovery/adapters/claude/discovery-binding.md §3(append-only 레코드 로그·1 사건 = 1 레코드·§3.3 순서 값/물리 시각 성격 구분 L-09)·§4(백엔드 트리 정본 선언·run 단위 격리)·§5(주 세션 사용자 제시·응답 채널)·§7(역할 추상 호스팅 — 형태 A 규약 절차·물리 호스팅 설계 0)·§8(Policy 데이터 소스·최소 실값 1세트 정본 값 표 DP-X5)·§10(성숙 아닌 Discovery run 내부 형식 확정 — Provenance 내부 형식 소유 경계 선례)·§13(실측 대조 L-07). **핵심 골격 선례.** 본 문서는 이 골격과 동형으로 서술하되 Discovery 도메인 계약(Event 15종·State Machine·Dimension·Budget)을 차용하지 않는다.
 - entry/adapters/claude/entry-binding.md 머리·§0·memory-binding.md·loop-binding.md §5.2 — 자매 Adapter Binding 골격·사람 개입 채널·백엔드 격리·append-only 선례. `형태 A/B` 서술 라벨 인용 출처(structure.md §4).
@@ -88,7 +88,7 @@
 Solution Design의 **성숙 실행 메타**(이벤트 로그·Proposal·충돌/trade-off·리뷰 기록·Policy)의 물리 백엔드를 **Adapter 경계 이하 `uahf/framework/adapters/claude/solution-design-data/`로 확정한다**(자매 memory-binding §0 `memory-data/`·loop-binding §0 `loop-data/`·discovery-binding §4 `discovery-data/` 백엔드 격리 선언 동형).
 
 - **신설 근거(UAF-INV ① 안전).** `discovery-data/`는 discovery-binding §4가 소유한 **Discovery 전용 백엔드 정본**이다 — 여기에 성숙 실행 데이터를 혼입하면 책임 경계가 오염된다. 자매 `*-data/` 격리 관례 동형으로 별도 루트를 두는 것이 최소 변경이며, 성숙 산출 데이터가 하네스 규약·Core와 혼입되지 않도록 격리한다(UAF-INV ① 안전 — contract-binding §4.2 격리 근거 동형).
-- **이원화(DP-X2 동형).** 위 격리 배치는 본 UAHF 저장소 자신을 대상으로 하는 dogfooding 인스턴스의 관례다. **일반 관례**(소비 프로젝트)에서 성숙 실행 메타는 소비 프로젝트 내 `.claude/solution-design/` 아래에 귀속된다(04 §3.7 워크스페이스 귀속·contract-binding §4의 `.claude/project-contract/` 이원화 동형). 두 경로 모두 본 문서가 정본으로 확정한다.
+- **이원화(DP-X2 동형).** 위 격리 배치는 본 UAF 저장소 자신을 대상으로 하는 dogfooding 인스턴스의 관례다. **일반 관례**(소비 프로젝트)에서 성숙 실행 메타는 소비 프로젝트 내 `.claude/solution-design/` 아래에 귀속된다(04 §3.7 워크스페이스 귀속·contract-binding §4의 `.claude/project-contract/` 이원화 동형). 두 경로 모두 본 문서가 정본으로 확정한다.
 
 ### §3.2 백엔드 트리 (정본 문면 · 물리 위치는 2차 산출물 디커플링 트랙에서 확정)
 

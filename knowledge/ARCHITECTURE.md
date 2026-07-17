@@ -6,7 +6,7 @@
 근거 정본 (각 § 포인터로만 참조 — 재정의·복제 0):
 
 - 루트 `ARCHITECTURE.md` (라우터) — knowledge 횡단 공용 Knowledge Base의 **상위 정본**. 본 문서가 개관하고 그 아래에서 표면 구조를 확정하는 대상. 특히 §4(knowledge — 횡단 Knowledge Base)·§2.1(최상위 Layer 지도 — Knowledge Base = `knowledge/`, 파이프라인 단계 아님)·§6 원칙 10(Knowledge Consult 횡단)·§10(책임 경계표 — Memory Consult 비담당 ④)·§11(Non-Goals — Memory 설계 제외)·§12.1(Knowledge Base 용어).
-- `uahf/ARCHITECTURE.md` §5.1 — UAHF 내부 Cross-cutting **Memory Service**(단일 Port). knowledge와의 결합 상세의 UAHF 측 정본. § 포인터로만 참조하며 UAHF 정본을 변경하지 않는다 (UAF-INV ①).
+- `uahf/ARCHITECTURE.md` §5.1 — UAHF 내부 Cross-cutting **Memory Service**(단일 Port). knowledge와의 결합 상세의 UAHF 측 정본. 재정의·복제 없이 § 포인터로만 참조한다 (UAF-INV ①).
 - (하위 spec 없음 — 1차 정본 선언.) knowledge는 `<layer>/specs/` 하위 정본을 두지 않는다. 따라서 **이 문서가 knowledge 구조의 1차 정본**이다. 상위 정본은 루트 §4이며, 본 문서는 그 아래에서 표면 구조·Consult 위상을 개관 고도로 확정한다.
 
 ---
@@ -16,6 +16,7 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-12 | v1.3 정합 | 스텁→완전 저술. knowledge 횡단 공용 Knowledge Base 개관 정본 신설 — 라우터 §4 아래의 knowledge 구조 **1차 정본**(하위 spec 없음). 8표면(markdown·metadata·graph·graphrag·retrieval·prompts·patterns·glossary)의 역할을 1차 정본으로 확정(개관 고도). 파일 시스템 직접 실측(2026-07-12): 8표면 전부 `.gitkeep`만의 **빈 스캐폴드**(콘텐츠 0) — 각 표면의 원천·완전 구성은 후속 트랙에 위임(정직 표기). 3메커니즘 구분(knowledge 횡단 Consult / Layer 연결 계약 파이프 / session handoff 시간축) 명시. UAHF 내부 Memory Service(`uahf/ARCHITECTURE.md` §5.1)와의 관계는 § 포인터로만 참조(재정의 0). 새 설계 결정·원천 스키마 창설 0 · UAHF 정본 무수정(UAF-INV ①) · 특정 AI/모델/제품 기능명 0(자가 전수 스캔). | Worker (Advisor 위임, T-a W2 T-knowledge) |
+| 2026-07-17 | v1.3 정합 | 루트 v1.7 UAF-INV ① 재정의(무수정 폐지·접점 원칙 존치) 정합 — 보호 문면 제거·인용 라벨 갱신, 접점·§ 포인터·계약 무변경·substrate 소비 서술 존치. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 루트 `ARCHITECTURE.md` §9·`entry/ARCHITECTURE.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -26,7 +27,7 @@
 - **개관 고도 선언.** 이 문서는 루트 `ARCHITECTURE.md`(라우터) §4가 선언한 **knowledge 횡단 공용 Knowledge Base의 내부 구조 개관**이다. "어떤 표면이 있고 각 표면이 어떤 역할이며 knowledge가 어떻게 Consult되는가"를 서술하며, 각 표면의 원천 스키마·색인·회수 규칙 등 구성 상세는 창설하지 않는다.
 - **1차 정본 · 하위 spec 없음.** entry·discovery·planning처럼 상세 계약을 소유하는 `<layer>/specs/` 하위 정본이 knowledge에는 **없다**. 따라서 이 문서가 knowledge 구조의 **1차 정본**이다 — 상위 정본(루트 §4)이 위상을 선언하고, 이 문서가 그 아래에서 표면 구조를 직접 확정한다. 이 때문에 spec-backed 개관(entry 등)보다 상대적으로 두껍되, **역할·위상 개관 고도**는 유지한다.
 - **횡단 Base · 파이프라인 단계 아님.** knowledge는 UAF 6요소 파이프라인의 한 **단계가 아니다**. 모든 Layer가 Consult하는 **횡단(cross-cutting) 공용 Base**이며, 파이프라인 payload를 앞뒤 Layer로 흘려보내지 않는다 (루트 §4·§2.1). 이 위상 구분은 §3에서 3메커니즘으로 명시한다.
-- **UAHF 정본 무수정 (UAF-INV ①).** 본 문서의 저술은 UAHF 정본(`uahf/`·상위 규약)을 변경하지 않는다. UAF와 UAHF의 접점은 Project Contract 하나뿐이며, UAHF 계약 요소(특히 Cross-cutting Memory Service, `uahf/ARCHITECTURE.md` §5.1)는 § 포인터로만 참조한다 (루트 §8 UAF-INV ①).
+- **접점 원칙 (UAF-INV ①).** UAF와 UAHF의 접점은 Project Contract 하나뿐이며, UAHF 계약 요소(특히 Cross-cutting Memory Service, `uahf/ARCHITECTURE.md` §5.1)는 재정의·복제 없이 § 포인터로만 참조한다 (루트 §8 UAF-INV ①).
 - **원천·구성 위임.** 8표면의 실제 원천(어떤 지식이 담기는가)·완전 구성(스키마·색인·회수 알고리즘·프롬프트 자산 등)은 **후속 트랙 소관**이다. 본 문서는 역할(1차 정본)까지만 확정하고 원천 채움은 위임한다 (§4).
 - **Core 문서 관행.** 본문 전체에 특정 AI 이름·모델명·제품 기능명을 두지 않는다 (루트 §0 동형). Consult의 물리 회수 수단·직렬화·백엔드 등 환경 구체는 Adapter/UAHF 소관이며, 필요한 자리에는 일반형 표기와 소관 포인터만 둔다. `graphrag`·`retrieval`·`prompts` 등은 일반 표면·기법 명칭이지 제품명이 아니다.
 
@@ -93,7 +94,7 @@ knowledge에는 고유 spec이 없으므로 **knowledge 고유 불변을 임의�
 - **원칙 10 — Knowledge Consult (횡단).** knowledge는 파이프라인 단계가 아니라 모든 Layer가 Consult하는 횡단 공용 Base이며, payload를 흘려보내지 않는다 (루트 §6 원칙 10·§4).
 - **횡단 Base 위상 (루트 §4).** knowledge는 6요소 순서 밖의 횡단 Base이고, 3메커니즘(횡단 Consult / 파이프 / handoff)은 혼동되지 않는다 (§3).
 - **Memory 설계 제외 (루트 §11).** 기억의 기록·회수 엔진 설계는 knowledge Base의 불변 대상이 아니라 UAHF Memory Service 소관이다 (루트 §11·§10 비담당 ④·`uahf/ARCHITECTURE.md` §5.1).
-- **UAHF 정본 무수정 (UAF-INV ①).** knowledge 저술은 UAHF 정본을 변경하지 않으며, UAHF 계약 요소는 § 포인터로만 참조한다 (루트 §8).
+- **접점 원칙 (UAF-INV ①).** UAF와 UAHF의 접점은 Project Contract 하나뿐이며, knowledge는 UAHF 계약 요소를 재정의·복제 없이 § 포인터로만 참조한다 (루트 §8).
 
 ---
 

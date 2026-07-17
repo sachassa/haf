@@ -7,7 +7,7 @@
 
 - `entry/specs/01-entry.md` — entry Layer & Entry Resolution의 **상세 계약 정본**. 본 문서가 개관하고 위임하는 대상. 특히 §3.1(Interface)·§3.2-A~E(Data Format)·§3.3(EN-INV 1~6)·§4(Adapter Binding)·§6(Failure Modes).
 - 루트 `ARCHITECTURE.md` (라우터) — UAF 상위 구조 정본. 특히 §2.1(최상위 Layer 지도 — Entry Resolution = `entry/`)·§2.2(6요소 파이프라인 의미론)·§2.5(의존 방향)·§3(Layer 연결 계약)·§7(P1)·§8(UAF-INV)·§12.1(용어)·§12.2(Discovery Request 추상).
-- `uahf/specs/00-glossary.md` §3.3 — UAHF 용어 정본. INV-3("Layer는 정확히 6개다") 무촉 근거. § 포인터로만 참조하며 UAHF 정본을 변경하지 않는다.
+- `uahf/specs/00-glossary.md` §3.3 — UAHF 용어 정본. INV-3("Layer는 정확히 6개다") 무촉 근거. § 포인터로만 참조한다.
 
 ---
 
@@ -16,6 +16,7 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-12 | v1.3 정합 | 스텁→완전 저술. entry Layer 개관 정본 신설(라우터 ↔ 하위 spec 사이의 **Layer 개관 고도**). 상세 계약(결정 테이블 8행·Entry Descriptor 필드 표·판별 규칙 D3 문면·EN-INV 문면 등)은 `entry/specs/01-entry.md`가 소유하고 본 문서는 § 포인터로만 위임(재정의·복제 0). 루트 §2.1 지도(T-D1 정정, Entry Resolution = `entry/`)와 정합(C1). 새 설계 결정 창설 0 · UAHF 정본 무수정(UAF-INV ①) · 특정 AI/모델/제품 기능명 0. | Worker (Advisor 위임, T-a W1 T-entry) |
+| 2026-07-17 | v1.3 정합 | 루트 v1.7 UAF-INV ① 재정의(무수정 폐지·접점 원칙 존치) 정합 — 보호 문면 제거·인용 라벨 갱신, 접점·§ 포인터·계약 무변경·substrate 소비 서술 존치. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 루트 `ARCHITECTURE.md` §9·`entry/specs/01-entry.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -24,7 +25,7 @@
 ## §0. 이 문서의 위치와 정본 경계
 
 - **개관 고도 선언.** 이 문서는 루트 `ARCHITECTURE.md`(라우터)와 하위 spec `entry/specs/01-entry.md`(상세 계약) **사이의 Layer 개관**이다. "무엇이 어디에 있고 어떻게 연결되는가"를 서술하며, "그것이 정확히 무엇인가"의 상세 계약 — 결정 테이블 전개·Entry Descriptor 필드 표·판별 규칙 문면·불변 문면 — 은 01이 소유한다. 본 문서는 그 계약을 **§ 포인터로만 참조**하고 재정의·복제하지 않는다(재정의 0).
-- **UAHF 정본 무수정 (UAF-INV ①).** 본 문서의 저술은 UAHF 정본(`uahf/`·상위 규약)을 변경하지 않는다. UAF와 UAHF의 접점은 Project Contract 하나뿐이며, UAHF 계약 요소는 § 포인터로만 참조한다 (루트 §8 UAF-INV ①).
+- **접점 원칙 (UAF-INV ①).** UAF와 UAHF의 접점은 Project Contract 하나뿐이며, UAHF 계약 요소는 재정의·복제 없이 § 포인터로만 참조한다 (루트 §8 UAF-INV ①).
 - **INV-3 무촉 (Layer 어휘 주의).** "Entry **Layer**"의 "Layer"는 UAHF 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter)의 지층(stratum)이 아니라, UAF 파이프라인의 한 **단계(stage)** 명칭이다 (루트 §0 용어 주의·§2.4). 최상위 물리 Layer `entry/` 역시 UAF 파이프라인 축의 지도 단위이며 UAHF 수직 스택과 직교한다. 본 문서는 UAHF Layer 수를 늘리는 어떤 서술도 두지 않으며, Glossary INV-3("Layer는 정확히 6개다", `uahf/specs/00-glossary.md` §3.3)는 무촉이다.
 - **Core 문서 관행.** 본문 전체에 특정 AI 이름·모델명·제품 기능명을 두지 않는다 (루트 §0·01 §0 동형). 진입 명령의 물리 형태·Evidence 탐지 수단·직렬화 형식 등 환경 구체는 Adapter Binding 소관이며, 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
 - **C1 — Entry Resolution 귀속.** Entry Layer와 Entry Resolution의 물리 귀속은 `entry/`이며(정본 = 본 문서 `entry/ARCHITECTURE.md` + `entry/specs/01-entry.md`), Project Discovery(`discovery/`)와 구분된다. 이는 루트 §2.1 지도(T-D1 정정)와 일관하며, spec `entry/specs/01-entry.md`의 물리 배치·P1·루트 §12.1과 정합한다.

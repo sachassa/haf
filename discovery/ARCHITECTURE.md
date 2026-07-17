@@ -7,7 +7,7 @@
 
 - `discovery/specs/02-discovery.md` — discovery Layer & Project Discovery의 **상세 계약 정본**. 본 문서가 개관하고 위임하는 대상. 특히 §3.1(Compiler 프레이밍·Strategy Invariance)·§3.2(Discovery Principles P-D1~P-D5)·§3.3(State Machine 단일 정본·전이표)·§3.4(파생 뷰 3)·§3.5(Event Model 15)·§3.6(Termination 4경로)·§3.7(Execution Ready 2축 판정)·§3.8(Invariants DISC-INV-1~9)·§3.9~§3.16(Module부 — Module Structure·Strategy Provider Interface·Discovery Dimension·Confidence·Adaptive·Question Budget·Discovery Policy·Metrics)·§4(Adapter Binding)·§5(Memory Access).
 - 루트 `ARCHITECTURE.md` (라우터) — UAF 상위 구조 정본. 특히 §2.1(최상위 Layer 지도 — Project Discovery = `discovery/`)·§2.2(6요소 파이프라인 의미론)·§2.5(의존 방향)·§3(Layer 연결 계약 — Discovery Request·Project Contract)·§6(설계 원칙 — 특히 6 Event Driven·7 Capability First·8 Policy as Data)·§7(P2·P4)·§8(UAF-INV ②③⑤⑥)·§10(책임 경계표)·§11(Non-Goals)·§12.2(Discovery Request 추상).
-- `uahf/specs/00-glossary.md` §3.3 — UAHF 용어 정본. INV-3("Layer는 정확히 6개다") 무촉 근거. § 포인터로만 참조하며 UAHF 정본을 변경하지 않는다.
+- `uahf/specs/00-glossary.md` §3.3 — UAHF 용어 정본. INV-3("Layer는 정확히 6개다") 무촉 근거. § 포인터로만 참조한다.
 
 ---
 
@@ -16,6 +16,7 @@
 | 일자 | 버전 | 변경 | 주체 |
 |---|---|---|---|
 | 2026-07-12 | v1.3 정합 | 스텁→완전 저술. discovery Layer 개관 정본 신설(라우터 ↔ 하위 spec 사이의 **Layer 개관 고도**). 상세 계약(Compiler 3부·State Machine 전이표·Event Model 15·Termination·2축 판정식·7 Module·Strategy Provider Interface·DISC-INV-1~9 문면 등)은 `discovery/specs/02-discovery.md`가 소유하고 본 문서는 § 포인터로만 위임(재정의·복제 0). 루트 §2.1 지도(Project Discovery = `discovery/`)·§2.2 파이프라인 순서(consumes Discovery Request / produces Project Contract)와 정합. Entry Resolution은 상류(`entry/`) 참조만이며 discovery로 귀속·재서술하지 않는다(C1). 범위는 Project Discovery(Compiler)로 한정(C3). 새 설계 결정 창설 0 · UAHF 정본 무수정(UAF-INV ①) · 특정 AI/모델/제품 기능명 0. | Worker (Advisor 위임, T-a W2 T-discovery) |
+| 2026-07-17 | v1.3 정합 | 루트 v1.7 UAF-INV ① 재정의(무수정 폐지·접점 원칙 존치) 정합 — 보호 문면 제거·인용 라벨 갱신, 접점·§ 포인터·계약 무변경·substrate 소비 서술 존치. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 루트 `ARCHITECTURE.md` §9·`discovery/specs/02-discovery.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -24,7 +25,7 @@
 ## §0. 이 문서의 위치와 정본 경계
 
 - **개관 고도 선언.** 이 문서는 루트 `ARCHITECTURE.md`(라우터)와 하위 spec `discovery/specs/02-discovery.md`(상세 계약) **사이의 Layer 개관**이다. "무엇이 어디에 있고 어떻게 연결되는가"를 서술하며, "그것이 정확히 무엇인가"의 상세 계약 — Compiler 3부 전개·State Machine 상태·전이 전수 열거표·Event Model 문면·판정식·모듈 표·불변 문면 — 은 02가 소유한다. 본 문서는 그 계약을 **§ 포인터로만 참조**하고 재정의·복제하지 않는다(재정의 0).
-- **UAHF 정본 무수정 (UAF-INV ①).** 본 문서의 저술은 UAHF 정본(`uahf/`·상위 규약)을 변경하지 않는다. UAF와 UAHF의 접점은 Project Contract 하나뿐이며, UAHF 계약 요소는 § 포인터로만 참조한다 (루트 §8 UAF-INV ①).
+- **접점 원칙 (UAF-INV ①).** UAF와 UAHF의 접점은 Project Contract 하나뿐이며, UAHF 계약 요소는 재정의·복제 없이 § 포인터로만 참조한다 (루트 §8 UAF-INV ①).
 - **INV-3 무촉 (Layer 어휘 주의).** "Project Discovery **Layer**"의 "Layer"는 UAHF 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter)의 지층(stratum)이 아니라, UAF 파이프라인의 한 **단계(stage)** 명칭이다 (루트 §0 용어 주의·§2.4). 최상위 물리 Layer `discovery/` 역시 UAF 파이프라인 축의 지도 단위이며 UAHF 수직 스택과 직교한다. 본 문서는 UAHF Layer 수를 늘리는 어떤 서술도 두지 않으며, Glossary INV-3("Layer는 정확히 6개다", `uahf/specs/00-glossary.md` §3.3)는 무촉이다.
 - **Core 문서 관행.** 본문 전체에 특정 AI 이름·모델명·제품 기능명을 두지 않는다 (루트 §0·02 §0 동형). 증거 스캔 구현·Event 로그 직렬화·사용자 확인 채널·Strategy 실행 호스팅 등 환경 구체는 Adapter Binding 소관이며, 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
 - **C1 — Entry Resolution 상류 참조.** Entry Layer와 Entry Resolution의 물리 귀속은 `entry/`이며(정본 = `entry/ARCHITECTURE.md` + `entry/specs/01-entry.md`), discovery는 그것을 **소유·재서술하지 않고 상류로 참조만** 한다. discovery는 entry가 produces한 Discovery Request를 consumes하는 하류다. 이는 루트 §2.1 지도(Project Discovery = `discovery/`, Entry Resolution = `entry/`)와 일관한다.

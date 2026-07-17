@@ -23,6 +23,7 @@
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-13 | v1.2 Draft | v1.1 Baseline 개정 — 근거 마일스톤 v1.3 W2a(Solution Design 단계 신설·정본 `planning/specs/04-solution-design.md`). **델타 4건:** (1) §3.1-B **생산자 확장** — 두 생산 경로 명문화: (i) 최초 인스턴스 = Discovery Compiler 산출(기존 문면 유지)·(ii) superseding 성숙 인스턴스 = Solution Design의 성숙 재발행(§3.4 동일 supersedes 메커니즘·사용자 승인 게이트); 두 경로 모두 PC-INV 7(완결 산출만) 충족. (2) §3.4 인스턴스 갱신 유형에 **Contract Maturation(성숙)** 추가 — 동일 append-only·supersedes 메커니즘(새 메커니즘 창설 아님·PC-INV 9 무촉). (3) 본 v1.2 행 append + **카운트 drift 정정 주석**(표 하단). (4) 문서 머리 상태 라인 v1.1 Baseline → v1.2 Draft 갱신. **스키마 무변경(D4)** — 필드 신설·삭제·필수화 0·`schemaVersion` 1.0 유지·PC-INV 1~12 목록·문면 무변경. §9 기존 행(v1.1 Draft·v1.1 Baseline) byte 불변(append-only·L-10). 특정 AI 실명·모델명·제품 기능명·방법론 고유명 유입 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W2a) |
 | 2026-07-13 | v1.2 Baseline | **Baseline 승격** — v1.3 마일스톤 W2 CP2 교차 정합(Pass 8/8 — §9 옛 행 byte 불변·스키마 무변경·PC-INV 12 무변 실측 포함)·CP3 승인 후 **사용자 Baseline 승인(2026-07-13)**. | Advisor (사용자 승인) |
+| 2026-07-17 | v1.2 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. §0 경계 표제 "무수정"→"§ 포인터 참조(재정의·확장 0)"·§3.5-C ① 라벨 "(UAHF 정본 무수정)"→"(접점 원칙)". 의미 2(§3.5 UAHF Interface·§3.5-B "UAHF 정본 무수정으로 성립"·PC-INV 8 "UAHF 무수정" 명칭·내용·tolerant reader·역참조 금지) 존치. PC-INV 1~12 카운트·문면·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
 
 > **카운트 drift 정정 (v1.2 W2a).** 위 **v1.1 Draft 행**의 "불변 PC-INV 11건" 표기는 §3.6 본문 열거 실측 **12건**(PC-INV 1~12)과 불일치한다(저술 시점 결함). **§3.6 본문이 정본**이며, 옛 v1.1 Draft 행은 append-only 원칙(L-10)에 따라 **무수정 보존**한다 — 정정은 본 주석으로만 기록한다.
 
@@ -36,7 +37,7 @@
 
 - **논리 스키마만.** 본 문서는 Contract의 **논리 스키마**(필드 그룹·필드·의미·불변)만 정의한다. **직렬화 형식·물리 포맷·저장 위치**는 정의하지 않으며 전부 Adapter 소관이다(§4). 이 경계가 AI-Agnostic 원칙의 스키마 측 실현이다(ARCHITECTURE.md §6 원칙 1).
 
-- **UAF·UAHF 상위 정본 무수정.** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. 특히 §3.5 UAHF Interface는 UAHF spec의 어떤 연산·필드·불변도 추가·변경하지 않는다(UAF-INV ①).
+- **UAF·UAHF 상위 정본 § 포인터 참조 (재정의·확장 0).** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. 특히 §3.5 UAHF Interface는 UAHF spec의 어떤 연산·필드·불변도 추가·변경하지 않는다(UAF-INV ① 접점 원칙).
 
 - **선행 인터페이스만 소비.** 본 문서의 상위 근거는 ARCHITECTURE.md와 discovery/specs/02-discovery.md의 **확정 계약**이다. Discovery는 이 Contract를 산출하는 상류 Compiler이며(02-discovery §3.1), 본 문서는 그 산출의 완결 기준·필수 코어 필드·Dimension 매핑을 고정하여 02-discovery §3.7·§3.11의 위임을 해소한다.
 
@@ -241,7 +242,7 @@ Contract가 존재하면 "프로젝트 정의의 정본 문서"로서 다음 두
 
 #### 3.5-C 정식 등재는 확장 포인트
 
-- **확장 포인트(설계 안 함).** Contract를 UAHF spec에 **필수 입력·명명 산출물로 정식 등재**하는 경로(예: UAHF Agent spec의 명명된 Consult 입력·Scaffold Install Manifest의 명명 항목으로 등록)는 UAHF 정본을 확장하므로, 본 문서에서 설계하지 **않고** **구현 버전의 확장 포인트로만** 표기한다. 정식 등재를 여기서 설계하면 UAF-INV ①(UAHF 정본 무수정)을 위반한다.
+- **확장 포인트(설계 안 함).** Contract를 UAHF spec에 **필수 입력·명명 산출물로 정식 등재**하는 경로(예: UAHF Agent spec의 명명된 Consult 입력·Scaffold Install Manifest의 명명 항목으로 등록)는 UAHF 정본을 확장하므로, 본 문서에서 설계하지 **않고** **구현 버전의 확장 포인트로만** 표기한다. 정식 등재를 여기서 설계하면 UAF-INV ①(접점 원칙 — 재정의·확장 없이 § 포인터 참조)을 위반한다.
 
 ### 3.6 Invariants (PC-INV)
 

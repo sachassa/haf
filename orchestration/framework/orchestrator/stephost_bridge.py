@@ -6,7 +6,7 @@ orchestration Layer 의 중립 코드가 `uahf/framework/loop/step-host/` 중립
 `sys.path` 에 넣어야 import 가 성립한다.
 
 경로 조작은 **전적으로 orchestration 쪽에서만** 이뤄진다. `uahf/` 트리는 읽기·import
-만 하며 무촉이다(05 §0 — substrate 소비·UAF-INV ① '무수정' 준수). 이 모듈은 Step Host
+만 하며 무촉이다(05 §0 — substrate 라이브러리 무수정 import 는 UAF-INV ①(접점 원칙)과 병존). 이 모듈은 Step Host
 의 공개 심볼을 그대로 재노출할 뿐, 재정의·수정하지 않는다(05 §2.2 재정의 0).
 """
 

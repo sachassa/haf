@@ -9,7 +9,7 @@
 - uahf/framework/adapters/claude/memory-binding.md — 자매 Adapter Binding 문서(골격 선례). 제목 라인 → 작성일·상태·상위 규약·근거 정본 → 거버넌스 문단 → §9 이력(머리 배치) → §0 정본 경계 → §1 목적 → 바인딩 표 물리 실현(실재/규약 실현/형태 B 3구분) → 물리 절차/매핑 절 → 이식 교체 지점 표("유지되는 것" 열 = C-1 재확인) → 실측 대조 절 → 요약의 관례, 그리고 append-only 새 파일 갱신·"지원 구조 — 시연 시 생성" 정직 구분(L-07)의 선행 관례.
 - uahf/framework/adapters/claude/scaffold-binding.md §4 — 자매 바인딩. "Markdown 본문 + front-matter" 프로젝트 배치 문서 직렬화의 선행 관례.
 - uahf/framework/core/structure.md §2(4경계 배치 — `uahf/framework/adapters/<adapter>/` = 환경 의존 격리 경계)·§5(금지 토큰 규칙 C-3 — Adapter 경계는 격리 보유로 비적용). 본 문서 경계·물리 분리·격리 토큰 허용의 근거.
-- ARCHITECTURE.md §7(사용자 고정 원칙 P1~P5·§7.1 상시 불변 확인 2건)·§8(UAF-INV ①~⑥ — 특히 ① UAHF 정본 무수정·유일 접점, ② Discovery 교체 가능·Contract 교체 불가, ③ Strategy Invariance). 근거 인용용(재정의 0).
+- ARCHITECTURE.md §7(사용자 고정 원칙 P1~P5·§7.1 상시 불변 확인 2건)·§8(UAF-INV ①~⑥ — 특히 ① 접점 원칙·유일 접점, ② Discovery 교체 가능·Contract 교체 불가, ③ Strategy Invariance). 근거 인용용(재정의 0).
 - entry/specs/01-entry.md §4.1(### §4.1 바인딩 대상, 불릿 2 — "contract-presence·repository-presence를 실제 환경에서 어떻게 탐지하는가(**경로 관례·직렬화 형식·존재 판정 수단**)는 Adapter 소관이다. Core Contract는 capability 선언과 유/무 값 도메인만 소유한다")·§3.2-C(Workspace Evidence & Evidence Source 확장 스키마 — contract-presence Evidence 정의·유/무 값 도메인 소유)·EN-INV 2. 본 문서 §3·§4가 §4.1이 Adapter 소관으로 미룬 물리 실현임의 근거.
 - uahf/specs/12-scaffold.md §3.2-A(Project Template) — Contract가 신규 프로젝트 설치 시 배치되는 정본 문서로 성립하는 소비 지점(03 §3.5-B (b))의 근거. § 포인터로만 참조.
 - uahf/specs/00-glossary.md — UAHF 용어 정본. 본 문서는 새 용어를 신설하지 않는다. `형태 A/B`는 structure.md §4의 서술 라벨 인용이며 Glossary 표제어가 아니다.
@@ -56,7 +56,7 @@
 | # | 03 §3 계약 요소 (정본 §) | 03 §4.1 바인딩 지점 (정본 인용) | 물리 실현 (claude 환경) | 실현 형태 |
 |---|---|---|---|---|
 | 1 | Contract 직렬화·물리 포맷 (§3.1·§3.2) | 논리 스키마를 실제 문서·레코드로 표현하는 직렬화 형식. | **Markdown 본문 + YAML front-matter 단일 문서.** front-matter가 9그룹·필수 코어 필드 10의 자기서술 구조를, 본문이 인간 가독 렌더링을 담는다. Provenance는 분리 네임스페이스 컨테이너. 상세 §3. | 형식 확정(정본, 형태 A). 컴파일러·파서는 형태 B. |
-| 2 | Contract 저장 위치 (§3.2) | Contract 인스턴스가 프로젝트에 배치·보관되는 물리 위치·경로 관례. | **이원화 확정**: 일반 관례 = 소비 프로젝트 내 `.claude/project-contract/`; 본 UAHF 저장소 인스턴스(Brownfield dogfooding) = `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`(격리). 상세 §4. 01-entry §4.1이 Adapter 소관으로 미룬 contract-presence 탐지 경로의 실현(§3.2-C는 contract-presence Evidence 관측 정의·유/무 도메인만 소유). | 경로 관례 확정(정본, 형태 A). 물리 위치는 2차 산출물 디커플링 트랙에서 확정. |
+| 2 | Contract 저장 위치 (§3.2) | Contract 인스턴스가 프로젝트에 배치·보관되는 물리 위치·경로 관례. | **이원화 확정**: 일반 관례 = 소비 프로젝트 내 `.claude/project-contract/`; 본 UAF 저장소 인스턴스(Brownfield dogfooding) = `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`(격리). 상세 §4. 01-entry §4.1이 Adapter 소관으로 미룬 contract-presence 탐지 경로의 실현(§3.2-C는 contract-presence Evidence 관측 정의·유/무 도메인만 소유). | 경로 관례 확정(정본, 형태 A). 물리 위치는 2차 산출물 디커플링 트랙에서 확정. |
 | 3 | `schemaVersion`·`instanceVersion` 표기 형식 (§3.3·§3.4) | 버전 값의 물리 표기·직렬화. | front-matter 스칼라 — `schemaVersion` = SemVer 점표기 문자열(예 형태 `"1.0"`), `instanceVersion` = 단조 증가 정수, `supersedes` = 이전 인스턴스 참조. 상세 §5. | 표기 형식 확정(정본, 형태 A). |
 | 4 | Provenance 부속 물리 형식 (§3.2-D) | 불투명 부속의 물리 저장 형식 — Discovery 측·Adapter 측 소관(내부 구조 비정의). | front-matter 내 **분리 네임스페이스 `provenance` 컨테이너**(불투명 블록) — 외형·must-ignore 경계만 본 문서가 확정. 내부 형식은 후속 discovery-binding.md 소관. 상세 §6. | 컨테이너 외형·경계 확정(정본, 형태 A). 내부 형식은 후속 바인딩 소관. |
 
@@ -140,10 +140,10 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 - **파일명.** 인스턴스 1건 = 파일 1개, `project-contract.v<N>.md`(N = `instanceVersion` 정수, §5). 현재 인스턴스 = 후행 인스턴스에 의해 supersede되지 않은 최고 `instanceVersion` 파일. 인스턴스 갱신은 새 `v<N+1>` 파일 추가로 표현된다(append-only, §3.3 ⓓ).
 - **근거.** Contract는 프로젝트 정의 정본 문서로서 (a) Advisor Consult 정독·(b) Scaffold 배치 대상이다(03 §3.5-B). Claude 환경에서 하네스 규약·정의 문서의 관례 홈은 `.claude/`이며(자매 scaffold-template의 `dot-claude/` — AGENT.md·CLAUDE.md·agents/ 배치, scaffold-binding.md §6), Scaffold(uahf/specs/12-scaffold.md §3.2-A)가 관리하는 경계다. Contract를 그 아래 전용 하위 디렉터리에 두어 Advisor가 규약 문서와 함께 정독하고 Scaffold가 함께 배치하도록 정합시킨다. Entry의 contract-presence 관측(01-entry §3.2-C Evidence 정의·EN-INV 2 — 유/무 관측)은 이 well-known 경로의 인스턴스 파일 유무로 유/무를 판정한다. 그 **탐지의 경로 관례·직렬화 형식·존재 판정 수단**을 Adapter 소관으로 미룬 절은 01-entry §4.1(불릿 2)이며 — 그중 **존재 판정 수단(탐지 실행)의 상세**는 후속 entry-binding.md 소관이고, 본 문서는 03 §4.1 행 2가 소유하는 Contract **저장 경로 관례**를 확정한다(추측·선취 금지).
 
-### §4.2 본 UAHF 저장소 인스턴스 — 격리 배치 (Brownfield dogfooding)
+### §4.2 본 UAF 저장소 인스턴스 — 격리 배치 (Brownfield dogfooding)
 
-- **경로.** 본 UAHF 저장소 자신을 대상 프로젝트로 발견하는 dogfooding 인스턴스는 `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`에 격리 배치한다 (물리 위치는 2차 산출물 디커플링 트랙에서 확정). 파일명 관례는 §4.1과 동일(`project-contract.v<N>.md`).
-- **근거(UAF-INV ① 안전).** 본 저장소의 dogfood Contract를 라이브 `.claude/` 규약 표면(하네스 자신의 AGENT.md·CLAUDE.md 등)이나 Core 경계에 섞으면 하네스 규약과 발견 산출 데이터가 혼입된다. 이를 Adapter 경계 이하 `uahf/framework/adapters/claude/discovery-data/`로 격리하면 데이터 자산이 격리 지점 뒤에 놓여, UAHF 정본 무수정(ARCHITECTURE.md §8 UAF-INV ①)과 정합한다. 이는 자매 `memory-data/`·`loop-data/`가 Adapter 경계 이하로 백엔드 데이터를 격리한 선례(memory-binding.md §0·§2)와 동형이다.
+- **경로.** 본 UAF 저장소 자신을 대상 프로젝트로 발견하는 dogfooding 인스턴스는 `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`에 격리 배치한다 (물리 위치는 2차 산출물 디커플링 트랙에서 확정). 파일명 관례는 §4.1과 동일(`project-contract.v<N>.md`).
+- **근거(UAF-INV ① 안전).** 본 저장소의 dogfood Contract를 라이브 `.claude/` 규약 표면(하네스 자신의 AGENT.md·CLAUDE.md 등)이나 Core 경계에 섞으면 하네스 규약과 발견 산출 데이터가 혼입된다. 이를 Adapter 경계 이하 `uahf/framework/adapters/claude/discovery-data/`로 격리하면 데이터 자산이 격리 지점 뒤에 놓여, 접점 원칙(ARCHITECTURE.md §8 UAF-INV ①)과 정합한다. 이는 자매 `memory-data/`·`loop-data/`가 Adapter 경계 이하로 백엔드 데이터를 격리한 선례(memory-binding.md §0·§2)와 동형이다.
 - **`uahf/framework/adapters/claude/discovery-data/`는 지원 구조.** 이 경로·구조는 본 문서가 확정한 정본 문면이며, 본 문서는 물리 데이터 자산을 생성하지 않는다 — 경로·구조·형식의 정본만 소유한다(memory-binding.md §2 주 "지원 구조 — 시연 시 생성" 선례 동형, L-07). 물리 위치는 2차 산출물 디커플링 트랙에서 확정한다.
 
 ---

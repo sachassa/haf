@@ -19,6 +19,7 @@
 | 2026-07-07 | v1.1 Draft | 최초 작성 — `uaf/specs/` 경계 Project Discovery 정본 신설(**Workflow부**). Compiler 프레이밍(P2·Strategy Invariance, §3.1)·Discovery Principles 5(§3.2)·**State Machine 단일 정본**(비종단 6·종단 5, 상태·전이·종단 전수 열거표, §3.3)·파생 뷰 3(Lifecycle·Process·Workflow, 정본 재정의 금지 규칙, §3.4)·Event Model 15(append-only·Metrics 파생 원칙, §3.5)·Termination 4경로(§3.6)·Execution Ready 2축 판정식 C3(§3.7)·Invariants(상시 불변 2건 반영, §3.8) 확정. **Module부**(§3.9~§3.16 및 §1 Non-Goals의 P4 재기재·§5·§6·§7의 Module 상세)는 후속 W3 Task 완성 대상으로 자리 표시. 입력 Discovery Request는 uaf/ARCHITECTURE.md §8.2 확정 추상만 참조(병렬 작성 중 `uaf/specs/01-entry.md` 미참조 — 07 R2). UAHF·UAF 상위 정본 무수정(§ 포인터만·재정의 0)·특정 AI 실명·모델명·제품 기능명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.1 W2 T3) |
 | 2026-07-07 | v1.1 Draft (Module부 완성) | **Module부 완성** — §3.9 Module Structure(7모듈 책임·경계·상호 의존 표)·§3.10 Strategy Provider Interface(Capability 선언·입출력 계약·레퍼런스 Provider 1건·방법론 대응 비정본 부록 § 포인터)·§3.11 Discovery Dimension 5(Intent/Requirement/Constraint/Risk/Architecture — 차원별 Confidence)·§3.12 Confidence([0,1]·근거 등급·Policy 임계)·§3.13 Adaptive Discovery·§3.14 Question Budget(soft/hard·소진 강제 종합·T17 재진입 예산 규칙)·§3.15 Discovery Policy(Policy as Data)·§3.16 Metrics 분류(효율·품질·개입 — 전 지표 §3.5 Event 파생) 확정. §1 Non-Goals P4 비담당 5건 재기재. §3.3-A Contextualizing에 incremental mode 결속 명시(Advisor 승인 보강 2건). §4~§7 Module부 주석을 상세·§ 포인터로 해소. Workflow부(§3.1~§3.8) 문면 보존(§3.3-B 전이표 불변). 방법론 고유명·특정 AI 실명·모델명·제품 기능명 0(자가 전수 스캔)·정본 재정의 0(§ 포인터만). | Worker (Advisor 위임, v1.1 W3 T4) |
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | v1.1 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. §0 경계 표제 "무수정"→"§ 포인터 참조(재정의·확장 0)"·① 인용에 "접점 원칙" 명기(본문 의미 2 "재정의·확장하지 않고 § 포인터로만 참조"·"유일한 접점은 Project Contract 하나" 서술 존치). DISC-INV 1~9·State Machine·전이표·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·uahf/framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -30,7 +31,7 @@
 
 - **Workflow부 / Module부 완성.** 본 문서는 **두 단계에 걸쳐 완성**되었다. **Workflow부**(§3.1~§3.8 — Compiler 프레이밍·State Machine·파생 뷰·Event Model·Termination·Execution Ready·Invariants)는 v1.1 W2 Task가 완성했고, **Module부**(§3.9~§3.16 및 §1 Non-Goals의 P4 재기재·§4~§7의 Module 상세 — Module Structure·Strategy Provider Interface·Discovery Dimension·Confidence·Adaptive Discovery·Question Budget·Discovery Policy·Metrics 분류)는 v1.1 W3 Task가 완성한다. 두 부는 하나의 정본으로 통합되며, 어느 부도 §3.3 State Machine 단일 정본을 재정의하지 않는다(DISC-INV-2).
 
-- **UAF·UAHF 상위 정본 무수정.** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. Discovery와 UAHF의 유일한 접점은 Project Contract 하나다(ARCHITECTURE.md §8 UAF-INV ①).
+- **UAF·UAHF 상위 정본 § 포인터 참조 (재정의·확장 0).** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. Discovery와 UAHF의 유일한 접점은 Project Contract 하나다(ARCHITECTURE.md §8 UAF-INV ① 접점 원칙).
 
 - **선행 인터페이스만 소비.** Discovery의 입력인 **Discovery Request**의 확정 추상은 ARCHITECTURE.md §12.2다(3요소 {mode, inputs, policy}). 본 문서는 이 확정 추상만 소비하며, Entry Resolution의 상세 정본(`entry/specs/01-entry.md`, 예정)은 병렬 작성 중이므로 그 미완성 산출물을 참조·추측하지 않는다(07 R2).
 

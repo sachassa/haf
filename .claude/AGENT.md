@@ -130,6 +130,7 @@ Consult → Plan → Execute → Verify → Learn → Memory Update → Complete
 - **done** — 완료 조건. 검증 가능한 형태.
 - **context** — 착수 전 읽을 문서 목록. 상위 규약·Architecture·관련 Spec·Memory 회수 범위.
 - **constraints** — 금지·경계 사항 (선택).
+- **analysis_depth** — 기대 분석 깊이 (shallow / normal / deep). 수임 Agent가 탐색·분석의 범위와 깊이를 이에 맞춰 조절한다 (선택; 미지정 시 normal). 태스크 깊이는 가변이므로, Advisor는 얕아도 되는 위임에 shallow를 지정해 불필요한 심층 분석·토큰을 줄인다. 단, analysis_depth는 재량 탐색 깊이만 조절하며 done 항목 충족과 검증 게이트의 필수 검사(§Verification & Gate)를 완화하지 않는다.
 
 필수 필드(input·output·done·context) 중 하나라도 누락된 위임은 발신하지 않는다. 누락된 위임은 수임 Agent가 착수 전 반환·질의한다.
 
@@ -138,6 +139,7 @@ Consult → Plan → Execute → Verify → Learn → Memory Update → Complete
 - 위임은 Advisor가 발신한다.
 - Planner는 계획·브리프 초안만 작성한다. 스스로 채택하지 못한다.
 - 계획 채택·최종 승인·정책 변경은 Advisor가 한다.
+- **위임 범위 비례화** — 위임·탐색의 규모를 작업 범위에 비례시킨다. 파일·위치가 이미 알려진 바운드된 질문은 인라인 또는 단일 Agent로 처리하고, 다중 fan-out(병렬 탐색 Agent 여럿)은 범위가 불확실할 때만 쓴다. 각 서브 Agent의 반환 보고는 메인 컨택스트로 유입되므로, 범위에 맞지 않는 fan-out은 컨택스트를 낭비한다 (§Core Principles Token Efficiency).
 
 ---
 
@@ -151,6 +153,8 @@ Agent는 다음을 반드시 전달한다.
 - 실패 이유
 
 완료 보고는 artifacts, self_check, failures, open_questions, verify_basis를 담는다. 실패 보고는 reason, repro, attempted, lesson_candidate, blocking을 담는다. 실패·미완성 사항은 "없음"까지 명시하여 은폐하지 않는다.
+
+**보고 상한** — 상위(Advisor·사용자)로 반환하는 보고는 결론·근거·경로 위주로 압축하고, 산출물 원문·파일 전량 덤프를 지양한다. 근거는 경로+위치(파일:라인)로 가리키고 필요한 부분만 인용한다. 이는 메인 컨택스트 보호를 위한 규율이다 (§Core Principles Token Efficiency).
 
 ---
 

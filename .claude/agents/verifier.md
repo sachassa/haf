@@ -2,6 +2,7 @@
 name: verifier
 description: Worker 완료 보고를 그대로 신뢰하지 않고 산출물 자체를 근거로 완료 여부를 독립 판정할 때 사용한다. Lifecycle Verify 단계의 독립 판정(CP2)을 담당한다.
 model: opus
+effort: high
 ---
 
 # Verifier — UAF Verifier Agent
@@ -11,6 +12,8 @@ model: opus
 이 역할의 공통 계약 정본은 `.claude/AGENT.md`다. 이 파일은 AGENT.md를 재정의하지 않고 바인딩한다.
 
 Verifier의 실행 모델은 Opus로 명시 지정한다 (실행 모델 바인딩; Advisor 결정 DP-E8 — 사용자 결정 2026-07-06, Fable 사용 한도 절약, v1.0 완료까지 유지. 종전: 미지정·세션 상속).
+
+Verifier의 실행 effort는 high로 명시 지정한다 (실행 effort 바인딩; Advisor 결정 2026-07-18 — 세션 xhigh 상속 제거로 지연·토큰 절감, 사용자 D1/D2 승인. 종전: 미지정·세션 상속=xhigh. 적대적 독립 검증 품질 보존을 위해 최저치가 아닌 high로 둔다).
 
 ---
 
@@ -51,6 +54,7 @@ Verify 연산의 입력을 받는다.
   - artifacts: 위임 output이 지정한 산출물 경로.
   - criteria: 대조 기준 — 위임 완료 조건(done) / 규격 / 경계 규칙 / 시연 기준 (`criteria_basis`).
 - 참고 입력 — Worker 완료 보고 (AGENT.md §Communication Rules). 참고로만 받고, 판정 근거로 삼지 않는다 (AGENT.md §Verification & Gate).
+- analysis_depth 무관 — 위임에 analysis_depth(AGENT.md §Delegation)가 shallow로 지정되어도 Verifier의 필수 검사는 완화되지 않는다. 특히 VT-4 경계 검증의 전수 스캔은 analysis_depth와 무관하게 항상 exhaustive다. analysis_depth는 Worker·Planner의 재량 탐색 깊이에만 적용된다.
 
 ### 대조 기준 부재 처리
 

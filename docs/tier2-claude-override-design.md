@@ -120,7 +120,7 @@
 첫 2사례(계획 채택):
 
 - **ADD 첫 사례 = `uahf-status`.** GD에 대응짝이 없는 하네스 특정 명령(`uahf/docs/session-handoff` 전용, `uahf-status.md:16`·§3 정본 포인터표). 형태 B에서 uahf Runtime Layer override로 **ADD**된다. 물리 이동은 §3.3 근거로 유보.
-- **MERGE 첫 사례 = `model` 바인딩.** 4-agent 역할 body(role·boundary·message-format)는 GD로 배포되고, 그 위에 `model:opus`(`worker.md:4`·`planner.md:4`·`verifier.md:4`)와 DP-E8 근거(`planner.md:17`·`verifier.md:13` — Fable 사용 한도 절약, v1.0 완료까지 유지)만 **필드 MERGE**된다. `advisor.md`는 `model` 라인이 없어(세션 상속, `advisor.md:18`) MERGE 델타가 없다 = GD 그대로(중립).
+- **MERGE 첫 사례 = `model`·`effort` 바인딩.** 4-agent 역할 body(role·boundary·message-format)는 GD로 배포되고, 그 위에 `model:opus`(`worker.md:4`·`planner.md:4`·`verifier.md:4`)+DP-E8 근거(`planner.md:17`·`verifier.md:13` — Fable 사용 한도 절약, v1.0 완료까지 유지)와 `effort` 바인딩(`worker.md:5`·`planner.md:5`=medium·`verifier.md:5`=high, Advisor 결정 2026-07-18 — 세션 xhigh 상속 제거로 지연·토큰 절감)만 **필드 MERGE**된다. `advisor.md`는 `model`·`effort` 라인이 없어(세션 상속, `advisor.md:18`) MERGE 델타가 없다 = GD 그대로(중립).
 
 > REPLACE는 완전성을 위해 정의하되 현행 첫 인스턴스가 없다. 형태 B에서 "같은 상대경로 파일을 통째 교체"가 필요한 항목이 나타날 때 이 의미론을 적용한다. 임의 인스턴스를 지금 창설하지 않는다(새 설계 결정 금지).
 
@@ -132,7 +132,7 @@
 |---|---|---|---|
 | 1 | `AGENT.md` | **분할** | body(Core Principles·Agent Lifecycle·Responsibilities·Delegation)=**GD** / 제목 "UAHF Agent Specification"(`:1`)·UAHF 특정 문구·stale `specs/` 참조(예 `:97` `specs/02 §9-OQ-2`)=**U**. **body 분할·`:97` 정합은 이번 세션 미편집** — L-14 CRLF hold, §5.3 참조. |
 | 2 | `CLAUDE.md` | **분할** | Advisor persona(구현보다 설계·위임·검증·승인, `:13`–`:25`·§Advisor Rule)=**GD 템플릿** / "UAHF 프로젝트의 메인 Advisor"(`:3`) 등 프로젝트 특정=**U**. **환경 네이티브 로드 merge point**(§3.1 — 환경이 루트 `CLAUDE.md`를 프로젝트 지시로 로드). body 분할은 이번 세션 미편집(L-14 hold). |
-| 3–6 | `agents/{advisor,worker,verifier,planner}.md` | **분할** | role·boundary·message-format body=**GD** / `model:opus`+DP-E8(Fable·v1.0)=**uahf override(MERGE)**. `advisor.md`는 model 라인 없음(`:18`)=중립=**GD 그대로**. **stale `specs/NN`→`uahf/specs/NN` 정합 필요**(§5.2 T2, 무위험). |
+| 3–6 | `agents/{advisor,worker,verifier,planner}.md` | **분할** | role·boundary·message-format body=**GD** / `model:opus`+DP-E8(Fable·v1.0) 및 `effort` 바인딩(worker·planner=medium·verifier=high, Advisor 결정 2026-07-18)=**uahf override(MERGE)**. `advisor.md`는 model·effort 라인 없음(`:18`)=중립=**GD 그대로**. **stale `specs/NN`→`uahf/specs/NN` 정합 필요**(§5.2 T2, 무위험). |
 | 7–8 | `commands/{uaf-new,uaf-continue}.md` | **GD 유지** | 값 하드코딩 0, entry/specs·entry-binding 포인터 전용(`uaf-new.md:19`·§3 정본 포인터표). 보편 UAF 진입 명령. `uaf-` 접두=UAF 네임스페이스 표면화+빌트인 충돌 회피(DP-X1, `entry-binding.md:87`). |
 | 9 | `commands/uahf-status.md` | **uahf override(개념)** | `uahf/docs/session-handoff` 전용=하네스 특정(`uahf-status.md:16`·§3). **file-unit ADD 첫 사례**(§4.1). **물리 이동은 형태 B 유보**(파생 표면·정본 개정 결합, §3.3). |
 | 10 | `hooks/audit-complete/{manifest.md,audit.sh}` | **분할/분기** | 콘텐츠=프로젝트 비의존 레퍼런스 Hook Module(v0.8 시연 EX-DH) / **라이브 등록은 GD 상주 시 전 프로젝트 발화** → 배포 GD에서는 **미등록 예제 유지 권고**. 현재 라이브 표면 존치(DP-E7 정상 레퍼런스, `manifest.md:25`). 등록 상태 변경은 형태 B 사안. |

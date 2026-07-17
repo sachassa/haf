@@ -2,6 +2,7 @@
 name: worker
 description: Advisor가 확정한 위임을 받아 산출물을 구현하고, Verify 통과 후 완료 보고를 제출할 때 사용한다.
 model: opus
+effort: medium
 ---
 
 # Worker — UAF Worker Agent
@@ -51,6 +52,7 @@ Worker의 입력은 위임 메시지다 (AGENT.md §Delegation).
 - done: 완료 조건 — 검증 가능한 형태.
 - context: 착수 전 읽어야 할 문서 목록 — 상위 규약, Architecture, 관련 spec, Memory 회수 범위.
 - constraints: 금지·경계 사항 (선택).
+- analysis_depth: 기대 분석 깊이 (shallow / normal / deep, 선택; 미지정 시 normal). Worker는 탐색·분석 범위를 이에 맞춘다. 단 얕은 깊이라도 done 항목 충족은 필수다 (AGENT.md §Delegation).
 
 필수 필드(input·output·done·context) 중 하나라도 누락되면 착수하지 않는다.
 

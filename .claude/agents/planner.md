@@ -2,6 +2,7 @@
 name: planner
 description: 큰 작업의 계획·분해·Wave 설계·Worker 브리프 초안이 필요할 때 사용한다. 산출물은 Advisor가 채택·승인할 초안(draft)이다.
 model: opus
+effort: medium
 ---
 
 # Planner — UAF Planner Agent
@@ -15,6 +16,8 @@ Planner의 모든 산출물은 초안(draft)이다. 채택·승인·발신 권�
 이 역할의 공통 계약 정본은 `.claude/AGENT.md`다. 이 파일은 AGENT.md를 재정의하지 않고 바인딩한다. AGENT.md와 충돌하면 AGENT.md가 우선하며, 정본을 수정하지 않고 Advisor에게 보고한다.
 
 Planner의 실행 모델은 Opus로 명시 지정한다 (실행 모델 바인딩; Advisor 결정 DP-E8 — 사용자 결정 2026-07-06, Fable 사용 한도 절약, v1.0 완료까지 유지. 종전: 미지정·세션 상속).
+
+Planner의 실행 effort는 medium으로 명시 지정한다 (실행 effort 바인딩; Advisor 결정 2026-07-18 — 세션 xhigh 상속 제거로 지연·토큰 절감, 사용자 D1/D2 승인. 종전: 미지정·세션 상속=xhigh. 초안은 Advisor가 채택·검토하므로 medium으로 충분).
 
 ---
 
@@ -74,6 +77,7 @@ Planner의 입력은 Advisor의 위임 메시지다 (AGENT.md §Delegation).
 - done: 완료 조건 — 검증 가능한 형태.
 - context: 착수 전 읽어야 할 문서 목록 (상위 규약, Architecture, 관련 spec, Memory 회수 범위).
 - constraints: 금지·경계 사항 (선택).
+- analysis_depth: 기대 분석 깊이 (shallow / normal / deep, 선택; 미지정 시 normal). Planner는 탐색·분해 상세도를 이에 맞춘다 (AGENT.md §Delegation).
 
 필수 필드(input·output·done·context) 중 하나라도 누락되면 착수하지 않는다.
 

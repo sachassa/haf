@@ -2,7 +2,7 @@
 
 작성: Advisor · 2026-07-14 · 계획 전용(구현 0·커밋 0)
 지위: `docs/performance-tuning-plan.md`(Core Performance Tuning)와 **명확히 분리**된 사용자/프레임워크 개선 백로그. 성능 튜닝 트랙에 혼입 금지 — 각 항목은 튜닝 완료·Baseline 재측정 후 독립 트랙으로 상정한다.
-중복 방지: 기존 이월 인벤토리(`docs/next-session-prompt.md` v1.7 마감본·uahf-control-plane README 이월 절)와 겹치는 항목은 본 문서가 상위 프레이밍을 소유하고 개별 결함(not-found 404·GateEvent.state 정리 등)은 기존 이월 목록에 남긴다.
+중복 방지: 기존 이월 인벤토리(`docs/next-session-prompt.md@ad451ee` v1.7 마감본 — 현행 핸드오프 = `docs/session-handoff.md`·uahf-control-plane README 이월 절)와 겹치는 항목은 본 문서가 상위 프레이밍을 소유하고 개별 결함(not-found 404·GateEvent.state 정리 등)은 기존 이월 목록에 남긴다.
 
 ---
 

@@ -30,13 +30,13 @@ description: UAHF 하네스의 현재 상태(현재 마일스톤·최신 세션 
 호출되면 다음을 순서대로 표면화한다. 각 항목은 **정본(라이브)에서 회수**하며, 아래 "작성 시점 스냅샷"은 실측 근거일 뿐 라이브 정본이 우선한다(L-07 — 상태 서술은 실측 후, 값은 정본에서 회수).
 
 1. **현재 마일스톤.**
-   - 정본(라이브): `docs/next-session-prompt.md`(최신 핸드오프)의 상태 라인 + 다음 세션에서 수행할 작업 / 다음 트랙.
-   - 회수 절차: `docs/next-session-prompt.md`(최신 핸드오프)를 연다 — 그 문서가 세션 시작 정본이다.
-   - 작성 시점 스냅샷(2026-07-06, 직접 실측): 최신본 = `uahf/docs/session-handoff-v0.8.md` — 직전 완료 **v0.8 (Extension System — Hooks·Skills·Plugins)**, 그 핸드오프가 지목한 다음 트랙 = **v0.9 (Adapter Layer & Scaffold)**. ※ 스냅샷일 뿐이다(작성 시점 기록) — 참조된 session-handoff-v0.X 문서는 이후 삭제되었고, 현행 핸드오프 정본은 `docs/next-session-prompt.md`다.
+   - 정본(라이브): `docs/session-handoff.md`(최신 핸드오프)의 상태 라인 + 다음 세션에서 수행할 작업 / 다음 트랙.
+   - 회수 절차: `docs/session-handoff.md`(최신 핸드오프)를 연다 — 그 문서가 세션 시작 정본이다.
+   - 작성 시점 스냅샷(2026-07-06, 직접 실측): 최신본 = `uahf/docs/session-handoff-v0.8.md` — 직전 완료 **v0.8 (Extension System — Hooks·Skills·Plugins)**, 그 핸드오프가 지목한 다음 트랙 = **v0.9 (Adapter Layer & Scaffold)**. ※ 스냅샷일 뿐이다(작성 시점 기록) — 참조된 session-handoff-v0.X 문서는 이후 삭제되었고, 현행 핸드오프 정본은 `docs/session-handoff.md`다.
 
 2. **최신 세션 핸드오프 위치.**
-   - `docs/next-session-prompt.md`(최신 핸드오프). 이 문서만 읽어도 다음 마일스톤을 이어갈 수 있게 작성된다(핸드오프 관행).
-   - 작성 시점 최신 = `uahf/docs/session-handoff-v0.8.md`(스냅샷; 해당 session-handoff-v0.X 문서는 이후 삭제 — 현행 핸드오프 = `docs/next-session-prompt.md`).
+   - `docs/session-handoff.md`(최신 핸드오프). 이 문서만 읽어도 다음 마일스톤을 이어갈 수 있게 작성된다(핸드오프 관행).
+   - 작성 시점 최신 = `uahf/docs/session-handoff-v0.8.md`(스냅샷; 해당 session-handoff-v0.X 문서는 이후 삭제 — 현행 핸드오프 = `docs/session-handoff.md`).
 
 3. **하네스 상태.**
    - **Bootstrap** (uahf/specs/13-harness.md §3.2-B). 다수 표면이 정식 실행 Module이 아니라 규약 문서·관행으로 실현된다(형태 A). 실행 코드 표면(형태 B)은 도입 시 구분된다.
@@ -47,7 +47,7 @@ description: UAHF 하네스의 현재 상태(현재 마일스톤·최신 세션 
    - 회수 대상 집합의 현재 규모(Active Lesson·Best Practice 건수 등)는 최신 핸드오프의 Memory 실사용 절에서 회수한다(값 하드코딩 안 함).
 
 5. **다음 진입 절차.**
-   - `docs/next-session-prompt.md`(최신 핸드오프)·auto-memory 트랙(Bootstrap Prompt 관행): 최신 핸드오프 정독 → Consult(Memory 회수) → 정본 정독(ARCHITECTURE.md·ROADMAP.md·관련 specs·structure.md §8) → .claude/AGENT.md·.claude/agents/ 4종·docs/delegation-protocol.md·docs/verification-checklist.md 확인 → 계획 수립·사용자 승인 후 착수.
+   - `docs/session-handoff.md`(최신 핸드오프)·auto-memory 트랙(Bootstrap Prompt 관행): 최신 핸드오프 정독 → Consult(Memory 회수) → 정본 정독(ARCHITECTURE.md·ROADMAP.md·관련 specs·structure.md §8) → .claude/AGENT.md·.claude/agents/ 4종·docs/delegation-protocol.md·docs/verification-checklist.md 확인 → 계획 수립·사용자 승인 후 착수.
    - 신규 참여자는 먼저 `docs/getting-started.md`를 읽는다.
 
 ---
@@ -58,12 +58,12 @@ description: UAHF 하네스의 현재 상태(현재 마일스톤·최신 세션 
 
 | 표면화 항목 | 정본 (가리키기만 함) |
 |---|---|
-| 현재 마일스톤 / 최신 핸드오프 | `docs/next-session-prompt.md` (최신 핸드오프 — 상태 라인·다음 트랙) |
+| 현재 마일스톤 / 최신 핸드오프 | `docs/session-handoff.md` (최신 핸드오프 — 상태 라인·다음 트랙) |
 | 로드맵·버전 개요 | `ROADMAP.md` |
 | 하네스 상태(Bootstrap) | `uahf/specs/13-harness.md` §3.2-B |
 | 실행 환경 실현 판정 | `uahf/framework/adapters/claude/adapter-conformance.md` |
 | Memory Consult 절차 | `uahf/framework/adapters/claude/memory-binding.md` §3.2 |
-| 진입 절차 | `docs/next-session-prompt.md` (최신 핸드오프) |
+| 진입 절차 | `docs/session-handoff.md` (최신 핸드오프) |
 | 신규 참여자 안내 | `docs/getting-started.md` |
 | Presentation 표면 계약 | `uahf/specs/01-runtime.md` §4.1 · `uahf/framework/adapters/claude/runtime-binding.md` §2 #3 |
 | 용어 | `uahf/specs/00-glossary.md` |

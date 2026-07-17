@@ -76,7 +76,7 @@ Core는 AI 비의존을 유지하고, 환경 의존 요소는 Adapter Layer 뒤�
 |---|---|---|
 | `specs/` | Core Contract 스펙 — Frozen 기준선. `00-glossary.md`(용어 정본)부터 `13-harness.md`까지 번호 스펙 14개 + `TEMPLATE.md` = **15개**. 계약의 최종 정본. | specs/00-glossary.md · 각 spec |
 | `framework/` | 4경계: `core/`(계약·스키마 문서)·`runtime/`(모듈 시스템·수명주기 문서)·Module 구현 디렉터리(`loop`·`memory`·`verifier`·`workflow`·`plugins/`)·`adapters/<adapter>/`(환경 의존 바인딩 격리). | framework/core/structure.md §8 (정본 트리) |
-| `docs/` | 운용 문서 — 검증 리포트·시연 기록·프로토콜·정책·가이드. 세션 진입 최신 상태 포인터는 리포 루트 `docs/next-session-prompt.md`. | docs/next-session-prompt.md(리포 루트) 등 |
+| `docs/` | 운용 문서 — 검증 리포트·시연 기록·프로토콜·정책·가이드. 세션 진입 최신 상태 포인터는 리포 루트 `docs/session-handoff.md`. | docs/session-handoff.md(리포 루트) 등 |
 | `.claude/` | uahf/ 로컬 override 설정 표면 — 현재 override 없음(v1.2.1 스텁, `uahf/.claude/README.md`뿐). Agent 정의(`agents/` 4종)·상위 규약(`AGENT.md`)·Advisor 진입점(`CLAUDE.md`)·확장 표면(`commands`·`hooks`·`skills/`) 실물은 리포 루트 `.claude/`(Global Default). 환경 의존(Adapter 경계). | 리포 루트 .claude/AGENT.md · specs/11-adapters.md |
 
 - Core 경계(`framework/core`·`framework/runtime`)와 Module 구현 디렉터리의 문서
@@ -156,12 +156,12 @@ Advisor에게 보고한다 (CLAUDE.md — Architecture·Spec 충돌 시 사용�
 | 위임·보고 운용 프로토콜 | docs/delegation-protocol.md |
 | 검증 체크리스트(게이트 A~D) | docs/verification-checklist.md |
 | 역할 빠른 참조(Advisor·Planner·Worker·Verifier) | docs/roles-quick-reference.md |
-| 세션 진입·직전 상태 | docs/next-session-prompt.md(리포 루트) |
+| 세션 진입·직전 상태 | docs/session-handoff.md(리포 루트) |
 | 신규 프로젝트 설치 | docs/v0.9-install-guide.md · specs/12-scaffold.md |
 | 용어 정본 | specs/00-glossary.md |
 | 상위 규약 | .claude/AGENT.md |
 
 ---
 
-이 문서는 **v1.0 기준**이다. 세션 진입 최신 상태는 리포 루트 `docs/next-session-prompt.md`를
+이 문서는 **v1.0 기준**이다. 세션 진입 최신 상태는 리포 루트 `docs/session-handoff.md`를
 따른다.

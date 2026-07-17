@@ -1,7 +1,8 @@
-# 다음 세션 상태 앵커 + 부트스트랩
+# 세션 핸드오프 (UAF 레벨 정본 · 단일 live 문서)
 
-작성: Advisor · 2026-07-14 · **Performance Tuning Track 종료 시점(사용자 확정)**
+작성: Advisor · 2026-07-17 (직전 상태 앵커: Performance Tuning Track 종료 2026-07-14)
 용도: 새 세션은 **본 파일 하나로 상태를 인수**한다. 원문 전체 정독 강제 없음 — demand-driven(§단위·필요 시점) 규칙을 따른다. (물리 발화 = `/uaf-continue`)
+지위: `docs/artifact-lifecycle-policy.md` §6이 정한 **UAF 레벨 단일 live 핸드오프**다. 단수·제자리 갱신이며 버전별 파일을 만들지 않는다. 과거 상태는 git 이력이 정본이다. (전신: `docs/next-session-prompt.md` — 본 파일로 개명·재정착 2026-07-17)
 
 ## §1. 상태 앵커 (git log 대조 가능)
 
@@ -17,20 +18,20 @@
 | T3-② cp2ModelSlots 스키마 등재 | `adaafe9` | 위험도별 CP2 모델 차등 활성화(dormant 해소) |
 | T1-② payload 계측 + R3 러너 | `e1147c4` | bundle_payload 지표(baseline 343,183B/37세션)·run_all_tests.py |
 | T4-② 핸드오프 재구조화 | `2342659` | 착수 강제 read-set 61,145B→5,331B(-91.3%)·상태 앵커·갱신 규율 |
-| 트랙 종료 마감 | (본 커밋) | 본 파일 종료 상태 기록·Memory 갱신 |
+| 트랙 종료 마감 | (2026-07-14) | 종료 상태 기록·Memory 갱신 |
 
 - 번호 표기 주의: plan §4 항목-ID는 T0~T7(T6=벤치마크+Before/After 통합·T7=Concurrency — **T8은 §4 항목-ID에 부존**), §5 순서 번호는 0~9. 본 파일은 두 체계를 병기한다.
-- Baseline 앵커(불변): UAHF `ad451ee` · consumer `dd2fd73` · Freeze `013e532`. Baseline run evidence(orch-k/m/w·maturation-r003·greenfield-r003) immutable.
+- Baseline 앵커(불변): UAHF `ad451ee` · consumer `dd2fd73` · Freeze `013e532`. Baseline run evidence(orch-k/m/w·maturation-r003·greenfield-r003)는 앵커 커밋으로 보존 — 열람은 `ARCHIVE.md` 원장 참조.
 - consumer(`uahf-control-plane`) 워킹트리: 사용자 변경분 미커밋 보존 — 수정 금지.
 
 ## §2. 트랙 종료 결정 기록 (사용자 확정 2026-07-14)
 
 1. 현재 구현·CP2 검증 결과 유지(재작업 없음).
 2. 추가 A/B·동형 벤치마크(plan §4 T6 = §5 순서 6·7)는 지금 수행하지 않음.
-3. **측정 인프라 유지 + 실사용 누적**: 향후 실제 UAHF 사용(신규 orchestration run)마다 `collect_metrics.py`(bundle_payload 포함)·`verify_run.py`를 신규 runId 산출물에 실행해 `e2e/metrics/`에 누적한다.
+3. **측정 인프라 유지 + 실사용 누적**: 향후 실제 UAHF 사용(신규 orchestration run)마다 `collect_metrics.py`(bundle_payload 포함)·`verify_run.py`를 신규 runId 산출물에 실행해 `e2e/metrics/`에 산출한다. 산출물은 ephemeral — 트랙 마감 시 evidence 승격분만 앵커 등재 후 정리한다(`docs/artifact-lifecycle-policy.md` §3).
 4. **재개 조건**: 실사용에서 실제 병목이 관찰되면 누적 측정 데이터를 근거로 **별도 Performance Tuning 트랙을 새로 연다**(느낌 기반 재개 금지 — Measurement First 유지).
 5. Post-Tuning Backlog(A~G·우선순위 B+C→D→G→A+F→E) 미구현 항목은 향후 후보로 유지.
-6. 본 핸드오프에 상태·다음 시작점 기록(이 문서).
+6. 본 핸드오프에 상태·다음 시작점 기록.
 
 ## §3. 다음 작업 (별도 새 세션 — 본 세션 미착수)
 
@@ -54,11 +55,10 @@
 
 | 항목 | 위치 |
 |---|---|
-| 튜닝 정본 (§4 항목 T0~T7·§5 순서 0~9·항목별 10필드) | `docs/performance-tuning-plan.md` |
-| 1차 실측 (역사·불변) | `docs/baseline-performance-cost-analysis.md` |
-| 백로그 (Post-Tuning A~G) | `docs/post-tuning-improvement-backlog.md` |
-| Baseline run evidence (immutable) | `orchestration-data/runs/{orch-k-nonfixture-smoke,orch-m-maturation-cp,orch-w-impl-cp}/` · `solution-design-data/events/maturation-r003/` · `discovery-data/events/greenfield-r003/` |
-| 측정·검증 도구 (유지·누적 대상) | `orchestration-data/e2e/{run_all_tests.py,collect_metrics.py,verify_run.py,delegation_check.py}` · 산출 = `e2e/metrics/` |
+| 산출물 수명·삭제·앵커 인용 정책 | `docs/artifact-lifecycle-policy.md` |
+| 아카이브 원장 (앵커 열람) | `ARCHIVE.md` |
+| 백로그 (Post-Tuning A~G·H) | `docs/post-tuning-improvement-backlog.md` |
+| 측정·검증 도구 (유지 대상) | `orchestration-data/e2e/{run_all_tests.py,collect_metrics.py,verify_run.py,delegation_check.py}` |
 | Risk Routing 정책 | `orchestration-data/e2e/policy/{allocation.json,README.md}` |
 | UAHF Contract | `discovery-data/contracts/uahf/project-contract.v3.md` |
-| 직전 핸드오프 이력 | git `2342659` 및 이전의 본 파일 이력 참조 |
+| 과거 핸드오프 이력 | git 이력 (`git log -- docs/session-handoff.md docs/next-session-prompt.md`) · 튜닝 정본·1차 실측 문서는 `ARCHIVE.md` 앵커 참조 |

@@ -53,7 +53,7 @@ Universal Agentic Framework(UAF)는 AI 에이전트를 위한 범용 Development
 | `orchestration/` | Project Orchestration Layer — 동적 작업 그래프·게이트·역할/모델 할당·산출물 계보(UAHF를 substrate로 소비). | ARCHITECTURE.md §2.3 · orchestration/ARCHITECTURE.md · orchestration/specs/05-project-orchestration.md |
 | `knowledge/` | 횡단 Knowledge Base — 파이프라인 단계가 아니라 모든 Layer가 Consult하는 공용 Base. | ARCHITECTURE.md §4 · knowledge/ARCHITECTURE.md |
 | `uahf/` | 하네스 실행 Layer(UAHF 구현체) — Core Contract 스펙(`uahf/specs/`)·framework 구현(`uahf/framework/`)·하네스 문서(`uahf/docs/`). | uahf/ARCHITECTURE.md · uahf/specs/00-glossary.md · uahf/framework/core/structure.md §8 |
-| `docs/` | UAF 레벨 운용 문서 — 세션 핸드오프·검증 리포트·프로토콜·정책. | docs/next-session-prompt.md(최신 핸드오프) · docs/delegation-protocol.md 등 |
+| `docs/` | UAF 레벨 운용 문서 — 세션 핸드오프·검증 리포트·프로토콜·정책. | docs/session-handoff.md(최신 핸드오프) · docs/delegation-protocol.md 등 |
 | `.claude/` | Agent 정의(`agents/`)·상위 규약(`AGENT.md`)·Advisor 진입점(`CLAUDE.md`)·확장 표면(`commands`·`hooks`·`skills/`) — 환경 의존(Adapter 경계·Global Default). | ARCHITECTURE.md §5 · .claude/AGENT.md |
 
 - 6 Layer 중 `entry/·discovery/·planning/·orchestration/·uahf/`는 진입→실행 파이프라인을 이루고, `knowledge/`는 그 위를 횡단하는 공용 Base다(ARCHITECTURE §2·§4). UAHF의 Core 경계 문서 본문은 특정 AI·언어·툴체인 토큰 0건을 유지하고, 환경 의존 토큰은 `uahf/framework/adapters/`와 `.claude/`로 격리된다(structure.md §5, ARCHITECTURE §6 AI Agnostic).
@@ -62,9 +62,9 @@ Universal Agentic Framework(UAF)는 AI 에이전트를 위한 범용 Development
 
 ## §3. 세션 진입 절차
 
-새 세션은 항상 다음 순서로 착수한다(핸드오프 관행 — `docs/next-session-prompt.md` 최신 핸드오프).
+새 세션은 항상 다음 순서로 착수한다(핸드오프 관행 — `docs/session-handoff.md` 최신 핸드오프).
 
-1. **최신 핸드오프 정독** — `docs/next-session-prompt.md`(최신 핸드오프)를 읽는다. 이 문서가 세션 시작 정본이며, 직전 세션의 상태·결정을 담는다.
+1. **최신 핸드오프 정독** — `docs/session-handoff.md`(최신 핸드오프)를 읽는다. 이 문서가 세션 시작 정본이며, 직전 세션의 상태·결정을 담는다.
 2. **Consult (Memory 회수)** — uahf/framework/adapters/claude/memory-binding.md §3.2 절차로 관련 Lessons·이전 결정을 목적·최소 범위로 회수한다.
 3. **정본 정독** — ARCHITECTURE.md · ROADMAP.md(해당 버전 절) · 관련 specs · uahf/framework/core/structure.md §8.
 4. **규약·프로토콜 확인** — .claude/AGENT.md · .claude/agents/ 4종 · docs/delegation-protocol.md · docs/verification-checklist.md.
@@ -84,7 +84,7 @@ Universal Agentic Framework(UAF)는 AI 에이전트를 위한 범용 Development
 | 위임·보고 운용 프로토콜 | docs/delegation-protocol.md |
 | 검증 체크리스트(게이트 A~D) | docs/verification-checklist.md |
 | 역할 빠른 참조(Advisor·Planner·Worker·Verifier) | docs/roles-quick-reference.md |
-| 세션 진입·직전 상태 | docs/next-session-prompt.md(최신 핸드오프) |
+| 세션 진입·직전 상태 | docs/session-handoff.md(최신 핸드오프) |
 | framework 디렉터리 구조 | uahf/framework/core/structure.md §8 |
 
 ---

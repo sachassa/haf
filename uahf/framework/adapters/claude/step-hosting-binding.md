@@ -16,9 +16,9 @@
 - framework/adapters/claude/workflow-binding.md §4.1 — 형태 B 예약 로케이터("무인 병렬 오케스트레이션 실행 진입점·로더")·자매 관례. 본 문서가 실현하는 두 번째 예약 자리.
 - framework/adapters/claude/verifier-binding.md·runtime-binding.md·memory-binding.md — 자매 Adapter Binding. Agent Module = 서브에이전트 디스패치(Register/Resolve)·세션/턴 수명주기·형태 A/B 정직 구분·실측 대조 관례의 선행 표본.
 - framework/core/structure.md §4·§5 — 실행 코드 배치 규칙(규칙 4: AI·실행 환경 의존은 adapters/ 격리)·금지 토큰 규칙(C-3). Adapter 경계 = 격리 지점(C-3 비적용)의 근거.
-- docs/form-b-step-hosting-design.md (W0 확정 — 사용자 승인 2026-07-13) §3.8·§4 — Autonomy Policy 매핑·경계 분할 확정(책임 3분리). 설계 정본. 계약 정본은 프로토콜·spec 이 소유한다(설계 §0.6).
+- `docs/form-b-step-hosting-design.md@cd9247b` (W0 확정 — 사용자 승인 2026-07-13; 열람: `git show cd9247b:docs/form-b-step-hosting-design.md`) §3.8·§4 — Autonomy Policy 매핑·경계 분할 확정(책임 3분리). 설계 정본(track-design 등급으로 아카이브). 계약 정본은 프로토콜·spec 이 소유한다(설계 §0.6).
 - specs/00-glossary.md — 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
-- docs/session-handoff-v0.3.md §1.4·§1.5(A5·L-07 — 상태 서술은 실측 후 기록). 본 문서 §6 근거.
+- Active Lesson L-07 (상태 서술은 실측 후 기록 — A5 재작업 사례에서 도출). 본 문서 §6 근거.
 
 거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 AI·환경·직렬화 형식·물리 경로·실행 옵션 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, 자매 바인딩 §0 동형). 단 이 문서는 프로토콜(step-hosting-protocol.md)·인용 spec 의 계약을 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
@@ -33,6 +33,7 @@
 | 2026-07-13 | W3 실증 정합 | dogfooding E2E 필수 7 시나리오 전건 실증(실 CLI 21 세션·`step-data/runs/` 8 run — CP2 독립 판정 Pass: 시나리오 7/7·차원 4/4 Met·Violated 0) · §3.2 run 구조 제안이 실물로 실현(구조 확정) · §7 OQ-SH-1 해소(CP3=배치 종단 Advisor 디스패치 실증)·자매 바인딩 OQ append 완료·신규 관찰 OQ-SH-4(CP2 모델 슬롯 결합)·OQ-SH-5(해소 API 부재·해소=fail 계수) 등재 · W2 이관 관찰 중 O-1(blocking 라벨)은 s6 호스팅 실행이 실제 정정(`claude_invoker.py` 1행·hosted CP2 통과). OQ-SH-2·3 은 미실증 open 유지. Baseline 승격은 사용자 게이트 유보. | Advisor |
 | 2026-07-13 | v1.5 Baseline | 마일스톤 v1.5 「형태 B Step Execution Hosting」 사용자 승인 — 기준선 확정(Baseline 승격 게이트 통과·상태행 승격). 본문 무변경. | Advisor |
 | 2026-07-13 | v1.6 정합 (본문 무변경 — §7 OQ append) | §7 OQ-SH-4(CP2 모델 슬롯 결합) 해소 표기 append — 마일스톤 v1.6 Project Orchestration 이 중립 Host `cp2_model` 선택 파라미터(기본 `None`=기존 거동 바이트 동일)로 CP2 검증 모델 독립 지정을 실현(OQ-SH-1 해소 표기 관례 동형·원 문면 보존). `project-orchestration-binding.md` §4.3 참조. OQ-SH-2/3/5 무변·본문 계약·SH-INV 무변경·상태행 무상승(v1.5 Baseline 유지). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·form-b-step-hosting-design.md 설계 정본 @cd9247b 앵커·OQ-SH-1 run 인스턴스 증거 @cd9247b 앵커. step-data/runs 백엔드 경로 구조는 계약 서술로 유지. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -167,7 +168,7 @@ step-hosting-protocol.md §7.2 표(바인딩 지점 7행)를 claude 환경 실�
 
 ## §7. Open Questions
 
-- **OQ-SH-1 (CP3 물리 형태 E2E) — 해소됨 (W3 dogfooding E2E, 2026-07-13).** CP3(Advisor 역할) 디스패치의 물리 형태(사이클 Complete 전 개별 vs 배치 종단 일괄)는 W2 자체 테스트 범위 밖이며 W3 E2E 에서 실증·확정한다. **W3 실증: 배치 종단 일괄** — run 완주 후 런처가 role=Advisor fresh 세션을 별도 디스패치해 `final_verdict` 를 회수·기록한다(`step-data/runs/e2e-s1-normal/logs/cp3-result.json` = Pass — 물리 증거).
+- **OQ-SH-1 (CP3 물리 형태 E2E) — 해소됨 (W3 dogfooding E2E, 2026-07-13).** CP3(Advisor 역할) 디스패치의 물리 형태(사이클 Complete 전 개별 vs 배치 종단 일괄)는 W2 자체 테스트 범위 밖이며 W3 E2E 에서 실증·확정한다. **W3 실증: 배치 종단 일괄** — run 완주 후 런처가 role=Advisor fresh 세션을 별도 디스패치해 `final_verdict` 를 회수·기록한다(`uahf/framework/adapters/claude/step-data/runs/e2e-s1-normal/logs/cp3-result.json@cd9247b` = Pass — 물리 증거; run 원장은 산출물 수명 정책으로 작업 트리에서 제거).
 - **OQ-SH-2 (`interactive` headless 반의어).** headless(`-p`) 실행에서 `interactive` policy 의 도구 승인 프롬프트는 대화 채널이 없으므로 실질적으로 승인 대기 없이 진행 제약을 받을 수 있다. `interactive` 의 headless 의미(예: 승인 필요 도구 만나면 blocked 로 에스컬레이션)의 정밀 정의는 W3 E2E 관찰로 확정한다. 현재는 "기본 실행(권한 생략 플래그 없음)"으로만 바인딩한다.
 - **OQ-SH-3 (`--output-format stream-json` 채택).** 대량 산출·진행 표시가 필요한 E2E 에서 `json`(단일 결과) vs `stream-json`(실시간)의 선택은 W3 관찰로 확정한다. 현재 기본은 `json`.
 - **자매 바인딩 OQ append(비차단) — 해소됨 (W3 정합, 2026-07-13).** loop-binding §9·workflow-binding §9·OQ 에 "형태 B 부분 실현(Step Host)" 사실을 append 하는 정합 작업은 W3 소관이다(설계 §6·BPD-17 규율). 본 문서 범위 밖. **W3 정합 완료: loop-binding §8 OQ-LB-2 해소 표기·workflow-binding §8 OQ-WB-2 부분 해소 표기 + 각 §9 이력 행 append(버전 무상승·append-only).**

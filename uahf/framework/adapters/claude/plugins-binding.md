@@ -22,7 +22,7 @@
 - docs/delegation-protocol.md §3 — 이 프로젝트의 물리 채널 바인딩 관행(위임=서브에이전트 디스패치, 보고 회수=최종 응답). 역할 실행 물리 채널의 관행 근거.
 - ROADMAP.md v0.8 (Extension System) — 산출물 "본체 코드/규격 수정 없이 확장"의 환경 실현 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식·물리 경로에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 10 §3.3 INV-10), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·workflow-binding.md §0과 동형). 단 이 문서는 Core Contract(10 §3)와 그 인스턴스 문서(framework/plugins/ 3문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식·물리 경로에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 10 §3.3 INV-10), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·workflow-binding.md §0과 동형). 단 이 문서는 Core Contract(10 §3)와 그 인스턴스 문서(framework/plugins/ 3문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -34,6 +34,7 @@
 | 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-06 | v0.9 Draft (개정 — §7 시연 후 상태 반영) | 비차단 관찰 1 해소 (docs/v0.8-verification-report.md §3.7 관찰 1 · 사용자 결정 DP-U3(a), 2026-07-06). §7 실측 대조 표의 시연 전 "미생성" 스냅샷 및 같은 상태를 서술하는 전 지점(§0·§2 물리 경계 트리·§2 표 "실재 여부" 열·§2 주·§7·§10 — `grep` 전수 열거, L-06)을 시연(PS-4 · EX-DP) 후 실측 실재로 전수 갱신. 착수 시 직접 재실측(L-07): bundle 원본 `docs/v0.8-demo-fixtures/report-exporter/` 3파일 실재 · 설치본 `framework/plugins/<plugin-id>/`(report-exporter/) 부재 = Remove 잔여물 0(Install→Activate→Deactivate→Remove 전 수명주기 완료 · 설치 이전 목록 전수 대조 성립, DP-E6 ⓒ). §2~§6 계약 서술·SP 표·DP-E6 결정 무변경(개정은 상태 서술·이력·상태 라인에 한정). memory-binding.md r2·loop-binding.md WF13 전수 갱신 선례 동형. 기존 이력 행 문면 불변(L-10). | Worker (Advisor 위임, Task T7) |
 | 2026-07-06 | v0.9 Baseline | v0.9 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 20/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·demo-fixtures bundle 원본(docs/v0.8-demo-fixtures) 실재 서술을 @cd9247b 앵커로 전환(§0 커버리지 노트·§7 실측 표; DP-E6 결정·규약·설치본 경로는 계약으로 유지). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -48,7 +49,8 @@
 - **배포 채널 형태 B 정직 구분(DP-E3 동형).** 배포 채널(10 §4.1 행 8 — 설치 메커니즘·marketplace 등)은 형태 B로 정직 구분한다 — 형태 A(Bootstrap)의 배포 = bundle 원본의 격리 경계 보유 + 수동 규약 Install(§3.3·§6). 라이브 하네스 설정 파일을 생성·수정하지 않는다.
 - **창설 금지.** 이 문서는 10 §4.1 표를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. v0.8 산출물(본체 수정 없는 확장·추가만의 동작 확장)의 물리 실현 매핑으로 한정한다. 새 연산·새 필드·새 `reason`·새 불변 규칙·새 Config scope를 만들지 않는다(10 INV-7 재확인).
 - **하네스 상태 전제(Bootstrap).** 이 하네스는 현재 **Bootstrap 상태**다(Glossary J-13, runtime-binding.md §0, delegation-protocol.md §0). Plugins는 정식 실행 Module이 아니라 규약 문서(10·framework/plugins/ 3문서)와 관행(Advisor 오케스트레이션, 서브에이전트 위임으로 역할 실행, 수동 규약 Install/Activate/Remove)으로 실현된다(형태 A). 따라서 본 문서의 매핑은 **이미 물리적으로 실재하는 표면**(자매 바인딩·framework/plugins/ 3문서·.claude/agents/ 4종·시연 픽스처 경계 관례 — §7 실측), **실행 코드 도입 시 로딩될 지점**(형태 B — 무인 자동 Install/Activate/Remove 실행 진입점·로더), **시연 Task(PS-4 · EX-DP)가 이 정본 구조대로 생성한 시연 소산**(bundle 원본 = `docs/v0.8-demo-fixtures/report-exporter/` 실재 · 설치본 = `framework/plugins/<plugin-id>/` Install→Remove 수명주기 완료로 부재 = Remove 잔여물 0 — 시연 후 §7 재실측, L-07)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
-- **실측 기반 상태 서술(L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3.md §1.4·§1.5, Active Lesson L-07). §2 "실재 여부" 열과 §7 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로 쓰지 않고, 실재는 실측 후에만 기입한다. **bundle 원본(`docs/v0.8-demo-fixtures/report-exporter/`)은 시연 PS-4가 §3 정본 구조대로 생성해 실재하고, 설치본(`framework/plugins/<plugin-id>/`)은 Install→Remove 수명주기 완료로 부재(Remove 잔여물 0)**다(v0.9 T7 개정 시 직접 재실측, L-07).
+- **실측 기반 상태 서술(L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록). §2 "실재 여부" 열과 §7 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로 쓰지 않고, 실재는 실측 후에만 기입한다. bundle 원본(`docs/v0.8-demo-fixtures/report-exporter/`)은 시연 PS-4가 §3 정본 구조대로 생성했고, 설치본(`framework/plugins/<plugin-id>/`)은 Install→Remove 수명주기 완료로 부재(Remove 잔여물 0)다(v0.9 T7 개정 시 직접 재실측, L-07).
+- **demo-fixtures bundle 원본 아카이브(산출물 수명 정책 정합, 2026-07-17).** 위 bundle 원본이 놓인 `docs/v0.8-demo-fixtures/`(및 `docs/v0.5~v0.7-demo-fixtures/` 시연 픽스처 경계)는 산출물 수명 정책(docs/artifact-lifecycle-policy.md §7)으로 작업 트리에서 제거되었다 — 본문·§2·§3·§7의 demo-fixtures "실재/존치/생성" 서술은 **cd9247b 시점 스냅샷** 기준이며, 앵커 `uahf/docs/v0.8-demo-fixtures@cd9247b`로 열람한다(`git show cd9247b:uahf/docs/v0.8-demo-fixtures/report-exporter/plugin-manifest.md`). DP-E6의 **결정·규약**(bundle 원본 격리 경계·설치본 `framework/plugins/<plugin-id>/`·Remove 잔여물 0)과 `framework/plugins/` 3문서·설치본 경로(계약)는 유지된다.
 - 용어는 specs/00-glossary.md 정본만 사용한다. Plugin·Plugin Manifest는 §3.2-J(J-10), Plugins(Component)는 §3.2-D 정본이며, `PluginsInterface`·`plugins-provider`는 module-manifest.md가 확정한 `contract`·`id` 필드 **값**이지 Glossary 표제어의 신설이 아니다. `형태 A/B`는 structure.md 서술 라벨의 인용이다. 본 문서는 새 용어를 신설하지 않는다.
 
 ---
@@ -231,13 +233,13 @@ plugin-lifecycle.md §3의 검사(I1~I5·A1~A2·D1·R1~R2·IG)를 이 환경의 
 
 ## §7. 상태 서술 실측 대조 (done 7 — L-07 재발 방지)
 
-session-handoff-v0.3.md §1.4·§1.5(상태 서술은 실측 후 기록, Active Lesson L-07)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`/`find`) + 전역 문자열 검색(`grep`) 직접 실측. v0.9 T7 개정(관찰 1 해소)은 bundle 원본·설치본 행을 시연(PS-4) 후 상태로 직접 재실측·갱신했다(L-07) — bundle 원본 `docs/v0.8-demo-fixtures/report-exporter/` 실재 · 설치본 `framework/plugins/<plugin-id>/` 부재 = Remove 잔여물 0. 그 외 행은 EX-P2 실측값을 유지한다.**
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례에서 도출)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`/`find`) + 전역 문자열 검색(`grep`) 직접 실측. v0.9 T7 개정(관찰 1 해소)은 bundle 원본·설치본 행을 시연(PS-4) 후 상태로 직접 재실측·갱신했다(L-07) — bundle 원본 `docs/v0.8-demo-fixtures/report-exporter/` 실재 · 설치본 `framework/plugins/<plugin-id>/` 부재 = Remove 잔여물 0. 그 외 행은 EX-P2 실측값을 유지한다.**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|
 | `framework/plugins/` 3문서 (EX-P1 확정본 — § 포인터 대상) | 실재 (module-manifest·plugin-manifest·plugin-lifecycle.md) | 실재 — 3파일: module-manifest.md(34,742)·plugin-manifest.md(23,609)·plugin-lifecycle.md(44,726). 무수정. |
 | `framework/plugins/<plugin-id>/` (설치본 — DP-E6 ⓑ·ⓒ) | **부재 = Remove 잔여물 0** (시연 PS-4 Install→Remove 수명주기 완료로 설치본 제거) | **부재 = 잔여물 0** — `find framework/plugins -maxdepth 1 -type d`에 하위 디렉터리 없음(3문서만 최상위 실재, v0.9 T7 재실측). 설치 이전 목록 전수 대조 성립(DP-E6 ⓒ). |
-| `docs/v0.8-demo-fixtures/` (bundle 원본 — DP-E6 ⓐ) | **실재** (bundle 원본 자리, 시연 PS-4 생성) | **실재** — `docs/v0.8-demo-fixtures/` 실재(v0.5~v0.8-demo-fixtures). bundle 원본 `report-exporter/` 3파일(plugin-manifest.md·core/report-exporter-module.md·bundle-note.md, v0.9 T7 재실측). |
+| `docs/v0.8-demo-fixtures/` (bundle 원본 — DP-E6 ⓐ) | bundle 원본 자리(DP-E6 ⓐ) — 데모 픽스처 아카이브 | 산출물 수명 정책으로 작업 트리에서 제거 — 앵커 `uahf/docs/v0.8-demo-fixtures@cd9247b`. cd9247b 시점 실측: `docs/v0.8-demo-fixtures/` 실재(v0.5~v0.8-demo-fixtures), bundle 원본 `report-exporter/` 3파일(plugin-manifest.md·core/report-exporter-module.md·bundle-note.md). 열람: `git show cd9247b:…`. |
 | `framework/adapters/claude/` 경계 | 실재 (Adapter 경계) | 실재 — runtime/memory/verifier/loop/workflow-binding.md·memory-data/·loop-data/ 등 존재 확인. |
 | `framework/adapters/claude/plugins-binding.md` (본 문서) | 실재 (본 산출로 생성) | 실재 (이 파일). 생성 전 미존재였음(실측: `NOT EXISTS`). |
 | `framework/adapters/claude/runtime-binding.md` (Register/Resolve/Deregister 참조원 — §4·§5) | 실재 (v0.3 Baseline, 자매) | 실재 (32,973 bytes) — §3.2 Registry 4연산 수행 방식 참조. |

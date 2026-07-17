@@ -10,7 +10,7 @@
 - specs/01-runtime.md §3.3 INV-4 — Core 디렉터리 AI 비의존 불변 규칙.
 - ROADMAP.md v0.3 (Runtime & Core Kernel) — 산출물 목록: Core 모듈 디렉터리 구조(규격) / Runtime 프로토콜 구현물 / config 스키마 / 모듈 등록·교체 규칙 문서.
 
-거버넌스: 이 문서는 `framework/core/` 소속 Core 문서다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/core/` 소속 Core 문서다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -36,6 +36,7 @@
 | 2026-07-07 | v1.0 Baseline | v1.0 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 21/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-07 | v1.2 Draft (개정 — §8 트리 갱신) | v1.2 Task T-S — Advisor 승인 하 격리 개정 (v0.5 V13·v0.6 L14·v0.7 WF8·v0.8 EX-C1·v0.9 T8·v1.0 T8 동형, 비차단 정합 개정). §8 트리 첫 `<adapter>/` 경계(scaffold-binding.md 다음·scaffold-template/ 앞)에 v1.2 신규 UAF 정본 바인딩 3문서(contract-binding.md=uaf/specs/03 §4·entry-binding.md=uaf/specs/01 §4·discovery-binding.md=uaf/specs/02 §4)를 파일 시스템 직접 실측 후 반영(L-07) — 각 바인딩 문서 1행 + uaf/specs §4 물리 실현 § 포인터. 백엔드 격리 데이터 디렉터리는 트리에 추가하지 않고 기존 포괄 주석("백엔드 격리 데이터 — Core 문서 비서술")이 커버(타 Module 백엔드 데이터 디렉터리 미열거 선례 동형 · 물리 이름 비명명으로 C-3 확장 누출 금지). 상태 라인 v1.2 Draft 갱신 · 직전 기준선 v1.0 문면 보존. §6 v0.3 산출물 표는 DP-V4대로 무변경. C-3 금지 토큰 0(개정분 포함 자가 전수 스캔 — uaf/specs·UAF는 § 포인터·상위 프레임워크 네임스페이스 참조로 허용, 특정 AI·모델명·제품 기능명·언어·툴체인·직렬화 형식 토큰 0), 01 §3 계약 재정의 0, Glossary 밖 용어 신설 0. 근거: v1.2 `framework/adapters/<adapter>/` 신규 3바인딩 문서(W1~W3) 확정. | Worker (Advisor 위임, Task T-S) |
 | 2026-07-07 | v1.2 Baseline | v1.2 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass 16/0/0; CP3 Advisor 승인) | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 

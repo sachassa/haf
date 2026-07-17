@@ -17,7 +17,7 @@
 - specs/00-glossary.md §3.2-J(J-03: 단계 전이·루프 상태 기록·재작업 루프) — 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - 관례 표본: framework/verifier/verifier-protocol.md(§ 대응·§0 정본 경계·§ 포인터 표기·말미 요약 관례) · framework/loop/loop-state-record.md(형제 인스턴스 문서 머리·§9 이력 절 머리 배치·03 내부 § 포인터 표기 관례).
 
-거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다(framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(framework/core/structure.md §5 C-3 확장, 03 §3.3 INV-9). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다(framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(framework/core/structure.md §5 C-3 확장, 03 §3.3 INV-9). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -27,6 +27,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.6 Draft | 최초 작성. 03 §3.1-A 7단계(Consult/Plan/Execute/Verify/Learn/Memory Update/Complete)의 진입 조건·활동·완료 조건·전이·실패 분기를 셀 단위 일치로 인스턴스화(자구 왜곡 0 — 03 정본 문면 보존, 03 내부 § 포인터 "03 §…" 접두 관례 — §2.1). 게이트-단계 매핑 표(CP1 Execute 종료→Verify 입력·02 / CP2 Verify·06 / CP3 Complete 진입 게이트·02) 보존 및 "Verify 통과=CP2 PASS" 정의·02 INV-4 정렬 명시(§2.2). 06 INV-9 양방향 정합 — 시점·전이·시퀀싱 03(본 문서 인스턴스) 소유 ↔ CP2 판정 기준·방법·내용 06 소관(§3). 전이 기록 의무(03 INV-3) 명시·포맷은 framework/loop/loop-state-record.md·03 §3.2-A 정본에 위임(§4). 재작업 루프·종료 규칙·사람 개입(03 §3.1-B/C/D)의 상세는 비인스턴스화·§ 포인터 참조(§0·§5), 단 각 단계 실패 분기의 § 포인터 연결은 서술(§2.1). 03 계약 재정의·확장 0, 새 규칙·새 전이·새 게이트 0, Glossary 밖 새 용어 0, 금지 토큰 0(자가 전수 스캔 — §5). | Worker (Advisor 위임, Task L6) |
 | 2026-07-06 | v0.6 Baseline | v0.6 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -172,7 +173,7 @@ Loop는 세 체크포인트의 순서를 불변으로 소유한다. 각 체크�
 - **사이클 구동 연산 경계.** 사이클 구동 연산(03 §3.1 입출력·재작업 루프 구동·종료·에스컬레이션)의 상세는 그 인스턴스 문서 소관이다. 본 문서는 그 소관을 침범하지 않고 일반 포인터(03 §3.1)로만 구분한다.
 - **06 INV-9 경계.** CP2 판정의 기준·방법·내용은 06 소관이며 본 문서는 정의·재서술하지 않는다(§3). 시점·전이·시퀀싱만 본 문서가 배열한다.
 - **07 R2 경계.** 같은 Wave에서 동시 작성 중인 형제 산출물의 미완성 내용은 인용·추측하지 않는다. 확정된 정본(03·02·06·structure.md·Glossary)과 형제 확정본(framework/loop/loop-state-record.md), 관례 표본(framework/verifier/verifier-protocol.md)만 참조한다.
-- **금지 토큰 비의존(structure.md §5 C-3 확장, 03 INV-9) — 자가 전수 스캔 수행.** 본문 전체를 다음 후보 부류 **전체**로 전수 스캔하여 실증 0건임을 확인했다(단일 토큰 검색에 국한하지 않고 부류별 전수 대조) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 프로그래밍 언어명·툴체인명 } ∪ { 직렬화 형식명·확장자 } ∪ { 물리 경로·특정 Adapter Binding 문서명 }. 물리 실현·직렬화가 필요한 자리(전이 기록의 물리 저장 등)에는 구체 토큰 대신 "Adapter Binding 문서 소관"(03 §4.1) 포인터로만 대체했다 — 금지 토큰의 예시조차 본문에 나열하지 않았다(mention/use 경계 — session-handoff-v0.2 §1.5 Lesson 후보 3). 다음은 금지 토큰이 아니다: (i) Lifecycle 단계 명칭(Consult/Plan/Execute/Verify/Learn/Memory Update/Complete)과 역할 명칭(Advisor/Planner/Worker/Verifier/human) — Glossary·AGENT.md 정본 어휘; (ii) 게이트·전이 열거 값 및 명명 라벨(CP1~CP3, PASS/pass/fail/escalated, INV·O·VT 라벨) — 03·02·06 정본의 평이한 열거 값·명명 규칙; (iii) 저장소 문서 식별자(`specs/…`·`framework/…`·`docs/…` 상호 참조 및 본 문서 자신의 식별자 `framework/loop/stage-transition-rules.md`) — 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(verifier-protocol.md §8·loop-state-record.md §7 분류 선례 동형).
+- **금지 토큰 비의존(structure.md §5 C-3 확장, 03 INV-9) — 자가 전수 스캔 수행.** 본문 전체를 다음 후보 부류 **전체**로 전수 스캔하여 실증 0건임을 확인했다(단일 토큰 검색에 국한하지 않고 부류별 전수 대조) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 프로그래밍 언어명·툴체인명 } ∪ { 직렬화 형식명·확장자 } ∪ { 물리 경로·특정 Adapter Binding 문서명 }. 물리 실현·직렬화가 필요한 자리(전이 기록의 물리 저장 등)에는 구체 토큰 대신 "Adapter Binding 문서 소관"(03 §4.1) 포인터로만 대체했다 — 금지 토큰의 예시조차 본문에 나열하지 않았다(mention/use 경계). 다음은 금지 토큰이 아니다: (i) Lifecycle 단계 명칭(Consult/Plan/Execute/Verify/Learn/Memory Update/Complete)과 역할 명칭(Advisor/Planner/Worker/Verifier/human) — Glossary·AGENT.md 정본 어휘; (ii) 게이트·전이 열거 값 및 명명 라벨(CP1~CP3, PASS/pass/fail/escalated, INV·O·VT 라벨) — 03·02·06 정본의 평이한 열거 값·명명 규칙; (iii) 저장소 문서 식별자(`specs/…`·`framework/…`·`docs/…` 상호 참조 및 본 문서 자신의 식별자 `framework/loop/stage-transition-rules.md`) — 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(verifier-protocol.md §8·loop-state-record.md §7 분류 선례 동형).
 - **Glossary 정본.** 사용 용어는 전부 specs/00-glossary.md §3.2-J(J-03: 단계 전이·루프 상태 기록·재작업 루프) 정본이거나 Glossary·AGENT.md 기존 어휘(Agent Lifecycle 단계·역할·검증·판정)다. 새 용어를 신설하지 않았다. "게이트-단계 매핑·검증 게이트·체크포인트(CP1~CP3)"는 03 §3.1-A 정본이 정의한 서술 명칭이며 본 문서 신설 용어가 아니다.
 
 ---

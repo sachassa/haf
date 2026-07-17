@@ -11,7 +11,7 @@
 - framework/core/structure.md §2 (Module 구현 디렉터리 경계 — `framework/{loop,memory,verifier,workflow,plugins}/`), §5 (금지 토큰 규칙 C-3 확장 — Module 구현 디렉터리 문서 본문 비의존), §7 (Core Contract 불변 조건 C-1). 본 파일은 `framework/memory/` 경계의 첫 실사용 인스턴스다 (structure.md §2 주).
 - ROADMAP.md v0.4 (Memory & Lessons) — 학습 사이클 완료 조건과 산출물.
 
-거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 AI·언어·툴체인 비의존을 유지한다 (structure.md §5 C-3 확장). 이 문서는 05 Core Contract의 인스턴스이며 05·04·02 계약을 재정의·확장하지 않는다 (structure.md §7 C-1). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 AI·언어·툴체인 비의존을 유지한다 (structure.md §5 C-3 확장). 이 문서는 05 Core Contract의 인스턴스이며 05·04·02 계약을 재정의·확장하지 않는다 (structure.md §7 C-1). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -29,6 +29,7 @@
 | 2026-07-06 | v0.6 Baseline | v0.6 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-06 | v0.7 Draft (개정) | v0.7 Task WF14 — Advisor 승인 하 비차단 정합 개정. 근거: docs/v0.6-verification-report.md §3.7 관찰 3 해소 (v0.7 편입 개정, 사용자 승인 2026-07-06). 라이브 본문이 05 INV-4를 "승인 기록 참조 없는 승격은 `NotApproved`"로 귀속시키던 괄호 주해를, 정본 소속대로 분리 정밀화 — INV-4 인용은 정본 문면("승격(`Candidate → Active`)은 Advisor 승인으로만 성립한다")으로, `NotApproved`는 05 §6 실패 모드(§2.6 reason 코드) 소속으로, "승인 기록 참조" content 첨부는 관례(§3.2) 소속으로 각각 귀속 분리 표기. 전 지점 전수 갱신(L-06 — 검색으로 열거): §3.2 승격 관례 절·§6 계약 재정의 절·§7 다이어그램 2행·§7 요약(총 5지점). §3.2 승격 권한 문장(line 156)·§3.2 NotApproved 거부 문장(line 159)·§3.3 BP 대칭·§2.6 reason 표 등 이미 정본 정합한 지점은 열거 후 무변경 확인. 05·04·02 계약 재정의·확장 0(개정은 주해 문언 정밀화로 한정 — 스키마 필드·투영 규칙·승격 규칙 무변경, "새 필수 필드 아님·05 §3.2-A 전건 보존" 기존 명기 보존). 금지 토큰 0(C-3 확장) 개정분 포함 자가 전수 재스캔(§6 금지 토큰 절에 WF14 스캔 기록 추가). §9 기존 행 문면 불변(시점 기록 — L-10) + 본 행 append. | Worker (Advisor 위임, Task WF14) |
 | 2026-07-06 | v0.7 Baseline | v0.7 개정분(관찰 3 해소·상태 라인 정합) 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-XX·mi 유지)·삭제 산출물 참조 앵커 전환(@cd9247b·@004bfa9). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -227,7 +228,7 @@ Lesson·Best Practice·재발 판정 레코드는 별도 저장 경로를 갖지
 
 **근거 (Advisor 결정 — v0.4, OQ-M5-1 해소).** 안정 `id`·`status` 투영과 최신 상태 해소 규칙은 05 §3.1-B 회수 출력(Active 최소 집합)의 index 단계 해소를 위해 추가되었다 — 전량 로드(`detail = full`)로만 `Active`를 거르면 최소 Context 원칙(05 INV-6, 04 INV-4)과 상충한다. `labels`는 04 §3.2-A의 **자유 태그 집합**이며 무엇을 투영하는가는 특화 계약(05·본 문서)이 소유하므로, 이 보강은 `labels` 사용 방식의 확정일 뿐 **04·05 계약 변경이 아니다** (04 §9 결정 기록 "applicability는 labels·kind로 투영 가능"의 확장선, structure.md §7 C-1 계약 재정의 0 유지).
 
-**근거 (Advisor 결정 — v0.5, docs/v0.4-verification-report §3.4 관찰 1 해소).** 재발 판정 레코드(`kind=recurrence-judgment`)의 `verdict`·`matched_lesson_id`는 v0.4부터 index 단계 조회용으로 `labels`에 투영되어 왔으나, "무엇을 투영하는가는 05가 소유한다"는 원칙에 비추어 그 투영 결정 자체가 본 절(05 소유 투영 규칙)에 명시되지 않았다. v0.5에서 이 투영 2건을 본 절에 명시 편입해 완결성을 회복한다. `verdict`·`matched_lesson_id`는 §2.5(05 §3.2-E)가 소유하는 재발 판정 레코드 필드이고 `labels`는 04 §3.2-A의 **자유 태그 집합**이므로, 이 편입은 안정 `id`·`status` 투영과 동일하게 `labels` 사용 방식의 확정일 뿐 **04·05 계약 변경이 아니다** (v0.4 결정 승계 — 04 §9 결정 기록 "applicability는 labels·kind로 투영 가능"의 확장선, structure.md §7 C-1 계약 재정의 0 유지). 라벨 키의 물리 표기는 위 물리 표기 규칙대로 Adapter Binding 문서가 소유하며, 본 개정은 그 물리 표기를 재서술·확정하지 않는다.
+**근거 (Advisor 결정 — v0.5, `uahf/docs/v0.4-verification-report.md@cd9247b` §3.4 관찰 1 해소).** 재발 판정 레코드(`kind=recurrence-judgment`)의 `verdict`·`matched_lesson_id`는 v0.4부터 index 단계 조회용으로 `labels`에 투영되어 왔으나, "무엇을 투영하는가는 05가 소유한다"는 원칙에 비추어 그 투영 결정 자체가 본 절(05 소유 투영 규칙)에 명시되지 않았다. v0.5에서 이 투영 2건을 본 절에 명시 편입해 완결성을 회복한다. `verdict`·`matched_lesson_id`는 §2.5(05 §3.2-E)가 소유하는 재발 판정 레코드 필드이고 `labels`는 04 §3.2-A의 **자유 태그 집합**이므로, 이 편입은 안정 `id`·`status` 투영과 동일하게 `labels` 사용 방식의 확정일 뿐 **04·05 계약 변경이 아니다** (v0.4 결정 승계 — 04 §9 결정 기록 "applicability는 labels·kind로 투영 가능"의 확장선, structure.md §7 C-1 계약 재정의 0 유지). 라벨 키의 물리 표기는 위 물리 표기 규칙대로 Adapter Binding 문서가 소유하며, 본 개정은 그 물리 표기를 재서술·확정하지 않는다.
 
 ---
 

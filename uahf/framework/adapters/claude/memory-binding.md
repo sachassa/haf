@@ -18,11 +18,11 @@
 - framework/adapters/claude/runtime-binding.md — 자매 Adapter Binding 문서. 교체 지점 표 관례·구체 토큰 격리·실측 기반 상태 서술·형태 A/B 구분·Config 스코프 물리 소스(§3.3)·Register/Resolve 수행 방식(§3.2)의 선행 관례.
 - framework/core/structure.md §2·§5·§6 — 4경계 배치, C-3 금지 토큰 규칙(Adapter 경계는 격리 보유로 비적용), 산출물 표. 본 문서 경계의 근거.
 - specs/01-runtime.md §4·§3.2-B — Adapter Binding(Provider 등록·물리 진입점 해소)·Config 병합 규칙(Module > Project > Global). § 포인터로만 참조.
-- docs/session-handoff-v0.3.md §1.4·§1.5 — A5 재작업 사례(미존재를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)와 Lesson 후보 3(상태 서술은 실측 후 기록). 본 문서 §7의 실측 대조 근거.
+- Active Lesson L-07 (상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출). 본 문서 §7의 실측 대조 근거.
 - specs/00-glossary.md — 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - ROADMAP.md v0.4 (Memory & Lessons) — 산출물 "Memory store 구조·포맷 / 인덱스 규격 / 기록·회수 프로토콜"의 환경 실현 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 04 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0과 동형). 단 이 문서는 Core Contract(04 §3·05 §3)와 그 인스턴스 문서(framework/memory/ 4문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 04 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0과 동형). 단 이 문서는 Core Contract(04 §3·05 §3)와 그 인스턴스 문서(framework/memory/ 4문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -34,6 +34,7 @@
 | 2026-07-05 | v0.4 Draft (r2) | Advisor 개정 지시 반영 (OQ-M7-1 해소 — 라벨 키 물리 표기 정본 갭 보완). (1) §5.4 신설 — 라벨 키 물리 표기(정본) 표 5키(`situation`/`stable_id`/`status`/`verdict`/`matched_lesson_id`) ↔ 투영 대상 ↔ 값 형태. lessons.md §5.2가 "무엇을 투영하는가"를 소유하고 본 표는 "키 이름·표기"만 확정(계약 표면 재정의 0). 첫 실사용 = v0.4 시연(docs/v0.4-demo.md). (2) 같은 상태 서술 전 지점 전수 갱신 — §5 헤더·도입·§5.2·§5.3 포인터, §6 SP-1 행, §0·§10. (3) §7 실측 대조 전면 갱신 — memory-data/ 실재 반영(직접 실측: store 21파일 mi-0001~mi-0021.json, index.jsonl 21라인; kind lesson 16/best-practice 2/recurrence-judgment 3). 데이터 미생성 전제의 라이브 상태 서술을 실재 반영으로 전건 교체(L-07 실측 후 기록). (4) OQ-M5-1 해소 표기(lessons.md §5.2 r2 투영 규칙 확정 + §5.4). 04·05 계약 재정의 0, 물리 데이터·framework/memory/·demo 파일 무수정. | Worker (Advisor 개정 지시, Task M5 r2) |
 | 2026-07-05 | v0.4 Draft (r3) | r1 이력 행 문면 원복 — r2에서 교정했던 M5(r1) 행의 §7 참조 구문·동시 작성 절차서 불인용 문구를 r1 원문 그대로 되돌림. 이력 행은 시점 기록이며 작성 시점에 참인 서술은 stale이 아니다 — §9 append-only 문면 불변(Advisor 판정). "잔존 서술 0건" 재검증은 라이브 본문에만 적용된다. 라이브 본문·§5.4·§7 실측 서술은 무변경. | Worker (Advisor 교정 지시, Task M5 r3) |
 | 2026-07-06 | v0.4 Baseline | v0.4 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 재작업 1회 후 재검증, CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·삭제 산출물(docs/v0.4-demo*.md 시연 기록) 참조 @cd9247b 앵커 전환. memory-data/ store·index 참조는 append-only 예외(정책 §2)로 유지. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -47,7 +48,7 @@
 - **물리 store·index 위치 정본 선언(done 2).** Memory Store·Memory Index의 물리 데이터 위치는 **Adapter 경계 이하 `framework/adapters/claude/memory-data/`로 확정한다**(Advisor 결정 — 물리 store·index는 Adapter 경계 이하). 이 위치는 Core 경계(`framework/core/`·`framework/runtime/`·`framework/memory/` 등)·`specs/`·`docs/` **밖**이다. **정확한 하위 경로·파일 구조·직렬화 형식·I/O 절차의 정본은 이 문서(§2)다.** framework/memory/ 4문서는 이 물리 위치를 "Adapter Binding 문서 소관" 포인터로만 미뤘고, 본 문서가 그 소유자로서 확정한다.
 - **창설 금지.** 이 문서는 04 §4.1·05 §4.1 표를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. v0.4 산출물의 물리 실현 매핑으로 한정한다. 새 Memory 연산·필드·불변 규칙·`kind` 값을 만들지 않는다.
 - **하네스 상태 전제(Bootstrap).** 이 하네스는 현재 **Bootstrap 상태**다(Glossary J-13, runtime-binding.md §0, delegation-protocol.md §0). Memory Service는 정식 실행 Module이 아니라 규약 문서와 관행으로 실현된다(형태 A). 따라서 본 문서의 매핑은 **이미 물리적으로 실재하는 표면**(디렉터리·정의 문서, 그리고 v0.4 시연 M7이 생성한 store·index 데이터 — §7 실측)과, **실행 코드 도입 시 로딩될 지점**(형태 B — 실행 진입점·로더)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
-- **실측 기반 상태 서술(done 7).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3.md §1.4 A5 사례·§1.5 Lesson 후보 3 재발 방지). store·index 물리 자산의 실재 여부는 실측으로 판정한다 — M5 draft 시점엔 데이터 미생성이었고, v0.4 시연(M7) 실행 후 실재로 전환되었다. §7이 그 실측 대조 표이며 r2에서 현재 상태로 전수 갱신했다.
+- **실측 기반 상태 서술(done 7).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록, A5 재발 방지). store·index 물리 자산의 실재 여부는 실측으로 판정한다 — M5 draft 시점엔 데이터 미생성이었고, v0.4 시연(M7) 실행 후 실재로 전환되었다. §7이 그 실측 대조 표이며 r2에서 현재 상태로 전수 갱신했다.
 - 용어는 specs/00-glossary.md 정본만 사용한다. `lesson`·`best-practice`·`recurrence-judgment`는 05가 소유한 `kind` 값(lessons.md §5.1)이며, 본 문서는 그 물리 직렬화 표기만 확정한다(용어 신설 아님).
 
 ---
@@ -100,7 +101,7 @@ framework/adapters/claude/
 - 위 7행은 04 §4.1 표의 전 행이다. 각 행의 "물리 실현"은 04 §4.1 정본 표현을 이 환경의 구체 경로·형식으로 좁힌 것이며, 새 바인딩 계약을 창설하지 않는다(§0).
 - **id 할당 스킴.** Memory Item `id`는 Record가 유일하게 할당하는(04 §3.2-A) 안정·유일 토큰이다. 물리 실현: 파일명 `<id>.json`이 그 자체로 유일성 보장 매체이며(같은 이름 파일 생성 실패 = `DuplicateId`), 사전식으로 정렬 가능한 형태(예시 형태 `mi-<정렬가능토큰>`)를 사용해 index.jsonl의 append 순서(= Record 순서)와 정합시킨다. 정확한 토큰 형태는 Adapter 선택이며(이식 교체 지점 §6-SP1), `id`의 안정성·유일성·불변 참조 계약(04 §3.2-A·INV-6)은 유지된다. 순서 기준 자체의 의미(예: 05 `ordering_ref`)는 특화 계약 소관으로 본 문서가 정의하지 않는다.
 - **직렬화 형식(JSON/JSONL) = Adapter 선택.** Memory Item의 `content`는 kind별 임의 구조의 불투명 페이로드이므로(04 INV-5), 중첩 구조를 담는 자기서술적 데이터 형식(JSON)을 store 레코드에, 라인 구분 로그(JSON Lines)를 index에 사용한다. 이 형식 선택은 04 §4.2-1·05 §4.2 SP-1의 교체 지점이며, 이식 시 대상 환경 포맷으로 교체된다(§6). v0.x 실측 기억 규모(module-manifest.md §3)에서는 store를 평면(flat) 배치로 두고, 샤딩 등 규모 대응은 형태 B/규모 사안으로 미룬다(추측·선취 금지).
-- **memory-data/ 경로·구조·형식은 본 문서가 확정한 지원 구조(정본)이며, 데이터는 시연 Task가 생성했다.** 실제 디렉터리·데이터 파일 생성은 **시연 Task 소관**(docs/v0.4-demo.md — Task M7 수행 기록)이며, v0.4 시연이 이 정본 구조 그대로 store 21파일·index 21라인을 생성했다(§7 실측 대조). 본 문서(M5)는 물리 데이터 자산을 생성하지 않는다 — 구조·형식·절차의 정본만 소유한다.
+- **memory-data/ 경로·구조·형식은 본 문서가 확정한 지원 구조(정본)이며, 데이터는 시연 Task가 생성했다.** 실제 디렉터리·데이터 파일 생성은 **시연 Task 소관**(`uahf/docs/v0.4-demo.md@cd9247b` — Task M7 수행 기록)이며, v0.4 시연이 이 정본 구조 그대로 store 21파일·index 21라인을 생성했다(§7 실측 대조). 본 문서(M5)는 물리 데이터 자산을 생성하지 않는다 — 구조·형식·절차의 정본만 소유한다.
 
 ---
 
@@ -201,7 +202,7 @@ lessons.md §5.2: 회수는 Port의 `kind`/`labels` 범위 조회로 후보를 �
 
 ### §5.4 라벨 키 물리 표기 (정본 — 05 §4 SP-1 / lessons.md §5.2 위임)
 
-lessons.md §5.2(r2)와 본 문서 §5.2는 "무엇을 `labels`에 투영하는가는 05가 소유하고, **라벨 키의 물리 표기(키 이름·값 형태)는 Adapter 소관**"으로 확정했다(lessons.md §5.2 말미, 05 §4 SP-1). 그 물리 표기의 **정본 자리가 이 절**이다. 아래 5개 라벨 키가 정본이며, 첫 실사용은 v0.4 시연(docs/v0.4-demo.md — Task M7 수행 기록)이다. 값 형태는 index/store 실측(§7)에 근거한다.
+lessons.md §5.2(r2)와 본 문서 §5.2는 "무엇을 `labels`에 투영하는가는 05가 소유하고, **라벨 키의 물리 표기(키 이름·값 형태)는 Adapter 소관**"으로 확정했다(lessons.md §5.2 말미, 05 §4 SP-1). 그 물리 표기의 **정본 자리가 이 절**이다. 아래 5개 라벨 키가 정본이며, 첫 실사용은 v0.4 시연(`uahf/docs/v0.4-demo.md@cd9247b` — Task M7 수행 기록)이다. 값 형태는 index/store 실측(§7)에 근거한다.
 
 | 투영 대상 (무엇을 투영하는가 — 소유) | 물리 라벨 키 (이 Adapter 정본) | 값 형태 (실측 근거) |
 |---|---|---|
@@ -236,7 +237,7 @@ lessons.md §5.2(r2)와 본 문서 §5.2는 "무엇을 `labels`에 투영하는�
 
 ## §7. 상태 서술 실측 대조 (done 7 — A5 재발 방지)
 
-session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록)에 따라, 본 문서의 "실재" 서술을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-05 r2 개정 시 `ls`/`find`/`grep`/`wc`/`diff` 직접 실측.** M5 draft 시점엔 memory-data/ 데이터가 미생성이었고, v0.4 시연 M7 실행으로 실재로 전환되었다 — 아래 표가 현재 상태다.
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재 소스를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출)에 따라, 본 문서의 "실재" 서술을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-05 r2 개정 시 `ls`/`find`/`grep`/`wc`/`diff` 직접 실측.** M5 draft 시점엔 memory-data/ 데이터가 미생성이었고, v0.4 시연 M7 실행으로 실재로 전환되었다 — 아래 표가 현재 상태다.
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-05 r2, 직접 실측) |
 |---|---|---|
@@ -252,7 +253,7 @@ session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서�
 | Manifest configSchema `recall.limit.max` = 20 | 실재 (형태 A 선언, framework/memory/module-manifest.md §3) | 실재 — module-manifest.md §3 configSchema 표에 선언 확인. |
 | 실행 진입점·실행 로더(형태 B) | 미도입 (형태 B 예정) | 미도입 — Bootstrap 상태(형태 A). |
 
-- **핵심 구분.** 본 문서가 확정한 물리 store·index의 **경로·파일 구조·직렬화 형식·I/O 절차·라벨 키 표기(§5.4)는 정본**이며, v0.4 시연(M7)이 이 정본 구조 그대로 데이터를 생성했다 — 실측이 정본과 일치한다(store 21·index 21·id 스킴·`kind` 분포·라벨 키). 데이터 생성 주체는 **시연 Task(docs/v0.4-demo.md — Task M7)**이며, 본 문서(M5)는 구조·형식·절차·라벨 키 표기의 정본만 소유한다. r2는 데이터를 생성·수정하지 않고 실측 상태만 반영했다.
+- **핵심 구분.** 본 문서가 확정한 물리 store·index의 **경로·파일 구조·직렬화 형식·I/O 절차·라벨 키 표기(§5.4)는 정본**이며, v0.4 시연(M7)이 이 정본 구조 그대로 데이터를 생성했다 — 실측이 정본과 일치한다(store 21·index 21·id 스킴·`kind` 분포·라벨 키). 데이터 생성 주체는 **시연 Task(`uahf/docs/v0.4-demo.md@cd9247b` — Task M7)**이며, 본 문서(M5)는 구조·형식·절차·라벨 키 표기의 정본만 소유한다. r2는 데이터를 생성·수정하지 않고 실측 상태만 반영했다.
 - 실재를 주장하는 모든 행은 파일 시스템 직접 실측 후에만 기입했다. 실측과 불일치하는 서술은 0건이다 — 미존재를 실재로, 실재를 미존재로 쓰지 않았다(A5 재발 방지).
 
 ---
@@ -262,7 +263,7 @@ session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서�
 - **재정의·확장 0.** 본 문서의 모든 매핑은 04 §3·§4·05 §3·§4·framework/memory/ 4문서의 물리 실현이다. 어떤 연산·데이터 계약·불변 규칙·`kind` 값도 이 문서에서 진위가 새로 확정되지 않는다 — 판정 기준은 정본 §다. 새 Memory 연산·필드·reason 코드·차원·`kind` 값을 추가하지 않았다.
 - **계약 표면 소유 명시(done 5).** Lesson·Best Practice·재발 판정 레코드의 스키마·`kind` 값 정체성·applicability **매칭 계약 표면**·**"무엇을 `labels`에 투영하는가"**(투영 규칙)는 lessons.md·05가 소유한다. 본 문서는 물리 직렬화 표기(§5.1)·매칭 대조 알고리즘 구현(§5.2)·물리 기록 위치(§5.3)·**라벨 키 물리 표기(§5.4 — 키 이름·값 형태만)**만 확정한다. status 생애주기·supersede·승격 권한·최신 Active 해소 규칙·투영 규칙은 05 소관이다.
 - **격리 토큰의 단일 자리.** 구체 직렬화 형식(JSON/JSONL)·물리 경로(`framework/adapters/claude/memory-data/…`)·파일 확장자·세션/턴 등 환경 토큰은 이 Adapter 경계 문서에만 둔다. framework/memory/ 4문서(Core/Module 구현 디렉터리 문서 본문)는 이 토큰을 "Adapter Binding 문서 소관" 포인터로만 미뤘고, 본 문서가 그 소관자다(structure.md §5 C-3 확장은 이 경계에 비적용 — 격리 보유).
-- **동시 작성 문서 경계(07 R2) 및 r2 참조 범위.** M5 draft 시점엔 같은 Wave에서 동시 작성 중이던 시연 절차서(docs/v0.4-demo-procedure.md)·병렬 Task M6 산출물의 내용을 인용·추측하지 않았다(07 R2 준수). r2에서는 시연이 완료된 상태로, docs/v0.4-demo.md(Task M7 수행 기록)를 **첫 실사용 기록**의 사실(라벨 키 실사용·데이터 생성 주체)로만 참조한다 — 내부 서술·추론을 인용하지 않고, §5.4·§7의 정본 서술은 **파일 시스템 직접 실측**에 근거한다(demo.md 텍스트 인용 아님).
+- **동시 작성 문서 경계(07 R2) 및 r2 참조 범위.** M5 draft 시점엔 같은 Wave에서 동시 작성 중이던 시연 절차서(`uahf/docs/v0.4-demo-procedure.md@cd9247b`)·병렬 Task M6 산출물의 내용을 인용·추측하지 않았다(07 R2 준수). r2에서는 시연이 완료된 상태로, `uahf/docs/v0.4-demo.md@cd9247b`(Task M7 수행 기록)를 **첫 실사용 기록**의 사실(라벨 키 실사용·데이터 생성 주체)로만 참조한다 — 내부 서술·추론을 인용하지 않고, §5.4·§7의 정본 서술은 **파일 시스템 직접 실측**에 근거한다(demo.md 텍스트 인용 아님).
 - **추측 0 / 소유 경계 준수(07 R4·INV-2).** 불확실한 지점은 §8 open_questions로 에스컬레이션했다(추측 금지). 본 산출은 이 1개 파일(`framework/adapters/claude/memory-binding.md`)만 생성하며, framework/memory/ 4문서·Core 경계·specs·docs·물리 데이터 파일을 수정·생성하지 않는다.
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
@@ -281,5 +282,5 @@ session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서�
 - **§4:** `entrypoint` 물리 해소(형태 A 규약/형태 B 실행 코드)·`recall.limit.max`(기본 20) 물리 반영(Manifest 선언→Recall §3.2-5 적용) — runtime-binding.md 교체 지점 관례 동형.
 - **§5:** `kind` 3종 직렬화 표기(`lesson`/`best-practice`/`recurrence-judgment` — SP-1)·applicability 매칭 구현(라벨 겹침 — SP-2, 계약 표면은 05 소유)·**라벨 키 물리 표기 정본(§5.4 — `situation`/`stable_id`/`status`/`verdict`/`matched_lesson_id` 5키; "무엇을 투영하는가"는 05 소유, 키 이름·값 형태만 확정)**·재발/승격 물리 기록 위치(동일 store/index, append-only, `kind` 불투명).
 - **§6:** 04 §4.2 이식 교체 지점 1~5 + 05 SP-1·SP-2 대응 표("교체되는 것 / 유지되는 것") — 유지 열이 이식 불변(C-1) 재확인.
-- **§7:** 실측 대조(r2 직접 실측) — store·index 물리 자산은 **v0.4 시연 M7으로 실재**(store 21·index 21·id 스킴·`kind` 분포·라벨 키가 정본과 일치). 데이터 생성 주체는 시연 Task(docs/v0.4-demo.md), 본 문서(M5)는 구조·형식·표기 정본만 소유(A5 재발 방지 — 실측 후 기록).
+- **§7:** 실측 대조(r2 직접 실측) — store·index 물리 자산은 **v0.4 시연 M7으로 실재**(store 21·index 21·id 스킴·`kind` 분포·라벨 키가 정본과 일치). 데이터 생성 주체는 시연 Task(`uahf/docs/v0.4-demo.md@cd9247b`), 본 문서(M5)는 구조·형식·표기 정본만 소유(A5 재발 방지 — 실측 후 기록).
 - 04·05 계약 재정의 0, Glossary 용어 신설 0, 새 바인딩 계약 창설 0. 구체 AI·환경·형식 토큰은 이 Adapter 경계에서 허용된다(격리 지점).

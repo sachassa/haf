@@ -20,7 +20,7 @@
 - specs/00-glossary.md §3.2-J(J-03) — 루프 상태 기록·단계 전이·재작업 루프 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - framework/verifier/verification-report.md · framework/memory/memory-store.md — 인스턴스 문서 관례 표본(문서 머리 구조·§9 이력 절 머리 배치·§0 정본 경계·§ 포인터 표기 관례·말미 요약 절).
 
-거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -30,6 +30,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.6 Draft | 최초 작성. 전이 이벤트 10필드(03 §3.2-A)·단계 상태 5종(03 §3.2-B)·Learn 트리거(03 §3.2-C)를 전건 § 포인터 인용으로 인스턴스화(필드명·의미·필수 표기 정본 그대로 보존). append-only 불변·사이클 재구성 포맷 규칙(03 §3.2-A·INV-3·§7, §5), 회수 이력 기록 방식 결정 기록(Advisor DP-L5 — Consult 전이 이벤트 `ref`에 회수 집합 참조 기록·§6), 직렬화·저장 위치 비서술(Adapter Binding 소관 포인터·§7). 03 계약 재정의·확장 0, 새 필드·새 상태 0, Glossary 밖 새 용어 0, 물리 경로·형식 토큰 0(자가 전수 스캔 — §7). | Worker (Advisor 위임, Task L1) |
 | 2026-07-06 | v0.6 Baseline | v0.6 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -179,7 +180,7 @@ Learn 단계는 실패와 성공에서 후보를 도출한다(03 §3.2-C). 아�
 **동시 작성 경계·금지 토큰·Glossary:**
 
 - **07 R2 경계.** 같은 Wave에서 동시 작성 중인 형제 산출물의 미완성 내용은 인용·추측하지 않는다. 확정된 정본(03·01·02·04·05·structure.md·Glossary)과 기존 Baseline 문서만 참조한다.
-- **금지 토큰 비의존(structure.md §5 C-3 확장, 03 INV-9).** 본 문서 본문에는 특정 AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명·물리 경로·확장자 토큰을 두지 않는다. 금지 토큰의 예시조차 본문에 나열하지 않는다 — 구체 인스턴스가 필요한 자리에는 일반형 표기(`<adapter>`)와 "Adapter Binding 문서 소관" 포인터만 둔다(mention/use 경계 — session-handoff-v0.2 §1.5 Lesson 후보 3). 다음은 금지 토큰이 아니다: (i) 전이 이벤트 필드 값의 열거 명칭(pass/fail/escalated) 및 단계 상태 명칭(Pending/Active/Passed/Failed/Escalated) — 03 §3.2 정본의 평이한 열거 값; (ii) Lifecycle 단계 명칭(Consult/Plan/Execute/Verify/Learn/Memory Update/Complete)과 역할 명칭(Advisor/Planner/Worker/Verifier/human) — Glossary·AGENT.md 정본 어휘; (iii) 저장소 문서 식별자(`specs/…`·`framework/…`·`docs/…` 상호 참조 및 본 문서 자신의 식별자 `framework/loop/loop-state-record.md`) — 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(verification-report §7 분류 선례 동형).
+- **금지 토큰 비의존(structure.md §5 C-3 확장, 03 INV-9).** 본 문서 본문에는 특정 AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명·물리 경로·확장자 토큰을 두지 않는다. 금지 토큰의 예시조차 본문에 나열하지 않는다 — 구체 인스턴스가 필요한 자리에는 일반형 표기(`<adapter>`)와 "Adapter Binding 문서 소관" 포인터만 둔다(mention/use 경계). 다음은 금지 토큰이 아니다: (i) 전이 이벤트 필드 값의 열거 명칭(pass/fail/escalated) 및 단계 상태 명칭(Pending/Active/Passed/Failed/Escalated) — 03 §3.2 정본의 평이한 열거 값; (ii) Lifecycle 단계 명칭(Consult/Plan/Execute/Verify/Learn/Memory Update/Complete)과 역할 명칭(Advisor/Planner/Worker/Verifier/human) — Glossary·AGENT.md 정본 어휘; (iii) 저장소 문서 식별자(`specs/…`·`framework/…`·`docs/…` 상호 참조 및 본 문서 자신의 식별자 `framework/loop/loop-state-record.md`) — 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(verification-report §7 분류 선례 동형).
 - **자가 전수 스캔.** 위 후보 집합 전체(AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명·물리 경로·확장자·특정 Adapter Binding 문서명)로 본문을 전수 스캔하여 0건임을 확인했다(단일 토큰 검색 하나로 넓은 결론을 내지 않고, 후보 부류별 전수 대조). 직렬화 형식·물리 저장 위치가 필요한 자리는 전부 일반형 `<adapter>`와 "Adapter Binding 문서 소관(03 §4.1)" 포인터로 대체했다.
 - **Glossary 정본.** 사용 용어는 전부 specs/00-glossary.md §3.2-J(J-03: 루프 상태 기록·단계 전이·재작업 루프) 정본이다. 새 용어를 신설하지 않는다. "전이 이벤트·단계 상태·Learn 트리거"는 03 §3.2 정본이 정의한 스키마·서술 명칭이며 본 문서 신설 용어가 아니다.
 

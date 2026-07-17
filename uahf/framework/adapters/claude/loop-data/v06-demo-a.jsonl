@@ -1,7 +1,0 @@
-{"cycle_id":"v06-demo-a","seq":1,"to_stage":"Consult","trigger":"완료 조건 충족","outcome":"pass","retry_count":0,"actor":"Advisor","ref":{"recall_set":["mi-0013","mi-0015","mi-0016","mi-0018","mi-0028"]},"at":1}
-{"cycle_id":"v06-demo-a","seq":2,"from_stage":"Consult","to_stage":"Plan","trigger":"완료 조건 충족","outcome":"pass","retry_count":0,"actor":"Advisor","ref":"plan-draft:v06-demo-a-T1 (Planner 초안 — demo.md 수록)","at":2}
-{"cycle_id":"v06-demo-a","seq":3,"from_stage":"Plan","to_stage":"Execute","trigger":"완료 조건 충족","outcome":"pass","retry_count":0,"actor":"Advisor","ref":"plan-adopted:v06-demo-a-T1 (Advisor 채택)","at":3}
-{"cycle_id":"v06-demo-a","seq":4,"from_stage":"Execute","to_stage":"Verify","trigger":"완료 조건 충족","outcome":"pass","retry_count":0,"actor":"Worker","ref":"self-check:v06-demo-a-1차 완료 보고 (CP1 — demo.md 수록)","at":4}
-{"cycle_id":"v06-demo-a","seq":5,"from_stage":"Verify","to_stage":"Learn","trigger":"완료 조건 충족","outcome":"pass","retry_count":0,"actor":"Verifier","ref":"verify-report:docs/v0.6-demo-fixtures/verify-a.md (CP2 Pass 3/0/0)","at":5}
-{"cycle_id":"v06-demo-a","seq":6,"from_stage":"Learn","to_stage":"Memory Update","trigger":"완료 조건 충족","outcome":"pass","retry_count":0,"actor":"Verifier","ref":"bp-candidate:BPD-01 (성공 경로 도출 — 03 §3.2-C)","at":6}
-{"cycle_id":"v06-demo-a","seq":7,"from_stage":"Memory Update","to_stage":"Complete","trigger":"완료 조건 충족","outcome":"pass","retry_count":0,"actor":"Advisor","ref":"completion-report:v06-demo-a (CP3 승인 — demo.md 수록); record:mi-0031","at":7}

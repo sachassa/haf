@@ -16,13 +16,13 @@
 - .claude/agents/verifier.md — Verifier 역할 Claude Code 바인딩 진입점(실물). 실행 모델 미지정(세션 상속) 명시. 본 문서는 참조만 하고 수정하지 않는다(06 §4.1 진입점 행·§4.2 SP-1·SP-6).
 - framework/adapters/claude/runtime-binding.md · memory-binding.md — 자매 Adapter Binding 문서(관례 정본). 격리 방향 반전(§0)·형태 A/B 구분·실측 기반 상태 서술·교체 지점 표("교체되는 것/유지되는 것" 열)·entrypoint 물리 해소 관례·Register/Resolve 수행 방식의 선행 관례.
 - docs/verification-checklist.md §7 — Advisor 검증 게이트 운용 바인딩(환경 의존 검사 도구 사용법). 본 문서 §5(검사 도구 바인딩 물리 실현 정본)와 정합하는 운용 지침. 재정의 0.
-- docs/v0.3-verification-report.md · docs/v0.4-verification-report.md — 검증 리포트의 물리 직렬화·저장 실증 인스턴스 2건(각 CP2 독립 판정 산출물, Baseline 확정). `docs/v0.X-verification-report.md` 명명 관례·6필드 절 구조·rework 절 직렬화·검사 도구 실사용의 실증 근거(§4·§5·§7).
+- `uahf/docs/v0.3-verification-report.md@cd9247b` · `uahf/docs/v0.4-verification-report.md@cd9247b` — 검증 리포트의 물리 직렬화·저장 실증 인스턴스 2건(각 CP2 독립 판정 산출물, Baseline 확정; 산출물 수명 정책으로 작업 트리에서 제거·아카이브). `docs/v0.X-verification-report.md` 명명 관례·6필드 절 구조·rework 절 직렬화·검사 도구 실사용의 실증 근거(§4·§5·§7).
 - framework/core/structure.md §2·§5·§6 — 4경계 배치, C-3 금지 토큰 규칙(Adapter 경계는 격리 보유로 비적용), v0.3 산출물 표. 본 문서 경계의 근거.
 - specs/01-runtime.md §4·§3.2-A·§3.2-B — Adapter Binding(Provider 등록·물리 진입점 해소)·Module Manifest 필드·Config 병합 규칙. § 포인터로만 참조.
 - specs/00-glossary.md — 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - ROADMAP.md v0.5 (Verifier) — 산출물 "검증 리포트 스키마 / 재작업 지시 포맷 / 완료 판정 기준 카탈로그"의 환경 실현 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 06 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로·검사 도구 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·memory-binding.md §0과 동형). 단 이 문서는 Core Contract(06 §3)와 그 인스턴스 문서(framework/verifier/ 5문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 06 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로·검사 도구 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·memory-binding.md §0과 동형). 단 이 문서는 Core Contract(06 §3)와 그 인스턴스 문서(framework/verifier/ 5문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -32,6 +32,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.5 Draft | 최초 작성. `framework/adapters/claude/` 경계의 세 번째 산출물(선행: runtime-binding.md·memory-binding.md). 06 §4.1 바인딩 표 **7행 전건**을 물리 실현("물리 실현(claude 환경)" 열 + "실재 여부" 열)으로 매핑, 형태 A(규약 실현)/형태 B(실행 코드 예정) 정직 구분(§2). V2 Manifest `entrypoint` 추상 참조의 물리 해소(형태 A = `.claude/agents/verifier.md` 진입점 + verifier-protocol.md 절차 준수 / 형태 B = 실행 코드 로케이터 defer) + `configSchema` 생략(DP-V2)으로 물리 반영 대상 부재 명시(Memory `recall.limit.max` 대응 절과의 차이 정직 기록, §3). 검증 리포트 직렬화·저장 위치 확정(docs/ 구조화 문서, `docs/v0.X-verification-report.md` 명명 관례 — v0.3·v0.4 2건 실증·실측) + 재작업 지시 rework 절 직렬화·재위임 전달(§4). VT-1~VT-5 검사 도구 바인딩(파일 조회·텍스트 검색·명령 실행) + verification-checklist.md §7 정본 소유 관계(§5). 06 §4.2 이식 교체 지점 SP-1~SP-6 대응 표("교체되는 것/유지되는 것" 열 — C-1 이식 불변 재확인, §6). 상태 서술 실측 대조 표(§7 — 실재 서술 전건 파일 시스템 실측 후 기입, L-07). 06 §3·framework/verifier/ 5문서 계약 재정의·창설 0, 새 바인딩 계약 0, Glossary 밖 새 용어 0. 동시 작성 시연 절차서(docs/v0.5-demo-procedure.md, V7) 내용 불인용(07 R2), 미래 산출물 실재 불주장(L-07). 이 1파일만 생성 — `.claude/agents/verifier.md`·framework/verifier/ 5문서·기존 Baseline 산출물·specs/ 무수정. | Worker (Advisor 위임, Task V6) |
 | 2026-07-06 | v0.5 Baseline | v0.5 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 26/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·삭제 산출물(docs/v0.3·v0.4-verification-report.md 실사용 인스턴스 2건) 참조 @cd9247b 앵커 전환(§4·§7 실측 표 아카이브 표기). `docs/v0.X-verification-report.md` 명명 관례·계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -42,10 +43,10 @@
 - **정본은 specs/06-verifier.md §3·§4(§4.1 바인딩 표·§4.2 이식 교체 지점)와 framework/verifier/ 5문서(verification-report.md·module-manifest.md·verifier-protocol.md·rework-instruction.md·criteria-catalog.md)다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소(연산·데이터 포맷·불변 규칙·필드·검증 유형·판정 값)를 **재정의·확장하지 않는다**. 계약 요소는 정본 § 포인터로만 인용한다.
 - 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. framework/verifier/ 5문서가 "물리 직렬화·저장 위치·검사 도구·물리 진입점 해소는 Adapter Binding 문서 소관"이라며 미룬 **직렬화 형식·명명 관례·저장 위치·물리 진입점 해소·검사 도구 배선**이 실재하는(확정되는) 유일한 자리다(06 §4, verification-report.md §5, module-manifest.md §4, criteria-catalog.md §5, rework-instruction.md §5, verifier-protocol.md §0).
 - **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리(`framework/verifier/` 등) 문서 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이어야 한다(structure.md §5 C-3 확장, 06 §3.3 INV-8). 이 문서는 그 **반대편**이다 — 구체 토큰(진입점 정의 파일 경로 `.claude/agents/…`, 직렬화 형식명 Markdown, 물리 경로 `docs/…`·`framework/adapters/claude/…`, 검사 도구명, 서브에이전트·세션 등)의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(runtime-binding.md §0·memory-binding.md §0과 동형).
-- **검증 리포트 직렬화·저장 위치 정본 선언(done 4).** 검증 리포트의 물리 직렬화 형식(구조화 Markdown 문서)·명명 관례(`docs/v0.X-verification-report.md`)·저장 위치(`docs/`)의 **물리 실현 정본은 이 문서(§4)다**. 검증 리포트는 은닉 백엔드(예: Memory Store)가 아니라 구체 토큰 인용이 허용되는 **구조화 검증 산출물 문서**이며(두 실사용 리포트 §0 거버넌스 동형), 06 §4.1 검증 리포트 직렬화 행이 "검증 산출물 위치"로 Adapter Binding 문서에 미룬 지점을 본 문서가 확정한다. 이 위치는 이미 **2건의 확정 실사용 인스턴스**(docs/v0.3·v0.4-verification-report.md, §7 실측)로 실증되었다.
+- **검증 리포트 직렬화·저장 위치 정본 선언(done 4).** 검증 리포트의 물리 직렬화 형식(구조화 Markdown 문서)·명명 관례(`docs/v0.X-verification-report.md`)·저장 위치(`docs/`)의 **물리 실현 정본은 이 문서(§4)다**. 검증 리포트는 은닉 백엔드(예: Memory Store)가 아니라 구체 토큰 인용이 허용되는 **구조화 검증 산출물 문서**이며(두 실사용 리포트 §0 거버넌스 동형), 06 §4.1 검증 리포트 직렬화 행이 "검증 산출물 위치"로 Adapter Binding 문서에 미룬 지점을 본 문서가 확정한다. 이 위치는 이미 **2건의 확정 실사용 인스턴스**(`uahf/docs/v0.3-verification-report.md@cd9247b`·`uahf/docs/v0.4-verification-report.md@cd9247b`, §7 실측 — 아카이브)로 실증되었다.
 - **창설 금지.** 이 문서는 06 §4.1 표를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. v0.5 산출물(검증 리포트 스키마·재작업 지시 포맷·완료 판정 기준 카탈로그)의 물리 실현 매핑으로 한정한다. 새 검증 유형·판정 값·재작업 지시 필드·불변 규칙·검사 도구 계약을 만들지 않는다.
 - **하네스 상태 전제(Bootstrap).** 이 하네스는 현재 **Bootstrap 상태**다(Glossary J-13, runtime-binding.md §0, delegation-protocol.md §0). Verifier는 정식 실행 Module이 아니라 규약 문서(06·framework/verifier/ 5문서)와 관행(Advisor가 산출물을 정독해 판정을 구동, verification-checklist.md §2 게이트 C)으로 실현된다(형태 A). 따라서 본 문서의 매핑은 **이미 물리적으로 실재하는 표면**(진입점 정의 파일·구현 디렉터리 5문서·확정 실사용 리포트 2건 — §7 실측)과, **실행 코드 도입 시 로딩될 지점**(형태 B — Verify 연산 실행 진입점·로더)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
-- **실측 기반 상태 서술(done 1·7, L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3.md §1.4 A5 사례·§1.5 Lesson 후보 3 재발 방지, 이월 L-07). §2 "실재 여부" 열과 §7 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로, 미래 산출물을 현재 실재로 쓰지 않는다.
+- **실측 기반 상태 서술(done 1·7, L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록, A5 재발 방지). §2 "실재 여부" 열과 §7 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로, 미래 산출물을 현재 실재로 쓰지 않는다.
 - 용어는 specs/00-glossary.md 정본만 사용한다. 검증 리포트·검증 유형·재작업 지시·거짓 완료 보고는 Glossary §3.2-J 정본이며(06 §9 승격 4건), Verifier·검증·판정은 Glossary 기존 용어다. 본 문서는 새 용어를 신설하지 않는다. `형태 A/B`는 structure.md 서술 라벨의 인용이며 Glossary 표제어가 아니다.
 
 ---
@@ -123,7 +124,7 @@ module-manifest.md는 Advisor 결정 DP-V2로 `configSchema`를 **선언하지 �
 
 - **직렬화 형식.** 검증 리포트는 **구조화 Markdown 문서**로 직렬화된다. 06 §3.2-A의 6필드(`target`/`criteria_basis`/`items`/`final_verdict`/`verifier_scope`/`rework`)를 문서 절 구조로 담는다 — `§1 target` / `§2 criteria_basis` / `§3 items`(항목별 판정 표: `criterion`/`verdict`/`evidence`/`scope`/`verification_type` 열, 06 §3.2-B) / `§4 final_verdict` / `§5 verifier_scope` / `§6 rework`. 이 절 ↔ 필드 대응은 verification-report.md §6(v0.3·v0.4 실사용 필드 대응표, V1 확정본)이 이미 실증했으며, 본 문서는 그 구조를 물리 실현으로 인용만 한다(스키마 정본은 06 §3.2-A/B/C·verification-report.md).
 - **명명 관례·저장 위치.** 저장 위치 = `docs/`, 명명 관례 = `docs/v0.X-verification-report.md`(X = 대상 마일스톤 버전). 이는 검증 산출물이 스캔·실측 결과 보고에 필요한 구체 토큰·물리 경로 인용을 정당하게 보유하는 **구조화 검증 산출물 문서**이기 때문이며(두 리포트 §0 거버넌스), 은닉 백엔드(Memory Store 같은 격리 데이터)가 아니다. 문서 머리에는 작성일·수행 주체·근거 정본·§9 이력 절을 둔다(docs 거버넌스 관례 동형).
-- **실증(실측).** 이 형식·명명·위치는 **2건의 확정 실사용 인스턴스**로 실증된다 — `docs/v0.3-verification-report.md`(실재, §7 실측)·`docs/v0.4-verification-report.md`(실재, §7 실측). 각각 CP2 독립 판정 산출물이며 Baseline으로 확정되었다. 두 리포트가 6필드 절 구조·Fail→재검증 Pass 사이클·rework 절 직렬화를 실사용했다(verification-report.md §6·rework-instruction.md §6 대응표).
+- **실증(실측).** 이 형식·명명·위치는 **2건의 확정 실사용 인스턴스**로 실증된다 — `uahf/docs/v0.3-verification-report.md@cd9247b`(§7 실측 — 아카이브)·`uahf/docs/v0.4-verification-report.md@cd9247b`(§7 실측 — 아카이브). 각각 CP2 독립 판정 산출물이며 Baseline으로 확정되었다. 두 리포트가 6필드 절 구조·Fail→재검증 Pass 사이클·rework 절 직렬화를 실사용했다(verification-report.md §6·rework-instruction.md §6 대응표).
 - **미래 인스턴스.** v0.5 검증 리포트의 개별 인스턴스는 현 시점 미존재이며(§7 실측), v0.5 판정(CP2) 또는 시연 Task 수행 시 이 관례대로 생성될 **예정**이다. 본 문서는 그 미래 산출물의 실재를 주장하지 않는다(L-07). 시연 절차·픽스처 상세는 시연 Task(동시 작성 중, 07 R2) 소관이며 본 문서가 서술하지 않는다.
 
 ### §4.2 재작업 지시 직렬화·전달 (정본 — 06 §4.1 재작업 지시 전달 행)
@@ -172,7 +173,7 @@ criteria-catalog.md §5가 "검사 도구·구체 토큰의 물리 실현은 Ada
 
 ## §7. 상태 서술 실측 대조 (done 7 — A5/L-07 재발 방지)
 
-session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록, 이월 L-07)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(Glob) + 파일 크기 직접 실측.**
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재 소스를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(Glob) + 파일 크기 직접 실측.**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|
@@ -182,8 +183,8 @@ session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서�
 | `framework/adapters/claude/verifier-binding.md` | 실재 (본 문서 — 본 산출로 생성) | 실재 (이 파일). 생성 전 미존재였음. |
 | `.claude/agents/verifier.md` (§2 #1 진입점) | 실재 (진입점 정의 파일, 실행 모델 미지정=세션 상속) | 실재 (11,357 bytes). 실행 모델 지정 없음 — 세션 상속(front-matter `model` 키 부재) 확인. |
 | `framework/verifier/` 5문서 (§2 #2 구현 디렉터리) | 실재 (V1~V5 확정본) | 실재 — 5파일 확인: verification-report.md(19,656)·module-manifest.md(24,567)·verifier-protocol.md(33,523)·rework-instruction.md(27,306)·criteria-catalog.md(32,478). |
-| `docs/v0.3-verification-report.md` (§4.1 직렬화 실증) | 실재 (검증 리포트 실사용 인스턴스 1) | 실재 (43,698 bytes). |
-| `docs/v0.4-verification-report.md` (§4.1 직렬화 실증) | 실재 (검증 리포트 실사용 인스턴스 2) | 실재 (51,649 bytes). |
+| `uahf/docs/v0.3-verification-report.md@cd9247b` (§4.1 직렬화 실증) | 아카이브 (실사용 인스턴스 1) | @cd9247b 시점 실재 (43,698 bytes) — 산출물 수명 정책으로 작업 트리에서 제거(열람 `git show`). |
+| `uahf/docs/v0.4-verification-report.md@cd9247b` (§4.1 직렬화 실증) | 아카이브 (실사용 인스턴스 2) | @cd9247b 시점 실재 (51,649 bytes) — 산출물 수명 정책으로 작업 트리에서 제거(열람 `git show`). |
 | v0.5 검증 리포트 인스턴스 (§4.1 미래 인스턴스) | **미존재** (v0.5 판정/시연 시 생성 예정 — 시연 Task 소관) | **미존재** — `docs/v0.5-*.md` 파일 열거 결과 0건. 미래 산출물로 실재 불주장. |
 | 검사 도구 표면 (§5 — 파일 조회·텍스트 검색·명령 실행) | 실재 (현 환경 도구 표면) | 실재 — 본 검증 수행에 사용된 도구 표면(2건 리포트가 실사용 실증). |
 | Verifier `configSchema` 물리 반영 대상 (§3.2) | **없음** (DP-V2 생략 — Memory `recall.limit.max` 대응 절 부재) | 부재 확인 — module-manifest.md §2·§5에서 `configSchema` "선언하지 않음(DP-V2)" 확인. 물리 반영할 Config 값 0. |

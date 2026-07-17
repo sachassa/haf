@@ -16,7 +16,7 @@
 - framework/workflow/work-graph.md — 포맷 인스턴스 **소유 문서 관례 표본**(정본 셀 보존·필수 표기 보존·Failure Report 포맷 인스턴스 소유 선언·reason↔연산 결합은 연산 규칙 인스턴스 문서로 이연·비소관 경계 서술·§0 정본 경계·§9 이력 절 머리 배치·말미 요약 절·자가 전수 스캔 기록 형식).
 - AGENT.md — 상위 규약.
 
-거버넌스: 이 문서는 `framework/plugins/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 10 §3.3 INV-10). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/plugins/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 10 §3.3 INV-10). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -26,6 +26,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.8 Draft | 최초 작성. Plugin Manifest 6필드(10 §3.2-A — `id`/`version`/`provides`/`requires`/`dependsOn`/`frameworkCompat`)·공통 Failure Report 4필드+`reason` 11종(10 §3.2-B)을 전건 § 포인터 인용으로 인스턴스화(필드명·의미·필수/선택 표기·`reason` 열거·순서 정본 그대로 보존, 재정의 0·새 필드 0·새 reason 0). Plugin Manifest의 새 Config scope 미도입 주의(INV-7)·`ContractMismatch`/`UnresolvedContract`/`DuplicateId`의 01 §3.2-D 재사용·`IsolationViolation` 격리 사유 코드 주석 보존. 이 문서가 두 포맷의 **인스턴스 소유 문서**임과 "각 reason을 어느 연산이 언제 산출하는가는 연산 규칙 인스턴스 문서(plugin-lifecycle.md) 소관"임을 선언. 개별 Plugin 배포 서술자(Plugin Manifest)와 Provider 등록 서술자(Module Manifest, module-manifest.md)의 구분 명시. 연산 규칙(10 §3.1) 비소관(포맷만 소유), 직렬화·물리 위치·배포 채널 비서술(Adapter Binding 소관 포인터). 10·01 계약 재정의·확장 0, 새 필드·새 reason 0, Glossary 밖 새 용어 0, 금지 토큰 0(자가 부류별 전수 스캔 — §4). | Worker (Advisor 위임, Task EX-P1) |
 | 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 

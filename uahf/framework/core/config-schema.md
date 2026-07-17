@@ -17,7 +17,7 @@
 - framework/core/structure.md §7 — Core Contract 불변 조건(C-1).
 - specs/00-glossary.md §3.2-I — Config 용어 정본.
 
-거버넌스: 이 문서는 `framework/core/` 소속 Core 문서다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/core/` 소속 Core 문서다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -29,6 +29,7 @@
 | 2026-07-05 | v0.3 Draft r2 | Advisor 개정 2건. (1) DP-1 해소 — §7: 재시도 한도 추상 키 `retry.limit`, 기본값 2, Global 스코프 기본 + Project/Module override (근거: v0.1·v0.2 재작업 실측). (2) §5 주 — `SchemaViolation` 대조 스키마 출처의 조율 결정(A3 완료 보고 open_question 해소). | Advisor |
 | 2026-07-05 | v0.3 Draft r3 | CP2(A8 Verifier) Fail 재작업 — r2 개정 잔여 결함 교정. (1) §1·§7 서두·§7 제목·§10의 "미결정/자리만 예약/미기입" 서술을 DP-1 해소 상태와 정합화 (§5.3 상태 서술 모순 해소). (2) §7 말미 주의 실재하지 않는 "§Open Questions" 참조 제거 — §5 조율 결정으로 해소됨을 명시 (DoD-5 준용 해소). Verifier 검출 위반 2건 전체 대응. | Advisor |
 | 2026-07-05 | v0.3 Baseline | v0.3 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass, CP3 Advisor 승인, DP-1 사용자 재가: `retry.limit` 기본값 2·Global). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-XX·mi 유지)·삭제 산출물 참조 앵커 전환(@cd9247b·@004bfa9). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -201,9 +202,9 @@ Config(scope 기여 단위)
 
 **결정 기록 (DP-1 해소 — Advisor, 2026-07-05).**
 
-- 근거: specs/03-loop.md §3.1-B은 "재시도 한도 값은 Config(01 §3.2-B)로 주어진다. 기본값·스코프는 Config·Adapter Binding(§4)이 정한다. Loop는 한도 초과 판정 규칙만 정의한다"고 원문 규정한다. 값·스코프는 03이 열어 둔 항목이며, session-handoff-v0.2 §3.5가 "v0.3 Config 구현 시 값 결정" 보류 항목으로 승계했다.
+- 근거: specs/03-loop.md §3.1-B은 "재시도 한도 값은 Config(01 §3.2-B)로 주어진다. 기본값·스코프는 Config·Adapter Binding(§4)이 정한다. Loop는 한도 초과 판정 규칙만 정의한다"고 원문 규정한다. 값·스코프는 03이 열어 둔 항목이며, `uahf/docs/session-handoff-v0.2.md@004bfa9` §3.5가 "v0.3 Config 구현 시 값 결정" 보류 항목으로 승계했다.
 - 결정(Advisor): 기본값 **2**, 기본값 스코프 **Global**(Project/Module override 허용).
-  - 기본값 2의 근거 — v0.1·v0.2 실측에서 모든 재작업이 1회로 해소되었다 (session-handoff-v0.2 §1.4). 한도 2는 1회 재작업 + 1회 여유를 허용하면서, 03 §3.1-B의 한도 초과 에스컬레이션(사람 개입)을 과도하게 지연시키지 않는다.
+  - 기본값 2의 근거 — v0.1·v0.2 실측에서 모든 재작업이 1회로 해소되었다 (`uahf/docs/session-handoff-v0.2.md@004bfa9` §1.4). 한도 2는 1회 재작업 + 1회 여유를 허용하면서, 03 §3.1-B의 한도 초과 에스컬레이션(사람 개입)을 과도하게 지연시키지 않는다.
   - Global 스코프의 근거 — Framework 전역 기본값의 정의 위치는 Global scope다 (01 §3.2-B). 프로젝트·모듈별 조정 요구는 §4.2 우선순위(Module > Project > Global)로 이미 충족된다.
 - 이 결정은 v0.3 마일스톤 사용자 승인 시 함께 재가·거부 대상으로 상정된다. Loop의 한도 초과 판정 규칙 자체는 03 §3.1-B 소관으로 불변이다.
 

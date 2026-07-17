@@ -1,1 +1,0 @@
-DESIGN-DECISION: append-only-ledger

@@ -21,9 +21,9 @@
 - framework/core/structure.md §4 — 실행 코드 배치 규칙(C-2·규칙 2·규칙 4 — non-core 경계 분할의 "형태 B 설계 시 확정"). §5 — 금지 토큰 규칙(C-3). §7 — Core Contract 불변 조건(C-1). 본 문서 본문·§7이 준수하는 조건.
 - framework/runtime/lifecycle.md·module-manifest.md·module-registry.md — 자매 Core 문서. 골격·거버넌스·언어 중립 시그니처 관례의 관찰 대상.
 - framework/adapters/<adapter>/loop-binding.md §4·workflow-binding.md §4 — "사이클 구동을 사람 없이 자동 트리거·반복하는 실행 코드"·"무인 병렬 오케스트레이션 실행 진입점·로더(형태 B 예정)"의 예약 로케이터 문면. 본 프로토콜이 실현하는 두 예약 자리(인용).
-- docs/form-b-step-hosting-design.md (W0 확정, 사용자 승인 2026-07-13) — 본 프로토콜의 **설계 정본**. 계약 정본은 이 설계 문서가 아니라 위 spec·프로토콜·바인딩이 소유한다(설계 §0.6). 본 문서는 설계 §3·§4·§5·§8을 프로토콜로 형식화한다.
+- `docs/form-b-step-hosting-design.md@cd9247b` (W0 확정, 사용자 승인 2026-07-13; 열람: `git show cd9247b:docs/form-b-step-hosting-design.md`) — 본 프로토콜의 **설계 정본**(track-design 등급으로 아카이브). 계약 정본은 이 설계 문서가 아니라 위 spec·프로토콜·바인딩이 소유한다(설계 §0.6). 본 문서는 설계 §3·§4·§5·§8을 프로토콜로 형식화한다.
 
-거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 문서 본문은 특정 AI·언어·툴체인 비의존을 유지한다(structure.md §5, C-3). Step Host의 구체 실현(직렬화 형식·물리 실행 표면·정지 신호 값·정책 값 매핑)은 **Module 구현 경계(`framework/loop/step-host/`)·Adapter Binding 문서 소관**이며, 본 문서는 소관 포인터만 둔다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 문서 본문은 특정 AI·언어·툴체인 비의존을 유지한다(structure.md §5, C-3). Step Host의 구체 실현(직렬화 형식·물리 실행 표면·정지 신호 값·정책 값 매핑)은 **Module 구현 경계(`framework/loop/step-host/`)·Adapter Binding 문서 소관**이며, 본 문서는 소관 포인터만 둔다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -37,6 +37,7 @@
 | 2026-07-13 | W3 실증 (본문 무변경) | W2 구현·W3 dogfooding E2E 로 §7.2 소관 산출물이 전부 실재화됨 — `framework/loop/step-host/`(중립 Host·테스트 17)·`framework/adapters/claude/step-hosting-binding.md`·`step-invoker/`(테스트 19)·run 데이터 백엔드(`step-data/runs/` 8 run·E2E 7 시나리오 CP2 독립 Pass). §7.3 문면은 W1 시점 실측 스냅샷으로 보존한다(BPD-17 — 현행 실재는 본 행과 step-hosting-binding.md §6 이 기록). 본문 계약·SH-INV 무변경. | Advisor |
 | 2026-07-13 | v1.5 Baseline | 마일스톤 v1.5 「형태 B Step Execution Hosting」 사용자 승인 — 기준선 확정(Baseline 승격 게이트 통과·상태행 승격). 본문 무변경. | Advisor |
 | 2026-07-13 | v1.6 정합 (본문 무변경) | 프로젝트 레벨 소비자 실재 — orchestration Layer(마일스톤 v1.6·정본 `orchestration/specs/05-project-orchestration.md`)가 본 프로토콜의 중립 Host(`framework/loop/step-host/`)를 substrate로 **라이브러리 무수정 소비**한다(공유 EventStore·결정적 재개·SH-INV 전건 상속). 본문 계약·SH-INV 무변경. | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-XX·mi 유지)·삭제 산출물 참조 앵커 전환(@cd9247b·@004bfa9). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 

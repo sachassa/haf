@@ -22,7 +22,7 @@
 - specs/00-glossary.md — 용어 정본(Harness §3.2-D·Harness 상태 J-13·핵심 루프 J-11·역할 §3.2-E). 본 문서는 새 용어를 신설하지 않는다.
 - ROADMAP.md v0.2(Agent Harness Bootstrap)·v0.9(Adapter & Scaffold 정식화). 본 문서의 정식화 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 13 H-INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로·실행 모델 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·verifier-binding.md §0·loop-binding.md §0과 동형). 단 이 문서는 Core Contract(13 §3, 그리고 조합 대상 02·01·06 §3)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용하고, Harness가 소유하는 **조합 지점**만 물리 실현한다(13 §3 서두). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 13 H-INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로·실행 모델 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·verifier-binding.md §0·loop-binding.md §0과 동형). 단 이 문서는 Core Contract(13 §3, 그리고 조합 대상 02·01·06 §3)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용하고, Harness가 소유하는 **조합 지점**만 물리 실현한다(13 §3 서두). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -32,6 +32,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.9 Draft | 최초 작성. `framework/adapters/claude/` 경계의 산출물 — 13 §4.1 조합 바인딩 표를 물리 실현으로 정식화(adapter-conformance.md §4 배정 이행). 13 §4.1 조합 바인딩 표 **7행 전건**(상위 규약 문서·역할 4종·위임/보고·검증 게이트·작업 추적·실행 모델·호스트 프로세스)을 물리 실현("물리 실현" 열 + "실재 여부" 열, 형태 A/B 정직 구분)으로 매핑하고, 상세 정본이 02·01·06 소유임을 § 포인터로 유지하며 **조합 지점만** 소유(§2, 13 §3 서두 — 재정의 0). 13 §3.2-A 최소 구성 5요소 각각의 물리 실물 존재 실측 대조(§3). 13 §4.2 교체 지점 1~6 대응 표("교체되는 것/유지되는 것" — Harness 고유 이식 불변 재확인, §4). **13 §3.2-B 전이 조건 판정 비수행 명시**(§5 — 전이 재판정은 후속 Task T11 소관, 본 문서는 형태 A/B 구분을 위해 기존 확정 문서의 Bootstrap 전제만 인용하고 조건 4개 대조·재판정을 수행하지 않음). 상태 서술 실측 대조 표(§6 — 실재 서술 전건 파일 시스템 직접 실측 후 기입, L-07). 13·02·01·06 §3 계약 재정의·확장 0·새 최소 구성 요소·새 무결성 규칙·새 전이 조건 창설 0·Frozen specs 계수 15·Glossary 밖 새 용어 0. 형제 Task(PS2) 산출물 불인용(07 R2). 이 1파일만 생성(agent-binding.md와 함께 Task T3 소산) — 자매 바인딩 문서·specs/·docs/·.claude/ 무수정(07 R4). | Worker (Advisor 위임, Task T3) |
 | 2026-07-06 | v0.9 Baseline | v0.9 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 20/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·검증 리포트 6건(v0.3~v0.8) "실재" 서술을 @cd9247b 아카이브로 전환(§0 커버리지 노트·§2·§3·§6 실측 표). loop-data/ 백엔드 위치·`docs/v0.X-verification-report.md` 명명 관례는 계약 서술로 유지. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -45,7 +46,8 @@
 - **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이어야 한다(structure.md §5 C-3 확장, 13 H-INV-8). 이 문서는 그 **반대편**이다 — 구체 토큰(규약 파일 `.claude/AGENT.md`·`.claude/CLAUDE.md`, 정의 파일 `.claude/agents/…`, 실행 모델 `model: opus`, 세션/턴, 서브에이전트, 백엔드 경로 `framework/adapters/claude/…`·`docs/…` 등)의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(자매 바인딩 문서 §0과 동형). **단 이 허용은 13·02·01·06 §3 계약 문면을 바꿀 권한을 뜻하지 않는다** — 무변경, 인용만 한다.
 - **창설 금지.** 이 문서는 13 §4.1 조합 표를 **넘어서는 새 조합 바인딩을 창설하지 않는다**. 새 최소 구성 요소·새 무결성 규칙(H-INV-n)·새 전이 조건·새 상태를 만들지 않는다.
 - **하네스 상태 전제 · 전이 판정 비수행(§5).** 형태 A(문서·규약)/형태 B(실행 코드) 구분을 위해, 이 하네스가 현재 **Bootstrap 상태**라는 전제는 기존 확정 문서(Glossary J-13, delegation-protocol.md §0, 자매 바인딩 문서 §0)가 이미 기록한 것을 인용한다. **본 문서는 13 §3.2-B 전이 조건 4개의 대조·재판정을 수행하지 않는다** — 전이 재판정은 후속 Task(T11) 소관이다(§5). `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
-- **실측 기반 상태 서술(L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3.md §1.4 A5 사례·§1.5 Lesson 후보 3 재발 방지, Active Lesson L-07). §2 "실재 여부" 열·§3 실물 대조·§6 실측 대조 표의 전 행은 파일 시스템 직접 실측(2026-07-06)에 근거한다 — 미존재를 실재로, 미래 산출물을 현재 실재로 쓰지 않는다.
+- **실측 기반 상태 서술(L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록, A5 재발 방지). §2 "실재 여부" 열·§3 실물 대조·§6 실측 대조 표의 전 행은 파일 시스템 직접 실측(2026-07-06)에 근거한다 — 미존재를 실재로, 미래 산출물을 현재 실재로 쓰지 않는다.
+- **검증 리포트 6건·loop-data/ 데모 아카이브(산출물 수명 정책 정합, 2026-07-17).** 본 문서가 작업 추적 물리 실물로 조합 참조하는 검증 리포트 6건(v0.3~v0.8-verification-report.md)은 산출물 수명 정책(docs/artifact-lifecycle-policy.md §7)으로 작업 트리에서 제거되었다 — 본문의 "검증 리포트 6건 실재" 서술은 **cd9247b 시점 스냅샷** 기준이며, 앵커 `uahf/docs/v0.X-verification-report.md@cd9247b`로 열람한다(§6). loop-data/ 백엔드 위치는 계약 서술로 유지되고 데모 데이터는 loop-binding.md §0·§7 아카이브 노트를 따른다. `docs/v0.X-verification-report.md` 명명 관례는 무변경.
 - 용어는 specs/00-glossary.md 정본만 사용한다. Harness·Harness 상태(Bootstrap/Formal)·핵심 루프·최소 구성 집합·검증 게이트·작업 추적은 Glossary §3.2-D·§3.2-J·J-11·J-13 정본이며, 4역할은 Glossary §3.2-E 정본이다. 본 문서는 그 물리 실현 조합 매핑만 낸다. `형태 A/B`는 structure.md 서술 라벨의 인용이며 Glossary 표제어가 아니다. 본 문서는 새 용어를 신설하지 않는다.
 
 ---
@@ -76,7 +78,7 @@
 | 2 | Agent 역할 정의 4종 | `.claude/agents/{advisor,planner,worker,verifier}.md` | 4역할 정의 파일 = `.claude/agents/` 4종(실재)의 조합. 물리 실현은 agent-binding.md §2 행 1 소유 — 조합 참조. 4역할 경계 유지(H-INV-2)의 물리 실물이다. | 4파일 실재(§6 실측). | 02 §4.1·§3.2-A (agent-binding.md §2 행 1) |
 | 3 | 위임·보고 프로토콜 | 서브에이전트 위임(위임 메시지 전달) + 서브에이전트 최종 응답(보고 회수) | 위임 = 서브에이전트 디스패치, 보고 = 최종 응답의 조합(delegation-protocol.md §3). 물리 실현은 agent-binding.md §4 소유 — 조합 참조. 완료 조건 포함 위임(H-INV-3)·독립 검증 전 보고 회수의 물리 채널이다. | 규약 실현(형태 A, Bootstrap). v0.2~v0.8 위임 사이클로 실증. | 02 §4.1·§3.2-B/C/D (agent-binding.md §4) |
 | 4 | 검증 게이트 | Advisor의 독립 재검증 — `.claude/CLAUDE.md` "Worker 완료 보고를 그대로 신뢰하지 않는다" | 검증 게이트 = `.claude/CLAUDE.md`의 "Worker 완료 보고를 그대로 신뢰하지 않는다" 규칙(실재) + Verifier 독립 판정(CP2 — verifier-binding.md) + Advisor 최종 승인(CP3)의 조합. 구현 주체와 검증 주체 분리(H-INV-2·H-INV-4)의 물리 실물이다. 판정 기준 정본은 06. | `.claude/CLAUDE.md` 규칙 실재(§6 실측). 게이트 운용 규약 실현(형태 A). | 02 §4.1·06 §4.1 (verifier-binding.md) |
-| 5 | 작업 추적 | Wave 단위 위임·검증 사이클과 결정 기록(Open Questions·결정 기록 관행) | 작업 추적 = Wave 단위 위임·검증 사이클(delegation-protocol.md §3.3) + 결정 기록·Open Questions 관행 + 루프 상태 기록 백엔드(`framework/adapters/claude/loop-data/` — loop-binding.md §3) + 검증 리포트(`docs/v0.X-verification-report.md` 6건 — verifier-binding.md §4)의 조합. 결정의 기록(H-INV-5)의 물리 실물이다. | Wave 사이클 규약 실현(형태 A). 백엔드(loop-data/)·검증 리포트 6건 실재(§6 실측). | 13 H-INV-5 (부트스트랩 관행 — loop-binding.md §3·verifier-binding.md §4) |
+| 5 | 작업 추적 | Wave 단위 위임·검증 사이클과 결정 기록(Open Questions·결정 기록 관행) | 작업 추적 = Wave 단위 위임·검증 사이클(delegation-protocol.md §3.3) + 결정 기록·Open Questions 관행 + 루프 상태 기록 백엔드(`framework/adapters/claude/loop-data/` — loop-binding.md §3) + 검증 리포트(`docs/v0.X-verification-report.md` 6건 — verifier-binding.md §4)의 조합. 결정의 기록(H-INV-5)의 물리 실물이다. | Wave 사이클 규약 실현(형태 A). 백엔드(loop-data/) 실재·검증 리포트 6건 아카이브(§6 — @cd9247b). | 13 H-INV-5 (부트스트랩 관행 — loop-binding.md §3·verifier-binding.md §4) |
 | 6 | 실행 모델 지정 | Worker의 기본 실행 모델 = Opus 등 역할별 모델 지정 | 역할별 실행 모델 지정 = worker/planner/verifier `model: opus`·advisor 세션 상속(실측)의 조합. 물리 실현은 agent-binding.md §3 소유 — 조합 참조(재정의 0). | 4역할 실행 모델 지정 실재(§6 실측). | 02 §4.1 SP-3 (agent-binding.md §3) |
 | 7 | 호스트 프로세스 | Claude Code 세션/턴 = 사이클 실행 컨테이너 | 호스트 프로세스 = Claude Code **세션/턴**(Bootstrap~Serve~Shutdown 실행 컨테이너)의 조합 참조. 물리 실현은 runtime-binding.md §2 #10·§3.4 소유 — 조합 참조. 최소 부분집합 호스팅(H-INV-6)의 실행 컨테이너다. | 세션/턴 컨테이너 실재(현 세션). 실행 Bootstrap/Shutdown(형태 B)은 미도입. | 01 §4.1 (runtime-binding.md §2 #10·§3.4) |
 
@@ -98,7 +100,7 @@
 | Agent 역할 정의 4종 | 02 §3.2-A, Glossary §3.2-E | `.claude/agents/{advisor,planner,worker,verifier}.md` 4파일. 4역할 책임·경계 확립(H-INV-2 — 결정·구현·검증 분리). | 실재 — 4파일 확인. |
 | 위임·완료/실패 보고 프로토콜 | 02 §3.2-B/C/D | 서브에이전트 위임(위임 메시지 8필드) + 최종 응답(완료 5필드·실패 5필드), delegation-protocol.md §2~§3 운용. 완료 조건 포함 위임(H-INV-3)·은폐 불가 보고. | 계약 실재(02 §3.2-B/C/D)·운용 지침 실재(delegation-protocol.md). 채널은 규약 실현(형태 A). |
 | 검증 게이트 (Verification Gate) | ARCHITECTURE 3.4, AGENT.md Verification, 02 INV-4 | `.claude/CLAUDE.md` "Worker 완료 보고를 그대로 신뢰하지 않는다" 규칙 + Verifier 독립 판정(CP2, `.claude/agents/verifier.md`·verifier-binding.md) + Advisor 최종 승인(CP3). 완료 보고를 독립 검증 없이 승인하지 않는 통제 지점(H-INV-4). | `.claude/CLAUDE.md` 규칙 실재·`.claude/agents/verifier.md` 실재. 게이트 운용 규약 실현(형태 A). |
-| 작업 추적 (Task Tracking) | 본 spec H-INV-5 | Wave 단위 위임·검증 사이클 + 결정 기록·Open Questions 관행 + `framework/adapters/claude/loop-data/`(루프 상태 기록 백엔드) + `docs/v0.X-verification-report.md`(검증 리포트 6건). 사이클 진행·완료·결정 기록(H-INV-5). | 백엔드(loop-data/)·검증 리포트 6건 실재(§6 실측). Wave 사이클은 규약 실현(형태 A). |
+| 작업 추적 (Task Tracking) | 본 spec H-INV-5 | Wave 단위 위임·검증 사이클 + 결정 기록·Open Questions 관행 + `framework/adapters/claude/loop-data/`(루프 상태 기록 백엔드) + `docs/v0.X-verification-report.md`(검증 리포트 6건). 사이클 진행·완료·결정 기록(H-INV-5). | 백엔드(loop-data/) 실재·검증 리포트 6건 아카이브(§6 — @cd9247b). Wave 사이클은 규약 실현(형태 A). |
 
 - **5요소 완비(H-INV-1 물리 근거).** 위 5요소는 전건 물리 실물(정의 파일·규약 문서·백엔드·검증 리포트) 또는 확정 계약(02 §3.2-B/C/D)으로 실현되며, 어느 하나도 부재가 아니다(§6 실측). 이는 13 §3.2-A "5개 필수 요소가 모두 존재해야 Harness가 성립한다"(H-INV-1)의 물리 실물 근거다. **단 본 문서는 이 실물 실측을 근거로 H-INV-1 충족을 대조 제시할 뿐, 13 §3.2-B 전이 조건(Bootstrap→Formal)을 재판정하지 않는다(§5).**
 - **소유 구분(재정의 0).** 각 요소의 상세 계약은 "소유·근거" 열의 정본이 소유한다 — Harness는 이 5요소의 "필수성"과 "조합"만 소유하고(13 §3.2-A 주), 역할 경계·메시지 필드·판정 기준을 재정의하지 않는다.
@@ -135,7 +137,7 @@
 
 ## §6. 상태 서술 실측 대조 (L-07 재발 방지)
 
-session-handoff-v0.3.md §1.4(A5 사례 — 미존재를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록, 이월 L-07)에 따라, 본 문서의 "실재/존재/부재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`) 직접 실측.**
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출)에 따라, 본 문서의 "실재/존재/부재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`) 직접 실측.**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|
@@ -143,7 +145,7 @@ session-handoff-v0.3.md §1.4(A5 사례 — 미존재를 "실재"로 서술 → 
 | `.claude/agents/` 4역할 정의 파일 (§2 행 2, §3 역할 4종) | 실재 (advisor·planner·worker·verifier.md) | 실재 — 4파일 확인. |
 | 실행 모델 지정 (§2 행 6) | 실재 (worker/planner/verifier `model: opus`·advisor 세션 상속) | 실재 — agent-binding.md §3·§6 실측과 정합(worker/planner/verifier front-matter `model: opus`·advisor `model` 라인 부재 확인). |
 | `framework/adapters/claude/loop-data/` (§2 행 5, §3 작업 추적) | 실재 (루프 상태 기록 백엔드) | 실재 — loop-data/ 디렉터리 확인(loop-binding.md §3 소관 백엔드). |
-| `docs/v0.X-verification-report.md` 6건 (§2 행 5, §3 작업 추적) | 실재 (검증 리포트 6건 — v0.3~v0.8) | 실재 — v0.3·v0.4·v0.5·v0.6·v0.7·v0.8-verification-report.md 6건 확인(verifier-binding.md §4 소관). |
+| `docs/v0.X-verification-report.md` 6건 (§2 행 5, §3 작업 추적) | 아카이브 (검증 리포트 6건 — v0.3~v0.8) | @cd9247b 시점 실재 — `uahf/docs/v0.3~v0.8-verification-report.md` 6건(verifier-binding.md §4 소관). 산출물 수명 정책으로 작업 트리에서 제거(열람 `git show cd9247b:uahf/docs/v0.3-verification-report.md`); 명명 관례는 계약 서술로 유지. |
 | Claude Code 세션/턴 호스트 프로세스 (§2 행 7) | 실재 (현 세션이 실행 컨테이너) | 실재 — 현 세션이 그 컨테이너(runtime-binding.md §2 #10 소관). 실행 Bootstrap/Shutdown(형태 B)은 미도입. |
 | `framework/adapters/claude/` 자매 바인딩 문서 (§0·§2 조합 참조) | 실재 (agent·runtime·verifier·loop-binding.md 등) | 실재 — agent-binding.md(본 Task 동반 산출)·runtime-binding.md·verifier-binding.md·loop-binding.md 확인. |
 | `framework/adapters/claude/harness-binding.md` (본 문서) | 실재 (본 산출로 생성) | 실재 (이 파일). 생성 전 미존재였음(사전 실측 확인). |

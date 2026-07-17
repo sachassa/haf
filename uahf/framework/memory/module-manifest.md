@@ -15,7 +15,7 @@
 - framework/memory/memory-service.md — 이 Provider가 구현하는 Port 계약 인스턴스(자매 문서, 동일 Task M2 산출물).
 - framework/core/structure.md §2·§5 — Module 구현 디렉터리 경계(자기완결, C-3 확장 — 문서 본문 비의존), 금지 토큰 규칙.
 
-거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -26,6 +26,7 @@
 | 2026-07-05 | v0.4 Draft | 최초 작성. Memory Service Provider Module의 01 §3.2-A 7필드 인스턴스(`id`·`contract`=`MemoryServiceInterface`·`version`·`requires`·`entrypoint`·`configSchema`·`replaceable`), 필드별 인스턴스 값·근거, entrypoint 추상 참조 + 물리 해소 Adapter Binding 소관 포인터(물리 경로·형식 하드코딩 0), 필수/선택 표기 정본 대조 보존. 01 §3.2-A 계약 재정의·확장 0, 금지 토큰 0, Glossary 밖 새 용어 0. | Worker (Advisor 위임, Task M2) |
 | 2026-07-05 | v0.4 Draft (r2) | Advisor 재작업 지시 반영. (1) `configSchema` 생략 → 선언: 자기 Module 네임스페이스 키 `recall.limit.max`(유한 양의 정수, 기본 20) — Recall 시스템 상한 값 원천(Advisor 결정 DP-M1). (2) `version` 서술을 확정형으로 갱신(Advisor 승인 — Framework/Spec 버전과 독립 축, 초기 0.1.0, Provider 구현 갱신 시 상승). §2 표·§3·§5·§6의 동일 서술을 전수 확정형으로 갱신(확정 대기 잔여 0). 스키마 표기는 계약 수준(추상) — 구체 직렬화는 Adapter 소관 유지. | Worker (Advisor 재작업 지시, Task M2 r2) |
 | 2026-07-06 | v0.4 Baseline | v0.4 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 재작업 1회 후 재검증, CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -48,7 +49,7 @@
 이 규격의 책임은 두 가지다.
 
 - 01 §3.2-A의 7필드를 이 Provider에 대한 **구체 값**으로 채운다 — `contract`는 `MemoryServiceInterface`로 고정하고(01 §8 예1 정합), `entrypoint`는 추상 참조로 두며 물리 해소는 Adapter Binding 문서 소관으로 미룬다.
-- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존 — session-handoff-v0.2 §1.5 Lesson 후보 2).
+- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존).
 
 이 Manifest는 Runtime의 **Register** 연산(01 §3.1-A, 운용 규칙: framework/runtime/module-registry.md §2.1)의 입력이 된다. 이 Provider가 구현하는 Port 계약의 인스턴스는 자매 문서 framework/memory/memory-service.md다. 각 Module은 자기완결(self-contained) 단위이므로, 이 Manifest는 그 Module의 `id`·`contract`·`entrypoint` 등 자기완결 참조를 한 서술자에 묶는다 (01 §3.2-E 규칙 2).
 
@@ -70,7 +71,7 @@
 
 주:
 
-- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다 (session-handoff-v0.2 §1.5 Lesson 후보 2).
+- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다.
 - 필수 4필드: `id`·`contract`·`version`·`entrypoint`. 선택 3필드: `requires`(기본 없음)·`configSchema`·`replaceable`(기본 true).
 - 상세 필드 계약의 정본은 01 §3.2-A가, 형식 작성 지침은 framework/runtime/module-manifest.md가 유지한다. 이 표는 값 인스턴스이며 계약의 진위 판정 기준이 아니다.
 
@@ -135,7 +136,7 @@
 ## §5. 정본 경계·금지 토큰 준수 (self-note)
 
 - **재정의·확장 0.** 본 문서의 7필드는 01 §3.2-A의 인스턴스다. 어떤 필드도 이 문서에서 진위가 확정되지 않는다 — 판정 기준은 01 §3.2-A(필드 계약)와 framework/runtime/module-manifest.md(형식 규격)다. 필수/선택 표기(`requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 등)를 정본 그대로 보존했고, 새 필드를 추가하지 않았다.
-- **금지 토큰 0.** 본문·표·예시 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명이 0건이다 (framework/core/structure.md §5 C-3 확장). 진입점·백엔드의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 04 §4.1)" 포인터를 둔다 (mention/use 경계 — 금지 토큰의 예시도 누출이다, session-handoff-v0.2 §1.5 Lesson 후보 3).
+- **금지 토큰 0.** 본문·표·예시 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명이 0건이다 (framework/core/structure.md §5 C-3 확장). 진입점·백엔드의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 04 §4.1)" 포인터를 둔다 (mention/use 경계 — 금지 토큰의 예시도 누출이다).
 - **새 계약·용어 0.** `requires`에서 존재하지 않는 백엔드/저장 contract를 신설하지 않았고, Glossary 밖 새 용어를 만들지 않았다. `contract` 값 `MemoryServiceInterface`는 01 §8 예1·04 §4.1의 인용이다.
 - **설계 확정(Advisor).** `version` 부여 관례(Framework/Spec 버전과 독립 축, 초기 `0.1.0`, 구현 갱신 시 상승 — Advisor 승인)와 Recall 시스템 상한의 값 원천(Provider Module Config 키 `recall.limit.max`, 기본 20 — 결정 DP-M1)은 Advisor 결정으로 확정되어 §2·§3에 반영했다. 확정 대기 잔여 0.
 

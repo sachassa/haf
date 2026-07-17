@@ -1,1 +1,0 @@
-[audit] hookId=audit-complete eventId=lifecycle.complete phase=after sourceRef=loop-data:v08-demo-h.jsonl#lifecycle.complete contextView=read-only-projection(원천 spec 소유 — 08 §3.2-C) occurredAt=2

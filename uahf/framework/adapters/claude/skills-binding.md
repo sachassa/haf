@@ -21,7 +21,7 @@
 - specs/00-glossary.md §3.2-J J-09 — Skill Manifest·Trigger·Skill Body·Skill I/O Contract·`SkillInterface` 정본(§9 요청으로 Advisor 승인 추가). 본 문서는 새 용어를 신설하지 않고 이 정본만 사용한다.
 - ROADMAP.md v0.8 (Extension System) — Skills 완료 조건과 산출물("본체 수정 0 확장·지연 로드·역할 경계·우선순위·재사용")의 환경 실현 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 09 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·memory-binding.md §0·verifier-binding.md §0·loop-binding.md §0과 동형). 단 이 문서는 Core Contract(09 §3)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 09 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·memory-binding.md §0·verifier-binding.md §0·loop-binding.md §0과 동형). 단 이 문서는 Core Contract(09 §3)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -31,6 +31,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.8 Draft | 최초 작성. `framework/adapters/claude/` 경계의 다섯 번째 Adapter Binding 산출물(선행: runtime·memory·verifier·loop-binding.md). 09 §4.1 바인딩 표 **7행 전건**을 물리 실현("물리 실현(claude 환경)" 열 + "실재 여부" 열)으로 매핑, 형태 A(규약 실현)/형태 B(실행 코드 예정)/실물 미생성(`.claude/skills/` 빈 디렉터리) 정직 구분(§2). Skill Manifest 직렬화 물리 정본 확정(§3 — `.claude/skills/<skill-id>/` 자기완결 단위, 메타데이터 9필드 = front-matter·`body` = Markdown 본문·`resources` = 본문 로드 계층의 로드 계층 분리(09 §3.2-A 필수/선택·로드 계층 정본 보존, 재정의 0), `contract` 값 = `SkillInterface` — Glossary §3.2-J J-09 / 09 §3.2-A 정본, 신설 아님). 발견·선택 물리 절차(§4 — front-matter `trigger` 평가·메타데이터만 사용·결정적·`NoMatchingSkill` 빈 결과·09 §9 결정 기록 모호성 해소 순서(명시 호출 > 가장 구체적 트리거 > `AmbiguousSelection`) 운용 전개). 지연 로드·호출·Config 주입·실패 물리 판정(§5 — 선택 본문만 로드·미선택 본문 비로드 판정법, 역할 경계 INV-2·우선순위 4단 INV-3 물리 판정, Config 주입 INV-5, Skill Failure Report 8사유 코드 물리 판정 표·enum 소유 경계 보존). 09 §4.2 이식 교체 지점 SP-1~5 대응 표("교체되는 것/유지되는 것" — 유지 열이 §3.2-A 필수 필드·§3.2-B I/O 계약·INV-2·INV-3·INV-4 전건 커버, §6). 상태 서술 실측 대조(§7 — 실재 서술 전건 파일 시스템 직접 실측 후 기입, L-07; `.claude/skills/` 빈 디렉터리·레퍼런스 Skill 실물 미생성 정직 기록, 실재 불주장). 09 §3 계약 재정의·확장 0, 새 필드·새 사유 코드·새 연산 신설 0, Glossary 밖 새 용어 0. 동시 작성 형제 산출물(hooks-binding·framework/plugins/ 문서·시연 절차서) 불인용(07 R2), 조율 필요는 open_questions로(R3). 이 1파일만 생성 — `.claude/skills/` 실물·픽스처·시연 산출물·자매 Baseline 산출물·specs/·docs/ 무수정(R4). | Worker (Advisor 위임, Task EX-S1) |
 | 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지). `.claude/skills/`·loop-data/·memory-data/ 참조는 라이브/백엔드 경로로 무변경, 삭제 산출물 본문 참조 없음. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -44,7 +45,7 @@
 - **Skill Manifest 직렬화 물리 정본 선언(done 2).** `.claude/skills/` 하위 Skill 자기완결 단위의 파일 구조·메타데이터/본문 로드 계층 분리·`contract` 값 표기의 **물리 실현 정본은 이 문서(§3)다**. 09 §4.1은 이 직렬화를 "Adapter Binding 소관"으로 미뤘고(runtime-binding.md §2 #3이 09로 재차 미룸), 본 문서가 그 소유자로서 확정한다. 계약 요소의 진위 판정 기준은 항상 09 §3.2-A(필드·필수/선택·로드 계층)이며 본 문서는 물리 표기만 확정한다(재정의 0).
 - **창설 금지.** 이 문서는 09 §4.1 표를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. v0.8 산출물(Skill 정의·등록·발견·호출의 물리 실현)의 매핑으로 한정한다. 새 Skill 연산·필드·사유 코드·불변 규칙을 만들지 않는다. Skill 계약이 정의하지 않은 Skill 실물·픽스처·시연 산출물을 생성하지 않는다(후속 시연 Task 소관, 실재 불주장).
 - **하네스 상태 전제(Bootstrap).** 이 하네스는 현재 **Bootstrap 상태**다(Glossary J-13, runtime-binding.md §0, delegation-protocol.md §0). Skills는 정식 실행 Module이 아니라 규약 문서(09·framework/…)와 관행으로 실현된다(형태 A — 발견/선택/로드/호출을 호출 Agent가 자신의 턴에서 수행). 따라서 본 문서의 매핑은 **이미 물리적으로 실재하는 표면**(`.claude/skills/` 등록 표면 디렉터리·자매 바인딩 4문서·역할 정의 파일 — §7 실측)과, **실행 코드 도입 시 로딩될 지점**(형태 B — 트리거 평가·지연 로드·우선순위 판정의 실행 엔진)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
-- **실측 기반 상태 서술(done 7, L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3.md §1.4 A5 사례·§1.5 Lesson 후보 3, Active Lesson L-07). §2 "실재 여부" 열과 §7 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다. **`.claude/skills/`는 현재 빈 디렉터리이며 레퍼런스 Skill 실물은 미생성이다** — 본 문서는 그 실물의 실재를 주장하지 않는다(후속 시연 Task 생성 예정, memory-binding.md M5 draft·loop-binding.md L8 draft가 "구조 정본 + 데이터 미생성"을 정직 기록한 관례 동형).
+- **실측 기반 상태 서술(done 7, L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록, A5 재발 방지). §2 "실재 여부" 열과 §7 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다. **`.claude/skills/`는 현재 빈 디렉터리이며 레퍼런스 Skill 실물은 미생성이다** — 본 문서는 그 실물의 실재를 주장하지 않는다(후속 시연 Task 생성 예정, memory-binding.md M5 draft·loop-binding.md L8 draft가 "구조 정본 + 데이터 미생성"을 정직 기록한 관례 동형).
 - 용어는 specs/00-glossary.md 정본만 사용한다. `Skill Manifest`·`Trigger`·`Skill Body`·`Skill I/O Contract`·`SkillInterface`는 Glossary §3.2-J J-09 정본(09 §9 승인)이며, 본 문서는 새 용어를 신설하지 않는다. `형태 A/B`는 structure.md 서술 라벨의 인용이다.
 
 ---
@@ -245,7 +246,7 @@ Skill의 I/O 계약과 `body`는 프로젝트 비의존으로 작성되고, 프�
 
 ## §7. 상태 서술 실측 대조 (done 7 — A5/L-07 재발 방지)
 
-session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록, Active Lesson L-07)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`) + 디렉터리 내용 열거(`find`) + 파일 크기 직접 실측.**
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재 소스를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`) + 디렉터리 내용 열거(`find`) + 파일 크기 직접 실측.**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|

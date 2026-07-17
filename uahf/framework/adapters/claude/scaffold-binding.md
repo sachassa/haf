@@ -16,10 +16,10 @@
 - framework/core/structure.md §2·§5·§8 — 4경계 배치(Adapter 경계 = 격리 지점, C-3 비적용)·금지 토큰 규칙·§8 트리. 본 문서 경계·물리 분리의 근거.
 - specs/00-glossary.md §3.2-D(Component→Layer 매핑 — Scaffold = Presentation Layer, 12 §9-OQ1 결정)·§3.2-J(J-12 — Project Template·Install Manifest·설치 검증 체크리스트 표제어 정본). 본 문서는 새 용어를 신설하지 않는다.
 - .claude/AGENT.md·.claude/CLAUDE.md·.claude/agents/ 4종(advisor·planner·worker·verifier.md) — 템플릿 초기본의 원형(현행 라이브 실물). 본 문서는 참조만 하고 수정하지 않는다(07 R4).
-- docs/session-handoff-v0.3.md §1.4·§1.5(A5 사례·Lesson 후보 3 — 상태 서술은 실측 후 기록, Active Lesson L-07). §8 실측 대조의 근거.
+- Active Lesson L-07 (상태 서술은 실측 후 기록 — A5 재작업 사례에서 도출). §8 실측 대조의 근거.
 - ROADMAP.md v0.9(Adapter Layer & Scaffold — "Scaffold 도구와 프로젝트 템플릿"·"신규 프로젝트 설치 가이드" 산출물)·Component Coverage(Scaffold v0.9 정식화). 완료 조건 "설치 → 루프 동작"의 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 12 §3.3 INV-6, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, 자매 바인딩 8문서 §0과 동형). 단 이 문서는 Core Contract(12 §3)를 **재정의·확장하지 않는다** — 계약(연산·데이터 포맷·체크리스트·불변 규칙)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 12 §3.3 INV-6, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, 자매 바인딩 8문서 §0과 동형). 단 이 문서는 Core Contract(12 §3)를 **재정의·확장하지 않는다** — 계약(연산·데이터 포맷·체크리스트·불변 규칙)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -32,6 +32,7 @@
 | 2026-07-06 | v1.0 Draft (개정 — frameworkVersion 동기화) | Install Manifest `frameworkVersion` 값을 `"v0.9"`→`"v1.0"`으로 동기화. **갱신 지점(값 서술 6지점):** §1 목적·§2 표 행8·§4 필드 표·§4 버전 정합 주·§7 이식 교체 지점 표 행6·§11 요약 + `scaffold-template/install-manifest.template.md` front-matter 1지점. §9 OQ-SB-3에 해소 표기(v1.0 T3) 병기(§10 open_questions). **`specVersion`=`"v0.1"`은 무변경**(spec 기준선 Frozen 고정 — OQ-SB-3 문면). **불변 유지:** 문서 버전·§9 이력 행(L-10)·"v0.9 시점"/"v0.9 산출물" 시점 기록·근거 정본 ROADMAP.md v0.9 참조·§4 필드 표 "(ROADMAP v0.9)" 근거 표기·`docs/v0.9-install-guide.md` 파일명. 12 §3 계약(6필드·CK-1~8·INV·사유 코드) 재정의 0 · scaffold-template/ 나머지 12파일·자매 바인딩 문서·specs/·docs/ 무수정(07 R4). 유형 (B) 비계약 정합·격리 개정(spec-versioning-policy §3.2 — 이력 append + 상태 라인 갱신). Advisor 결정 DP-V10(사용자 승인 2026-07-06 계획). | Worker (Advisor 위임, Task T3) |
 | 2026-07-06 | v1.0 Draft (r2 — 근거 괄호 정합) | OQ-W1 Advisor 재량 해소 — 값에 결합된 근거 괄호는 값 서술의 일부이며 시점 기록이 아니다. §4 필드 표 frameworkVersion 행의 근거 괄호 `(ROADMAP v0.9)`→`(ROADMAP v1.0)` 갱신(값이 v1.0이 된 지금 "현 릴리스"의 근거 = ROADMAP v1.0 섹션). **동종 전수 대조(L-06·BP-01 — `ROADMAP v0.9` 3지점):** line 138 값 결합 근거 괄호 = 갱신 / line 20 근거 정본 목록(문서 유래)·line 32 r1 이력 행(시점 기록) = 불변(L-10). 그 외 무변경 — `specVersion`=`"v0.1"` 불변·install-manifest.template.md 무접촉(이 사안 해당 없음). r1 위임문 "ROADMAP v0.9 참조 갱신 대상 아님" 규칙의 과잉 전칭을 Advisor 소관 결함으로 정정(값 결합 근거 괄호는 그 규칙 적용 대상 아님). 12 §3 계약 재정의 0. | Worker (Advisor 개정 지시, Task T3 r2) |
 | 2026-07-07 | v1.0 Baseline | v1.0 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 21/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·삭제 산출물 참조(docs/v0.9-install-guide.md §8 실측 행) @cd9247b 앵커 전환. scaffold-template/·framework 경로는 계약·라이브로 유지. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -46,7 +47,7 @@
 - **창설 금지.** 이 문서는 12 §4.1 표를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. v0.9 산출물(Scaffold 설치·초기화 표면·프로젝트 템플릿·설치 가이드)의 물리 실현 매핑으로 한정한다. 새 연산·필드·CK 항목·사유 코드·불변 규칙을 만들지 않는다.
 - **하네스 상태 전제(Bootstrap) + DP-U1.** 이 하네스는 현재 **Bootstrap 상태**다(Glossary J-13, 자매 바인딩 §0, delegation-protocol.md §0). Scaffold는 정식 실행 Module이 아니라 규약 문서(12·본 문서)와 관행으로 실현된다(형태 A). **Advisor 결정 DP-U1(본 위임에서 지시됨):** Install/VerifyInstall/Uninstall 3연산은 Bootstrap에서 **형태 A 문서 절차**로 실현되며, 무인 실행기(형태 B)는 미도입이다. 따라서 본 문서의 매핑은 **이미 물리적으로 실재하는 표면**(scaffold-template/ 자산·라이브 원형 실물 — §8 실측)과, **실행 코드 도입 시 로딩될 지점**(형태 B — 설치 실행기·검증 실행기)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
 - **DP-A3 준수.** Advisor 결정 DP-A3(adapter-conformance.md §5)에 따라 `framework/scaffold/` 디렉터리를 신설하지 않는다. Scaffold의 물리 실현은 이 문서 + scaffold-template/ + 12 §4.1 바인딩 값(`.claude/*`·`specs/`·`framework/` 초기화)으로 실현한다. Scaffold는 Runtime이 호스팅하는 Module이 아니라 Bootstrap 이전 설치 도구다(12 §2·§5). `framework/scaffold/` 부재는 §8 실측으로 확인한다.
-- **실측 기반 상태 서술(L-07).** "실재/존재/부재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3.md §1.4 A5 사례·§1.5 Lesson 후보 3, Active Lesson L-07). §2 "실재 여부" 열·§8 실측 대조 표의 전 행은 파일 시스템 직접 실측(2026-07-06)에 근거한다 — 미존재를 실재로, 미래 산출물(설치 시 배치되는 대상 프로젝트 파일)을 현재 실재로 쓰지 않는다.
+- **실측 기반 상태 서술(L-07).** "실재/존재/부재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록, A5 재발 방지). §2 "실재 여부" 열·§8 실측 대조 표의 전 행은 파일 시스템 직접 실측(2026-07-06)에 근거한다 — 미존재를 실재로, 미래 산출물(설치 시 배치되는 대상 프로젝트 파일)을 현재 실재로 쓰지 않는다.
 - 용어는 specs/00-glossary.md 정본만 사용한다. Project Template·Install Manifest·설치 검증 체크리스트는 Glossary §3.2-J(J-12) 정본이며(12 §9 승격), Scaffold는 Glossary §3.2-D 기존 용어다. `형태 A/B`는 structure.md 서술 라벨의 인용이며 Glossary 표제어가 아니다. `DP-U1`은 본 문서가 기록하는 Advisor 결정 라벨(설치 절차 형태 A), `DP-A3`은 adapter-conformance.md §5가 기록한 Advisor 결정 라벨이다. 본 문서는 새 용어를 신설하지 않는다.
 
 ---
@@ -239,7 +240,7 @@ framework/adapters/claude/scaffold-template/
 
 ## §8. 상태 서술 실측 대조 (L-07 재발 방지)
 
-session-handoff-v0.3.md §1.4(A5 사례 — 미존재를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록, 이월 L-07)에 따라, 본 문서의 "실재/존재/부재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`/`find`) + 텍스트 검색(전수 스캔) 직접 실측.**
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출)에 따라, 본 문서의 "실재/존재/부재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`/`find`) + 텍스트 검색(전수 스캔) 직접 실측.**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|
@@ -251,7 +252,7 @@ session-handoff-v0.3.md §1.4(A5 사례 — 미존재를 "실재"로 서술 → 
 | `.claude/AGENT.md`·`.claude/CLAUDE.md` (템플릿 원형) | 실재 | 실재 — 2파일 확인. 무수정. |
 | worker·planner·verifier.md `model: opus` / advisor.md 세션 상속 (원형·초기본) | 실재 (역할별 모델 지정 관행) | 실재 — 라이브 원형 3파일 `model: opus`·advisor.md model 라인 부재 확인; 템플릿 초기본 4파일 동일 관행 반영. |
 | `framework/core/`·`framework/runtime/` (라이브 Core 경계) | 실재 (계약 문서만·AI 비의존) | 실재 — core/(structure.md·config-schema.md)·runtime/(module-manifest·module-registry·lifecycle) 확인. 무수정. |
-| `docs/v0.9-install-guide.md` (본 산출로 생성) | 실재 (본 3산출물 중 하나) | 실재 — 본 Task 생성(설치 가이드). |
+| `docs/v0.9-install-guide.md` (본 산출로 생성 — 아카이브) | 아카이브 (산출물 수명 정책으로 제거) | `uahf/docs/v0.9-install-guide.md@cd9247b` — 본 Task 생성(설치 가이드), 산출물 수명 정책(docs/artifact-lifecycle-policy.md §7)으로 작업 트리에서 제거(열람: `git show cd9247b:uahf/docs/v0.9-install-guide.md`). |
 | `framework/scaffold/` (DP-A3) | **부재** (미신설 결정) | **부재** — `framework/` 하위 = adapters·core·loop·memory·plugins·runtime·verifier·workflow 8경계, `scaffold/` 없음 확인. |
 | `.claude/settings.json` (Config Project scope 지원 소스) | **미존재** (라이브 — settings.local.json만) | **미존재** — `.claude/settings.local.json`만 실재. `.claude/settings.json` 부재 확인(템플릿은 `settings.json.example`로 제공). |
 | specs/ Frozen 계수 | **15** (numbered 00~13 = 14 + TEMPLATE 1) | 실측 — 00~13 numbered 14파일 + TEMPLATE.md = **15**. |

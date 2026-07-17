@@ -18,6 +18,7 @@
 | 2026-07-17 | v1.0 (정합 — UAF 승격·버전 무상승) | UAF 승격 위계 정합 — 제목·§0·§1의 "UAHF=전체" 서술을 UAF 기준으로 정정(UAHF=`uahf/` 하네스 실행 Layer 위계 반영), §2 구조 지도를 "4경계" → 6 Layer(entry/discovery/planning/orchestration/knowledge/uahf) + `docs/` + `.claude/`로 재작성(정본 포인터 전용·재정의 0), handoff 포인터 4곳을 삭제된 session-handoff-v0.X → `docs/next-session-prompt.md`로 교체. §0~§5 규범 논지·기존 정본 포인터(ARCHITECTURE §1·§3·§5) 유지·새 정의 창설 0. (사용자 결정) | Worker (Advisor 위임, Wave 1 W6) |
 | 2026-07-17 | v1.0 (정합 — anchor 정합) | §1 정본 포인터 라인(:37)의 stale § 앵커 정정 — 설계 원칙 §3→§6·6 Layer(+Memory Cross-cutting Service) §5→§2·§4(루트 ARCHITECTURE.md 현행 § 실측 정합). §1 Vision·기타 부분 무촉. | Worker (Advisor 위임, Wave 2 W4) |
 | 2026-07-17 | v1.0 (정합 — 설계 원칙 라인) | §1 설계 원칙 라인 정정 — "6종(ARCHITECTURE §3)"(UAHF 하네스 원칙 목록의 오전사)을 루트 현행 "10종(§6)" 목록으로 교체, UAHF 자체 6종은 uahf/ARCHITECTURE.md §3 소관으로 병기(루트 §6 실측 정합). | Advisor |
+| 2026-07-17 | v1.0 (정합 — 산출물 수명) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §5 삭제 산출물 참조 앵커 전환(`uahf/docs/v0.9-install-guide.md@cd9247b`). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, verification-checklist.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다. §9는 신설 편의 번호이며 신설로 기존 §0~§5 번호·문면은 불변이다.)
 
@@ -91,7 +92,7 @@ Universal Agentic Framework(UAF)는 AI 에이전트를 위한 범용 Development
 
 ## §5. 설치 안내
 
-- 신규 프로젝트 설치 가이드는 **uahf/docs/v0.9-install-guide.md**다 (v0.9 Baseline에서 확정 완료). 이 문서는 그 경로만 안내하며 내용을 인용하지 않는다.
+- 신규 프로젝트 설치 가이드는 **uahf/docs/v0.9-install-guide.md@cd9247b**다 (v0.9 Baseline에서 확정 완료 — 산출물 수명 정책에 따라 작업 트리에서 아카이브; 열람: `git show cd9247b:uahf/docs/v0.9-install-guide.md`). 이 문서는 그 경로만 안내하며 내용을 인용하지 않는다.
 - 설치·초기화의 계약 정본은 uahf/specs/12-scaffold.md다.
 
 ---

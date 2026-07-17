@@ -19,7 +19,7 @@
 - specs/00-glossary.md §3.2-J(J-07: Work Graph·Task·병렬 집합·소유 경계·인터페이스 계약) — 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - AGENT.md — 상위 규약(위임·검증·추측 금지·Memory 원칙).
 
-거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 07 §3.3 INV-9). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 07 §3.3 INV-9). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -31,6 +31,7 @@
 | 2026-07-06 | v0.7 Baseline | v0.7 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-06 | v0.8 Draft (개정 — 어휘 문언 정밀화) | v0.8 Task EX-R1 — Advisor 승인 하 격리 개정 (v0.7 CP2 §3.7-3 관찰 해소, 사용자 승인 2026-07-06 편입 범위). 본문 "세션" 어휘 3건(근거 목록·§0 소유 구분·§3.5)을 상호 참조 취지 불변의 중립 문언으로 정밀화 — 계약·규칙·§ 포인터 무변경, 잔여 "세션" 토큰 0건 전수 재스캔. | Worker (Advisor 위임, Task EX-R1) |
 | 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -160,7 +161,7 @@ Dispatch 연산이 실패할 때 산출하는 사유 코드는 **정확히 2종*
 - **위임 계약 불침범(07 INV-3).** 위임 메시지 필드(from·to·task·input·output·done·context·constraints)는 02 §3.2-B가 소유하며, 본 문서는 § 포인터로만 인용하고 재정의·재서술하지 않았다(§2·§3.1).
 - **Decompose·Merge 비소관(동시 작성 형제 불인용, 07 R2·INV-4).** 분해(07 §3.1-A)·병합(07 §3.1-C) 연산 규칙은 이 파일 소관이 아니다 — 각 연산 규칙 인스턴스 문서 소관이다. 같은 Wave에서 동시 작성 중인 그 형제 산출물의 미완성 내용은 인용·추측하지 않고 일반 포인터("07 §3.1-A·§3.1-C 소관 별도 인스턴스 문서")만 두었다. 참조는 확정 정본(07·02 spec, work-graph.md WF1 확정본, structure.md, Glossary)과 기존 Baseline·확정 형제(module-manifest.md WF2, verifier-protocol.md·loop-protocol.md 관례 표본)로 한정했다.
 - **물리 디스패치 채널 비서술.** 병렬 동시 위임의 물리 실현, 핸들(Task id → 수임 Agent 매핑)의 물리 표현·회수 배선, 역할 실행 채널은 서술하지 않고 **Adapter Binding 문서 소관**(07 §4.1 병렬 디스패치 행·위임 메시지 전달 행, §4.2 이식 교체 지점) 포인터로만 처리했다. 특정 Adapter Binding 문서명·물리 경로·제품 기능명을 두지 않았다.
-- **금지 토큰 비의존(structure.md §5 C-3 확장, 07 INV-9) — 자가 전수 스캔 수행.** 본문 전체를 다음 후보 부류 **전체**로 전수 대조하여 실증 0건임을 확인했다(단일 토큰 검색에 국한하지 않고 부류별 전수 대조) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 프로그래밍 언어명·툴체인명 } ∪ { 직렬화 형식명·확장자·OS 토큰 } ∪ { 물리 경로·Adapter 하위 인스턴스 토큰·특정 Adapter Binding 문서명 }. 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관(07 §4.1·§4.2)" 포인터를 두었다 — 금지 토큰의 예시조차 본문에 나열하지 않았다(mention/use 경계 — session-handoff-v0.2 §1.5 Lesson 후보 3). 다음은 금지 토큰이 아니다: **(i)** 연산·사유 코드 열거 값 — `operation` 값(Decompose/Dispatch/Merge)·Dispatch `reason` 2종(`IncompleteDelegation`·`UnmetDependency`) — 07 §3 정본의 평이한 열거 값; **(ii)** Glossary·AGENT.md 정본 어휘 — Work Graph·Task·병렬 집합·소유 경계·인터페이스 계약(Glossary §3.2-J J-07 표제어)·역할 명칭(Advisor/Planner/Worker/Verifier)·규칙 라벨(R1~R4)·불변 라벨(07 INV-2/3/4); **(iii)** 계약 필드명 백틱 표기(`interfaceContract`·`ownedBoundary`·`dependsOn`·`delegation` 등 — 07 §3.2-B / 02 §3.2-B 정본 어휘)와 "Task 핸들"(07 §3.1-B 출력의 정본 서술어); **(iv)** 저장소 문서 식별자(`specs/…`·`framework/…`·`docs/…` 상호 참조 및 본 문서 자신의 식별자 `framework/workflow/dispatch-protocol.md`) — 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(work-graph.md §5·loop-protocol.md §7·verification-report.md §7 분류 선례 동형).
+- **금지 토큰 비의존(structure.md §5 C-3 확장, 07 INV-9) — 자가 전수 스캔 수행.** 본문 전체를 다음 후보 부류 **전체**로 전수 대조하여 실증 0건임을 확인했다(단일 토큰 검색에 국한하지 않고 부류별 전수 대조) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 프로그래밍 언어명·툴체인명 } ∪ { 직렬화 형식명·확장자·OS 토큰 } ∪ { 물리 경로·Adapter 하위 인스턴스 토큰·특정 Adapter Binding 문서명 }. 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관(07 §4.1·§4.2)" 포인터를 두었다 — 금지 토큰의 예시조차 본문에 나열하지 않았다(mention/use 경계). 다음은 금지 토큰이 아니다: **(i)** 연산·사유 코드 열거 값 — `operation` 값(Decompose/Dispatch/Merge)·Dispatch `reason` 2종(`IncompleteDelegation`·`UnmetDependency`) — 07 §3 정본의 평이한 열거 값; **(ii)** Glossary·AGENT.md 정본 어휘 — Work Graph·Task·병렬 집합·소유 경계·인터페이스 계약(Glossary §3.2-J J-07 표제어)·역할 명칭(Advisor/Planner/Worker/Verifier)·규칙 라벨(R1~R4)·불변 라벨(07 INV-2/3/4); **(iii)** 계약 필드명 백틱 표기(`interfaceContract`·`ownedBoundary`·`dependsOn`·`delegation` 등 — 07 §3.2-B / 02 §3.2-B 정본 어휘)와 "Task 핸들"(07 §3.1-B 출력의 정본 서술어); **(iv)** 저장소 문서 식별자(`specs/…`·`framework/…`·`docs/…` 상호 참조 및 본 문서 자신의 식별자 `framework/workflow/dispatch-protocol.md`) — 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(work-graph.md §5·loop-protocol.md §7·verification-report.md §7 분류 선례 동형).
 - **Glossary 정본.** 사용 용어는 전부 specs/00-glossary.md §3.2-J(J-07) 정본이거나(Work Graph·Task·병렬 집합·소유 경계·인터페이스 계약), 07 §3 정본이 정의한 서술·포맷·필드 값 명칭(병렬 디스패치 프로토콜·Task 핸들·`reason` 사유 코드·`IncompleteDelegation`·`UnmetDependency`)이거나, Glossary·AGENT.md 기존 어휘(Advisor·Worker·위임 메시지·에스컬레이션)다. 새 용어를 신설하지 않았다. "형태 A / 형태 B"는 structure.md 확정 조건 C-1·C-2의 서술 라벨 인용이다(§1).
 
 ---

@@ -1,2 +1,0 @@
-audit-complete	lifecycle.complete	after	0	1	.claude/hooks/audit-complete/audit.sh
-notify-fail	lifecycle.complete	after	-10	2	docs/v0.8-demo-fixtures/f-h2-notify-fail/action.sh

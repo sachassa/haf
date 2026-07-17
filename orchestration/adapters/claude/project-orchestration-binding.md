@@ -160,7 +160,7 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 
 ### §5.6 축소판 종단 dogfooding E2E (시나리오 j — 실 CLI 실증)
 
-`orchestration-data/e2e/` 드라이버가 실 claude CLI headless(haiku·**5 세션**)로 종단 흐름을 실증했다(run 데이터 = `runs/orch-j-e2e/`):
+`orchestration-data/e2e/` 드라이버가 실 claude CLI headless(haiku·**5 세션**)로 종단 흐름을 실증했다(run 데이터 = `runs/orch-j-e2e/@cd9247b` — 산출물 수명 정책에 따라 아카이브, ARCHIVE.md 원장):
 
 - 초기 그래프 = 설계 단위 d1(user_decision 게이트) → d1 실행(Worker+CP2)·Passed → **user_decision 게이트 물리 정지(exit 2·pending_gates 기록)**(j1).
 - 드라이버가 **시뮬레이션 라벨을 append-only 로그(`annotation::sim`)와 `gate-resolution-record.json` 에 명시 기록**한 뒤 사용자 actor(`human`) 해소 이벤트 append(j2 — L-07 실 사용자 위장 금지)·구현 단위 revision(basis.gateEventRef = 해소 게이트) append.
@@ -174,7 +174,7 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 
 - **중립 코드 실재 (S5).** S5 는 `orchestration/framework/orchestrator/artifacts.py`·`artifact_record_schema.json`·`tests/test_artifacts.py` 를 신설하고, `orchestrator.py`(선택 `artifact_store`·투명 포집 래퍼 배선·`artifact_registry()`/`resolve_references()` 파생 메서드)를 최소 개정했다(`artifact_store=None` 기본 시 S2~S4 거동 바이트 동일 보존). 자체 테스트는 표준 라이브러리 `unittest` 만으로 통과한다 — **orchestration 126건(신규 32 + S2~S4 회귀 94)·step-host 20건·step-invoker 19건 = 전건 Pass**(실행 출력 실측).
 - **PO-INV 8(중립성) 실측.** `orchestration/framework/orchestrator/`(artifacts.py 포함 전 `.py`·전 `.json`·테스트)에 provider·모델·CLI 옵션 토큰 0건(전수 스캔). approvalState 어휘(draft/verified/approved/user_approved)·verdict `Pass` 는 05 §3.6·06 계약 어휘다. 구체 토큰(`claude`·모델 별칭 `haiku`/`sonnet`/`opus`·`--model`·권한 플래그)은 이 바인딩 문서·step-invoker 코드·`orchestration-data/e2e/` 드라이버(격리 지점)에만 존재한다.
-- **축소판 종단 E2E 실측 (시나리오 j).** `orchestration-data/e2e/`(비프로덕션 드라이버) 실 claude CLI headless **5 세션**(haiku)로 종단 흐름 실증 — Phase 1(exit 2 게이트 정지·2 세션)·Phase 2(exit 0 완주·3 세션). run 데이터 = `runs/orch-j-e2e/`(events.jsonl 8 이벤트·revisions.jsonl 1·artifacts.jsonl 2·워크스페이스 실 산출 2). 상류 재실행 흔적 0·replay 2회 동일·최종 레지스트리 approvalState 파생(user_approved/verified) 실측. 실 세션 stdout·argv 는 `logs/invoke-*.json` 에 캡처(은폐 0·O5).
+- **축소판 종단 E2E 실측 (시나리오 j).** `orchestration-data/e2e/`(비프로덕션 드라이버) 실 claude CLI headless **5 세션**(haiku)로 종단 흐름 실증 — Phase 1(exit 2 게이트 정지·2 세션)·Phase 2(exit 0 완주·3 세션). run 데이터 = `runs/orch-j-e2e/@cd9247b`(events.jsonl 8 이벤트·revisions.jsonl 1·artifacts.jsonl 2·워크스페이스 실 산출 2 — 아카이브 보존, 열람 `git show`/ARCHIVE.md). 상류 재실행 흔적 0·replay 2회 동일·최종 레지스트리 approvalState 파생(user_approved/verified) 실측. 실 세션 stdout·argv 는 `logs/invoke-*.json` 에 캡처(은폐 0·O5).
 - **`uahf/` 접촉 실측(본 트랙 누계).** (i) `uahf/framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(S4·**S5 무촉**·`cp2_model=None` 시 기존 거동). (ii) `uahf/framework/adapters/claude/orchestration-data/` **신설**(run 데이터 백엔드·E2E 드라이버 — 2차 산출물 디커플링 트랙까지 `uahf/` 잔류). 그 외 `uahf/` 정본·중립 코드·append-only 데이터(discovery-data·solution-design-data·step-data·memory-data·loop-data) 무촉(형상 관리 상태 조회로 확인·git 실측).
 - **정직 구분 (L-07).** 시나리오 j 의 사용자 게이트 해소·구현 단위 제안은 **드라이버 픽스처**이며 실 사용자·실 LLM 제안 step 이 아니다(§5.6·`gate-resolution-record.json`·`annotation::sim` 이벤트에 명시). 실증 대상은 게이트 물리 정지·사용자 actor 적격성·revision 인과 사슬·deterministic 재개이며 그 축들은 실 데이터로 남는다. 산출 내용은 CP2 재현성을 위해 정확 내용으로 고정한 픽스처다(설계 메모를 exact-content 설계 결정 레코드로 축약).
 

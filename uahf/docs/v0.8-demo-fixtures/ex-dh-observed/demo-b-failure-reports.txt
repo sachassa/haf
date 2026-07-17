@@ -1,8 +1,0 @@
---- Hook Failure Report (08 §3.2-E / hooks-binding §5.3) ---
-hookId: notify-fail
-event: lifecycle.complete
-phase: after
-reason: action error (exit 1 — 모사 timeout/오류)
-blocking: false
-lesson_candidate: 예 — Hook action 실패는 Lesson 후보 (08 §6)
-

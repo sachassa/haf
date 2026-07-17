@@ -18,7 +18,7 @@
 - specs/01-runtime.md §8 예1 — contract id `MemoryServiceInterface` 정합 기준 (자매 문서 framework/memory/module-manifest.md의 Manifest `contract` 값과 정합).
 - framework/core/structure.md §2·§5 — Module 구현 디렉터리 경계(자기완결, C-3 확장 — 문서 본문 AI·언어·툴체인 비의존), 금지 토큰 규칙. §0 정본 경계.
 
-거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -29,6 +29,7 @@
 | 2026-07-05 | v0.4 Draft | 최초 작성. 04 §3.1-A(Record)·§3.1-B(Recall)·§3.1-C(회수 정책)·§3.2-A(Memory Item)·§3.2-B(Recall Request/Result)·§3.2-C(Memory Index/Index Entry)·§3.2-D(Failure Report) 인스턴스 절(필드 필수/선택 표기 정본 대조 보존), 기록·회수 프로토콜(Record = Item 기록+Index Entry 생성 함께 완료 — INV-7, Recall = index-first — INV-4·§8 예1), reason 코드 8종 소속 § 명시, 04 §3.3 INV-1~8 대조. 04 계약 재정의·확장 0, 05-lessons 내부 포맷 불인용, Glossary 밖 새 용어 0. | Worker (Advisor 위임, Task M2) |
 | 2026-07-05 | v0.4 Draft (r2) | Advisor 재작업 지시 반영. (1) 말미 요약 절 헤더의 § 번호를 머리 이력 절과 충돌하지 않게 §10으로 개칭, 05 조율 참조를 `04 §9`로 명시화. (2) §4.1(Memory Item)·§4.3(Memory Index/Index Entry) 전문 표 제거 → 04 §3.2-A/§3.2-C 정본 + framework/memory/memory-store.md §2·§3 소유 포인터로 대체(이중 갱신 방지); §4.2·§4.4는 M2 소유 유지. §1·§2 표·§2 주·§4 도입·§10에서 §4.1/§4.3 참조 전 지점 갱신. (3) Recall 시스템 상한 값 원천 = Provider Module Config `recall.limit.max`(기본 20)로 확정(Advisor 결정 DP-M1) — §3.2 주·§8 값 원천 서술을 확정형으로 갱신. | Worker (Advisor 재작업 지시, Task M2 r2) |
 | 2026-07-06 | v0.4 Baseline | v0.4 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 재작업 1회 후 재검증, CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -50,9 +51,9 @@ Memory Service Interface는 UAHF의 기억 능력에 접근하는 **정확히 �
 
 이 규격의 책임은 세 가지다.
 
-- 04 §3의 두 연산(Record·Recall)·하나의 회수 정책·이 Port의 요청/보고 데이터 계약(Recall Request/Result·Failure Report)을 **재정의 없이** 인스턴스화한다 — 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존 — session-handoff-v0.2 §1.5 Lesson 후보 2). Memory Item·Memory Index/Index Entry(04 §3.2-A/§3.2-C)는 인스턴스 소유가 framework/memory/memory-store.md이므로 § 포인터로만 참조한다 (전문 표 중복 없음 — 이중 갱신 방지, Advisor 조율 확정 Task M2 r2).
+- 04 §3의 두 연산(Record·Recall)·하나의 회수 정책·이 Port의 요청/보고 데이터 계약(Recall Request/Result·Failure Report)을 **재정의 없이** 인스턴스화한다 — 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존). Memory Item·Memory Index/Index Entry(04 §3.2-A/§3.2-C)는 인스턴스 소유가 framework/memory/memory-store.md이므로 § 포인터로만 참조한다 (전문 표 중복 없음 — 이중 갱신 방지, Advisor 조율 확정 Task M2 r2).
 - **기록·회수 프로토콜**을 명문화한다 — Record는 Item 기록과 Index Entry 생성을 함께 완료하고(04 INV-7), Recall은 index-first로 최소 Context만 회수한다(04 INV-4, §8 예1).
-- 연산별 거부·실패 reason 코드를 소속 §과 함께 정리하여, 서로 다른 연산의 reason 코드가 혼입되지 않게 한다 (필드 계약 혼입 방지 — session-handoff-v0.2 §1.5 Lesson 후보 1).
+- 연산별 거부·실패 reason 코드를 소속 §과 함께 정리하여, 서로 다른 연산의 reason 코드가 혼입되지 않게 한다 (필드 계약 혼입 방지).
 
 Memory 접근 경로는 이 Port 하나뿐이다. 영속성 백엔드는 이 Port 뒤 Adapter Layer에 격리된다 (04 INV-1·INV-8, §4.1 — 물리 실현은 Adapter Binding 문서 소관).
 
@@ -118,7 +119,7 @@ Recall은 어떤 경우에도 Memory Store 전량을 반환하지 않는다 (04 
 
 ## §4. Data Format 인스턴스 (04 §3.2)
 
-이 절은 Port 인터페이스가 다루는 데이터 계약을 규율한다. **§4.2(Recall Request/Result)·§4.4(Failure Report)는 이 Port의 요청/보고 계약으로 M2가 인스턴스를 단일 소유**하며, 필드 표는 04 §3.2-B/§3.2-D 정본과 일치하게 옮긴 인스턴스 대조다(필드명·의미·필수/선택 표기 정본 그대로 — session-handoff-v0.2 §1.5 Lesson 후보 2, 재정의 아님). **§4.1(Memory Item)·§4.3(Memory Index/Index Entry)는 인스턴스 소유가 framework/memory/memory-store.md이므로 § 포인터 절로만 둔다**(전문 표 중복 없음 — 이중 갱신 방지, Advisor 조율 확정 Task M2 r2). 직렬화 형식·물리 저장은 Adapter Binding 문서 소관이다 (04 §4).
+이 절은 Port 인터페이스가 다루는 데이터 계약을 규율한다. **§4.2(Recall Request/Result)·§4.4(Failure Report)는 이 Port의 요청/보고 계약으로 M2가 인스턴스를 단일 소유**하며, 필드 표는 04 §3.2-B/§3.2-D 정본과 일치하게 옮긴 인스턴스 대조다(필드명·의미·필수/선택 표기 정본 그대로, 재정의 아님). **§4.1(Memory Item)·§4.3(Memory Index/Index Entry)는 인스턴스 소유가 framework/memory/memory-store.md이므로 § 포인터 절로만 둔다**(전문 표 중복 없음 — 이중 갱신 방지, Advisor 조율 확정 Task M2 r2). 직렬화 형식·물리 저장은 Adapter Binding 문서 소관이다 (04 §4).
 
 ### §4.1 Memory Item (포인터 — 정본 04 §3.2-A)
 
@@ -197,7 +198,7 @@ Memory Index는 scope 지정자(`kind` / `labels` / `timeRange` / `source`)를 I
 
 ### §5.3 reason 코드 소속 § (연산별 — 혼입 방지)
 
-reason 코드는 연산별로 소속이 구분된다. 서로 다른 연산의 reason 코드를 섞지 않는다 (필드 계약 혼입 방지 — session-handoff-v0.2 §1.5 Lesson 후보 1). Failure Report **구조**의 정본은 04 §3.2-D이며, 아래는 그 `reason` 값 8종의 소속만 정리한 목록이다.
+reason 코드는 연산별로 소속이 구분된다. 서로 다른 연산의 reason 코드를 섞지 않는다 (필드 계약 혼입 방지). Failure Report **구조**의 정본은 04 §3.2-D이며, 아래는 그 `reason` 값 8종의 소속만 정리한 목록이다.
 
 | reason 코드 | 소속 (연산 / 불변 규칙) | 소속 § (정본) | 사유 |
 |---|---|---|---|
@@ -247,7 +248,7 @@ reason 코드는 연산별로 소속이 구분된다. 서로 다른 연산의 re
 ## §8. 정본 경계·금지 토큰·설계 확정 (self-note)
 
 - **재정의·확장 0.** 본 문서의 모든 연산·데이터 계약·불변 규칙은 04 §3의 인스턴스다. 어떤 요소도 이 문서에서 진위가 확정되지 않는다 — 판정 기준은 04 §3이다. M2 소유 필드 표(§4.2 Recall Request/Result·§4.4 Failure Report)는 정본과 일치하게 옮긴 인스턴스 대조이며, 필수/선택 표기(예: Recall Request `detail`의 "아니오(기본 `index`)"·`limit`의 "아니오"·`purpose`/`scope`의 "예")를 정본 그대로 보존했다. Memory Item·Memory Index/Index Entry(§4.1·§4.3)는 전문 표를 두지 않고 framework/memory/memory-store.md 소유 포인터로 참조한다. 새 필드·새 reason 코드·새 연산·새 차원을 추가하지 않았다.
-- **금지 토큰 0.** 본문·표·예시 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명이 0건이다 (framework/core/structure.md §5 C-3 확장). 물리 저장·직렬화·백엔드·물리 진입점 해소가 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (04 §4)" 포인터를 둔다 (mention/use 경계 — 금지 토큰의 예시도 누출이다, session-handoff-v0.2 §1.5 Lesson 후보 3).
+- **금지 토큰 0.** 본문·표·예시 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명이 0건이다 (framework/core/structure.md §5 C-3 확장). 물리 저장·직렬화·백엔드·물리 진입점 해소가 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (04 §4)" 포인터를 둔다 (mention/use 경계 — 금지 토큰의 예시도 누출이다).
 - **05-lessons 불인용.** Lessons·Best Practice의 kind 값·content 상세 스키마·생성 규칙은 인용·추측하지 않고 경계 포인터(정본 specs/05-lessons.md; 구현 인스턴스는 framework/memory/lessons.md 소관)만 두었다 (04 INV-5, 04 §9 05 조율).
 - **시스템 상한 값 원천 (확정).** Recall "시스템 상한"(§3.2·§4.2)의 값 원천은 Provider Module Config 키 `recall.limit.max`(유한 양의 정수, 기본값 20)로 확정되었다 (Advisor 결정 DP-M1, v0.4; 선언은 자매 문서 framework/memory/module-manifest.md `configSchema`). 04는 상한의 존재만 규정하고 값 원천은 실현 소관(Module scope config, 01 §3.2-B)이다.
 - **인스턴스 소유 경계 (확정).** Memory Item(04 §3.2-A)·Memory Index/Index Entry(04 §3.2-C)의 인스턴스는 framework/memory/memory-store.md가 단일 소유한다. 본 문서 §4.1·§4.3은 전문 표를 두지 않고 § 포인터로만 참조한다 (이중 갱신 방지 — Advisor 조율 확정, Task M2 r2). §4.2(Recall Request/Result)·§4.4(Failure Report)는 M2 소유 인스턴스 표로 유지한다.

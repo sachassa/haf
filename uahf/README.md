@@ -92,7 +92,7 @@ UAHF를 처음 접했거나 새 세션을 시작한다면 아래 문서를 따�
 
 - **신규 참여자·세션 진입:** `docs/getting-started.md` — 프로젝트 소개·구조 지도·세션
   진입 절차의 진입점.
-- **신규 프로젝트에 UAHF 설치:** `docs/v0.9-install-guide.md` — Install →
+- **신규 프로젝트에 UAHF 설치:** `uahf/docs/v0.9-install-guide.md@cd9247b` (산출물 수명 정책에 따라 아카이브 — 열람: `git show cd9247b:uahf/docs/v0.9-install-guide.md`) — Install →
   VerifyInstall → Bootstrap → Loop 1 사이클 절차. 설치 계약 정본은
   `specs/12-scaffold.md`.
 - **운용 안내(설치·위임·검증·Memory·이식):** `docs/v1.0-user-guide.md`.
@@ -157,7 +157,7 @@ Advisor에게 보고한다 (CLAUDE.md — Architecture·Spec 충돌 시 사용�
 | 검증 체크리스트(게이트 A~D) | docs/verification-checklist.md |
 | 역할 빠른 참조(Advisor·Planner·Worker·Verifier) | docs/roles-quick-reference.md |
 | 세션 진입·직전 상태 | docs/session-handoff.md(리포 루트) |
-| 신규 프로젝트 설치 | docs/v0.9-install-guide.md · specs/12-scaffold.md |
+| 신규 프로젝트 설치 | uahf/docs/v0.9-install-guide.md@cd9247b (아카이브) · specs/12-scaffold.md |
 | 용어 정본 | specs/00-glossary.md |
 | 상위 규약 | .claude/AGENT.md |
 

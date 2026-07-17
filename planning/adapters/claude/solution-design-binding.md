@@ -321,13 +321,13 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 | `planning/specs/04-solution-design.md` (바인딩 대상 정본) | 실재 (v1.3 Baseline) | 실재 — §3·§4 확인(무수정). |
 | `planning/specs/03-project-contract.md` (참조 정본) | 실재 (v1.2 Baseline) | 실재 — §3.1-B·§3.4·§3.5·§3.6 확인(무수정). |
 | `uahf/framework/adapters/claude/discovery-data/contracts/uahf/project-contract.v1.md` (성숙 기준선 = Ground Truth) | 실재 (pc-uahf-001·instanceVersion 1·supersedes null·Ready — 성숙 입력) | 실재 — 성숙 경로 v1→v2의 입력 기준선. |
-| `uahf/framework/adapters/claude/solution-design-data/` (SD 백엔드 루트) | 실재 (정본 문면 소유) | 실재 — `events/maturation-r001…r003/`·`policy/default-policy.yaml` 실측(물리 위치는 2차 산출물 디커플링 트랙에서 확정). |
-| `…/solution-design-data/events/maturation-<run-id>/events.jsonl`·`policy/default-policy.yaml` | 실재 (형식·값 정본 문면 소유) | 실재 — 성숙 run E2E 생성. |
+| `uahf/framework/adapters/claude/solution-design-data/` (SD 백엔드 루트) | 실재 (정본 문면 소유) | 실재 — 루트·`policy/default-policy.yaml`·`events/`(표면, `.gitkeep`) 실측. run 인스턴스 `events/maturation-r001…r003/`은 산출물 수명 정책에 따라 아카이브 `@cd9247b`(ARCHIVE.md 원장 — 물리 위치는 2차 산출물 디커플링 트랙에서 확정). |
+| `…/solution-design-data/events/maturation-<run-id>/events.jsonl`·`policy/default-policy.yaml` | 실재 (형식·값 정본 문면 소유) | 형식·값 정본 문면 실재(본 문서 소유) — 물리 인스턴스(maturation-r001…r003)는 성숙 run E2E로 생성 후 아카이브 `@cd9247b`. `policy/default-policy.yaml`은 실재. |
 | `uahf/framework/adapters/claude/discovery-data/contracts/uahf/project-contract.v2.md` (성숙 산출 — superseding 인스턴스) | 실재 (경로 정본 = contract-binding §4.2) | 실재 — 성숙 경로 v1→v2 append(v1 문면 byte 불변, PC-INV 9). |
 | 소비 프로젝트 `.claude/solution-design/` (일반 관례) | 경로 관례 확정(정본) | 본 저장소에는 미존재(정상 — 일반 관례는 소비 프로젝트 배치 대상). |
 | 성숙 실행 규약 절차 로더·기록기·Policy 로더(형태 B) | 미도입 (형태 B 예정) | 미도입 — Bootstrap 상태(형태 A). |
 
-- **핵심 구분.** 본 문서가 확정한 백엔드 트리·기록 직렬화 어휘·게이트 채널·Policy 값·Provenance 성숙 run 내부 형식은 **정본 문면(형태 A)**이며, 물리 데이터 자산(`solution-design-data/…`·superseding v2)은 성숙 run E2E로 이미 실재한다. 본 문서는 구조·형식·경로·값의 정본 문면을 소유하고, 그 물리 위치(현행 `uahf/framework/adapters/claude/…`)의 최종 확정은 2차 산출물 디커플링 트랙 소관이다(L-07).
+- **핵심 구분.** 본 문서가 확정한 백엔드 트리·기록 직렬화 어휘·게이트 채널·Policy 값·Provenance 성숙 run 내부 형식은 **정본 문면(형태 A)**이며, 물리 데이터 자산은 성숙 run E2E로 생성되었다 — run 원장 인스턴스(`solution-design-data/events/…`)는 산출물 수명 정책(`docs/artifact-lifecycle-policy.md`)에 따라 앵커 보존 `@cd9247b`로 전환되었고, superseding v2 계약 인스턴스는 실재를 유지한다. 본 문서는 구조·형식·경로·값의 정본 문면을 소유하고, 그 물리 위치(현행 `uahf/framework/adapters/claude/…`)의 최종 확정은 2차 산출물 디커플링 트랙 소관이다(L-07).
 - 실측과 불일치하는 서술은 0건이다 — 미존재를 실재로, 실재를 미존재로 쓰지 않는다(L-07).
 
 ---

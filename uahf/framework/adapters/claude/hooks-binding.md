@@ -19,7 +19,7 @@
 - specs/00-glossary.md §3.2-J J-08 — Event·Event Catalog·Phase·Hook Binding·Hook Dispatch 표제어(08 §9 요청으로 Advisor 승인 추가). 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - ROADMAP.md v0.8 (Extension System) — Hooks 완료 조건과 산출물(본체 수정 0 확장·비차단·순서 결정성·카탈로그 도출·경계·AI 비의존)의 환경 실현 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 08 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·memory-binding.md §0·verifier-binding.md §0·loop-binding.md §0과 동형). 단 이 문서는 Core Contract(08 §3)를 **재정의하지 않는다** — 계약(연산·카탈로그 Event ID·필드·Invariants)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 08 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·memory-binding.md §0·verifier-binding.md §0·loop-binding.md §0과 동형). 단 이 문서는 Core Contract(08 §3)를 **재정의하지 않는다** — 계약(연산·카탈로그 Event ID·필드·Invariants)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -32,6 +32,7 @@
 | 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-06 | v0.9 Draft (개정 — §7 시연 후 상태 반영) | 비차단 관찰 1 해소 (docs/v0.8-verification-report.md §3.7 관찰 1 · 사용자 결정 DP-U3(a), 2026-07-06). §7 실측 대조 표의 시연 전 "빈 디렉터리 / 레퍼런스 Hook 실물 미생성" 스냅샷 및 같은 상태를 서술하는 전 지점(§0·§2 등록 표면 트리·§2 표 "실재 여부" 열·§2 주·§4.1·§7·§10 — `grep` 전수 열거, L-06)을 시연(PS-4 · EX-DH) 후 실측 실재로 전수 갱신. 착수 시 직접 재실측(L-07): `.claude/hooks/audit-complete/`(F-H1 — manifest.md·audit.sh) 레퍼런스 Hook 실물 실재. `.claude/settings.json`은 **여전히 미존재**(DP-E3 유지)이고 형태 B 실행 훅·native hook 실행 메커니즘 미도입도 불변. §3·§5·§6 계약 서술·SP 표·DP-E3 결정 무변경(개정은 상태 서술·이력·상태 라인에 한정). memory-binding.md r2·loop-binding.md WF13 전수 갱신 선례 동형. 기존 이력 행(v0.8 Draft·r2·Baseline) 문면 불변(L-10). | Worker (Advisor 위임, Task T7) |
 | 2026-07-06 | v0.9 Baseline | v0.9 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 20/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지). loop-data/·memory-data/·`.claude/` 참조는 백엔드/라이브 경로로 무변경, 삭제 산출물 본문 참조 없음. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -45,7 +46,7 @@
 - **방출 주체 소관 확정(OQ-H2 — §4 소관).** 08 §9 결정 기록은 "이벤트 방출 주체는 §4(Adapter Binding) 소관으로 확정. 계약 수준 고정 불필요"로 OQ-H2를 승인했다. 본 문서가 그 §4 소관자다 — Bootstrap(형태 A)에서 방출 주체는 **호스트 오케스트레이션(주 세션)**이 원천 지점을 관찰하는 것으로 실현되며(§3·§5), 형태 B에서는 원천 직접 방출 또는 공용 dispatch 관찰로 실현된다. 계약(08 §3)은 관찰 가능한 표면(카탈로그·Event Record·순서·격리)만 고정하고 방출 주체를 고정하지 않았으므로, 본 문서의 방출 주체 매핑은 계약 창설이 아니다.
 - **창설 금지.** 이 문서는 08 §4.1 표를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. v0.8 산출물(Hooks 확장점)의 물리 실현 매핑으로 한정한다. 새 Event·새 domain·새 phase·새 Hook Binding 필드·새 Hook Failure Report reason·새 불변 규칙을 만들지 않는다(08 §3.2-B 확장 규칙·§3.3 준수).
 - **하네스 상태 전제(Bootstrap).** 이 하네스는 현재 **Bootstrap 상태**다(Glossary J-13, runtime-binding.md §0, delegation-protocol.md §0). Hooks는 정식 실행 Module이 아니라 규약 문서(08·본 문서)와 관행(호스트가 원천 지점을 관찰해 바인딩된 Hook을 순서대로 격리 호출)으로 실현된다(형태 A). 따라서 본 문서의 매핑은 **이미 물리적으로 실재하는 표면**(자매 바인딩 4문서·계측 지점 참조원·`.claude/hooks/` 등록 표면 디렉터리 — §7 실측)과, **실행 코드 도입 시 로딩될 지점**(형태 B — 하네스의 hook 실행 메커니즘·이벤트 방출 계측 코드)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
-- **실측 기반 상태 서술(done 7, L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3.md §1.4 A5 사례·§1.5 Lesson 후보 3 재발 방지, Active Lesson L-07). §2·§3·§7의 "실재" 서술 전건은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로 쓰지 않는다. **`.claude/hooks/`에는 시연 PS-4(EX-DH)가 이 정본 구조대로 생성한 레퍼런스 Hook 실물 `audit-complete/`(F-H1 — manifest.md·audit.sh)가 실재한다**(v0.9 T7 개정 시 재실측, §7). EX-H1(본 문서)은 등록 표면 구조·직렬화 표기의 정본만 소유했고 실물은 시연 Task가 생성했다(생성 주체 구분, L-07). `.claude/settings.json`은 여전히 미존재다(DP-E3 유지, §4.3·§7).
+- **실측 기반 상태 서술(done 7, L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록, A5 재발 방지). §2·§3·§7의 "실재" 서술 전건은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로 쓰지 않는다. **`.claude/hooks/`에는 시연 PS-4(EX-DH)가 이 정본 구조대로 생성한 레퍼런스 Hook 실물 `audit-complete/`(F-H1 — manifest.md·audit.sh)가 실재한다**(v0.9 T7 개정 시 재실측, §7). EX-H1(본 문서)은 등록 표면 구조·직렬화 표기의 정본만 소유했고 실물은 시연 Task가 생성했다(생성 주체 구분, L-07). `.claude/settings.json`은 여전히 미존재다(DP-E3 유지, §4.3·§7).
 - 용어는 specs/00-glossary.md 정본만 사용한다. Event·Event Catalog·Phase(before/after)·Hook Binding·Hook Dispatch는 Glossary §3.2-J J-08 정본이며(08 §9 요청으로 Advisor 승인 추가), 본 문서는 그 물리 실현만 확정한다. `형태 A/B`는 structure.md 서술 라벨의 인용이며 Glossary 표제어가 아니다. 본 문서는 새 용어를 신설하지 않는다.
 
 ---
@@ -260,7 +261,7 @@ Dispatch 5단계에서 Hook 실패 시 남기는 공통 보고 구조다. **필�
 
 ## §7. 상태 서술 실측 대조 (done 7 — A5/L-07 재발 방지)
 
-session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록, Active Lesson L-07)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`) + 파일 크기(`wc -c`) 직접 실측. `.claude/hooks/`·`.claude/settings.json` 상태는 `ls -la` 직접 실측. v0.9 T7 개정(관찰 1 해소)은 `.claude/hooks/`·`.claude/skills/` 행을 시연(PS-4) 후 상태로 `find`+`wc -c` 직접 재실측·갱신했다(L-07). `.claude/settings.json`은 여전히 미존재(DP-E3 유지).**
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재 소스를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`) + 파일 크기(`wc -c`) 직접 실측. `.claude/hooks/`·`.claude/settings.json` 상태는 `ls -la` 직접 실측. v0.9 T7 개정(관찰 1 해소)은 `.claude/hooks/`·`.claude/skills/` 행을 시연(PS-4) 후 상태로 `find`+`wc -c` 직접 재실측·갱신했다(L-07). `.claude/settings.json`은 여전히 미존재(DP-E3 유지).**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|

@@ -25,7 +25,7 @@
 - specs/00-glossary.md — 용어 정본. Module / Module Manifest / 모듈 시스템 / Runtime Context는 §3.2-I, **Workflow (Component)**는 §3.2-D 표제어(정본 specs/07-workflow.md)다.
 - AGENT.md — 상위 규약(위임·검증·Memory 원칙).
 
-거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -35,6 +35,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.7 Draft | 최초 작성. Workflow Provider Module의 01 §3.2-A 7필드 인스턴스(`id`=`workflow-provider`(DP-W1)·`contract`=`WorkflowInterface`(DP-W1)·`version`=`0.1.0`(Advisor 확인 — 인스턴스 값)·`requires`=`LoopInterface`(DP-W2 — 병합은 각 Task의 사이클 구동 완결을 요구, Memory·역할 실행 제외)·`entrypoint`=추상 참조(07 §3.1 분해·디스패치·병합 연산 노출)·`configSchema`=선언하지 않음(DP-W3)·`replaceable`=기본 true), 필드별 인스턴스 값·근거, `entrypoint` 추상 참조 + 물리 해소 Adapter Binding 소관 포인터(물리 경로·형식 하드코딩 0), 필수/선택 표기 정본 대조 보존, DP-W1·DP-W2·DP-W3 결정 기록 + `id`·`version` Advisor 확인 기록. `requires` 근거를 Verifier 선례(없음)·Loop 선례(`MemoryServiceInterface`)와 정본 § 포인터로 구분 서술. 01·07 계약 재정의·확장 0, 금지 토큰 0(자가 전수 스캔), Glossary 밖 새 용어 0. | Worker (Advisor 위임, Task WF2) |
 | 2026-07-06 | v0.7 Baseline | v0.7 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -58,7 +59,7 @@
 이 규격의 책임은 두 가지다.
 
 - 01 §3.2-A의 7필드를 이 Provider에 대한 **구체 값**으로 채운다 — `contract`는 `WorkflowInterface`로 확정하고(§5 DP-W1), `id`는 `workflow-provider`로 확정하며(§5 DP-W1), `entrypoint`는 분해·디스패치·병합 연산(07 §3.1)을 노출하는 추상 참조로 두고 물리 해소는 Adapter Binding 문서 소관으로 미룬다. `requires`는 `LoopInterface`를 단독 선언하고(§3·§5 DP-W2 — 병합은 각 Task의 사이클 구동 완결을 요구하므로), `configSchema`는 선언하지 않는다(§5 DP-W3).
-- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존 — session-handoff-v0.2 §1.5 Lesson 후보 2).
+- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존).
 
 이 Manifest는 Runtime의 **Register** 연산(01 §3.1-A, 운용 규칙: framework/runtime/module-registry.md §2.1)의 입력이 된다. 각 Module은 자기완결(self-contained) 단위이므로, 이 Manifest는 그 Module의 `id`·`contract`·`entrypoint`·`requires` 등 자기완결 참조를 한 서술자에 묶는다 (01 §3.2-E 규칙 2). 이 Provider가 구현하는 오케스트레이션 계약(§3.1 분해·디스패치·병합 연산·§3.2 데이터 포맷·§3.3 불변 규칙)의 정본은 specs/07-workflow.md가 유지하며, 본 문서는 그 계약을 재서술하지 않는다.
 
@@ -80,7 +81,7 @@
 
 주:
 
-- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다 (session-handoff-v0.2 §1.5 Lesson 후보 2). `requires`는 **선택 필드(기본 없음)**이며, 이 Provider는 그 선택 필드에 값(`LoopInterface`)을 **채운** 것이다 — 필드의 필수/선택 지위를 바꾸지 않는다.
+- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다. `requires`는 **선택 필드(기본 없음)**이며, 이 Provider는 그 선택 필드에 값(`LoopInterface`)을 **채운** 것이다 — 필드의 필수/선택 지위를 바꾸지 않는다.
 - 필수 4필드: `id`·`contract`·`version`·`entrypoint`. 선택 3필드: `requires`(기본 없음)·`configSchema`·`replaceable`(기본 true).
 - 상세 필드 계약의 정본은 01 §3.2-A가, 형식 작성 지침은 framework/runtime/module-manifest.md가 유지한다. 이 표는 값 인스턴스이며 계약의 진위 판정 기준이 아니다.
 
@@ -184,7 +185,7 @@
 ## §6. 정본 경계·금지 토큰 준수 (self-note)
 
 - **재정의·확장 0.** 본 문서의 7필드는 01 §3.2-A의 인스턴스다. 어떤 필드도 이 문서에서 진위가 확정되지 않는다 — 판정 기준은 01 §3.2-A(필드 계약)와 framework/runtime/module-manifest.md(형식 규격)다. 이 Provider가 구현하는 오케스트레이션 계약(07 §3 분해·디스패치·병합 연산·데이터 포맷·불변 규칙)도 **재정의하지 않고** § 포인터로만 참조했다. 필수/선택 표기(`requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)")를 정본 그대로 보존했고, `requires`의 선택 지위를 바꾸지 않은 채 값만 채웠으며, 새 필드를 추가하지 않았다.
-- **금지 토큰 0 (자가 전수 스캔).** 본문·표·예시 전체를 다음 후보 집합 **전체**로 전수 스캔하여 0건임을 확인했다 (framework/core/structure.md §5 C-3 확장, 단일 토큰 검색에 국한하지 않음) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 특정 프로그래밍 언어명·툴체인명·직렬화 형식명·환경 경로 토큰 }. 진입점·역할 실행 채널·병합 중재·Memory 배선의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 07 §4.1)" 포인터를 두었고, 특정 Adapter Binding 문서명·물리 경로도 인용하지 않았다 (mention/use 경계 — 금지 토큰의 예시도 누출이다, session-handoff-v0.2 §1.5 Lesson 후보 3). `id`·`contract`·`requires` 값(`workflow-provider`·`WorkflowInterface`·`LoopInterface`)은 계약 **필드 값**이지 금지 토큰이 아니다.
+- **금지 토큰 0 (자가 전수 스캔).** 본문·표·예시 전체를 다음 후보 집합 **전체**로 전수 스캔하여 0건임을 확인했다 (framework/core/structure.md §5 C-3 확장, 단일 토큰 검색에 국한하지 않음) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 특정 프로그래밍 언어명·툴체인명·직렬화 형식명·환경 경로 토큰 }. 진입점·역할 실행 채널·병합 중재·Memory 배선의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 07 §4.1)" 포인터를 두었고, 특정 Adapter Binding 문서명·물리 경로도 인용하지 않았다 (mention/use 경계 — 금지 토큰의 예시도 누출이다). `id`·`contract`·`requires` 값(`workflow-provider`·`WorkflowInterface`·`LoopInterface`)은 계약 **필드 값**이지 금지 토큰이 아니다.
 - **새 계약·용어 0.** `requires`에서 존재하지 않는 contract를 신설하지 않았다 — `LoopInterface`는 framework/loop/module-manifest.md가 확정한 기존 contract 값이다. Glossary 밖 새 용어를 만들지 않았다. `WorkflowInterface`는 `contract` 필드의 식별자 **값**이며 Glossary 표제어의 신설이 아니다 — Glossary 정본 어휘 "Workflow" + 관례 접미 "Interface"의 조합으로 Advisor가 확정했다(§5 DP-W1).
 - **미완성 형제 산출물 비인용 (07 R2).** 같은 마일스톤에서 동시 작성 중일 수 있는 형제 산출물(예: Work Graph·Task 정의 포맷 인스턴스 문서 등)은 추측·인용하지 않았다. 본 문서는 확정 정본(01·03·07 spec)과 기존 Baseline(framework/runtime/·memory/·verifier/·loop/·core/ 문서)만 참조했다.
 - **설계 확정(Advisor).** `contract`·`id` 명명(DP-W1)·`requires` 값(DP-W2)·`configSchema` 생략(DP-W3)은 Advisor 결정으로 확정되어 §2·§3·§5에 반영했다. `id`(=`workflow-provider`)·`version`(=`0.1.0`) 인스턴스 값은 Advisor 확인으로 승인되었다(§5 "Advisor 확인 — 인스턴스 값"). 미확정·open 잔여는 없다.

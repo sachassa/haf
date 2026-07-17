@@ -15,7 +15,7 @@
 - specs/00-glossary.md — 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - ROADMAP.md v0.3 (Runtime & Core Kernel) — 산출물 "Adapter 바인딩(Core 산출물의 환경 실현)"의 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식 토큰의 사용이 **허용**된다(여기가 격리 지점이다). 단 이 문서는 Core Contract(01 §3·Core 4종 문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식 토큰의 사용이 **허용**된다(여기가 격리 지점이다). 단 이 문서는 Core Contract(01 §3·Core 4종 문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -26,6 +26,7 @@
 | 2026-07-05 | v0.3 Draft | 최초 작성. `framework/adapters/` 경계의 첫 산출물. 01 §4.1 바인딩 표 10행의 v0.3 구체 매핑(§2), Core 산출물 4종의 "추상 계약 → 물리 실현" 매핑(§3), 01 §4.2 이식 교체 지점 1~7 대응(§4), structure.md `<adapter>` = `claude` 구체화(§5), Advisor 조율 결정 2건(SchemaViolation·retry.limit) 정합(§6). | Worker (Advisor 위임, Task A5) |
 | 2026-07-05 | v0.3 Draft r2 | CP2 재작업 — 상태 서술 교정. 미존재 Config 소스 2건(`~/.claude/CLAUDE.md` Global, `.claude/settings.json` Project)을 "실재"에서 "환경 지원 선택적 소스 — 현 시점 미존재"로 구분 표기(§2 #4·#5, §3.3, §4 #2, §6-b). `retry.limit` Global 기본값 소속 소스를 실재 소스 `~/.claude/settings.json`으로 명확화. 문서 내 모든 "실재/존재" 서술을 파일 시스템과 전수 대조(불일치 0건 확인). | Worker (Advisor CP2 재작업 지시, Task A5) |
 | 2026-07-05 | v0.3 Baseline | v0.3 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass, CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 13 §3.2-B·02 §4.1 SP-3 정본 § 유지). 삭제 산출물 참조 없음. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -113,7 +114,7 @@ Registry 4연산이 **이 환경에서 어떻게 수행되는가**. Bootstrap �
 | Deregister (01 §3.1-A, module-registry.md §2.4) | 대상 정의 파일을 디렉터리에서 제거한다. 그 계약에 의존하는 다른 활성 Module이 있으면 제거 거부(DependentExists). | 규약 실현(파일 제거) |
 
 - 실패 reason 코드(ContractMismatch/DuplicateId/UnresolvedContract/DuplicateBinding/DependencyCycle/NotReplaceable/DependentExists/NotRegistered)와 공통 Failure Report 구조(operation/target/reason/location)의 정본은 01 §3.2-D·module-registry.md §5다. 본 문서는 코드를 재정의하지 않고 수행 방식만 바인딩한다.
-- 형태 B(실행 코드) 도입 시, 위 규약 수행은 실행 Registry로 실현되며 01 §3.1-A 계약 변경은 0이다(module-registry.md §4 C-1). 13 §3.2-B 전이 조건 2(Runtime 정식 Module 호스팅)의 진전 대상이다(session-handoff-v0.2 §5-3).
+- 형태 B(실행 코드) 도입 시, 위 규약 수행은 실행 Registry로 실현되며 01 §3.1-A 계약 변경은 0이다(module-registry.md §4 C-1). 13 §3.2-B 전이 조건 2(Runtime 정식 Module 호스팅)의 진전 대상이다.
 
 ### §3.3 Config 3스코프 — framework/core/config-schema.md (정본 01 §3.2-B·§3.1-B)
 
@@ -166,7 +167,7 @@ Bootstrap~Serve~Shutdown의 **실행 컨테이너(세션/턴)** 매핑. 연산·
 
 주:
 
-- 교체 지점 7(Agent 역할 실행 모델 지정)은 01 §4.2가 "specs/02-agent.md §4 소관. Runtime은 참조만 하고 정의하지 않는다"고 못박은 항목이다. 본 문서는 실재 표면(`model: opus`)을 **참조로만** 표기하고 정의하지 않는다. 02 §4.1 SP-3·session-handoff-v0.2 §1.3(worker.md만 `model: opus`, 나머지는 세션 상속)이 정본이다.
+- 교체 지점 7(Agent 역할 실행 모델 지정)은 01 §4.2가 "specs/02-agent.md §4 소관. Runtime은 참조만 하고 정의하지 않는다"고 못박은 항목이다. 본 문서는 실재 표면(`model: opus`)을 **참조로만** 표기하고 정의하지 않는다. 02 §4.1 SP-3(worker.md만 `model: opus`, 나머지는 세션 상속)이 정본이다.
 - "유지되는 것" 열의 계약은 이식 시(다른 AI 환경으로) 바뀌지 않는다 — 이것이 01 §3 Core Contract와 Core 4종 산출물 계약의 이식 불변성이며, structure.md §7 C-1(형태 A→B 및 환경 전환에도 Core Contract 변경 0)과 정합한다.
 - 이 교체 지점 목록은 specs/11-adapters.md가 Adapter Interface로 정식화한다(01 §4.2 말미). 본 문서는 그 정식화를 선취하지 않고 v0.3 실현 매핑에 한정한다(창설 금지, §0).
 

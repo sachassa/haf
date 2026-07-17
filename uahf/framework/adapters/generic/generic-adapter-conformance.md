@@ -7,7 +7,7 @@
 
 - specs/11-adapters.md §3.1(Judge Conformance C1~C3)·§3.2-A(BP-1~BP-17 바인딩 지점 목록)·§3.2-B(Valid(Full)/Valid(Minimal)·최소 바인딩 부분집합 13개·최소 구현 Adapter 정의)·§3.2-C(구조 규격)·§3.2-D(Conformance Report 6필드)·§3.3(INV-1~INV-8)·§7·§8 예1(최소 구현 Adapter 판정)·예2(Core 무수정 교체). **Frozen(v0.1 기준선). 본 문서가 실현·판정하는 계약의 정본이며, 재정의·확장하지 않고 § 포인터로만 인용한다.**
 - framework/adapters/generic/generic-binding.md(T1 확정본·승인 2026-07-06) §2(최소 바인딩 부분집합 필수 13 BP 환경 중립 바인딩 값 표)·§3(선택 4 BP 생략 명문화)·§4(Advisor 결정 DP-V1·DP-V5·DP-V6). 본 Adapter 경계 자신의 바인딩 값 정본(자기 참조). C1 커버리지 대조의 근거.
-- docs/v1.0-generic-adapter-demo.md(T4 확정본·승인 2026-07-06) + docs/v1.0-generic-demo-fixtures/ — 핵심 루프 1사이클 실수행 기록(위임→구현→검증→승인)·§3.6 사이클 기록(4전이 append-only)·§3.4 독립 Verifier 검증 리포트(final_verdict=Pass 3/3)·§4 필수 13 BP↔실증 지점 매핑·C3 loop_pass 근거 문장. **C3 판정 근거의 정본.**
+- `uahf/docs/v1.0-generic-adapter-demo.md@cd9247b`(T4 확정본·승인 2026-07-06) + `uahf/docs/v1.0-generic-demo-fixtures/@cd9247b` — 핵심 루프 1사이클 실수행 기록(위임→구현→검증→승인)·§3.6 사이클 기록(4전이 append-only)·§3.4 독립 Verifier 검증 리포트(final_verdict=Pass 3/3)·§4 필수 13 BP↔실증 지점 매핑·C3 loop_pass 근거 문장. **C3 판정 근거의 정본**(evidence 등급으로 아카이브 — 산출물 수명 정책 docs/artifact-lifecycle-policy.md §7; 열람: `git show cd9247b:uahf/docs/v1.0-generic-adapter-demo.md`). 본문 여러 곳의 시연 문서·픽스처 "실재"·근거 참조는 cd9247b 시점 스냅샷 기준이다.
 - framework/core/structure.md §2(4경계 배치·물리 분리)·§5(금지 토큰 규칙 C-3). Core 경계 무침범·C2 판정의 근거.
 - specs/00-glossary.md §3.2 — Adapter Interface·바인딩 지점(Binding Point)·Conformance·완전/최소 구현 Adapter·핵심 루프(Core Loop) 표제어 정본, `형태 A/형태 B` 서술 라벨(§3.2-G). 본 문서는 새 용어를 신설하지 않는다.
 - AGENT.md(상위 규약)·docs/delegation-protocol.md §2(위임/보고 Core 운용 지침 — AI 비의존). § 포인터로만 참조.
@@ -23,6 +23,7 @@
 |---|---|---|---|
 | 2026-07-06 | v1.0 Draft | 최초 작성. `framework/adapters/generic/` 경계의 두 번째 산출물(선행: generic-binding.md T1 확정본). Generic Adapter(2nd Adapter)에 대한 **Conformance Report(11 §3.2-D 6필드)** 산출 — adapter=**generic**·verdict=**Valid(Minimal)**·missing_bindings=**없음**(C1)·core_modifications=**없음**(C2)·loop_pass=**예**(C3)·notes=선택 4종(BP-6·12·16·17) 미제공(최소 구현). **C1~C3 검사 근거 절**(§2 — C1 필수 13 BP 커버리지 전건 대조[generic-binding.md §2]·C2 Core 무수정 직접 실측[framework/core 2·runtime 3 문서 AI 의존 토큰 0 전수 스캔·generic 경계 Core 무침범]·C3 핵심 루프 통과[docs/v1.0-generic-adapter-demo.md 사이클 기록·독립 검증 리포트 § 포인터]). **판정 성격 절**(§3.2 — 11 §3.1 Judge Conformance 출력 인스턴스·최종 승인 아님·CP2/CP3 후속). 상태 서술 실측 대조 표(§4 — L-07). 정본 경계·재정의 0·창설 0 self-note(§5) + verify_basis(DP-V6 정체성 제약 자가 전수 스캔·DP-V14 타 Adapter 경로 0건). 본문 특정 AI 이름·모델명·AI 벤더 제품/기능명 0건 + 타 Adapter 경계 경로 명명 0건(DP-V6·DP-V14). 새 BP·새 Report 필드·새 verdict 값·새 등급·새 용어 창설 0. Frozen specs/11 무변경. 형제 Task 산출물(structure.md 개정분·getting-started.md 개정분) 불인용(07 R2). 이 1파일만 생성 — 경계 밖 파일 무수정(07 R4). | Worker (Advisor 위임) |
 | 2026-07-07 | v1.0 Baseline | v1.0 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 21/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·C3 판정 근거의 정본(docs/v1.0-generic-adapter-demo.md·v1.0-generic-demo-fixtures/) @cd9247b 앵커 전환(근거 bullet·§4 실측 표; 본문 인라인 참조는 근거 bullet 스냅샷 노트로 커버). 계약·판정·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 최종 판정·승인은 마일스톤 CP2·CP3 소관. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -37,7 +38,7 @@
 - **창설 금지.** 이 문서는 11 §3.2-A **17개 바인딩 지점을 넘어서는 새 바인딩 지점(새 BP)을 창설하지 않는다.** 11 §3.2-D 6필드를 넘어서는 **새 Report 필드**를, 11 §3.2-B의 `Valid(Full)`/`Valid(Minimal)`/`Invalid`를 넘어서는 **새 verdict 값**을, 새 등급·새 용어를 만들지 않는다. Adapter Interface·Conformance 기준·등급 정의는 전부 11 §3이 소유하며 본 문서는 인스턴스 판정만 낸다.
 - **판정 성격(최종 승인 아님).** 본 문서가 산출하는 Conformance Report(§3)는 11 §3.1 Judge Conformance 연산의 출력 인스턴스이자 근거 정리다. 그러나 **이 산출 자체는 최종 승인이 아니다** — 완료 조건 대조의 독립 판정(CP2 — Verifier, 11 §7 "Verifier가 필수 바인딩 체크리스트를 대조")과 최종 승인(CP3 — Advisor, 11 §7 "Advisor가 Conformance Report를 검토해 최종 승인")이 뒤따른다(02 §3.2-A, AGENT.md Verification). 본 문서는 verdict를 스스로 확정 승인하지 않고 근거와 함께 제시한다(§3.2). 이 관행은 첫 번째 Adapter의 Conformance 판정 문서 §0 관행과 **동형**이다(단 그 문서를 경로로 명명하지 않는다 — DP-V14).
 - **하네스 상태 전제(Bootstrap).** 이 하네스는 현재 **Bootstrap 상태**다(Glossary J-13, delegation-protocol.md §0). 다수 바인딩 지점은 정식 실행 Module이 아니라 환경 중립 규약(형태 A)으로 실현된다. C3(핵심 루프 통과)은 이 Bootstrap 상태에서 실동작 사이클로 실증됐으며(§2.3), 최소 구현 Adapter 판정은 기능 완성이 아니라 "다른 실행 환경에 적용 가능함의 증명"을 목적으로 한다(11 §3.2-B). `형태 A`(문서·규약)·`형태 B`(실행 코드)는 Glossary §3.2-G 서술 라벨이다.
-- **실측 기반 상태 서술(L-07).** "실재/존재/미존재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3 §1.4 A5 사례·Active Lesson L-07). §4 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로, 미래 산출물을 현재 실재로 쓰지 않는다.
+- **실측 기반 상태 서술(L-07).** "실재/존재/미존재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록, A5 재발 방지). §4 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로, 미래 산출물을 현재 실재로 쓰지 않는다.
 - 용어는 specs/00-glossary.md 정본만 사용한다. Adapter Interface·바인딩 지점(Binding Point)·Conformance·완전/최소 구현 Adapter·핵심 루프(Core Loop)는 Glossary §3.2 정본이며(11 §9 OQ-2 승격), 본 문서는 그 판정만 낸다. 본 문서는 새 용어를 신설하지 않는다.
 
 ---
@@ -139,13 +140,13 @@ Generic Adapter는 C1~C3을 만족(Valid)하되, 각 필수 바인딩의 내용�
 
 ## §4. 상태 서술 실측 대조 (L-07 재발 방지)
 
-session-handoff-v0.3 §1.4(A5 사례 — 미존재를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·Active Lesson L-07(상태 서술은 실측 후 기록)에 따라, 본 문서의 "실재/존재/미존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06, 파일 열거 및 텍스트 전수 스캔 직접 실측.**
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출)에 따라, 본 문서의 "실재/존재/미존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06, 파일 열거 및 텍스트 전수 스캔 직접 실측.**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|
 | `framework/adapters/generic/generic-binding.md` (C1 근거) | 실재 (T1 확정본) | 실재 — 파일 확인. §2 필수 13 BP 표·§3 선택 4 생략·§4 DP-V1/V5/V6 구성 확인. |
 | `framework/adapters/generic/generic-adapter-conformance.md` (본 문서) | 실재 (본 산출) | 실재 (이 파일). 생성 전 미존재였음(사전 실측 확인). |
-| `docs/v1.0-generic-adapter-demo.md` + `docs/v1.0-generic-demo-fixtures/` (C3 근거) | 실재 (T4 확정본·픽스처) | 실재 — 시연 문서 + 픽스처 16파일/9디렉터리 확인. `records/cycle-record.log`(4전이)·`reports/verification-report.md`(final_verdict=Pass) 포함. |
+| `docs/v1.0-generic-adapter-demo.md` + `docs/v1.0-generic-demo-fixtures/` (C3 근거) | 아카이브 (evidence 등급 — 산출물 수명 정책으로 제거) | `uahf/docs/v1.0-generic-adapter-demo.md@cd9247b` + `uahf/docs/v1.0-generic-demo-fixtures/@cd9247b` — cd9247b 시점 실측: 시연 문서 + 픽스처 16파일/9디렉터리, `records/cycle-record.log`(4전이)·`reports/verification-report.md`(final_verdict=Pass) 포함(열람: `git show cd9247b:…`). |
 | `framework/core/` (C2 Core 경계) | 실재 (계약 문서만·AI 의존 0건 유지) | 실재 — structure.md·config-schema.md 2문서 확인. AI 의존 instance 토큰 전수 스캔 0건. |
 | `framework/runtime/` (C2 Core 경계) | 실재 (프로토콜 문서만·AI 의존 0건 유지) | 실재 — lifecycle.md·module-manifest.md·module-registry.md 3문서 확인. AI 의존 instance 토큰 전수 스캔 0건. |
 

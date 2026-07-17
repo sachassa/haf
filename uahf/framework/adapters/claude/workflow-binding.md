@@ -23,9 +23,9 @@
 - .claude/CLAUDE.md — Advisor를 프로젝트 진입점(주 세션)에 바인딩하는 지점(07 §4.1 행 6 중재 진입점 대응 + 07 §4.2 SP-4). 실측 대상. .claude/AGENT.md — 상위 규약.
 - framework/core/structure.md §2·§5·§8 — 4경계 배치(Adapter 경계 = 격리 지점, C-3 비적용)·§8 트리(백엔드 격리 데이터 소관). 본 문서 경계의 근거.
 - specs/00-glossary.md — 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
-- docs/session-handoff-v0.3.md §1.4·§1.5(A5·L-07 — 상태 서술은 실측 후 기록). ROADMAP.md v0.7 (Workflow & Parallel Orchestration) — 산출물의 환경 실현 근거.
+- Active Lesson L-07 (상태 서술은 실측 후 기록 — A5 재작업 사례에서 도출). ROADMAP.md v0.7 (Workflow & Parallel Orchestration) — 산출물의 환경 실현 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 07 §3.3 INV-9), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·memory-binding.md §0·verifier-binding.md §0·loop-binding.md §0과 동형). 단 이 문서는 Core Contract(07 §3)와 그 인스턴스 문서(framework/workflow/ 5문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 07 §3.3 INV-9), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용, runtime-binding.md §0·memory-binding.md §0·verifier-binding.md §0·loop-binding.md §0과 동형). 단 이 문서는 Core Contract(07 §3)와 그 인스턴스 문서(framework/workflow/ 5문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -38,6 +38,7 @@
 | 2026-07-06 | v0.8 Draft (개정 — 시연 소산 실재 반영) | v0.8 Task EX-R2 — Advisor 승인 하 격리 개정 (v0.7 CP2 §3.7-4 관찰 해소, 사용자 승인 2026-07-06 편입 범위). v0.7 시연 소산의 "미생성·생성 예정" 라이브 서술 전 지점을 파일 시스템 직접 실측 후 실재 상태로 정합화(L-06·L-07) — docs/v0.7-demo.md(§4.3 Work Graph 인스턴스·§6.2 Merge Result)·v0.7-demo-procedure.md·v0.7-demo-fixtures/ 9파일·loop-data 3파일 실재 반영, §8 OQ-WB-1 해소됨 표기(§3.2 구조 제안이 시연 실물로 채택·실현 — demo.md §0.1). 계약·바인딩 확정 내용(DP-W4·SP 대응·물리 채널) 무변경, 시점 명시 스냅샷·기존 이력 행 문면 불변(L-10·V4 §4). | Worker (Advisor 위임, Task EX-R2) |
 | 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-13 | (OQ 부분 해소 정합 — 버전 무상승) | §8 OQ-WB-2 부분 해소 표기 append — 형태 B Step Hosting 마일스톤이 §4.1 예약 로케이터("무인 병렬 오케스트레이션 실행 진입점")를 부분 실현: 중립 Step Host(`framework/loop/step-host/`)가 Work Graph(07 §3.2-A)를 데이터로 소비(ready_set=parallelSets 논리·dogfooding E2E 실증). 물리 동시 디스패치는 동시성 invoker 후속 과제로 이연(스케줄 논리 실현·물리 병렬 잔여). 본문 매핑·계약 무변경(참조 정합=버전 미상승 선례·BPD-17 append-only). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·docs/v0.7 시연 소산(demo·demo-procedure·demo-fixtures) 실재 서술을 @cd9247b 앵커로 전환(§0 커버리지 노트·§7 실측 표; DP-W4 직렬화 정본·workflow-data 미신설·loop-data/memory-data 백엔드는 계약으로 유지). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -51,7 +52,8 @@
 - **직렬화 물리 정본 선언 — 문서 형태(Advisor 결정 DP-W4).** Work Graph(07 §3.2-A)·Merge Result(07 §3.2-D)·공통 Failure Report(07 §3.2-E)의 물리 직렬화는 **문서 형태(계획·로드맵 문서 및 docs/ 시연 소산)로 확정한다**(Advisor 결정 DP-W4). **`framework/adapters/claude/workflow-data/` 등 새 데이터 백엔드 디렉터리를 신설하지 않는다.** 이는 loop-binding.md §3의 DP-L4(루프 상태 기록 → `framework/adapters/claude/loop-data/` 신설 백엔드)와 **사실 관계가 다르다** — 03 §4.1은 구체 경로·문법을 바인딩에 열어 뒀으나(loop-state-record.md §7·03 §4.1 SP-3), **07 §4.1 행 1 정본 문면("계획·로드맵 문서")은 이미 물리 형태를 문서로 지정**하므로 본 문서는 그 인스턴스로 해소한다. 시연 실물(Work Graph 인스턴스·Merge Result 기록)의 물리 위치·문서 구조 정본은 §3이 구조 제안+근거로 확정한다(loop-binding.md §3.1의 "구조 제안·근거" 관례 동형). **시연 소산은 시연 후(WF9) 이 정본 구조대로 생성되어 실재하며, §3·§7이 그 실측을 반영한다**(v0.8 개정 — 이전 "미래 산출물 실재 불주장" 서술을 시연 후 실측 실재로 갱신; WF6 작성 시점에는 미생성이었다, L-07).
 - **창설 금지.** 이 문서는 07 §4.1 표를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. v0.7 산출물(작업 그래프 분해·병렬 디스패치·병합 충돌 처리·검증 통합)의 물리 실현 매핑으로 한정한다. 새 필드·새 연산·새 `reason`·새 불변 규칙을 만들지 않는다.
 - **하네스 상태 전제(Bootstrap).** 이 하네스는 현재 **Bootstrap 상태**다(Glossary J-13, runtime-binding.md §0, delegation-protocol.md §0). Workflow는 정식 실행 Module이 아니라 규약 문서(07·framework/workflow/ 5문서)와 관행(Advisor가 분해·디스패치·병합을 오케스트레이션, 서브에이전트 동시 위임·최종 응답으로 역할 실행)으로 실현된다(형태 A). 따라서 본 문서의 매핑은 **이미 물리적으로 실재하는 표면**(자매 바인딩 4문서·framework/workflow/ 5문서·.claude/agents/ 4종·.claude/CLAUDE.md·ROADMAP.md — §7 실측)과, **실행 코드 도입 시 로딩될 지점**(형태 B — 무인 병렬 오케스트레이션 실행 진입점·로더), 그리고 **후속 시연 Task(WF9)가 이 정본 구조대로 생성한 시연 소산**(docs/ 시연 실물 — 시연 후 실재, §7 실측; WF6 draft 시점에는 미생성이었다 — 시점 스냅샷)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다.
-- **실측 기반 상태 서술(L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3.md §1.4 A5 사례·§1.5 Lesson 후보 3 재발 방지, Active Lesson L-07). §2 "실재 여부" 열과 §7 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로 쓰지 않고, 실재는 실측 후에만 기입한다. **docs/v0.7 시연 소산은 실재한다** — 후속 시연 Task(WF9)가 §3 정본 구조대로 생성했다(시연 후 직접 재실측, §7 — docs/v0.7-demo.md §4.3·§6.2·v0.7-demo-procedure.md·v0.7-demo-fixtures/ 9파일·loop-data 3파일). WF6 작성 시점 실측에서는 미생성이었다(시점 스냅샷 — 그 시점 docs/ 아래 v0.7 시연 문서 부재; V4 §4 시점 명시 스냅샷). memory-binding.md §7이 M5 draft "데이터 미생성"을 시연 후 실재로 전수 갱신한 관례 동형이다.
+- **실측 기반 상태 서술(L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록, A5 재발 방지). §2 "실재 여부" 열과 §7 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로 쓰지 않고, 실재는 실측 후에만 기입한다. docs/v0.7 시연 소산은 후속 시연 Task(WF9)가 §3 정본 구조대로 생성했다(시연 후 직접 재실측, §7 — docs/v0.7-demo.md §4.3·§6.2·v0.7-demo-procedure.md·v0.7-demo-fixtures/ 9파일·loop-data 3파일). WF6 작성 시점 실측에서는 미생성이었다(시점 스냅샷 — 그 시점 docs/ 아래 v0.7 시연 문서 부재; V4 §4 시점 명시 스냅샷). memory-binding.md §7이 M5 draft "데이터 미생성"을 시연 후 실재로 전수 갱신한 관례 동형이다.
+- **docs/v0.7 시연 소산 아카이브(산출물 수명 정책 정합, 2026-07-17).** 위 docs/v0.7 시연 소산(`docs/v0.7-demo.md`·`docs/v0.7-demo-procedure.md`·`docs/v0.7-demo-fixtures/`)은 산출물 수명 정책(docs/artifact-lifecycle-policy.md §7)으로 작업 트리에서 제거되었다 — 본문·§2·§3·§7의 docs/v0.7 시연 소산 "실재/생성" 서술은 **cd9247b 시점 스냅샷** 기준이며, 앵커 `uahf/docs/v0.7-demo.md@cd9247b`로 참조한다(`git show cd9247b:uahf/docs/v0.7-demo.md`). DP-W4의 **직렬화 정본(문서 형태·`workflow-data/` 미신설)**·§3.2 구조 제안·`framework/workflow/` 5문서는 계약 서술로 유지되고, `loop-data/`·`memory-data/` 백엔드 경로도 계약으로 유지된다.
 - 용어는 specs/00-glossary.md 정본만 사용한다. Work Graph·Task·병렬 집합·소유 경계·인터페이스 계약은 Glossary §3.2-J(J-07) 정본이며, `WorkflowInterface`·`workflow-provider`·`LoopInterface`는 module-manifest.md가 확정한 `contract`·`id`·`requires` 필드 **값**이지 Glossary 표제어의 신설이 아니다. `형태 A/B`는 structure.md 서술 라벨의 인용이다. 본 문서는 새 용어를 신설하지 않는다.
 
 ---
@@ -227,7 +229,7 @@ module-manifest.md §2·§3·§5(DP-W2) `requires` = `LoopInterface`(병합은 �
 
 ## §7. 상태 서술 실측 대조 (done 5 — A5/L-07 재발 방지)
 
-session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록, Active Lesson L-07)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`) + 파일 크기·front-matter 직접 실측(v0.8 개정 시 재실측). workflow-data/ 부재는 여전히 직접 실측했고(DP-W4 정합), docs/v0.7 시연 소산은 시연 후 실재로 직접 재실측했다(L-06·L-07).**
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재 소스를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출)에 따라, 본 문서의 "실재/존재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: 2026-07-06 파일 열거(`ls`) + 파일 크기·front-matter 직접 실측(v0.8 개정 시 재실측). workflow-data/ 부재는 여전히 직접 실측했고(DP-W4 정합), docs/v0.7 시연 소산은 시연 후 실재로 직접 재실측했다(L-06·L-07).**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|
@@ -244,9 +246,9 @@ session-handoff-v0.3.md §1.4(A5 사례 — 미존재 소스를 "실재"로 서�
 | advisor/planner/verifier.md 실행 모델 (§4.1·§5) | 세션 상속 (미지정) | 실재 — 세 파일 front-matter `model` 라인 부재 확인(세션 상속). |
 | `.claude/CLAUDE.md` Advisor 진입점·중재 바인딩 (§2 #6·§5.3) | 실재 (주 세션 Advisor 바인딩 + "Worker 완료 보고를 그대로 신뢰하지 않는다") | 실재 — `.claude/CLAUDE.md` "너는 … 메인 Advisor다"·"Worker 완료 보고를 그대로 신뢰하지 않는다" 확인(07 §4.1 행 6·SP-4 진입점). |
 | `framework/adapters/claude/memory-data/` (§5.5 Memory 백엔드) | 실재 (memory-binding.md 확정 백엔드, 자매) | 실재 — `memory-data/store/`(mi-0001~0039)·`memory-data/index/` 존재 확인(memory-binding.md §7 실측 대상). |
-| `framework/adapters/claude/loop-data/` (§4.2 `LoopInterface` 참조원 백엔드) | 실재 (loop-binding.md 확정 백엔드, 자매) | 실재 — 3파일(v06-demo-a/b/c.jsonl) 존재 확인(loop-binding.md §7 실측 대상). |
+| `framework/adapters/claude/loop-data/` (§4.2 `LoopInterface` 참조원 백엔드) | 실재 (loop-binding.md 확정 백엔드, 자매) | 표면 실재(`loop-data/`·`.gitkeep`) — 데모 인스턴스 3파일(v06-demo-a/b/c.jsonl)은 아카이브 `@cd9247b`(loop-binding.md §7 아카이브 참조). |
 | ROADMAP.md (Work Graph 실사용 인스턴스 — §2 #1·§3.1) | 실재 (Wave 분해·Parallel Track Map — Work Graph 직렬화 실사용) | 실재 — ROADMAP.md 참조(07 §4.1 행 1 예시·07 §8 예1 실증). |
-| docs/ v0.7 시연 소산 (Work Graph 인스턴스·Merge Result 기록, §3.2) | **실재** (문서 형태 — 후속 시연 Task WF9 생성, §3.2 구조대로) | **실재** — v0.8 개정 시 `ls docs/`+`ls docs/v0.7-demo-fixtures/`+`ls loop-data/` 직접 재실측: docs/v0.7-demo.md(66,584 · §4.3 Work Graph 인스턴스·§6.2 Merge Result)·v0.7-demo-procedure.md(84,263)·v0.7-demo-fixtures/ 9파일(fixture/out/verify-t1~t3)·loop-data v07-demo-t1/t2/t3.jsonl(각 1,732) 실측. §3.2 구조 제안이 시연 실물로 채택·실현(OQ-WB-1 해소, demo.md §0.1). WF6 작성 시점에는 미생성이었다(시점 스냅샷 — V4 §4). |
+| docs/ v0.7 시연 소산 (Work Graph 인스턴스·Merge Result 기록, §3.2) | 문서 형태 소산(§3.2 구조대로 — 후속 시연 Task WF9 생성) — 데모 소산 아카이브 | 산출물 수명 정책으로 작업 트리에서 제거 — 앵커 `uahf/docs/v0.7-demo.md@cd9247b`·`uahf/docs/v0.7-demo-fixtures/@cd9247b`. cd9247b 시점 실측: docs/v0.7-demo.md(66,584 · §4.3 Work Graph 인스턴스·§6.2 Merge Result)·v0.7-demo-procedure.md(84,263)·v0.7-demo-fixtures/ 9파일. §3.2 구조 제안이 시연 실물로 채택·실현(OQ-WB-1 해소). 열람: `git show cd9247b:…`. (loop-data v07-demo-* 3파일은 loop-binding.md §7 아카이브 참조.) |
 | 무인 병렬 오케스트레이션 실행 진입점·로더 (형태 B) | 미도입 (형태 B 예정) | 미도입 — Bootstrap 상태(형태 A). `framework/workflow/`는 계약 문서 5건만 실재(실행 코드 0). |
 
 - **핵심 구분.** 본 문서가 확정한 직렬화의 **물리 형태(문서)·시연 소산의 물리 위치·문서 구조는 정본(제안·근거)**(§3)이며, 그 **시연 실물(Work Graph 인스턴스·Merge Result 기록)은 시연 후(WF9) 실재한다**(docs/v0.7-demo.md §4.3·§6.2 — v0.8 개정 시 직접 재실측; WF6 작성 시점에는 미생성이었다 — 시점 스냅샷, V4 §4). WF6 작성 시점의 "미생성" 정직 구분은 memory-binding.md M5 draft("데이터 미생성, 시연 시 생성 예정")·loop-binding.md L8 draft 시점과 동형이었고, 그 소산이 시연 후 실재로 전이한 것 또한 두 자매 문서(memory-binding r2·loop-binding WF13)의 시연 후 실재 전수 갱신과 동형이다. 시연 소산의 생성 주체는 **후속 시연 Task(WF9)**이며, 본 문서(WF6)는 물리 형태·위치·구조의 정본만 소유한다 — 시연 실물을 생성·수정하지 않았다.

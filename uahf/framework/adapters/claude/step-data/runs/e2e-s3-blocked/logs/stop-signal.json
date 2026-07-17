@@ -1,6 +1,0 @@
-{
-  "stop_reason": "escalated",
-  "stopped_tasks": [
-    "s3b"
-  ]
-}

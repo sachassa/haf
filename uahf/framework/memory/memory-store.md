@@ -15,7 +15,7 @@
 - framework/core/structure.md §5 — 금지 토큰 규칙(확정 조건 C-3 확장). 본 문서 본문 준수 대상.
 - specs/00-glossary.md §3.2-J — Memory Item·Memory Store·Memory Index·Index Entry·Record·Recall 용어 정본(04 §9 Glossary 추가 요청 6건 승인 반영). 본 문서는 새 용어를 신설하지 않는다.
 
-거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -25,6 +25,7 @@
 |---|---|---|---|
 | 2026-07-05 | v0.4 Draft | 최초 작성. Memory Store 구조·포맷과 Memory 인덱스 규격을 04 §3.2-A·§3.2-C·§3.2-E·§3.2-B와 INV-3·INV-4·INV-6·INV-7의 인스턴스로 확정. Memory Item 스키마 인스턴스(§2, 6필드·필수/선택 표기 보존), Memory Index / Index Entry 규격(§3), Store 계약 구조(§4, append-only·정합 갱신·전량 로드 금지·물리 실현 포인터화), scope 해소 대응 표(§5), 경계·비의존(§6). 04 계약 재정의 0, Glossary 밖 새 용어 0, 물리 실현 서술 0(Adapter Binding 소관 포인터). | Worker (Advisor 위임, Task M3) |
 | 2026-07-06 | v0.4 Baseline | v0.4 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 재작업 1회 후 재검증, CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -141,7 +142,7 @@ Recall Request의 `scope`는 narrowing 차원(`kind` / `labels` / `timeRange` / 
 - **05 경계(INV-5).** kind별 content 상세 스키마·Lesson/Best Practice 생성 규칙은 인용·추측하지 않는다. Memory는 `kind`·`content`를 불투명하게 다루고, 상세는 05 소관 § 포인터로만 처리한다.
 - **07 R2 경계.** 같은 v0.4 Wave에서 동시 작성 중인 형제 문서의 미완성 내용은 인용·추측하지 않는다. 확정된 정본(04 §3.1·§3.4, 05 소관)만 참조한다.
 - **물리 실현 비서술.** Memory Store·Memory Index의 물리 형식·경로·직렬화·백엔드 I/O는 서술하지 않고 Adapter Binding 문서 소관 포인터로만 처리한다(§4.2).
-- **금지 토큰 비의존(structure.md §5 C-3 확장, 04 INV-8).** 본 문서 본문에는 특정 AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명 토큰을 두지 않는다. 금지 토큰의 예시조차 본문에 나열하지 않는다 — 구체 인스턴스가 필요한 자리에는 일반형 표기(`<adapter>`)와 "Adapter Binding 문서 소관" 포인터만 둔다(mention/use 경계 — session-handoff-v0.2 §1.5 Lesson 후보 3).
+- **금지 토큰 비의존(structure.md §5 C-3 확장, 04 INV-8).** 본 문서 본문에는 특정 AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명 토큰을 두지 않는다. 금지 토큰의 예시조차 본문에 나열하지 않는다 — 구체 인스턴스가 필요한 자리에는 일반형 표기(`<adapter>`)와 "Adapter Binding 문서 소관" 포인터만 둔다(mention/use 경계).
 - **Glossary 정본.** 사용 용어는 전부 specs/00-glossary.md §3.2-J 정본이다. 새 용어를 신설하지 않는다.
 
 ---

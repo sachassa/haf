@@ -16,7 +16,7 @@
 - framework/core/structure.md §7 — Core Contract 불변 조건(확정 조건 C-1). 본 문서는 01 §3의 인스턴스이며 계약을 확장·수정하지 않는다.
 - specs/00-glossary.md §3.2-I — Runtime Context 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 
-거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 문서 본문은 특정 AI·언어·툴체인 비의존을 유지한다(structure.md §5, C-3). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 문서 본문은 특정 AI·언어·툴체인 비의존을 유지한다(structure.md §5, C-3). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -26,6 +26,7 @@
 |---|---|---|---|
 | 2026-07-05 | v0.3 Draft | 최초 작성. Bootstrap/Shutdown 연산, Runtime Context, Serve 구간 경계, 언어 중립 시그니처를 01 §3.1-C·§3.2-C·§3.2-D·INV-2·INV-6의 인스턴스로 대조. 단계 전이 규칙 서술 0건 유지. | Worker (Advisor 위임, Task A4) |
 | 2026-07-05 | v0.3 Baseline | v0.3 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass, CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 

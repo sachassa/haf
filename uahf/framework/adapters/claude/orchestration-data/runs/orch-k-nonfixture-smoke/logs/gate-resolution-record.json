@@ -1,9 +1,0 @@
-{
-  "gate_id": "gate-unit-p1",
-  "gateKind": "user_decision_required",
-  "resolved_by_actor": "human",
-  "simulated": false,
-  "user_response": "승인 — 수용·진행 (W0 user_decision 게이트, 주 세션 게이트 제시에 대한 실 사용자 응답 2026-07-13)",
-  "note": "주 세션 게이트 제시에 대한 실 사용자 응답 — 시뮬레이션 아님. L-07 의 반대 방향 정직성: 실 사용자를 시뮬레이션으로 오표기하지 않는다. actor=human 은 실제 사용자 개입이며, user_response 는 그 응답 원문이다.",
-  "impl_proposal_source": "실 LLM 제안 step p1 산출 artifact(impl-proposal.json) — 드라이버 픽스처 아님(OQ-PO-B4 해소 스모크). resolve_and_revise.py(j)의 j_scenario.impl_revision_payload 하드코딩을 그래프 내 실 LLM 산출로 대체한 지점이다."
-}

@@ -1,4 +1,0 @@
-{"actor": "Worker", "at": 1, "cycle_id": "s5a", "from_stage": null, "outcome": "pass", "ref": {"kind": "dispatch"}, "retry_count": 0, "seq": 1, "to_stage": "Execute", "trigger": "완료 조건 충족"}
-{"actor": "Verifier", "at": 2, "cycle_id": "s5a", "from_stage": "Verify", "outcome": "pass", "ref": {"kind": "cp2-pass", "verdict_ref": "verdict"}, "retry_count": 0, "seq": 2, "to_stage": "Complete", "trigger": "완료 조건 충족"}
-{"actor": "Worker", "at": 3, "cycle_id": "s5b", "from_stage": null, "outcome": "pass", "ref": {"kind": "dispatch"}, "retry_count": 0, "seq": 1, "to_stage": "Execute", "trigger": "완료 조건 충족"}
-{"actor": "Worker", "at": 4, "cycle_id": "s5b", "from_stage": "Execute", "outcome": "escalated", "ref": {"kind": "blocked", "report_ref": "blocked"}, "retry_count": 0, "seq": 2, "to_stage": "Execute", "trigger": "에스컬레이션"}

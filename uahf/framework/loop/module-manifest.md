@@ -20,7 +20,7 @@
 - framework/core/structure.md §2(Module 구현 디렉터리 경계 — 자기완결, C-3 확장)·§5(금지 토큰 규칙 C-3 확장)·§7(Core Contract 불변 조건 C-1).
 - specs/00-glossary.md — 용어 정본. Module / Module Manifest / 모듈 시스템 / Runtime Context는 §3.2-I, **Loop**는 Core Component 표제어(정본 specs/03-loop.md)다.
 
-거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -30,6 +30,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.6 Draft | 최초 작성. Loop Provider Module의 01 §3.2-A 7필드 인스턴스(`id`=`loop-provider`·`contract`=`LoopInterface`(DP-L1)·`version`=`0.1.0`·`requires`=`MemoryServiceInterface`(Advisor 확인 — 인스턴스 값)·`entrypoint`=추상 참조(03 §3.1 사이클 구동 연산 노출)·`configSchema`=선언하지 않음(DP-L2)·`replaceable`=기본 true), 필드별 인스턴스 값·근거, `entrypoint` 추상 참조 + 물리 해소 Adapter Binding 소관 포인터(물리 경로·형식 하드코딩 0), 필수/선택 표기 정본 대조 보존, DP-L1·DP-L2 결정 기록 + `id`·`requires` Advisor 확인 기록. 01·03 계약 재정의·확장 0, 금지 토큰 0(자가 전수 스캔), Glossary 밖 새 용어 0. | Worker (Advisor 위임, Task L2) |
 | 2026-07-06 | v0.6 Baseline | v0.6 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -53,7 +54,7 @@
 이 규격의 책임은 두 가지다.
 
 - 01 §3.2-A의 7필드를 이 Provider에 대한 **구체 값**으로 채운다 — `contract`는 `LoopInterface`로 확정하고(§5 DP-L1), `entrypoint`는 사이클 구동 연산(03 §3.1)을 노출하는 추상 참조로 두며 물리 해소는 Adapter Binding 문서 소관으로 미룬다. `requires`는 `MemoryServiceInterface`를 선언하고(§3·§5 — Memory Update가 모든 사이클의 불가피 단계이므로), `configSchema`는 선언하지 않는다(§5 DP-L2).
-- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존 — session-handoff-v0.2 §1.5 Lesson 후보 2).
+- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존).
 
 이 Manifest는 Runtime의 **Register** 연산(01 §3.1-A, 운용 규칙: framework/runtime/module-registry.md §2.1)의 입력이 된다. 각 Module은 자기완결(self-contained) 단위이므로, 이 Manifest는 그 Module의 `id`·`contract`·`entrypoint`·`requires` 등 자기완결 참조를 한 서술자에 묶는다 (01 §3.2-E 규칙 2). 이 Provider가 구현하는 사이클 구동 계약(§3.1 단계 전이·§3.1-B 재작업 루프·§3.1-C 종료·§3.2 기록 포맷)의 정본은 specs/03-loop.md가 유지하며, 본 문서는 그 계약을 재서술하지 않는다.
 
@@ -75,7 +76,7 @@
 
 주:
 
-- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다 (session-handoff-v0.2 §1.5 Lesson 후보 2). `requires`는 **선택 필드(기본 없음)**이며, 이 Provider는 그 선택 필드에 값(`MemoryServiceInterface`)을 **채운** 것이다 — 필드의 필수/선택 지위를 바꾸지 않는다.
+- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다. `requires`는 **선택 필드(기본 없음)**이며, 이 Provider는 그 선택 필드에 값(`MemoryServiceInterface`)을 **채운** 것이다 — 필드의 필수/선택 지위를 바꾸지 않는다.
 - 필수 4필드: `id`·`contract`·`version`·`entrypoint`. 선택 3필드: `requires`(기본 없음)·`configSchema`·`replaceable`(기본 true).
 - 상세 필드 계약의 정본은 01 §3.2-A가, 형식 작성 지침은 framework/runtime/module-manifest.md가 유지한다. 이 표는 값 인스턴스이며 계약의 진위 판정 기준이 아니다.
 
@@ -167,7 +168,7 @@
 ## §6. 정본 경계·금지 토큰 준수 (self-note)
 
 - **재정의·확장 0.** 본 문서의 7필드는 01 §3.2-A의 인스턴스다. 어떤 필드도 이 문서에서 진위가 확정되지 않는다 — 판정 기준은 01 §3.2-A(필드 계약)와 framework/runtime/module-manifest.md(형식 규격)다. 이 Provider가 구현하는 사이클 구동 계약(03 §3 단계 전이·재작업 루프·종료·기록)도 **재정의하지 않고** § 포인터로만 참조했다. 필수/선택 표기(`requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)")를 정본 그대로 보존했고, `requires`의 선택 지위를 바꾸지 않은 채 값만 채웠으며, 새 필드를 추가하지 않았다.
-- **금지 토큰 0 (자가 전수 스캔).** 본문·표·예시 전체를 다음 후보 집합 **전체**로 전수 스캔하여 0건임을 확인했다 (framework/core/structure.md §5 C-3 확장, 단일 토큰 검색에 국한하지 않음) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 특정 프로그래밍 언어명·툴체인명·직렬화 형식명·환경 경로 토큰 }. 진입점·역할 실행 채널·루프 상태 기록 저장의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 03 §4.1)" 포인터를 두었다 (mention/use 경계 — 금지 토큰의 예시도 누출이다, session-handoff-v0.2 §1.5 Lesson 후보 3). `id`·`contract`·`requires` 값(`loop-provider`·`LoopInterface`·`MemoryServiceInterface`)은 계약 **필드 값**이지 금지 토큰이 아니다.
+- **금지 토큰 0 (자가 전수 스캔).** 본문·표·예시 전체를 다음 후보 집합 **전체**로 전수 스캔하여 0건임을 확인했다 (framework/core/structure.md §5 C-3 확장, 단일 토큰 검색에 국한하지 않음) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 특정 프로그래밍 언어명·툴체인명·직렬화 형식명·환경 경로 토큰 }. 진입점·역할 실행 채널·루프 상태 기록 저장의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 03 §4.1)" 포인터를 두었다 (mention/use 경계 — 금지 토큰의 예시도 누출이다). `id`·`contract`·`requires` 값(`loop-provider`·`LoopInterface`·`MemoryServiceInterface`)은 계약 **필드 값**이지 금지 토큰이 아니다.
 - **새 계약·용어 0.** `requires`에서 존재하지 않는 contract를 신설하지 않았다 — `MemoryServiceInterface`는 01 §8 예1·04 §4.1이 사전 명명한 기존 contract 값이다. Glossary 밖 새 용어를 만들지 않았다. `LoopInterface`는 `contract` 필드의 식별자 **값**이며 Glossary 표제어의 신설이 아니다 — Glossary 정본 어휘 "Loop" + 관례 접미 "Interface"의 조합으로 Advisor가 확정했다(§5 DP-L1).
 - **미완성 형제 산출물 비인용 (07 R2).** 같은 Wave에서 동시 작성 중인 형제 산출물(예: 루프 상태 기록 인스턴스 문서)은 추측·인용하지 않았다. 본 문서는 확정 정본(01·03 spec)과 기존 Baseline(framework/runtime/·memory/·verifier/·core/ 문서)만 참조했다.
 - **설계 확정(Advisor).** `contract` 명명(DP-L1)과 `configSchema` 생략(DP-L2)은 Advisor 결정으로 확정되어 §2·§3·§5에 반영했다. `id`(=`loop-provider`)·`requires`(=`MemoryServiceInterface`) 값은 명시 DP 없이 관례·정본 근거로 채운 **인스턴스 값**이며 Advisor 확인으로 승인되었다(§5 "Advisor 확인 — 인스턴스 값"). `version` 부여 관례(Framework/Spec 버전과 독립 축, 초기 `0.1.0`, 구현 갱신 시 상승)는 Memory·Verifier Manifest 관례 동형으로 적용했다. 미확정·open 잔여는 없다.

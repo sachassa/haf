@@ -5,7 +5,7 @@
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
-- `docs/v1.2.1-context-and-design.md` — v1.2.1 통합 이해 정본. 특히 §3(두 "Layer" 축·"루트=라우터, 각 Layer 독립 ARCHITECTURE"·UAHF=`uahf/` 아래 Runtime Layer 구현체·knowledge는 Layer 아닌 횡단 Base)·§4(Layer 연결=타입 계약 파이프). 본 재저술의 라우터 모델·§0 재프레이밍·knowledge 편입 근거.
+- `docs/v1.2.1-context-and-design.md@cd9247b` — v1.2.1 통합 이해 정본. 특히 §3(두 "Layer" 축·"루트=라우터, 각 Layer 독립 ARCHITECTURE"·UAHF=`uahf/` 아래 Runtime Layer 구현체·knowledge는 Layer 아닌 횡단 Base)·§4(Layer 연결=타입 계약 파이프). 본 재저술의 라우터 모델·§0 재프레이밍·knowledge 편입 근거.
 - `docs/tier2-claude-override-design.md` — `.claude` Global Default/override 설계 정본. 특히 §2(개념 모델: G/U 정의·dogfooding 이중역할·개념귀속≠물리위치·형태 A/B)·§3(네이티브 로딩 경계)·§4(합성 3연산 ADD/REPLACE/MERGE·12항목 귀속표). §5 `.claude` 절의 근거이며, 상세 계약은 이 정본에 위임한다.
 - `uahf/ARCHITECTURE.md` 0.2 (UAHF 정본) — UAF는 UAHF를 늘리지 않고, 접점은 Project Contract 하나뿐이다. UAHF 계약 요소는 § 포인터로만 참조한다.
 - `uahf/specs/00-glossary.md` 0.2 (UAHF 용어 정본) — INV-3(Layer 정확히 6개)·용어 네임스페이스 분리의 근거. UAF 신규 용어의 소유 지점은 본 문서 §12다.
@@ -27,6 +27,7 @@
 | 2026-07-13 | v1.5 | orchestration Layer 등재 (마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」 — 사용자 승인 2026-07-13) — (Δ1) §2.1 라우터 표에 `orchestration/` 1행 추가(정본 `orchestration/specs/05-project-orchestration.md`) + 최상위 물리 Layer 5→6 정합(§0·§1·§2.1 "최상위 5 Layer"→"6 Layer"·`orchestration/` 열거 추가). (Δ2) §2.3 "Agentic Runtime (향후)" slot을 실현 표기로 갱신(orchestration/ Layer가 실현·UAHF Runtime Layer와 별개 네임스페이스 주의 유지). (Δ3) §2.5 의존 방향에 orchestration substrate 소비 1항 append(하향 방향·UAHF 무수정 재사용·UAHF 코드 역참조 0 실측). (Δ4) §8 UAF-INV ① 병존 주(注) 1문 append(substrate 라이브러리 무수정 import는 §2.5 하향 소비이며 '무수정'과 병존 — 규범 문면 무변경). (Δ5) §11 "Layer 연결·오케스트레이션 정식화" 항목을 v1.6 실현 표기로 갱신(원 예약 취지 보존). 본문 규범 문면(UAF-INV ①~⑥·P1~P5·6요소 파이프라인 카운트·책임 경계표 담당4/비담당5) 무변·새 설계 결정/새 연결 계약 창설 0·§9 이력 append-only. | Worker (Advisor 위임, W-A) |
 | 2026-07-17 | v1.6 | §5 `.claude` 절에 "UAF 관리 거버넌스 vs UAHF 하네스 거버넌스 (별개)" 명문화 1건 추가 — 루트 `.claude/` Agent 거버넌스(AGENT.md·agents)=UAF-레벨 총괄 관리, UAHF 하네스 거버넌스=그 배포 `.claude/`(scaffold-template 유래)로 분리 서술(4-역할 구조 차용·상호 무참조·self-host 개발/배포 실행 구분). 상위-레벨 UAHF 명칭 잔재 정리(root `.claude/` AGENT.md·agents·CLAUDE.md UAF 재귀속·ROADMAP:24)와 짝. 파이프라인 6요소·UAF-INV·P1~P5·§10/§11 규범 문면 무변·새 설계 결정 0. | Advisor |
 | 2026-07-17 | v1.7 | §8 UAF-INV ① 재정의 — "무수정"(동결) 폐지(UAHF→UAF 승격 이행 완료로 보호 장치 해제)·접점 원칙(Project Contract 단일 접점) 존치·불변 번호 ① 유지(재번호 0·①~⑥ 순서·카운트 무변·내용만 재정의). 라이브 본문 정합 8곳: §0 근거 정본(:10)·§0 접점 절 표제(:42)·§2.2 다이어그램 태그(:105)·§2.2 UAHF 불릿(:115)·§2.5 병존 주(:138)·§6 Stable Core(:193)·§8 UAF-INV ① 본문(:228)·§10 주(:253). §9 이력 행·§8 폐지 경위 주석 제외 라벨 잔존 0. P1~P5·6요소 파이프라인·책임 경계표 담당4/비담당5·§ 포인터 참조 원칙 무변·새 설계 결정 0. 사용자 결정 2026-07-17. | Advisor (사용자 결정) |
+| 2026-07-17 | v1.7 (정합) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §0 근거 정본(:8)·§0 라우터 선언(:38)의 삭제 산출물 참조 앵커 전환(`docs/v1.2.1-context-and-design.md@cd9247b`, 2곳). 논지·계약·규범 문면 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, uahf/framework/core/structure.md §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. 표 내 옛 행의 `uaf/ARCHITECTURE.md`·`§3`·`9종` 등 표기는 그 개정 시점의 정확한 이력 기록이므로 그대로 둔다.)
 
@@ -34,7 +35,7 @@
 
 ## §0. 이 문서의 위치와 정본 경계 (라우터 선언)
 
-- **라우터 정본.** 이 문서는 **UAF(Universal Agentic Framework) 상위 구조의 라우터 정본**(루트 `ARCHITECTURE.md`)이다. 최상위 물리 Layer들의 **지도**를 제공하고, 각 Layer의 독립 `ARCHITECTURE.md`를 § 포인터로 가리키며, **Layer 사이의 관계(연결)만** 서술한다. 각 Layer의 내부 상세는 그 Layer의 독립 정본이 소유한다 (`docs/v1.2.1-context-and-design.md` §3 "루트=라우터, 각 Layer 독립 ARCHITECTURE").
+- **라우터 정본.** 이 문서는 **UAF(Universal Agentic Framework) 상위 구조의 라우터 정본**(루트 `ARCHITECTURE.md`)이다. 최상위 물리 Layer들의 **지도**를 제공하고, 각 Layer의 독립 `ARCHITECTURE.md`를 § 포인터로 가리키며, **Layer 사이의 관계(연결)만** 서술한다. 각 Layer의 내부 상세는 그 Layer의 독립 정본이 소유한다 (`docs/v1.2.1-context-and-design.md@cd9247b` §3 "루트=라우터, 각 Layer 독립 ARCHITECTURE").
 
 - **신 물리 실재 = 최상위 6 Layer.** 이 저장소의 최상위 물리 구조는 **`entry/ · discovery/ · planning/ · uahf/ · knowledge/ · orchestration/`** 다(`orchestration/`은 v1.6에서 §2.3 Agentic Runtime slot을 실현하며 등재된 6번째 최상위 Layer — 문서버전 v1.5·§2.1). 과거 `uaf/`(별개 네임스페이스 디렉터리)는 v1.2.1 구조 이동에서 물리적으로 **소멸**했고, 그 내용은 위 Layer들로 분산되었다(파이프라인 관계 → 이 라우터, 요소별 → 각 Layer ARCHITECTURE). 따라서 "`uaf/` vs UAHF 별개 디렉터리"라는 과거 프레이밍은 폐기한다.
 

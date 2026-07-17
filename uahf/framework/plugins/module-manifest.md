@@ -21,7 +21,7 @@
 - specs/00-glossary.md — 용어 정본. Module / Module Manifest / 모듈 시스템 / Runtime Context는 §3.2-I, **Plugins (Component)**는 §3.2-D 표제어, **Plugin / Plugin Manifest**는 §3.2-J(J-10) 표제어(정본 specs/10-plugins.md)다.
 - AGENT.md — 상위 규약(위임·검증·Memory 원칙).
 
-거버넌스: 이 문서는 `framework/plugins/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 01 §3.3 INV-4, 10 §3.3 INV-10). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/plugins/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 01 §3.3 INV-4, 10 §3.3 INV-10). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -31,6 +31,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.8 Draft | 최초 작성. Plugins Provider Module의 01 §3.2-A 7필드 인스턴스(`id`=`plugins-provider`·`contract`=`PluginsInterface`(DP-E5)·`version`=`0.1.0`(Provider 자체 버전, 독립 축 — Advisor 확인)·`requires`=선언하지 않음(기본 없음 — DP-E5: 10 §5 Memory 미소비로 Verifier 선례 동형, Install/Activate의 Register/Resolve·Deregister는 Runtime 연산 소비이지 Provider contract 의존 아님, 역할 실행도 module Resolve 아님)·`entrypoint`=추상 참조(10 §3.1 Install/Activate/Deactivate/Remove 4연산 노출, 물리 해소 Adapter Binding 소관)·`configSchema`=선언하지 않음(DP-E5 — 10 §3 소비 Config 값 부재 + 10 INV-7 새 Config scope 미도입, Verifier DP-V2 동형)·`replaceable`=기본 true), 필드별 인스턴스 값·근거, 필수/선택 표기 정본 대조 보존, §5 결정 기록 절(Advisor 결정 DP-E5). `requires` 근거를 Verifier 선례(없음)·기존 4 Manifest의 Runtime 비선언 관례와 § 포인터로 구분 서술. 01·10 계약 재정의·확장 0, 금지 토큰 0(자가 부류별 전수 스캔), Glossary 밖 새 용어 0. | Worker (Advisor 위임, Task EX-P1) |
 | 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -55,7 +56,7 @@
 이 규격의 책임은 두 가지다.
 
 - 01 §3.2-A의 7필드를 이 Provider에 대한 **구체 값**으로 채운다 — `contract`는 `PluginsInterface`로, `id`는 `plugins-provider`로 확정하고(§5 DP-E5), `entrypoint`는 설치·활성화·비활성화·제거 네 연산(10 §3.1)을 노출하는 추상 참조로 두며 물리 해소는 Adapter Binding 문서 소관으로 미룬다. `requires`는 선언하지 않고(§3·§5 DP-E5), `configSchema`도 선언하지 않는다(§5 DP-E5).
-- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존 — session-handoff-v0.2 §1.5 Lesson 후보 2).
+- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존).
 
 이 Manifest는 Runtime의 **Register** 연산(01 §3.1-A, 운용 규칙: framework/runtime/module-registry.md §2.1)의 입력이 된다. 각 Module은 자기완결(self-contained) 단위이므로, 이 Manifest는 그 Module의 `id`·`contract`·`entrypoint` 등 자기완결 참조를 한 서술자에 묶는다 (01 §3.2-E 규칙 2). 이 Provider가 구현하는 배포·수명주기 계약(§3.1 네 연산·§3.2 데이터 포맷·§3.3 불변 규칙)의 정본은 specs/10-plugins.md가 유지하며, 본 문서는 그 계약을 재서술하지 않는다.
 
@@ -77,7 +78,7 @@
 
 주:
 
-- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다 (session-handoff-v0.2 §1.5 Lesson 후보 2). 이 Provider는 선택 필드 `requires`에 값을 채우지 않고 기본(없음)을 그대로 취한다 — 필드의 필수/선택 지위를 바꾸지 않는다.
+- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다. 이 Provider는 선택 필드 `requires`에 값을 채우지 않고 기본(없음)을 그대로 취한다 — 필드의 필수/선택 지위를 바꾸지 않는다.
 - 필수 4필드: `id`·`contract`·`version`·`entrypoint`. 선택 3필드: `requires`(기본 없음)·`configSchema`·`replaceable`(기본 true).
 - 상세 필드 계약의 정본은 01 §3.2-A가, 형식 작성 지침은 framework/runtime/module-manifest.md가 유지한다. 이 표는 값 인스턴스이며 계약의 진위 판정 기준이 아니다.
 
@@ -167,7 +168,7 @@
 ## §6. 정본 경계·금지 토큰 준수 (self-note)
 
 - **재정의·확장 0.** 본 문서의 7필드는 01 §3.2-A의 인스턴스다. 어떤 필드도 이 문서에서 진위가 확정되지 않는다 — 판정 기준은 01 §3.2-A(필드 계약)와 framework/runtime/module-manifest.md(형식 규격)다. 이 Provider가 구현하는 배포·수명주기 계약(10 §3 네 연산·데이터 포맷·불변 규칙)도 **재정의하지 않고** § 포인터로만 참조했다. 필수/선택 표기(`requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)")를 정본 그대로 보존했고, `requires`의 선택 지위를 바꾸지 않은 채 기본(없음)을 취했으며, 새 필드를 추가하지 않았다.
-- **금지 토큰 0 (자가 부류별 전수 스캔).** 본문·표 전체를 다음 후보 부류 **전체**로 전수 대조하여 실증 0건임을 확인했다 (framework/core/structure.md §5 C-3 확장, 단일 토큰 검색에 국한하지 않고 부류별 전수 대조) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 특정 프로그래밍 언어명·툴체인명 } ∪ { 직렬화 형식명·확장자·OS 토큰 } ∪ { 물리 경로·배포 채널명·Adapter 하위 인스턴스 토큰·특정 Adapter Binding 문서명 }. 진입점·bundle 배치·배포 채널·역할 실행 채널·Runtime 연산 배선의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 10 §4.1·§4.2)" 포인터를 두었고, 특정 Adapter Binding 문서명·물리 경로도 인용하지 않았다 (mention/use 경계 — 금지 토큰의 예시도 누출이다, session-handoff-v0.2 §1.5 Lesson 후보 3). 다음은 금지 토큰이 아니다: (i) 계약 필드 값 `plugins-provider`·`PluginsInterface`(및 참조한 `verifier-provider`·`workflow-provider` 등 선례 값) — `id`·`contract` **필드 값**이지 금지 토큰이 아니다; (ii) 연산명(Install/Activate/Deactivate/Remove·Register/Resolve/Deregister)·Glossary 정본 어휘(Plugins·Plugin·Module·역할 명칭) — 정본의 평이한 명칭; (iii) 저장소 문서 식별자(`specs/…`·`framework/…` 상호 참조 및 본 문서 자신의 식별자 `framework/plugins/module-manifest.md`) — 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(structure.md §5·workflow/module-manifest.md §6 분류 선례 동형).
+- **금지 토큰 0 (자가 부류별 전수 스캔).** 본문·표 전체를 다음 후보 부류 **전체**로 전수 대조하여 실증 0건임을 확인했다 (framework/core/structure.md §5 C-3 확장, 단일 토큰 검색에 국한하지 않고 부류별 전수 대조) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 특정 프로그래밍 언어명·툴체인명 } ∪ { 직렬화 형식명·확장자·OS 토큰 } ∪ { 물리 경로·배포 채널명·Adapter 하위 인스턴스 토큰·특정 Adapter Binding 문서명 }. 진입점·bundle 배치·배포 채널·역할 실행 채널·Runtime 연산 배선의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 10 §4.1·§4.2)" 포인터를 두었고, 특정 Adapter Binding 문서명·물리 경로도 인용하지 않았다 (mention/use 경계 — 금지 토큰의 예시도 누출이다). 다음은 금지 토큰이 아니다: (i) 계약 필드 값 `plugins-provider`·`PluginsInterface`(및 참조한 `verifier-provider`·`workflow-provider` 등 선례 값) — `id`·`contract` **필드 값**이지 금지 토큰이 아니다; (ii) 연산명(Install/Activate/Deactivate/Remove·Register/Resolve/Deregister)·Glossary 정본 어휘(Plugins·Plugin·Module·역할 명칭) — 정본의 평이한 명칭; (iii) 저장소 문서 식별자(`specs/…`·`framework/…` 상호 참조 및 본 문서 자신의 식별자 `framework/plugins/module-manifest.md`) — 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(structure.md §5·workflow/module-manifest.md §6 분류 선례 동형).
 - **새 계약·용어 0.** `requires`에서 존재하지 않는 contract를 신설하지 않았다(그리고 하드 의존 자체를 두지 않았다). Glossary 밖 새 용어를 만들지 않았다. `PluginsInterface`는 `contract` 필드의 식별자 **값**, `plugins-provider`는 `id` 필드 **값**이며 Glossary 표제어의 신설이 아니다 — Glossary 정본 어휘 "Plugins" + 관례 접미의 조합으로 Advisor가 확정했다(§5 DP-E5).
 - **미완성 형제 산출물 비인용 (07 R2).** 같은 병렬 집합(v0.8 PS-1)에서 동시 작성 중일 수 있는 형제 산출물(Adapter Binding 바인딩 문서·시연 절차서 등)은 추측·인용하지 않았다. 형제 산출물 중 함께 작성되는 plugin-manifest.md(개별 Plugin 배포 서술자 포맷 인스턴스 소유 문서)는 이 Provider Manifest와 **다른 서술자**임을 §0·§3에서 구분 지시하되, 그 내부 내용을 인용하지 않고 소관 포인터로만 지시했다. 본 문서는 확정 정본(01·10 spec, Glossary)과 기존 Baseline(framework/runtime/·memory/·verifier/·loop/·workflow/·core/ 문서)만 참조했다.
 - **설계 확정(Advisor).** `contract`·`id` 명명·`requires` 미선언·`configSchema` 미선언(DP-E5)은 Advisor 결정으로 확정되어 §2·§3·§5에 반영했다. `id`(=`plugins-provider`)·`version`(=`0.1.0`) 인스턴스 값은 Advisor 확인으로 승인되었다(§5 "Advisor 확인 — 인스턴스 값"). 미확정·open 잔여는 없다.

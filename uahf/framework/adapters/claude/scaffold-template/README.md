@@ -2,7 +2,7 @@
 
 이 디렉터리는 Scaffold가 신규 프로젝트에 UAHF를 설치할 때 배치하는 **프로젝트 템플릿의 물리 자산**이다 (12 §3.2-A Project Template의 Claude Code 실물).
 
-이 템플릿의 구조·내용 목록의 정본은 `framework/adapters/claude/scaffold-binding.md §6`이며, 설치 절차의 정본은 같은 문서 §2·§3, 설치 가이드는 `docs/v0.9-install-guide.md`다. 계약 정본은 specs/12-scaffold.md §3(재정의 금지)다.
+이 템플릿의 구조·내용 목록의 정본은 `framework/adapters/claude/scaffold-binding.md §6`이며, 설치 절차의 정본은 같은 문서 §2·§3, 설치 가이드는 `uahf/docs/v0.9-install-guide.md@cd9247b`(산출물 수명 정책으로 작업 트리에서 제거·아카이브 — 열람: `git show cd9247b:uahf/docs/v0.9-install-guide.md`)다. 계약 정본은 specs/12-scaffold.md §3(재정의 금지)다.
 
 ## 구성 (12 §3.2-A 필수 6요소)
 

@@ -15,12 +15,12 @@
 - docs/delegation-protocol.md §3 — 위임/보고 물리 채널 운용(서브에이전트 위임 §3.1·최종 응답 §3.2·병렬 Wave §3.3·반환·에스컬레이션 §3.4). BP-10·BP-11 실현의 정본 근거 소스(agent-binding.md §4가 정식화 — r2).
 - .claude/AGENT.md(상위 규약)·.claude/CLAUDE.md(Advisor 진입점)·.claude/agents/ 4종(advisor·planner·verifier·worker.md) — BP-7·BP-8·BP-9의 실물 실측 대상.
 - specs/00-glossary.md §3.2 — Adapter Interface·바인딩 지점(Binding Point)·Conformance·완전/최소 구현 Adapter·핵심 루프(Core Loop) 표제어 정본. 본 문서는 새 용어를 신설하지 않는다.
-- docs/v0.8-verification-report.md §4(final_verdict = Pass, 충족 29/위반 0/판정 불가 0)·§5·§3.5(Core 무변경·핵심 루프 통과 실증). C2·C3 근거 인용.
+- `uahf/docs/v0.8-verification-report.md@cd9247b` §4(final_verdict = Pass, 충족 29/위반 0/판정 불가 0)·§5·§3.5(Core 무변경·핵심 루프 통과 실증) — 산출물 수명 정책으로 아카이브(열람 `git show cd9247b:uahf/docs/v0.8-verification-report.md`). C2·C3 근거 인용.
 - specs/12-scaffold.md §1·§2·§4.1·§5 — Scaffold의 설치 도구 성격·Bootstrap 이전 동작. DP-A3 근거. § 포인터로만 참조.
 - specs/13-harness.md §4.1 — Harness 최소 구성 Claude 조합 바인딩. harness-binding 배정(§4)의 근거. § 포인터로만 참조.
 - ROADMAP.md v0.9(Adapter Layer 정식화)·v1.0(Adapter Interface 최종 규격·2nd Adapter 최소 구현 판정). 완전 Adapter 판정 시연(11 §7)의 마일스톤 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 11 §3.3 INV-3, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — 자매 바인딩 11문서 §0과 동형). 단 이 문서는 Core Contract 특히 **Frozen specs/11 §3(Adapter Interface·Conformance·구조 규격)을 재정의·확장하지 않는다** — 계약(바인딩 지점·판정 기준·Report 필드·불변 규칙)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계는 Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 11 §3.3 INV-3, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — 자매 바인딩 11문서 §0과 동형). 단 이 문서는 Core Contract 특히 **Frozen specs/11 §3(Adapter Interface·Conformance·구조 규격)을 재정의·확장하지 않는다** — 계약(바인딩 지점·판정 기준·Report 필드·불변 규칙)은 § 포인터로만 인용한다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -35,6 +35,7 @@
 | 2026-07-07 | v1.2 Baseline | v1.2 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass 16/0/0; CP3 Advisor 승인) | Advisor |
 | 2026-07-13 | v1.2 Baseline (r3 — UAF 정본 바인딩 계수 4종 정합) | **UAF 정본 바인딩 계수 3종→4종 정합(v1.4 W1 solution-design-binding.md 신설 파생 — OQ-SD-3 해소).** 갱신 지점 4곳: 상태 라인·근거 정본 불릿(3종→4종·solution-design-binding 등재·상태 라벨 재실측 병기[contract·entry·discovery = v1.2 Baseline / "(전부 v1.2 Draft)" 시점 서술 현행화]·"이 4종 인용·대조하지 않는다")·§6 도입 문단(r3 재실측 1문 append)·§6 표(4종째 행 신규 append — 기존 3종 행은 2026-07-07 스냅샷으로 byte 불변, BPD-17). **verdict(Valid(Full))·BP-1~17 매트릭스·C1~C3 판정·6필드·specs/11 계약 인용 일절 불변 — 계수·열거 표현만 정합(DP-X4대로 판정 무영향·시맨틱 개정 아님·버전 미상승).** 기존 §9 행 byte 불변(L-10). | Advisor (v1.4 W3) |
 | 2026-07-13 | v1.2 Baseline (r4 — SDB Baseline 라벨 반영) | 근거 정본 불릿의 solution-design 상태 라벨 "v1.4 Draft[CP2 Pass·Baseline 대기]" → "v1.4 Baseline[사용자 승인 2026-07-13]" 1구 갱신(같은 날 Baseline 승격 즉시 반영 — "(전부 v1.2 Draft)" 유형의 알려진 stale 재생성 방지). §6 4종째 행은 재실측 시점(승격 전) 스냅샷으로 byte 보존(BPD-17). 그 외 무변·판정 무영향. | Advisor (v1.4 Baseline) |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·판정 근거 인용 삭제 산출물(검증 리포트 6건·docs/ 시연 소산·loop-data 데모 데이터) 실재 서술을 @cd9247b 앵커로 전환(§0 커버리지 노트·근거 정본 불릿·§6 실측 표). Conformance 판정·specs/11 계약 인용 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -48,7 +49,8 @@
 - **창설 금지.** 이 문서는 11 §3.2-A **17개 바인딩 지점을 넘어서는 새 바인딩 지점(새 BP)을 창설하지 않는다**. 11 §3.2-D 6필드를 넘어서는 **새 Report 필드**를, 11 §3.2-B의 `Valid(Full)`/`Valid(Minimal)`/`Invalid`를 넘어서는 **새 verdict 값**을 만들지 않는다. Adapter Interface·Conformance 기준·등급 정의는 전부 11 §3이 소유하며 본 문서는 인스턴스 판정만 낸다.
 - **판정 성격(최종 승인 아님).** 본 문서가 산출하는 Conformance Report(§3)는 11 §3.1 Judge Conformance 연산의 출력 인스턴스이자, Adapter 자기완결 커버리지의 근거 정리다. 그러나 **이 산출 자체는 최종 승인이 아니다** — 완료 조건 대조의 독립 판정(CP2 — Verifier, 11 §7 "Verifier가 필수 바인딩 체크리스트를 대조")과 최종 승인(CP3 — Advisor, 11 §7 "Advisor가 Conformance Report를 검토해 최종 승인")이 뒤따른다(02 §3.2-A, AGENT.md Verification). 본 문서는 verdict를 스스로 확정 승인하지 않고 근거와 함께 제시한다.
 - **하네스 상태 전제(Bootstrap).** 이 하네스는 현재 **Bootstrap 상태**다(Glossary J-13, delegation-protocol.md §0). 다수 바인딩 지점은 정식 실행 Module이 아니라 규약 문서·관행으로 실현된다(형태 A). 따라서 커버리지 매트릭스의 "실재 여부" 열은 **물리 실재**(파일·디렉터리·데이터가 존재)와 **규약 실현(형태 A)**과 **형태 B 예정**(실행 코드 도입 시)을 정직하게 구분한다. `형태 A`(문서·규약)·`형태 B`(실행 코드)는 structure.md §4의 서술 라벨이다. C3(핵심 루프 통과)은 이 Bootstrap 상태에서 이미 반복 통과했으며(§3 loop_pass), Full/Minimal 판정은 기능 완성이 아니라 "다른 AI에 적용 가능함의 증명"을 목적으로 한다(11 §3.2-B).
-- **실측 기반 상태 서술(L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(session-handoff-v0.3.md §1.4 A5 사례·§1.5 Lesson 후보 3, Active Lesson L-07). §2 "실재 여부" 열·§6 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로, 미래 산출물을 현재 실재로 쓰지 않는다. **r2(2026-07-06) 재실측:** 최초(T1) 작성 시점에 "예정 — 미존재"였던 §4 배정 대상 4종(agent-binding.md·harness-binding.md·scaffold-binding.md·scaffold-template/·`.claude/commands/`)은 W2(T3·T4·T5) 이행으로 **실재로 전환**되었으며, 본 r2가 §2·§4·§6의 관련 서술을 그 실재로 직접 재실측 후 전수 갱신했다(L-06).
+- **실측 기반 상태 서술(L-07).** "실재/존재" 주장은 파일 시스템 확인 후에만 기입한다(Active Lesson L-07 — 상태 서술은 실측 후 기록, A5 재발 방지). §2 "실재 여부" 열·§6 실측 대조 표의 전 행은 파일 시스템 직접 실측에 근거한다 — 미존재를 실재로, 미래 산출물을 현재 실재로 쓰지 않는다. **r2(2026-07-06) 재실측:** 최초(T1) 작성 시점에 "예정 — 미존재"였던 §4 배정 대상 4종(agent-binding.md·harness-binding.md·scaffold-binding.md·scaffold-template/·`.claude/commands/`)은 W2(T3·T4·T5) 이행으로 **실재로 전환**되었으며, 본 r2가 §2·§4·§6의 관련 서술을 그 실재로 직접 재실측 후 전수 갱신했다(L-06).
+- **검증 리포트·시연 소산·loop-data 데모 데이터 아카이브(산출물 수명 정책 정합, 2026-07-17).** 본문(§2 BP-13·§3.1 C2·C3 근거·§6)이 판정 근거로 인용하는 `docs/v0.3~v0.8-verification-report.md` 6건·`docs/` 시연 소산·`loop-data/` 데모 사이클 데이터(9 jsonl)는 산출물 수명 정책(docs/artifact-lifecycle-policy.md §7)으로 작업 트리에서 제거되었다 — 해당 "실재" 서술은 **cd9247b 시점 스냅샷** 기준이며, 앵커 `uahf/docs/v0.8-verification-report.md@cd9247b`·`uahf/framework/adapters/claude/loop-data/@cd9247b`로 열람한다(`git show`). Conformance 판정(C1~C3·verdict=Valid(Full))의 **근거 정합은 불변**이다(판정 논리·specs/11 계약 인용 무변경). `memory-data/` 백엔드·`.claude/` 라이브 표면·`framework/` 경계는 유지된다.
 - 용어는 specs/00-glossary.md 정본만 사용한다. Adapter Interface·바인딩 지점(Binding Point)·Conformance·완전/최소 구현 Adapter·핵심 루프(Core Loop)는 Glossary §3.2 정본이며(11 §9 OQ-2 승격), 본 문서는 그 물리 실현 판정만 낸다. `형태 A/B`는 structure.md 서술 라벨의 인용이며 Glossary 표제어가 아니다. `DP-A2`·`DP-A3`는 본 문서가 기록하는 Advisor 결정 라벨이다(§5). 본 문서는 새 용어를 신설하지 않는다.
 
 ---
@@ -171,7 +173,7 @@ BP-7~11의 정식화와 인접 표면(13 §4.1 조합·12 §4.1 Scaffold·Presen
 
 ## §6. 상태 서술 실측 대조 (done 6 — A5/L-07 재발 방지)
 
-session-handoff-v0.3.md §1.4(A5 사례 — 미존재를 "실재"로 서술 → 파일 시스템 전수 대조로 검출)·§1.5 Lesson 후보 3(상태 서술은 실측 후 기록, 이월 L-07)에 따라, 본 문서의 "실재/존재/부재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: r2(2026-07-06) 파일 열거(`ls`/`find`) 직접 재실측.** r2에서 최초(T1) 시점 "예정 — 미존재"였던 §4 배정 대상 4종을 재실측해 실재로 전환된 상태를 반영했다(L-06). **v1.2(2026-07-07) 계수 실측 정합 개정 시 자매 11문서 행·UAF 정본 바인딩 3종 행은 그 시점 직접 재실측으로 갱신·추가했다(각 행에 "2026-07-07" 명기; hooks·plugins v0.9·scaffold v1.0 버전 라벨 실측 반영).** **v1.2 r3(2026-07-13) 개정 시 UAF 정본 바인딩 4종째(solution-design-binding.md) 행을 그 시점 직접 재실측으로 추가했다(기존 3종 행은 2026-07-07 시점 스냅샷으로 byte 보존).**
+Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: 미존재를 "실재"로 서술한 것을 파일 시스템 전수 대조로 검출한 데서 도출)에 따라, 본 문서의 "실재/존재/부재" 서술 전건을 파일 시스템과 직접 대조한 결과다. **대조 시점·방법: r2(2026-07-06) 파일 열거(`ls`/`find`) 직접 재실측.** r2에서 최초(T1) 시점 "예정 — 미존재"였던 §4 배정 대상 4종을 재실측해 실재로 전환된 상태를 반영했다(L-06). **v1.2(2026-07-07) 계수 실측 정합 개정 시 자매 11문서 행·UAF 정본 바인딩 3종 행은 그 시점 직접 재실측으로 갱신·추가했다(각 행에 "2026-07-07" 명기; hooks·plugins v0.9·scaffold v1.0 버전 라벨 실측 반영).** **v1.2 r3(2026-07-13) 개정 시 UAF 정본 바인딩 4종째(solution-design-binding.md) 행을 그 시점 직접 재실측으로 추가했다(기존 3종 행은 2026-07-07 시점 스냅샷으로 byte 보존).**
 
 | 대상 | 본 문서 서술 | 실측 결과 (2026-07-06, 직접 실측) |
 |---|---|---|
@@ -185,8 +187,8 @@ session-handoff-v0.3.md §1.4(A5 사례 — 미존재를 "실재"로 서술 → 
 | `.claude/hooks/`·`.claude/skills/`·`.claude/commands/` (BP-6·BP-16) | 실재 (확장 표면 디렉터리) | 실재 — 세 디렉터리 확인. `.claude/commands/`에 `uahf-status.md` 실재(2026-07-06 T5 — 아래 별도 행; 최초 T1 시점엔 빈 디렉터리였음). |
 | `.claude/settings.json` (BP-16 형태 B 자리) | **미존재** (형태 B 실행 훅 선언 자리) | **미존재** — `.claude/settings.local.json`만 실재. `.claude/settings.json` 부재 확인(hooks-binding.md DP-E3 정합). |
 | `framework/adapters/claude/memory-data/` (BP-12) | 실재 (Memory 백엔드) | 실재 — `store/`·`index/` 확인. |
-| `framework/adapters/claude/loop-data/` (BP-13) | 실재 (루프 상태 기록 백엔드) | 실재 — 9 jsonl 파일 확인(v06-demo-a/b/c·v07-demo-t1/t2/t3·v08-demo-h/p/s). |
-| `docs/v0.X-verification-report.md` (BP-13·C3 근거) | 실재 (6건 — v0.3~v0.8) | 실재 — v0.3·v0.4·v0.5·v0.6·v0.7·v0.8-verification-report.md 6건 확인. |
+| `framework/adapters/claude/loop-data/` (BP-13) | 백엔드 위치(계약) — 데모 데이터 아카이브 | 백엔드 경로는 계약 서술로 유지. 데모 사이클 데이터(9 jsonl: v06-demo-a/b/c·v07-demo-t1/t2/t3·v08-demo-h/p/s)는 산출물 수명 정책으로 제거 — 앵커 `uahf/framework/adapters/claude/loop-data/@cd9247b`(cd9247b 시점 9 jsonl 실측). |
+| `docs/v0.X-verification-report.md` (BP-13·C3 근거) | 검증 리포트 6건 — 아카이브 | 산출물 수명 정책으로 제거 — 앵커 `uahf/docs/v0.X-verification-report.md@cd9247b`. cd9247b 시점: v0.3·v0.4·v0.5·v0.6·v0.7·v0.8-verification-report.md 6건(열람 `git show cd9247b:…`). |
 | `framework/core/`·`framework/runtime/` (C2 Core 경계) | 실재 (계약 문서만·AI 의존 0건 유지 대상) | 실재 — core/(structure.md·config-schema.md 2문서)·runtime/(module-manifest·module-registry·lifecycle 3문서) 확인. |
 | `framework/scaffold/` (DP-A3) | **부재** (미신설 결정) | **부재** — `framework/` 하위 = adapters·core·loop·memory·plugins·runtime·verifier·workflow 8경계, `scaffold/` 없음 확인. |
 | specs/ Frozen 계수 (done 5) | **15** (numbered 00~13 = 14 + TEMPLATE 1) | 실측 — 00~13 numbered 14파일 + TEMPLATE.md = **15**. |

@@ -19,7 +19,7 @@
 - framework/loop/loop-state-record.md — 데이터 포맷 인스턴스 문서 관례 표본(문서 머리 구조·§9 이력 절 머리 배치·§0 정본 경계·§ 포인터 표기 관례·말미 요약 절·자가 전수 스캔 기록 형식).
 - AGENT.md — 상위 규약.
 
-거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -29,6 +29,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.7 Draft | 최초 작성. Work Graph 5필드(07 §3.2-A)·Task 7필드(07 §3.2-B)·공통 Failure Report 4필드+`reason` 9종(07 §3.2-E)을 전건 § 포인터 인용으로 인스턴스화(필드명·의미·필수/선택 표기·`reason` 열거 정본 그대로 보존). 병렬 집합 도출 문면(07 §3.2-A 말미)·`done`·`interfaceContract`의 ROADMAP v0.7 대응 문면(07 §3.2-B 말미) 보존, `delegation`의 02 §3.2-B 인용(07 INV-3). Failure Report 포맷 인스턴스 소유 선언(§0·§4 — 연산 규칙 인스턴스 문서가 § 포인터로 참조). Merge Result(07 §3.2-D)·연산 규칙(07 §3.1) 비소관(포맷만 소유), 직렬화·물리 위치 비서술(Adapter Binding 소관 포인터). 07 계약 재정의·확장 0, 새 필드 0, Glossary 밖 새 용어 0, 물리 경로·형식 토큰 0(자가 전수 스캔 — §5). | Worker (Advisor 위임, Task WF1) |
 | 2026-07-06 | v0.7 Baseline | v0.7 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 

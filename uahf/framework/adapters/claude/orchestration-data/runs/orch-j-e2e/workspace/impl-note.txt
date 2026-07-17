@@ -1,1 +1,0 @@
-IMPL: ledger.append(record)

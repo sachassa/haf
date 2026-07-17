@@ -14,9 +14,9 @@
 - framework/core/structure.md §2 — 본 파일의 소속 경계(Module 구현 디렉터리 `framework/{loop,memory,verifier,workflow,plugins}/` 중 `framework/verifier/`).
 - framework/core/structure.md §5 — 금지 토큰 규칙(확정 조건 C-3 확장). 본 문서 본문 준수 대상.
 - specs/00-glossary.md §3.2-J — 검증 리포트·검증 유형·재작업 지시·거짓 완료 보고 용어 정본(06 §9 결정 기록 승격 4건 반영). 본 문서는 새 용어를 신설하지 않는다.
-- docs/v0.3-verification-report.md · docs/v0.4-verification-report.md — 이 스키마의 확정 실사용 인스턴스 2건(각 CP2 독립 판정 산출물, Baseline 확정). 본 문서 §6 필드 대응표의 실증 근거.
+- uahf/docs/v0.3-verification-report.md@cd9247b · uahf/docs/v0.4-verification-report.md@cd9247b — 이 스키마의 확정 실사용 인스턴스 2건(각 CP2 독립 판정 산출물, Baseline 확정). 본 문서 §6 필드 대응표의 실증 근거.
 
-거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -26,6 +26,7 @@
 |---|---|---|---|
 | 2026-07-06 | v0.5 Draft | 최초 작성. 검증 리포트 스키마(06 §3.2-A 6필드·§3.2-B 5필드·판정 값 3종·§3.2-C 도출 규칙)를 전건 § 포인터 인용으로 인스턴스화. 필수/선택(조건부) 표기 셀 단위 보존, 직렬화·저장 위치·물리 경로 비서술(Adapter Binding 소관 포인터, §5), v0.3·v0.4 실사용 리포트 2건과의 필드 대응표(§6, 실증). 06 계약 재정의·확장 0, 새 필드·새 판정 값 0, Glossary 밖 새 용어 0, 물리 경로·형식 토큰 0. | Worker (Advisor 위임, Task V1) |
 | 2026-07-06 | v0.5 Baseline | v0.5 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 26/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-XX·mi 유지)·삭제 산출물 참조 앵커 전환(@cd9247b·@004bfa9). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -54,7 +55,7 @@
 
 이 규격은 06 §3.2-A·§3.2-B·§3.2-C Core Contract의 **인스턴스**다. 계약 요소(필드·판정 값·도출 규칙)를 재정의·확장하지 않는다. 형태 A(문서)에서 형태 B(실행 코드)로 전환되어도 06 §3 Core Contract 변경은 0이며, 위반이 발견되면 구현하지 않고 Advisor에게 보고한다(structure.md §7 C-1과 같은 불변 원칙).
 
-이 스키마는 이 프로젝트에서 이미 **두 건의 확정 실사용 인스턴스**를 가진다(docs/v0.3-verification-report.md·docs/v0.4-verification-report.md). §6 대응표가 스키마 필드 ↔ 실사용 절의 실증이다.
+이 스키마는 이 프로젝트에서 이미 **두 건의 확정 실사용 인스턴스**를 가진다(uahf/docs/v0.3-verification-report.md@cd9247b·uahf/docs/v0.4-verification-report.md@cd9247b). §6 대응표가 스키마 필드 ↔ 실사용 절의 실증이다.
 
 ---
 
@@ -129,7 +130,7 @@
 
 ## §6. v0.3·v0.4 실사용 리포트 필드 대응표 (실증)
 
-06 §3.2 검증 리포트 스키마는 이 프로젝트에서 이미 **확정 실사용된 두 인스턴스**를 가진다 — docs/v0.3-verification-report.md·docs/v0.4-verification-report.md(각 CP2 독립 판정 산출물, Baseline 확정). 아래는 06 §3.2 스키마 요소 ↔ 두 실사용 리포트의 해당 절 대응이며, 본 스키마가 추상이 아니라 **실증된 인스턴스**임을 보인다.
+06 §3.2 검증 리포트 스키마는 이 프로젝트에서 이미 **확정 실사용된 두 인스턴스**를 가진다 — uahf/docs/v0.3-verification-report.md@cd9247b·uahf/docs/v0.4-verification-report.md@cd9247b(각 CP2 독립 판정 산출물, Baseline 확정). 아래는 06 §3.2 스키마 요소 ↔ 두 실사용 리포트의 해당 절 대응이며, 본 스키마가 추상이 아니라 **실증된 인스턴스**임을 보인다.
 
 | 06 §3.2 스키마 요소 | v0.3 리포트 해당 절 | v0.4 리포트 해당 절 |
 |---|---|---|
@@ -158,7 +159,7 @@
 - **Verify 시점·전이 비정의(INV-9).** Verify 단계의 시점·전이·시퀀싱은 정의하지 않는다(06 INV-9, 03-loop 소관). 본 문서는 검증 리포트 스키마만 소유한다.
 - **07 R2 경계.** 같은 Wave에서 동시 작성 중인 형제 산출물(Module Manifest 개정·Lessons 개정)의 미완성 내용은 인용·추측하지 않는다. 확정된 정본(06·01·기존 Baseline 리포트 2건)만 참조한다.
 - **직렬화·저장 위치 비서술.** 검증 리포트의 물리 형식·직렬화·저장 위치·물리 경로는 서술하지 않고 Adapter Binding 문서 소관 포인터로만 처리한다(§5).
-- **금지 토큰 비의존(structure.md §5 C-3 확장, 06 INV-8).** 본 문서 본문에는 특정 AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명·물리 경로·확장자 토큰을 두지 않는다. 금지 토큰의 예시조차 본문에 나열하지 않는다 — 구체 인스턴스가 필요한 자리에는 일반형 표기(`<adapter>`)와 "Adapter Binding 문서 소관" 포인터만 둔다(mention/use 경계 — session-handoff-v0.2 §1.5 Lesson 후보 3). 판정 값·최종 판정의 열거 명칭(충족/위반/판정 불가, 통과/실패/조건부 및 그 원어 병기)과 Core Component 명칭(Verifier)·검증 유형 라벨(VT-1~VT-5)은 Glossary 정본 어휘이자 평이한 열거 값으로 금지 토큰이 아니다(06 §9, Glossary §3.2-J). 저장소 문서 식별자(`specs/…`·`framework/…`·`docs/…` 상호 참조)는 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(v0.3 리포트 §3.2 분류 선례 동형).
+- **금지 토큰 비의존(structure.md §5 C-3 확장, 06 INV-8).** 본 문서 본문에는 특정 AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명·물리 경로·확장자 토큰을 두지 않는다. 금지 토큰의 예시조차 본문에 나열하지 않는다 — 구체 인스턴스가 필요한 자리에는 일반형 표기(`<adapter>`)와 "Adapter Binding 문서 소관" 포인터만 둔다(mention/use 경계). 판정 값·최종 판정의 열거 명칭(충족/위반/판정 불가, 통과/실패/조건부 및 그 원어 병기)과 Core Component 명칭(Verifier)·검증 유형 라벨(VT-1~VT-5)은 Glossary 정본 어휘이자 평이한 열거 값으로 금지 토큰이 아니다(06 §9, Glossary §3.2-J). 저장소 문서 식별자(`specs/…`·`framework/…`·`docs/…` 상호 참조)는 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(v0.3 리포트 §3.2 분류 선례 동형).
 - **Glossary 정본.** 사용 용어는 전부 specs/00-glossary.md §3.2-J 정본(검증 리포트·검증 유형·재작업 지시·거짓 완료 보고)이다. 새 용어를 신설하지 않는다.
 
 ---

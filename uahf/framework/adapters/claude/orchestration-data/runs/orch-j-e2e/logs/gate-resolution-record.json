@@ -1,8 +1,0 @@
-{
-  "gate_id": "gate-unit-d1",
-  "gateKind": "user_decision_required",
-  "resolved_by_actor": "human",
-  "simulated": true,
-  "note": "드라이버 시뮬레이션(테스트 픽스처) — 실 사용자 아님. L-07: 실 사용자 승인으로 위장 금지. actor=human 은 gates.is_eligible_resolver 사용자 actor 클래스 적격성을 통과시키기 위한 값이며, 실제 사용자 개입이 아니라 E2E 드라이버가 사용자 역할을 시뮬레이션한 것이다.",
-  "impl_proposal_source": "driver-fixture (j_scenario.impl_revision_payload) — 실 LLM 제안 step 아님. 실증 대상은 게이트 정지·해소·revision 인과 사슬이며 제안 내용은 픽스처다."
-}

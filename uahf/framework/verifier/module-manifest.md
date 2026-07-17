@@ -17,7 +17,7 @@
 - framework/core/structure.md §2·§5 — Module 구현 디렉터리 경계(자기완결, C-3 확장 — 문서 본문 비의존), 금지 토큰 규칙.
 - framework/core/config-schema.md §6 — `verify.strict` 병합 예시(참조만 — DP-V2 근거).
 
-거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행 — session-handoff-v0.2 §1.3).
+거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인·직렬화 형식 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
 
 ---
 
@@ -28,6 +28,7 @@
 | 2026-07-06 | v0.5 Draft | 최초 작성. Verifier Provider Module의 01 §3.2-A 7필드 인스턴스(`id`=`verifier-provider`·`contract`=`VerifierInterface`(DP-V1)·`version`=`0.1.0`·`requires`=없음·`entrypoint`=추상 참조·`configSchema`=선언하지 않음(DP-V2)·`replaceable`=기본 true), 필드별 인스턴스 값·근거, `entrypoint` 추상 참조 + 물리 해소 Adapter Binding 소관 포인터(물리 경로·형식 하드코딩 0), 필수/선택 표기 정본 대조 보존, DP-V1·DP-V2 결정 기록. 01·06 계약 재정의·확장 0, 금지 토큰 0, Glossary 밖 새 용어 0. | Worker (Advisor 위임, Task V2) |
 | 2026-07-06 | v0.5 Draft (r2) | Advisor 확인 2건 반영. open_questions로 올렸던 인스턴스 값 `id`(=`verifier-provider`)·`requires`(=없음)가 Advisor 확인(2026-07-06)으로 승인됨에 따라, §3 `id`·`requires` 말미 주와 §6 "확인 대기" 항목의 미확정 서술을 확인 완료로 전 지점 정합화(L-06), §5에 "Advisor 확인 — 인스턴스 값" 기록 추가(DP와 구분되는 승인 기록). 7필드 값·근거·DP-V1·V2 기록 무변경. | Worker (Advisor r2 지시, Task V2 r2) |
 | 2026-07-06 | v0.5 Baseline | v0.5 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 26/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
+| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -51,7 +52,7 @@
 이 규격의 책임은 두 가지다.
 
 - 01 §3.2-A의 7필드를 이 Provider에 대한 **구체 값**으로 채운다 — `contract`는 `VerifierInterface`로 확정하고(§5 DP-V1), `entrypoint`는 판정 연산(Verify, 06 §3.1)을 노출하는 추상 참조로 두며 물리 해소는 Adapter Binding 문서 소관으로 미룬다. `configSchema`는 선언하지 않는다(§5 DP-V2).
-- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존 — session-handoff-v0.2 §1.5 Lesson 후보 2).
+- 필드의 필수/선택 표기를 정본 그대로 보존한다 (필수/선택 표기 보존).
 
 이 Manifest는 Runtime의 **Register** 연산(01 §3.1-A, 운용 규칙: framework/runtime/module-registry.md §2.1)의 입력이 된다. 각 Module은 자기완결(self-contained) 단위이므로, 이 Manifest는 그 Module의 `id`·`contract`·`entrypoint` 등 자기완결 참조를 한 서술자에 묶는다 (01 §3.2-E 규칙 2). 이 Provider가 구현하는 판정 계약(§3.1 Verify 연산·독립성·검증 리포트)의 정본은 specs/06-verifier.md가 유지하며, 본 문서는 그 계약을 재서술하지 않는다.
 
@@ -73,7 +74,7 @@
 
 주:
 
-- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다 (session-handoff-v0.2 §1.5 Lesson 후보 2).
+- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기를 복제한다 — 누락되면 계약 변경으로 읽힌다.
 - 필수 4필드: `id`·`contract`·`version`·`entrypoint`. 선택 3필드: `requires`(기본 없음)·`configSchema`·`replaceable`(기본 true).
 - 상세 필드 계약의 정본은 01 §3.2-A가, 형식 작성 지침은 framework/runtime/module-manifest.md가 유지한다. 이 표는 값 인스턴스이며 계약의 진위 판정 기준이 아니다.
 
@@ -159,7 +160,7 @@
 ## §6. 정본 경계·금지 토큰 준수 (self-note)
 
 - **재정의·확장 0.** 본 문서의 7필드는 01 §3.2-A의 인스턴스다. 어떤 필드도 이 문서에서 진위가 확정되지 않는다 — 판정 기준은 01 §3.2-A(필드 계약)와 framework/runtime/module-manifest.md(형식 규격)다. 이 Provider가 구현하는 판정 계약(06 §3 Verify 연산·독립성·검증 리포트)도 **재정의하지 않고** § 포인터로만 참조했다. 필수/선택 표기(`requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)")를 정본 그대로 보존했고, 새 필드를 추가하지 않았다.
-- **금지 토큰 0 (자가 전수 스캔).** 본문·표·예시 전체를 다음 후보 집합 **전체**로 전수 스캔하여 0건임을 확인했다 (framework/core/structure.md §5 C-3 확장, 단일 토큰 검색에 국한하지 않음) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 특정 프로그래밍 언어명·툴체인명·직렬화 형식명·환경 경로 토큰 }. 진입점·검사 도구의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 06 §4.1)" 포인터를 두었다 (mention/use 경계 — 금지 토큰의 예시도 누출이다, session-handoff-v0.2 §1.5 Lesson 후보 3).
+- **금지 토큰 0 (자가 전수 스캔).** 본문·표·예시 전체를 다음 후보 집합 **전체**로 전수 스캔하여 0건임을 확인했다 (framework/core/structure.md §5 C-3 확장, 단일 토큰 검색에 국한하지 않음) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 특정 프로그래밍 언어명·툴체인명·직렬화 형식명·환경 경로 토큰 }. 진입점·검사 도구의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4, 06 §4.1)" 포인터를 두었다 (mention/use 경계 — 금지 토큰의 예시도 누출이다).
 - **새 계약·용어 0.** `requires`에서 존재하지 않는 백엔드/저장 contract를 신설하지 않았고, Glossary 밖 새 용어를 만들지 않았다. `VerifierInterface`는 `contract` 필드의 식별자 **값**이며 Glossary 표제어의 신설이 아니다 — Glossary 정본 어휘 "Verifier" + 관례 접미 "Interface"의 조합으로 Advisor가 확정했다(§5 DP-V1).
 - **설계 확정(Advisor).** `contract` 명명(DP-V1)과 `configSchema` 생략(DP-V2)은 Advisor 결정으로 확정되어 §2·§3·§5에 반영했다. `version` 부여 관례(Framework/Spec 버전과 독립 축, 초기 `0.1.0`, 구현 갱신 시 상승)는 Memory Manifest 관례 동형으로 적용했다.
 - **확인 완료(Advisor, 2026-07-06).** `id`(=`verifier-provider`)와 `requires`(=없음) 값은 명시 DP 없이 Manifest 인스턴스 관례와 06 §3·§5 근거로 채운 **인스턴스 값**이며, Advisor 확인으로 승인되었다(§5 "Advisor 확인 — 인스턴스 값" 기록). 미확정·open 잔여는 없다.

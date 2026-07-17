@@ -7,12 +7,14 @@
 목적: 이 문서만 읽으면 `.claude`의 Global Default(G) vs uahf override(U) 경계를 재분석 없이 이어갈 수 있게 한다. 후속 **형태 B(설치/스캐폴드)** 트랙과 루트 ARCHITECTURE 재저술의 선결 결정을 확보한다.
 
 > **함께 읽을 문서 (근거 정본 · 읽기 전용):**
-> - `docs/v1.2.1-repository-refactoring-brief.md` — 원칙 #3(`:29` — 최상위 `.claude`=Global Default, Layer 하위=Override) · `:142`(`.claude` override 모델 연결) · §C 상태 분리(`:166`–`:171`)
-> - `docs/v1.2.1-context-and-design.md` — §7 미착수 관찰(`:130`) · §7.1 stale-allow 마이그레이션 노트(`:137`–`:149`) · Tier 2 트랙 목록(`:173`)
+> - `docs/v1.2.1-repository-refactoring-brief.md@cd9247b` — 원칙 #3(`:29` — 최상위 `.claude`=Global Default, Layer 하위=Override) · `:142`(`.claude` override 모델 연결) · §C 상태 분리(`:166`–`:171`)
+> - `docs/v1.2.1-context-and-design.md@cd9247b` — §7 미착수 관찰(`:130`) · §7.1 stale-allow 마이그레이션 노트(`:137`–`:149`) · Tier 2 트랙 목록(`:173`)
 > - `uahf/framework/core/structure.md` §2(`:74` Adapter 경계 — 구체 환경 토큰 허용) · §4(형태 A/B 서술 라벨)
 > - `uahf/framework/adapters/claude/entry-binding.md` §3(`:84`–`:93` — 두 진입 명령 확정 · `:87` `uaf-` 접두 DP-X1 · `:91` uahf-status 골격 준거)
 >
 > 이 문서 = **override 계약·귀속 설계** / 브리프 = 사용자 지시 정본 · 실행 기록 / context-and-design = v1.2.1 통합 이해. 상호보완.
+>
+> **아카이브 주(2026-07-17).** 위 두 근거 정본(`docs/v1.2.1-repository-refactoring-brief.md`·`docs/v1.2.1-context-and-design.md`)은 산출물 수명 정책(`docs/artifact-lifecycle-policy.md`)에 따라 커밋 `cd9247b`에서 작업 트리 아카이브되었다. 본문 곳곳의 축약 인용 `brief:NN`·`context-and-design:NN`(행 번호)은 이 앵커 커밋 기준으로 해석한다 — 열람: `git show cd9247b:docs/v1.2.1-repository-refactoring-brief.md` · `git show cd9247b:docs/v1.2.1-context-and-design.md`.
 
 ---
 

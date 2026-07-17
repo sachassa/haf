@@ -5,7 +5,7 @@
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
-- `docs/v1.3-context-and-design.md` — v1.3 마일스톤 설계 정본(W0). 본 문서의 **고정 입력**이다. 특히 §2(채택 아키텍처 — planning/ 이중 책임)·§3(결정 D1~D10·필수 수정 M1~M6)·§4(선행 확정 인터페이스 — 단계 정의·입출력 추상·신규 용어 4건·경계 기준 문안·SP-INV 축 8). 계약 정본은 이 문서가 아니라 각 spec이 소유한다(재정의 0 — 충돌 시 spec 우선, Advisor 보고).
+- `docs/v1.3-context-and-design.md@cd9247b` — v1.3 마일스톤 설계 정본(W0). 본 문서의 **고정 입력**이다. 특히 §2(채택 아키텍처 — planning/ 이중 책임)·§3(결정 D1~D10·필수 수정 M1~M6)·§4(선행 확정 인터페이스 — 단계 정의·입출력 추상·신규 용어 4건·경계 기준 문안·SP-INV 축 8). 계약 정본은 이 문서가 아니라 각 spec이 소유한다(재정의 0 — 충돌 시 spec 우선, Advisor 보고).
 - `planning/specs/03-project-contract.md` — Project Contract **상세 계약 정본**(v1.1 Baseline). 논리 스키마·필수 코어 필드·버저닝·인스턴스 거버넌스·불변 PC-INV의 소유 정본이다. 특히 §3.1(Interface)·§3.2-B(필수 코어 필드)·§3.4(인스턴스 거버넌스 — append-only·supersedes)·§3.6(PC-INV 1~12). **본 문서는 03을 재정의·확장하지 않고 § 포인터로만 참조한다.**
 - `discovery/specs/02-discovery.md` — Project Discovery 정본(v1.1 Baseline). 본 문서 입력의 상류다. 특히 §3.3(State Machine·종단 5)·§3.7(Execution Ready 2축 판정)·§3.10(Strategy Provider Interface — 방법론 격리 패턴)·§3.11(Discovery Dimension·Architecture 차원 — 경계 대조 대상). **본 문서는 02를 무수정으로 일방 참조한다.**
 - `ARCHITECTURE.md` (루트, v1.3 — 라우터) — UAF 상위 구조 정본. 특히 §2.2(6요소 파이프라인·Contract 이중 지위)·§2.5(의존 방향 단방향·폐쇄성)·§8(UAF-INV ①~⑥)·§10(책임 경계표 — 비담당② 구현 Planning)·§12(용어 네임스페이스). § 포인터로만 참조·재정의 0.
@@ -23,6 +23,7 @@
 | 2026-07-13 | v1.3 Draft r2 | Gap Analysis(사용자 Target Architecture 대조, 옵션 2 승인) 최소 보완 **C-1** — §3.1-D에 Handoff 의미론 1항 추가(기존 메커니즘 재사용 명문화: 선택 입력 03 §3.5-A·defer=Ready 인스턴스 존속·revise=T10·중단/위임=T11·별도 상태기계 신설 없음). 상태·전이·SP-INV·스키마 무변. W1 CP2 반려 정정 2건(§3.1-B "비Ready 종단" 라벨·§1 "①②" 글리프)은 W1 커밋(3a22a28)에 반영·본 행으로 소급 기록. | Advisor (사용자 승인) |
 | 2026-07-13 | v1.3 Baseline | **Baseline 승격** — W1 CP2(Pass 7/8→경미 2건 정정→재검증 Pass)·W2 CP2 교차 정합(Pass 8/8)·CP3 승인·Gap Analysis(Target Architecture 대조) 옵션 2 보완(C-1 r2 행) 반영 후 **사용자 Baseline 승인(2026-07-13)**. 보완분(r2)은 Advisor 기계 재확인(스코프·CR 0·append-only·삭제행 0). | Advisor (사용자 승인) |
 | 2026-07-17 | v1.3 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. §0 경계 표제 "무수정"→"§ 포인터 참조(재정의·확장 0)"(본문 의미 2 "재정의·확장하지 않고 § 포인터로만 참조" 존치). 의미 2(SP-INV 6 "UAHF 무수정·역참조 금지" 명칭·내용·§1 UAHF 계약 변경 제외)·자매 spec 02 무수정 일방 참조(§0 근거정본·§3.6·§7) 존치. SP-INV 1~8 카운트·문면·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
+| 2026-07-17 | v1.3 (정합) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §0 근거정본(:8)·§부록 입력 목록(:93)의 삭제 산출물 참조 앵커 전환(`docs/v1.3-context-and-design.md@cd9247b`)·:93 물리 실재("실재") 표기 개정(아카이브). SP-INV·계약·§ 포인터 문면 무변경(참조 정합·버전 무상승). | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, `ARCHITECTURE.md` §9·`planning/specs/03-project-contract.md` §9·`discovery/specs/02-discovery.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -89,7 +90,7 @@
 - **아키텍처 상 위치.** UAF 파이프라인의 **Project Contract 요소 내부의 성숙 활동**이다(루트 §2.2, D2). UAHF 6-Layer 스택의 지층이 아니라 그 외부·상류의 UAF 레벨 활동이며(루트 §2.4), planning/ Layer가 소유한다. Discovery의 Ready 산출을 입력받아 superseding 인스턴스를 산출한 지점에서 멈춘다(하류 UAHF 실행은 비담당).
 
 - **의존하는 정본 (읽기 전 이해 필요).**
-  - `docs/v1.3-context-and-design.md` (실재, W0 확정) — 마일스톤 설계 정본·고정 입력. §2·§3·§4.
+  - `docs/v1.3-context-and-design.md@cd9247b` (W0 확정·산출물 수명 정책에 따라 아카이브) — 마일스톤 설계 정본·고정 입력. §2·§3·§4.
   - `planning/specs/03-project-contract.md` (실재, v1.1 Baseline) — Contract 상세 계약. 성숙 입출력이 소비·산출하는 스키마·인스턴스 거버넌스. §3.1·§3.2-B·§3.4·§3.6.
   - `discovery/specs/02-discovery.md` (실재, v1.1 Baseline) — Discovery 종단(입력 상류)·경계 대조. §3.3·§3.7·§3.10·§3.11.
   - `ARCHITECTURE.md` (루트, 실재, v1.3) — UAF 구조·의존 방향·불변·책임 경계·용어. §2.2·§2.5·§8·§10·§12.

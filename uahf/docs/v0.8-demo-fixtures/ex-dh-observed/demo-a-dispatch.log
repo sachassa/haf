@@ -1,9 +1,0 @@
-=== Hook Dispatch (형태 A, hooks-binding §5.1) — event=lifecycle.complete phase=after occurredAt=1 ===
-step1 관찰: 호스트가 (event=lifecycle.complete, phase=after) 관찰(형태 A). occurredAt=1 (순서 값, 벽시계 시각 아님 — L-09).
-step2 해소: 일치 바인딩 —
-   - hookId=audit-complete order=0 regIndex=1 action=.claude/hooks/audit-complete/audit.sh
-step3 정렬(08 §3.1-D: order 오름차순 → 등록 순서(regIndex) → hookId 사전순) —
-   -> audit-complete (order=0, regIndex=1)
-step4 격리 호출: hookId=audit-complete action=.claude/hooks/audit-complete/audit.sh (Event Record 읽기 전용 전달 — INV-3)
-step4 결과: hookId=audit-complete 성공.
-dispatch 완료: 바인딩된 모든 Hook 정확히 한 번 호출. 본 작업 결과 불변 (INV-1) — Hook 결과와 독립.

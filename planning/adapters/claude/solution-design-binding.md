@@ -4,7 +4,7 @@
 상위 규약: AGENT.md
 근거 정본:
 
-- planning/specs/04-solution-design.md §3(전문 — Core Contract)·§4.1(### 4.1 바인딩 지점 — 표 4행)·§4.2(### 4.2 이식 교체 지점). 본 문서가 물리 실현으로 바인딩하는 계약의 정본. **재정의·확장하지 않고 § 포인터로만 인용한다.** 특히 §3.1(단계 계약)·§3.2(복잡도 판정 — Policy as Data)·§3.3(역할 할당·개방 네임스페이스)·§3.4(협업 프로토콜 State Machine — 비종단 5·종단 3·전이 T1~T11)·§3.5(Projection)·§3.6(경계 기준)·§3.7(저장 스코프)·§3.8(SP-INV 1~8).
+- planning/specs/04-solution-design.md §3(전문 — Core Contract)·§4.1(### 4.1 바인딩 지점 — 표 4행)·§4.2(### 4.2 이식 교체 지점). 본 문서가 물리 실현으로 바인딩하는 계약의 정본. **재정의·확장하지 않고 § 포인터로만 인용한다.** 특히 §3.1(단계 계약)·§3.2(복잡도 판정 — Policy as Data)·§3.3(역할 할당·개방 네임스페이스)·§3.4(협업 프로토콜 State Machine — 비종단 5·종단 3·전이 T1~T11)·§3.5(Projection)·§3.6(경계 기준)·§3.7(저장 스코프)·§3.8(SP-INV 1~9 — SP-INV 9 = 설계 커버리지 완성도, 2026-07-18 신설).
 - planning/specs/03-project-contract.md §3.1-B(생산자 2경로 — (ii) superseding 성숙 인스턴스)·§3.4(인스턴스 거버넌스 — append-only·supersedes·**Contract Maturation 갱신 유형**)·§3.5(UAHF Interface — 선택 입력·소비 지점)·§3.6 PC-INV 9(인스턴스 이력 append-only). 성숙 재발행이 소비·산출하는 스키마·거버넌스의 정본. **참조 인용만·재정의 0.**
 - ARCHITECTURE.md (루트, v1.3 — 라우터) §8 UAF-INV ①(접점 원칙·유일 접점)·⑤(확정 게이트 = 사용자 승인)·⑥(Framework는 방법론·역할 카탈로그 모름)·§7.1(상시 불변 확인 2건). 근거 인용용·재정의 0.
 - planning/adapters/claude/contract-binding.md §4.1(저장 위치)·§4.2(저장 이원화 — 일반 관례 `.claude/project-contract/`·본 저장소 `uahf/framework/adapters/claude/discovery-data/contracts/uahf/`·파일명 `project-contract.v<N>.md`, DP-X2)·§5(버전 표기 — `schemaVersion`·`instanceVersion`·`supersedes`)·§6(Provenance 불투명 컨테이너 외형·must-ignore 경계 — DP-X6). **superseding 인스턴스 저장·버전 표기·Provenance 외형은 contract-binding 소유** — 본 문서는 참조 인용만 하고 재정의하지 않는다.
@@ -18,11 +18,21 @@
 
 ---
 
+## §9. 이력 (Revision History)
+
+| 일자 | 버전 | 변경 | 주체 |
+|---|---|---|---|
+| 2026-07-18 | v1.4 (정합) | §DC-1 Wave 2 — 기본 필수 Projection 세트 10종·전체 커버리지 바닥·제외 규칙을 §7.2 Policy 값으로 등재, SP-INV 교차 참조 8건→9건(1~9) 갱신. 사용자 결정 2026-07-18. | Worker (Advisor 위임) |
+
+(이력 절은 문서 머리에 둔다 — UAF 관행 동형: `planning/specs/04-solution-design.md` §9·자매 부록 §9. 절 번호는 §9지만 배치는 머리다. 본 이력 표는 이번 개정에서 신설되었으며, 이전 개정 계보는 git에 있다. 이후 개정은 이 표에 append-only로 기록한다.)
+
+---
+
 ## §0. 이 문서의 위치와 정본 경계
 
 - **바인딩 대상 정본 선언.** 이 문서는 planning 레이어 자신의 Claude 어댑터 바인딩이며 `planning/specs/04-solution-design.md` §3·§4를 바인딩한다. 바인딩 대상 정본은 UAHF spec(uahf/specs/01~13)이 아니라 UAF 정본 `planning/specs/04-solution-design.md`이며, 본 문서는 그 계약 요소를 재정의·확장하지 않고 § 포인터로만 인용한다. 자매 어댑터 바인딩(contract-binding = `planning/specs/03`·entry-binding = `entry/specs/01`·discovery-binding = `discovery/specs/02`)과 파일명·골격 관례는 동형이다.
 
-- **정본은 planning/specs/04 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — 단계 계약(§3.1)·복잡도 판정(§3.2)·역할 할당·개방 네임스페이스(§3.3)·협업 프로토콜 State Machine(§3.4 — 비종단 5·종단 3·전이 T1~T11)·Projection(§3.5)·경계 기준(§3.6)·저장 스코프(§3.7)·SP-INV 1~8(§3.8) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 04 §4.1이 "Adapter 소관"으로 미룬 **네 지점 — ① Expert Role 실행 호스팅(역할 추상까지만) ② 사용자 게이트 제시·응답 채널 ③ 산출물 저장 위치·직렬화(실행 기록 포함) ④ Policy 실값** 과, 그 저장의 부속으로 성숙 인스턴스 `provenance` 컨테이너의 **성숙 run 내부 형식**뿐이다(§2).
+- **정본은 planning/specs/04 §3·§4다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소 — 단계 계약(§3.1)·복잡도 판정(§3.2)·역할 할당·개방 네임스페이스(§3.3)·협업 프로토콜 State Machine(§3.4 — 비종단 5·종단 3·전이 T1~T11)·Projection(§3.5)·경계 기준(§3.6)·저장 스코프(§3.7)·SP-INV 1~9(§3.8 — SP-INV 9 = 설계 커버리지 완성도) — 를 **재정의·확장하지 않는다.** 계약 요소는 정본 § 포인터로만 인용한다. 본 문서가 확정하는 것은 04 §4.1이 "Adapter 소관"으로 미룬 **네 지점 — ① Expert Role 실행 호스팅(역할 추상까지만) ② 사용자 게이트 제시·응답 채널 ③ 산출물 저장 위치·직렬화(실행 기록 포함) ④ Policy 실값** 과, 그 저장의 부속으로 성숙 인스턴스 `provenance` 컨테이너의 **성숙 run 내부 형식**뿐이다(§2).
 
 - **격리 지점의 방향 반전(C-3 비적용).** Core 경계(`framework/core/`·`framework/runtime/`)와 Module 구현 디렉터리 문서 본문, 그리고 UAF 정본(planning/specs/04) 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이다(structure.md §5 C-3 확장·04 §3 도입 "이 섹션에는 특정 AI 모델·실행 환경 의존 내용이 한 줄도 들어가지 않는다"). 이 문서는 그 **반대편**이다 — 구체 직렬화 형식·물리 경로(`planning/adapters/claude/…`·`.claude/…`)·파일 확장자의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(contract-binding.md §0·discovery-binding.md §0과 동형). 단 **UAF 정본이 명명하지 않은 것을 UAF 정본 문면인 것처럼 서술하지 않는다** — 물리 확정은 전부 본 문서 소유임을 명시한다. 특정 설계 방법론 고유명·고정 역할 카탈로그·타 AI 벤더·모델명은 여기서도 명명하지 않는다(04 §4.1 말미·UAF-INV ⑥ 동형 — 격리 대상은 직렬화 형식·물리 경로·Policy 값뿐이다).
 
@@ -219,23 +229,55 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 | 4 | 다관심사 지표 (설계 관심사 2개 이상 교차) | 판정 근거 종합 |
 | 스킵 | 위 1~4 전부 부재 ∧ 단일 관심사 | vN이 곧 UAHF 소비 대상 — T2 `Assessing`→`Validating`, T9 확인→`Skipped` |
 
-**(나) 역할 선택 규칙 (04 §3.3 — Capability 선언·개방 네임스페이스·최소 할당):**
+**(나) 역할 선택 규칙 (04 §3.3 — Capability 선언·개방 네임스페이스·최소 할당·전체 커버리지 바닥):**
 
-| 항목 | 값 |
+| 항목 | 값 (`roleSelection`) |
 |---|---|
-| 파생 근거 | 판정 근거가 식별한 설계 관심사(위 (가) 신호가 가리키는 미결 관심사) — 관심사에서 역할을 파생 |
-| 관심사당 역할 | 최소 1 (관심사당 최소 필요 역할만) |
-| 역할 수 상한 | **3** — 불필요한 다중 역할 구성을 강제하지 않는다(SP-INV 8) |
-| 고정 팀 열거 | **금지** — 역할명은 개방 네임스페이스, 고정 역할 카탈로그 0(SP-INV 5·UAF-INV ⑥) |
+| 파생 근거 (`basis`) | 판정 근거가 식별한 설계 관심사(위 (가) 신호가 가리키는 미결 관심사) — 관심사에서 역할을 파생 |
+| 관심사당 역할 (`perConcern`) | 최소 1 (관심사당 최소 필요 역할만) |
+| 전문 역할 수 상한 (`maxSpecialistRoles`) | **3** — 전문/관심사 역할만 상한, 불필요한 다중 역할 구성을 강제하지 않는다(SP-INV 8). 전체 커버리지 바닥은 이 상한에 **불산입**(§DC-6 configurable). |
+| 전체 커버리지 바닥 (`wholeScopeCoverage=required`) | **필수 바닥** — 선언된 전체 프로젝트 범위를 관장하는 커버리지 capability를 반드시 포함한다(04 §3.3·§3.8 SP-INV 9). 최소 할당(SP-INV 8)의 예외가 아니라 그 위의 필수 바닥이며 전문 역할 상한에 **불산입**된다 — 두 원칙은 **층위가 다르다**(04 §3.3 인용: 최소 할당은 각 좁은 관심사에 대해 전문 역할을 필요 이상으로 늘리지 않음을, 커버리지 바닥은 그와 독립적으로 선언 범위 전체가 관장 없이 비는 일이 없음을 규율 — 모순 아님). 커버리지 capability도 고정 역할명이 아니라 Capability 선언으로 표현된다(개방 네임스페이스·SP-INV 5). |
+| 고정 팀 열거 (`fixedTeam`) | **금지** — 역할명은 개방 네임스페이스, 고정 역할 카탈로그 0(SP-INV 5·UAF-INV ⑥) |
 
-**(다) Projection 선택 정책 (04 §3.5 — 동적 선택·전 유형 강제 금지):**
+**(다) Projection 선택 정책 (04 §3.5 — 동적 선택 = 기본값 opt-out·전 유형 강제 금지·SP-INV 9 기본 필수 세트):**
 
-| 항목 | 값 |
+| 항목 | 값 (`projectionSelection`) |
 |---|---|
-| 선택 방식 | 프로젝트 유형·복잡도에 따라 **동적 선택** |
-| 전 유형 강제 | **금지** — 모든 프로젝트에 모든 Projection 유형을 강제하지 않는다 |
-| 정본 실재 시 | 대상 워크스페이스에 해당 유형 정본이 **이미 실재하면 신규 강제 0**(04 §3.5 동적 선택) |
-| 유형 카탈로그 | 개방 레지스트리·비정본 부록 소관 — 본 값 표는 유형 카탈로그를 열거하지 않는다(SP-INV 5) |
+| 선택 방식 (`mode`) | 프로젝트 유형·복잡도에 따라 **동적 선택** — 04 §3.5의 '동적'은 기본값 opt-in이 아니라 **기본값으로부터의 정당화된 이탈(opt-out)**이다 |
+| 전 유형 강제 (`forceAllTypes`) | **금지** — 개방 레지스트리의 모든 가능 유형을 강제하지 않는다. `defaultRequiredSet`(부분집합)의 default-required와 **무모순**(04 §3.5) |
+| 정본 실재 시 (`existingCanonical`) | 대상 워크스페이스에 해당 유형 정본이 **이미 실재하면 신규 강제 0**(04 §3.5 동적 선택) |
+| 유형 카탈로그 (`typeCatalog: open-registry`) | 코어(04)는 유형 카탈로그를 알지 않으나(SP-INV 5는 코어만 구속), 본 Adapter Policy는 격리 지점(§0)으로서 **기본 필수 세트를 구체 열거**한다(04 §4.1 행4 Policy as Data 위임). 개방 레지스트리 전체 카탈로그는 여전히 부록 소관이며, `defaultRequiredSet`은 그중 성숙 경로 default-required 부분집합(04 §3.5 opt-out·SP-INV 9)이다. |
+
+**기본 필수 Projection 세트 (`defaultRequiredSet` — 성숙 경로 default-required 부분집합 · `policy/default-policy.yaml`과 정확히 일치):**
+
+| id | 이름 (`name`) | 요건 클래스 (`requirement`) |
+|---|---|---|
+| `project-plan` | 프로젝트 계획서 | `always` |
+| `requirements-def` | 요구사항 정의서 | `always` |
+| `business-process` | 업무 프로세스 | `always` |
+| `functional-spec` | 기능 명세서 | `always` |
+| `table-def` | 테이블 정의서 | `always` |
+| `test-plan-cases` | 테스트 계획·케이스 | `always` |
+| `screen-list` | 화면 목록 | `touchpoint` |
+| `menu-structure` | 메뉴 구조도 | `touchpoint` |
+| `screen-design` | 화면 설계서 | `touchpoint` |
+| `interface-spec` | 인터페이스 명세서 | `interface` |
+
+**요건 클래스 (`requirementClasses`):**
+
+| 클래스 | 의미 |
+|---|---|
+| `always` | 항상 default-required — 제외는 설계단계 명시 결정 + 사유 기록 + 사용자 확인만 |
+| `touchpoint` | 접점(웹·앱·포털) 선언 시 required — 미선언 시 자동 N/A |
+| `interface` | 외부 연계 선언 시 required — 미연계 시 자동 N/A |
+
+**제외 규칙 (`exclusionRule` — SP-INV 9 침묵 누락 금지):**
+
+| 규칙 | 값 |
+|---|---|
+| `silentOmission` | **금지** — 산출도 제외 기록도 없이 구현 경계를 넘기지 않는다(04 §3.8 SP-INV 9) |
+| `autoExclude` | touchpoint/interface 미충족 → 자동 N/A |
+| `manualExclude` | `always` 클래스 제외 시 사유 기록 + 사용자 확인 — 성숙 run 기록(`events/maturation-<run-id>/`)에 남긴다 |
 
 - **Policy as Data 불변.** 위 값(판정 신호·역할 선택 상한·Projection 정책)은 전부 데이터이며, 값을 바꾸는 것만으로 성숙 거동이 조정된다 — Orchestrator 규약 절차나 정본 계약(04 §3.2·§3.3·§3.5·SP-INV)은 변경되지 않는다. 이 값 세트는 **E2E 구동을 위한 최소 실값**이며, 다른 임계·상한이 필요하면 `policy/` 데이터 정정으로 조정한다.
 - **실측 기반 구분(L-07).** 위 값은 본 문서가 소유하는 **정본 값 문면(형태 A)**이며, 물리 데이터 파일(`solution-design-data/policy/default-policy.yaml`, 현행 `uahf/framework/adapters/claude/…`)은 성숙 run E2E로 이 값 기반으로 실재한다(§12 실측).
@@ -304,7 +346,7 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 ### §11.4 mention/use 경계·SP-INV 정합
 
 - **mention/use 경계.** 성숙 내부 개념 어휘(복잡도 판정·역할 구성·Proposal·충돌 기록)는 본 문서에서 오직 (i) 04 정본 § 포인터 인용, (ii) 성숙 **내부** 실현 서술(실행 메타 파일·기록 어휘·Policy 값), (iii) 불변·경계·근거 서술(본 §11·§6.2·§8.2 누출 차단 문면)에만 등장한다. Contract **코어 필드·UAHF 접점**을 정의·확장하는 자리에는 0건이다 — mention과 use의 경계를 지킨다(04 §3.8 SP-INV 2·3·PC-INV 2 동형).
-- **SP-INV 정합(전건).** 본 바인딩은 SP-INV 1(입력 Ready 불변 — §4 `MaturationRunStarted` 입력 결속이 Ready vN만 결속)·2·3(코어 유입·실행 메타 불투명 — §3.2 실행 메타 파일·§8.2 누출 차단)·4(사용자 승인 게이트 — §5.2 승인 전 Matured 불가)·5(방법론·카탈로그 불인지 — §11.3)·6(UAHF 무수정·역참조 금지 — §6.2)·7(산출물 워크스페이스 귀속 — §3.1·§3.3)·8(최소 할당 — §6.1·§7.2 (나))을 물리 실현으로 훼손하지 않는다. 진위 판정 기준은 04 §3.8이다.
+- **SP-INV 정합(전건).** 본 바인딩은 SP-INV 1(입력 Ready 불변 — §4 `MaturationRunStarted` 입력 결속이 Ready vN만 결속)·2·3(코어 유입·실행 메타 불투명 — §3.2 실행 메타 파일·§8.2 누출 차단)·4(사용자 승인 게이트 — §5.2 승인 전 Matured 불가)·5(방법론·카탈로그 불인지 — §11.3)·6(UAHF 무수정·역참조 금지 — §6.2)·7(산출물 워크스페이스 귀속 — §3.1·§3.3)·8(최소 할당 — §6.1·§7.2 (나))·9(설계 커버리지 완성도 — §7.2 (나) 전체 커버리지 바닥·(다) `defaultRequiredSet`·`requirementClasses`·`exclusionRule`)을 물리 실현으로 훼손하지 않는다. 진위 판정 기준은 04 §3.8이다.
 
 ---
 
@@ -357,6 +399,6 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 - **§7 (DP-5):** `solution-design-data/policy/default-policy.yaml` 형식 + **최소 실값 1세트 정본 값 표**((가) 성숙/스킵 판정 신호 4종 (나) 역할 선택 상한 3·고정 팀 금지 (다) Projection 동적 선택·전 유형 강제 금지). Policy as Data — 값 조정 = 데이터 정정.
 - **§8:** Provenance 성숙 run 내부 형식(run 식별자·이벤트 로그 참조·기준선 vN 참조·Policy 참조)만 확정. 외형·must-ignore 경계는 contract-binding §6 소유(재정의 0·discovery-binding §10 경계 동형)·성숙 활동 측 소비 전용·누출 차단(SP-INV 2·3).
 - **§10:** 04 "### 4.2" 이식 교체 지점 대응 표 — 유지 열 = §3.1·§3.2·§3.3·§3.4·§3.5·§3.6·§3.8(C-1 동형).
-- **§11:** 상시 불변 자기 점검 — 재정의 0·새 계약 요소 창설 0·Discovery Event 15종 명칭 차용 0(mention/use 경계)·방법론·역할 카탈로그·타 벤더·모델명 0·SP-INV 1~8 정합.
+- **§11:** 상시 불변 자기 점검 — 재정의 0·새 계약 요소 창설 0·Discovery Event 15종 명칭 차용 0(mention/use 경계)·방법론·역할 카탈로그·타 벤더·모델명 0·SP-INV 1~9 정합(9 = 설계 커버리지 완성도).
 - **§12:** 실측 대조 — `solution-design-data/`·superseding v2 실재(성숙 run E2E 생성, 현행 `uahf/framework/adapters/claude/…`), 바인딩·04·03 정본·Ground Truth v1 실재. 실측과 불일치 서술 0(L-07).
 - 04·03·02·루트 재정의 0, Glossary 용어 신설 0, 새 계약 요소 창설 0, 실행 코드 0(형태 A). 구체 직렬화 형식·물리 경로·Policy 값 토큰은 이 Adapter 경계에서 허용된다(격리 지점).

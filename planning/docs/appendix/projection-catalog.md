@@ -18,6 +18,7 @@
 |---|---|---|---|
 | 2026-07-13 | v1.3 Draft (CP2 대기) | 최초 작성 — Solution Design 마일스톤(W2d) 신설 **비정본 부록**. Projection 유형의 **예시** 개방 레지스트리: Contract=Source of Truth·Projection=파생 원칙(04 §3.5 포인터, §1)·유형 예시 표(PRD·ARCHITECTURE·ADR·UI Guide·API Spec·DB Schema·Deployment — 각 1줄 목적·"언제 유용한가", §3)·전 유형 강제 금지·동적 선택 원칙(§3.0)·ADR "What/Why/Trade-off 보존"·UI Guide "Design Principles·Tokens·Anti-patterns" 예시 세부(§3.1·§3.2)·**사용자 어휘 대응(비정본)** Draft≈Ready vN / Final≈superseding v(N+1)(D5·04 §0, §4)·산출물 워크스페이스 귀속(SP-INV 7, §5) 포인터. 정본(04 §3.5) 재정의 0(§ 포인터만)·계약/불변/용어 확정 0·특정 AI/벤더/모델/제품 기능명 0·방법론 고유명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W2d) |
 | 2026-07-13 | v1.3 Baseline | Baseline 승격 — v1.3 마일스톤 사용자 Baseline 승인(비정본 부록). | Advisor (사용자 승인) |
+| 2026-07-18 | v1.3 (정합) | §DC-1 Wave 2 — §3.3 신설: `default-policy.yaml` `defaultRequiredSet` 10종(국내 SI 산출물명·policy id·요건 클래스)을 권장 기본 세트 설명으로 등재(정본 = Policy·부록 = 설명). 예시 톤·SP-INV 5 무촉 유지·유형명 방법론 고유명 0. 사용자 결정 2026-07-18. | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — UAF 관행 동형: `planning/specs/04-solution-design.md` §9·`planning/docs/appendix/methodology-mapping.md` §9. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -77,6 +78,26 @@ ADR은 개별 설계 결정의 **What(무엇을 결정했나)·Why(왜)·Trade-o
 ### 3.2 UI Guide 예시 세부 (예시 어조)
 
 UI Guide는 프로젝트별로 **Design Principles·Design Tokens·Anti-patterns**(예: "과도한 시각 효과 금지"처럼 해서는 안 될 것을 명시하는 규칙) 등을 담을 수 있다. 사용자 인터페이스 표면이 있고 시각·상호작용 일관성이 중요한 프로젝트에서 예시적으로 선택될 수 있다. 구체 원칙·토큰·금지 규칙의 내용은 대상 프로젝트가 정하며, 본 부록은 담길 수 있는 자리만 예시한다.
+
+### 3.3 권장 기본 세트 — Solution Design 기본 필수 Projection 세트 (설명 · 비정본)
+
+아래 10종은 국내 SI 관행의 **일반 문서 유형명**으로, **solution-design 기본 필수 세트**(`solution-design-data/policy/default-policy.yaml`의 `defaultRequiredSet`)로 채택된 **권장 세트**다. **정본은 Policy 데이터·바인딩 `solution-design-binding.md` §7.2 (다) 값 표이며, 본 부록은 그 설명일 뿐이다** — 부록이 이 세트를 표준화·등록·강제하지 않는다(§0 비정본 선언). 여전히 참고 성격이며, 실제 산출은 프로젝트 선언 범위·복잡도에 따른 동적 선택(기본값 opt-out)과 제외 규칙의 결과다(04 §3.5·§3.8 SP-INV 9). 아래 유형명은 방법론 고유명이 아니라 일반 문서 유형명이며 코어(04)로 누출되지 않는다(SP-INV 5 무촉 — 부록은 원래 유형 열거 허용, §0 격리 지점).
+
+| 산출물명(국내 SI 관행) | policy id (`defaultRequiredSet`) | 요건 클래스 (`requirement`) |
+|---|---|---|
+| 프로젝트 계획서 | `project-plan` | `always` |
+| 요구사항 정의서 | `requirements-def` | `always` |
+| 업무 프로세스 | `business-process` | `always` |
+| 기능 명세서 | `functional-spec` | `always` |
+| 테이블 정의서 | `table-def` | `always` |
+| 테스트 계획·케이스 | `test-plan-cases` | `always` |
+| 화면 목록 | `screen-list` | `touchpoint` |
+| 메뉴 구조도 | `menu-structure` | `touchpoint` |
+| 화면 설계서 | `screen-design` | `touchpoint` |
+| 인터페이스 명세서 | `interface-spec` | `interface` |
+
+- **요건 클래스 의미(설명).** `always`=항상 default-required(제외는 명시 결정 + 사유 기록 + 사용자 확인) · `touchpoint`=접점(웹·앱·포털) 선언 시 required·미선언 시 자동 N/A · `interface`=외부 연계 선언 시 required·미연계 시 자동 N/A. 규칙 정본은 `default-policy.yaml`의 `requirementClasses`·`exclusionRule`·바인딩 §7.2 (다)다. 침묵 누락(산출도 제외 기록도 없이 구현 경계 넘기)은 금지된다(04 SP-INV 9).
+- **여전히 강제 아님.** 이 10종은 성숙 경로의 **default-required**(기본값)이며, 접점/외부 연계 미선언 시 자동 N/A·정당화 제외가 가능하다 — 개방 레지스트리 전체 유형을 강제하는 것과 다르다(04 §3.5). 부록은 이 세트조차 표준화하지 않으며 정본(Policy)이 바뀌면 본 부록이 따른다.
 
 ---
 

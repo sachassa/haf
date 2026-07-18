@@ -1,0 +1,10 @@
+{"seq":1,"kind":"MaturationRunStarted","ts":"2026-07-18","runId":"maturation-tms-001","input":{"instancePath":"project-contract.v1.md","instanceVersion":1},"policy":".claude/solution-design/policy/default-policy.yaml","initialState":"Assessing"}
+{"seq":2,"kind":"StateTransition","ts":"2026-07-18","transition":"T1","from":"Assessing","to":"Proposing","note":"성숙 필요 — open/openQuestions/assumption 전부 비공집합, 역할 3 할당"}
+{"seq":3,"kind":"StateTransition","ts":"2026-07-18","transition":"T3","from":"Proposing","to":"Reconciling","note":"3 역할 Proposal 제출 완료"}
+{"seq":4,"kind":"StateTransition","ts":"2026-07-18","transition":"T4","from":"Reconciling","to":"Reviewing","note":"TR-1 화물정보망 격리·TR-2 세금계산서 Phase 1.5·TR-3 감사/백업 확정·TR-4 tenant-ready 해소"}
+{"seq":5,"kind":"StateTransition","ts":"2026-07-18","transition":"T6","from":"Reviewing","to":"Validating","note":"단일 결정 집합 수렴 SD-D1~D17"}
+{"seq":6,"kind":"GatePresented","ts":"2026-07-18","state":"Validating","presented":"성숙 결과(SD-D1~D17·리스크 갱신·가정 4건 해소) + 4개 사용자 결정 제시(화물정보망 정책·배포 형태·화주 유형·기술스택)"}
+{"seq":7,"kind":"UserResponded","ts":"2026-07-18","response":"승인","decisions":{"화물정보망":"공식문의후결정(반자동 폴백 확정)","배포형태":"우리전용(단일 테넌트·tenant-ready)","화주유형":"기업화주","기술스택":"TS풀스택"},"note":"v2 재발행 승인"}
+{"seq":8,"kind":"StateTransition","ts":"2026-07-18","transition":"T8","from":"Validating","to":"Matured"}
+{"seq":9,"kind":"OutputRecorded","ts":"2026-07-18","superseding":".claude/project-contract/project-contract.v2.md","projection":["docs/solution-design.md"],"note":"superseding 인스턴스 v2(supersedes 1) + Projection 산출"}
+{"seq":10,"kind":"MaturationRunConcluded","ts":"2026-07-18","terminal":"Matured","reason":"사용자 승인(T8) 후 superseding v2 발행 완료"}

@@ -83,6 +83,7 @@ python entry/adapters/claude/entry_resolve.py --entry continue --folder <대상 
 | Entry 불변(EN-INV 1~6) | `entry/specs/01-entry.md` §3.3 |
 | 논리 식별자 주의(물리 발화 형태 = Adapter 소관) | `entry/specs/01-entry.md` §0·§4.1 · `entry/adapters/claude/entry-binding.md` §3 |
 | Discovery Request 상위 추상 {mode, inputs, policy} | `ARCHITECTURE.md` §12.2 |
+| 구현 단계 진입(Contract 확정 후·다운스트림 발화) | `.claude/commands/uaf-implement.md` — Entry는 Discovery Request까지 멈추고(EN-INV 1), Contract 확정·구현 준비 완료 시 구현 orchestration은 `/uaf-implement`로 별도 발화한다(자동 체이닝 아님·Entry 경계 보존) |
 | 진입 명령 골격 관례 | `.claude/commands/uahf-status.md` |
 | 상위 규약 | `.claude/AGENT.md` |
 

@@ -37,6 +37,7 @@ Advisor는 총괄 관리자다. 책임은 Architecture, Spec, 설계 결정, 검
 - Architecture·Spec·설계 결정.
 - 위임 — Worker·Planner·Verifier에게 위임 메시지를 발신한다.
 - 최종 승인 — 검증 게이트의 CP3 최종 승인 주체다.
+- **Run 조율 위임** — Contract(project-contract.vN.md)를 가진 소비 프로젝트의 구현 lifecycle(스케줄·게이트·재개·RevisionEvent/ArtifactRecord 원장·계보)은 Advisor가 직접 조율하지 않고 headless Project Orchestrator 엔진(`orchestration/`)에 위임하며, Advisor는 그 엔진의 게이트 큐(user/CP2/CP3)를 표면화·해소·승인한다. 기계적 조율=엔진·의미 판단=국소 LLM Step·확정 권위=사용자(05 §2.1 3분해·재정의 0).
 
 경계 (갖지 않는 권한):
 
@@ -70,6 +71,7 @@ Worker의 책임은 구현이다. 위임을 받아 산출물을 생성하고 완
 - Architecture·Spec·설계 결정을 하지 않는다. 설계 결정은 Advisor 소관이다.
 - 자체 점검(CP1)을 최종 승인으로 삼지 않는다. 독립 판정은 Verifier, 최종 승인은 Advisor 소관이다.
 - 실패를 숨기지 않는다. 실패·미완성은 보고에 반드시 명시한다.
+- 프로젝트 단위 스케줄·게이트·재개·계보는 Worker 소관이 아니다. 이는 기계적 조율(Project Orchestrator, 05 §2.1)이며, Worker는 엔진이 디스패치한 fresh-context 단일 단위 실행만 수행한다.
 
 ### Verifier
 
@@ -140,6 +142,7 @@ Consult → Plan → Execute → Verify → Learn → Memory Update → Complete
 - Planner는 계획·브리프 초안만 작성한다. 스스로 채택하지 못한다.
 - 계획 채택·최종 승인·정책 변경은 Advisor가 한다.
 - **위임 범위 비례화** — 위임·탐색의 규모를 작업 범위에 비례시킨다. 파일·위치가 이미 알려진 바운드된 질문은 인라인 또는 단일 Agent로 처리하고, 다중 fan-out(병렬 탐색 Agent 여럿)은 범위가 불확실할 때만 쓴다. 각 서브 Agent의 반환 보고는 메인 컨택스트로 유입되므로, 범위에 맞지 않는 fan-out은 컨택스트를 낭비한다 (§Core Principles Token Efficiency).
+- **Run 조율 vs 단위 실행 구분** — Contract-scoped 소비 프로젝트의 구현은 ad-hoc Worker 직접 디스패치가 아니라 Project Orchestrator 엔진(그래프→게이트→디스패치)으로 라우팅한다. 위 위임 필드(input·output·done…)는 그 엔진이 조율하는 단일 단위 실행에 적용된다. 물리 발화 = `/uaf-implement` → `orchestration/adapters/claude/orchestrate_project.py`(05 §2.1·재정의 0).
 
 ---
 
@@ -168,6 +171,8 @@ Agent는 다음을 반드시 전달한다.
 
 완료 보고는 CP2 PASS 이후에만 유효하다. CP2 PASS 전의 완료 보고와 최종 승인은 무효다.
 
+엔진 경유(Project Orchestrator) 구동 시 이 3게이트는 오케스트레이터 게이트 어휘로 실현된다 — CP2 = `review_required`(상시 하한·우회 없음·Verifier), CP3 = `approval_required`(Advisor 경계 승인), 사용자 확정 = `user_decision_required`(사용자만 해소). 게이트 5종·불가침·단조성 정본 = `orchestration/specs/05-project-orchestration.md` §3.3 · `orchestration/framework/orchestrator/gates.py`(재정의 0).
+
 ---
 
 ## Memory
@@ -189,7 +194,8 @@ Agent는 다음을 반드시 전달한다.
 
 ## Invariants / Prohibitions
 
-- **Advisor 불필요 직접 구현 금지** — 구현은 Worker에게 위임한다.
+- **Advisor 불필요 직접 구현 금지** — 구현은 Worker에게 위임한다. 단 이 위임은 **단위 실행** 층이다 — Contract를 가진 소비 프로젝트의 구현 lifecycle 조율은 headless Project Orchestrator 엔진에 위임한다(아래 Run 조율 우회 금지).
+- **Run 조율 우회 금지** — Contract를 가진 소비 프로젝트의 구현을 오케스트레이터 엔진 없이 원장(RevisionEvent/ArtifactRecord·게이트 큐) 없는 임시 Worker 직접 디스패치로 수행하지 않는다. 프로젝트 구현 lifecycle은 엔진 경유가 기본이다(엔진=기계 조율·Worker=단위 실행 — 05 §2.1).
 - **완료 보고 무검증 신뢰 금지** — 산출물을 정독·독립 검증한 뒤에만 승인한다.
 - **조기 승인 금지** — CP2 PASS(Verify 통과) 전 최종 승인은 무효다.
 - **추측 금지** — 불확실은 임의 해석하지 않고 Open Question으로 남겨 에스컬레이션한다.

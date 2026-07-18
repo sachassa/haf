@@ -168,6 +168,20 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 - **deterministic resume replay**: `replay_check.py` 2회 실행 stdout 동일(active_graph·states·ready_set·graph_fingerprint). 최종 레지스트리: `design-decision.md` v1 = **user_approved**(사용자 게이트 해소)·`impl-note.txt` v1 = **verified**(derivedFrom `[design-decision.md]`).
 - **실 CLI 실패 은폐 0(O5).** 실 세션 stdout·argv·session_id 는 `logs/invoke-*.json` 에 그대로 캡처된다.
 
+### §5.7 프로덕션 실 run — tms-system Contract v2 (배선 수정 트랙·2026-07-18)
+
+§5.6 시나리오 j 가 비프로덕션 e2e 드라이버(시뮬 사용자 게이트·픽스처 구현 제안)였던 것과 달리, **프로덕션 런처**가 임의 소비 프로젝트를 실 claude CLI headless 로 구동한 첫 실 run 이다. 신설 어댑터 3종(전부 `orchestration/adapters/claude/`·중립 `orchestration/framework/`·`uahf/` 무수정 import 재사용):
+
+- **`contract_to_graph.py`** — Contract vN(파일명 버전 최대·내용 파싱 0) → 초기 Work Graph(단일 seed proposal 단위) + gate_policy(proposal→user_decision·implementation→review·milestone→approval) + config 결정적 컴파일. seed 프롬프트가 런타임 실 LLM 에 Phase 분해(implementation N + milestone 1·DAG 종단·오프라인 안전 done AC)를 위임(05 §3.1 "고정 파이프라인 하드코딩 금지").
+- **`orchestrate_project.py`** — `<project_root>`를 컴파일→run_dir 물리화(소비 프로젝트 워크스페이스 무삭제·RUNS_DIR 직속 삭제가드)→중립 `build_orchestrator_k` 무수정 재사용→`orch.run()`→exit-code 매핑(§2 종료 코드 2 상속). `--model`(seed 티어)·`--policy`(기본 `auto_approve` — headless 쓰기·게이트와 직교) override.
+- **`resolve_gate.py`** — 게이트 해소: impl-plan 어댑터 검증(F4 계약 수용 = `unitType∈{implementation,milestone}`·milestone≥1·implementation≥1·milestone DAG 종단·`resolve_w` 구조 헬퍼 동일 강도 재사용) **먼저**(실패 시 원장 무변경) → `append_gate_resolution(actor=…)` → 각 구현 task `accept_revision(task_added·basis.gateEventRef)`.
+
+**tms-system(pc-tms-001 v2) 실 run 실측(run 데이터 = `runs/orch-tms-phase1-smoke/`):**
+
+- Stage A: seed proposal 단위(실 LLM·`haiku`)가 Contract v2 + solution-design 정독 후 `impl-plan.json`(6 task = implementation 5 + milestone 1·DAG 종단) 산출 → CP2(`cp2-pass` 이벤트·상시 하한) → **`user_decision_required` 게이트 물리 정지(exit 2·`logs/stop-signal.json` pending_gates 기록)**.
+- 게이트 해소: `resolve_gate.py` 가 impl-plan 어댑터 검증 통과 후 **실 사용자(actor=`human`·simulated=false)** 해소 이벤트 append → 6 `task_added` revision(basis.proposingStepRef=impl-plan-phase1·gateEventRef=해소 게이트) 승격. events.jsonl 5(dispatch·cp2-pass·gate-required·resolution-provenance·gate-resolved)·revisions.jsonl 6·artifacts.jsonl 1·active_graph 7노드(fold)·ready_set=선행 impl 단위(결정적 재개 준비).
+- **정직 대조(L-07).** 이 run 은 §5.6 픽스처를 넘어선 **실 LLM 제안 step + 실 사용자 게이트 해소**다(OQ-PO-B4). milestone 단위(→`approval_required`·CP3)의 물리 CP3 정지·해소는 구현 단위 resume 시 발화하며, 본 run 에서는 gate_policy 파생 평가로 도달성만 실증했다(라이브 CP3 발화·실 코드 산출 = 후속 resume 소관·사용자 선택 defer). e2e 드라이버(§5.3)는 여전히 비프로덕션이며, 이 프로덕션 런처가 그 상위 발화 경로다.
+
 ---
 
 ## §6. 실측 대조 (L-07)
@@ -184,5 +198,12 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 
 - **OQ-PO-B1 (게이트 큐 제시 표면 문법).** `pending_gates` 항목의 사람 친화 렌더 템플릿(라벨·문면·다국어)은 §3.2 구조 제안·§5.6 stop-signal 기록으로 실증되었으나 사용자 대화 세션 표면의 최종 렌더 문법은 트랙 종단/후속 관찰 소관으로 남긴다.
 - **OQ-PO-B2 (해소 어휘 성숙).** 전용 해소 이벤트 어휘(재시도 예산 비계수·해소 취소)는 OQ-SH-5·05 §9 OQ 3 이월. 본 판은 `append_gate_resolution` 현행 형태만 바인딩.
-- **OQ-PO-B3 (headless 런처 ↔ 사용자 세션 제시 브리지).** orchestrator(headless)의 이벤트 로그를 사용자 대화 세션이 읽어 게이트 큐를 표면화하는 물리 브리지(폴링·훅·수동 조회)의 정밀 형태. §5.6 은 드라이버가 stop-signal 을 읽어 재개하는 형태로 실증했으나, 실 사용자 대화 세션 브리지의 정밀 형태는 후속 관찰 소관.
-- **OQ-PO-B4 (실 LLM 제안 step·비픽스처 성숙 run).** §5.6 의 구현 단위 제안은 드라이버 픽스처다. 설계 단위 산출 artifact 를 실 LLM 제안 step 이 소비해 구현 task 를 제안하는 완전 성숙 run(형태 A 성숙 run·BPD-20 동형)은 후속 트랙 소관.
+- **OQ-PO-B3 (headless 런처 ↔ 사용자 세션 제시 브리지) — 해소(production·2026-07-18).** 물리 브리지 형태 확정: 프로덕션 런처(`orchestrate_project.py`)가 정지 게이트 시 **종료 코드 2 + `logs/stop-signal.json`(pending_gates)** 를 기록 → 주 세션 Advisor 가 그 파일을 읽어 게이트 큐를 사용자 대화 세션에 표면화(§3.2 headless·채널 분리 유지) → 사용자/Advisor 해소를 `resolve_gate.py <run_dir> --gate-kind … --actor …` 로 게이트-해소 이벤트 append(적격성 = gates.py `is_eligible_resolver` 코드 소유) → `orchestrate_project.py --resume` 로 결정적 재개(원장 fold). §5.7 tms-system 실 run 으로 실증. (사람 친화 렌더 최종 문법 = OQ-PO-B1 이월.)
+- **OQ-PO-B4 (실 LLM 제안 step·비픽스처 성숙 run) — 해소(제안·승격 사이클·production·2026-07-18).** §5.7 tms-system 실 run 에서 확정 설계(Contract v2·solution-design)를 **실 LLM(haiku) 제안 step** 이 소비해 구현 task 6개(implementation 5 + milestone 1)를 제안하고, **실 사용자 게이트 해소**(actor=human·simulated=false)로 revision 승격했다 — 드라이버 픽스처(§5.6 j)가 아닌 실 LLM 제안 + 실 사용자 해소. 잔여(후속 트랙): 승격된 구현 단위의 **resume 실 코드 산출**(형태 A 완전 성숙 run·BPD-20 동형)은 사용자 선택으로 후속 세션 defer — 제안·게이트·승격 사이클은 본 run 으로 실증됐고 코드 산출 축만 이월된다.
+- **OQ-PO-B5 (신규·엔진 `accept_revision` 게이트-pass 재검증의 actor 미검사).** `orchestrator.accept_revision` 의 `_gate_event_exists` 는 `outcome==pass && gate_id` 일치만 확인하고 해소 actor 자격은 검사하지 않는다 — 부적격 actor 의 pass 해소 이벤트가 승격 근거로 오용될 이론적 여지. 프로덕션 resolver(`resolve_gate.py`)는 부적격 actor 를 `is_eligible_resolver` 로 **append 상류에서 거부**해 독성 pass 이벤트 자체를 생성하지 않음으로 차단한다(방어적 이중화). 엔진 중립 코드 자체의 재검증에 actor 자격을 포함할지(05 §3.3 자격 정본과 정합)는 후속 소관.
+
+---
+
+## §8. 개정 이력
+
+- **2026-07-18 (오케스트레이션 → 실 프로젝트 배선 수정 트랙).** 코드화된 오케스트레이터 엔진이 실 소비 프로젝트를 정석 구동하도록 배선. 신설(전부 `orchestration/adapters/claude/`·중립 `orchestration/framework/`·`uahf/` 무수정 import): `contract_to_graph.py`(Contract→초기 그래프 컴파일러)·`orchestrate_project.py`(프로덕션 런처)·`resolve_gate.py`(게이트 브리지 resolver). §5.7 신설(tms-system Contract v2 실 run). §7 OQ-PO-B3 해소(브리지 물리 형태 = exit2+stop-signal→표면화→resolve_gate append→resume)·OQ-PO-B4 해소(제안·승격 사이클·production·구현 resume defer)·OQ-PO-B5 신설. 공동 도입: 상위 규약 F2(구현 = Run 조율/단위 실행 2층 구분·`.claude/CLAUDE.md`·`.claude/AGENT.md`)·F1 물리 발화(`/uaf-implement` = `.claude/commands/uaf-implement.md`). Advisor 승인 + 사용자 게이트(smoke 실증 후 기록). **05 계약 본문·gates.py·§3 게이트 어휘·기존 §행·PO-INV 무변(재정의 0)·Frozen 무접촉.**

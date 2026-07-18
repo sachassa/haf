@@ -111,11 +111,68 @@ def _design_task():
     }
 
 
-def _build_run(base: Path, gate_kind: str, gate_id: str, *, plan=None) -> Path:
+# 설계완성도 게이트(§DC-1 Wave 3) 통과용 최소 정책 — always 6종만 required(touchpoint/interface 미선언).
+_DESIGN_POLICY = {
+    "projectionSelection": {
+        "requirementClasses": {
+            "always": "항상 required",
+            "touchpoint": "접점 선언 시 required",
+            "interface": "연계 선언 시 required",
+        },
+        "defaultRequiredSet": [
+            {"id": "project-plan", "name": "프로젝트 계획서", "requirement": "always"},
+            {"id": "requirements-def", "name": "요구사항 정의서", "requirement": "always"},
+            {"id": "business-process", "name": "업무 프로세스", "requirement": "always"},
+            {"id": "functional-spec", "name": "기능 명세서", "requirement": "always"},
+            {"id": "table-def", "name": "테이블 정의서", "requirement": "always"},
+            {"id": "test-plan-cases", "name": "테스트 계획·케이스", "requirement": "always"},
+            {"id": "screen-list", "name": "화면 목록", "requirement": "touchpoint"},
+            {"id": "menu-structure", "name": "메뉴 구조도", "requirement": "touchpoint"},
+            {"id": "screen-design", "name": "화면 설계서", "requirement": "touchpoint"},
+            {"id": "interface-spec", "name": "인터페이스 명세서", "requirement": "interface"},
+        ],
+        "exclusionRule": {"silentOmission": "금지"},
+    }
+}
+
+# 접점·연계 미선언 → always 6종만 required·전부 produced인 통과 매니페스트.
+_DESIGN_MANIFEST_OK = {
+    "declaredTouchpoints": [],
+    "declaredInterfaces": [],
+    "artifacts": [
+        {"id": "project-plan", "status": "produced"},
+        {"id": "requirements-def", "status": "produced"},
+        {"id": "business-process", "status": "produced"},
+        {"id": "functional-spec", "status": "produced"},
+        {"id": "table-def", "status": "produced"},
+        {"id": "test-plan-cases", "status": "produced"},
+    ],
+}
+
+
+def _write_design(run: Path, *, policy=_DESIGN_POLICY, manifest=_DESIGN_MANIFEST_OK) -> None:
+    """워크스페이스 SD 데이터에 정책(YAML)·매니페스트(JSON)를 시드한다. manifest=None → 매니페스트 부재."""
+    import yaml  # 테스트 픽스처 전용(체커와 동일 로컬 라이브러리).
+
+    sd = run / "workspace" / ".claude" / "solution-design"
+    (sd / "policy").mkdir(parents=True, exist_ok=True)
+    (sd / "policy" / "default-policy.yaml").write_text(
+        yaml.safe_dump(policy, allow_unicode=True), encoding="utf-8"
+    )
+    if manifest is not None:
+        (sd / "design-manifest.json").write_text(
+            json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
+        )
+
+
+def _build_run(base: Path, gate_kind: str, gate_id: str, *, plan=None, seed_design: bool = True) -> Path:
     run = base / "run"
     (run / "logs").mkdir(parents=True)
     (run / "workspace").mkdir(parents=True)
     (run / "steps").mkdir(parents=True)
+    # 설계완성도 게이트 통과 전제 시드(기본). seed_design=False → 매니페스트 부재(게이트 차단 재현).
+    if seed_design:
+        _write_design(run)
 
     (run / "config.json").write_text(
         json.dumps({"workspace_dir": str(run / "workspace"), "run_id": "test-run"}),
@@ -345,6 +402,99 @@ class TestAdapterValidator(unittest.TestCase):
             self.assertNotEqual(rc, 0)
             self.assertEqual(_sha(run / "events.jsonl"), ev_before)
             self.assertEqual(_sha(run / "revisions.jsonl"), rev_before)
+
+
+# --------------------------------------------------------------------------
+# 설계완성도 게이트(§DC-1 Wave 3) — impl 승격 직전 침묵 누락 차단·원장 무오염
+# --------------------------------------------------------------------------
+import design_completeness as dc  # noqa: E402  (같은 어댑터 경계 모듈)
+
+
+class TestDesignCompletenessGate(unittest.TestCase):
+    def test_absent_manifest_blocks_and_leaves_ledger_untouched(self):
+        # 설계 미완(매니페스트 부재) → 유효 impl-plan·적격 actor 라도 승격 전 차단·원장 무변경.
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct",
+                             plan=_valid_plan(), seed_design=False)
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertNotEqual(rc, 0, "매니페스트 부재는 승격 전 비영 종료로 차단")
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before, "events.jsonl 무변경")
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before, "revisions.jsonl 무변경")
+            policy = GatePolicy.from_dict({})
+            self.assertFalse(is_resolved(_events(run), "g-struct", GATE_USER_DECISION_REQUIRED, policy))
+
+    def test_silent_omission_blocks(self):
+        # always 필수 중 하나 누락(산출도 정당화 제외도 없음) → 차단·원장 무변경.
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=_valid_plan())
+            partial = {"declaredTouchpoints": [], "declaredInterfaces": [],
+                       "artifacts": [{"id": "project-plan", "status": "produced"}]}  # 5종 누락.
+            _write_design(run, manifest=partial)
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertNotEqual(rc, 0)
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before)
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before)
+
+    def test_all_produced_passes_through_to_promotion(self):
+        # 기본 시드(_DESIGN_MANIFEST_OK·전부 produced) → 게이트 통과·정상 승격(rc 0).
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=_valid_plan())
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertEqual(rc, 0, "전부 produced 는 게이트 통과·승격")
+
+    def test_justified_exclusion_passes(self):
+        # 접점 선언(screen-list 등 required) 후 정당화 제외(reason+confirmedBy) → 통과.
+        errors = dc.check_design_completeness(*self._pair(
+            manifest={
+                "declaredTouchpoints": ["web-portal"],
+                "declaredInterfaces": [],
+                "artifacts": [
+                    {"id": "project-plan", "status": "produced"},
+                    {"id": "requirements-def", "status": "produced"},
+                    {"id": "business-process", "status": "produced"},
+                    {"id": "functional-spec", "status": "produced"},
+                    {"id": "table-def", "status": "produced"},
+                    {"id": "test-plan-cases", "status": "produced"},
+                    {"id": "screen-list", "status": "produced"},
+                    {"id": "menu-structure", "status": "produced"},
+                    {"id": "screen-design", "status": "excluded",
+                     "reason": "MVP 범위 밖 — 후속 반영", "confirmedBy": "user"},
+                ],
+            }))
+        self.assertEqual(errors, [], "정당화 제외(reason+confirmedBy)는 통과: %r" % errors)
+
+    def test_exclusion_missing_confirmedby_blocks(self):
+        errors = dc.check_design_completeness(*self._pair(
+            manifest={
+                "declaredTouchpoints": ["web-portal"],
+                "declaredInterfaces": [],
+                "artifacts": [
+                    {"id": "project-plan", "status": "produced"},
+                    {"id": "requirements-def", "status": "produced"},
+                    {"id": "business-process", "status": "produced"},
+                    {"id": "functional-spec", "status": "produced"},
+                    {"id": "table-def", "status": "produced"},
+                    {"id": "test-plan-cases", "status": "produced"},
+                    {"id": "screen-list", "status": "excluded", "reason": "범위 밖"},  # confirmedBy 누락.
+                    {"id": "menu-structure", "status": "produced"},
+                    {"id": "screen-design", "status": "produced"},
+                ],
+            }))
+        self.assertTrue(any("정당화 제외 요건 미충족" in e for e in errors), errors)
+
+    def _pair(self, *, manifest):
+        """임시 정책·매니페스트 파일 쌍을 만들어 (policy_path, manifest_path) 반환(체커 직접 호출용)."""
+        import yaml
+        td = tempfile.mkdtemp()
+        sd = Path(td)
+        (sd / "default-policy.yaml").write_text(
+            yaml.safe_dump(_DESIGN_POLICY, allow_unicode=True), encoding="utf-8")
+        (sd / "design-manifest.json").write_text(
+            json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+        self.addCleanup(lambda: __import__("shutil").rmtree(td, ignore_errors=True))
+        return str(sd / "default-policy.yaml"), str(sd / "design-manifest.json")
 
 
 if __name__ == "__main__":

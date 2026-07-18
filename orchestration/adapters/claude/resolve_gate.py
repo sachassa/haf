@@ -85,6 +85,17 @@ from gates import (  # noqa: E402
 from revision import KIND_TASK_ADDED  # noqa: E402
 from events import EventLog, JsonlEventStore  # noqa: E402
 
+# 설계완성도 게이트 체커(같은 어댑터 경계·orchestration/adapters/claude/). impl task 승격 직전
+# 침묵 누락(산출도 정당화 제외도 없는 필수 산출물)을 차단한다(§DC-1 Wave 3·form-B·LLM 0).
+if str(HERE) not in sys.path:
+    sys.path.insert(0, str(HERE))
+from design_completeness import check_design_completeness  # noqa: E402
+
+# 워크스페이스 내 Solution Design 데이터 관례 경로(SD 가 산출·오케스트레이션이 검증).
+SD_DATA_REL = Path(".claude") / "solution-design"
+DESIGN_POLICY_REL = SD_DATA_REL / "policy" / "default-policy.yaml"
+DESIGN_MANIFEST_REL = SD_DATA_REL / "design-manifest.json"
+
 
 # CLI gate-kind → 중립 gateKind 상수. approval-escalation = CP3 non-Pass 시 escalation 으로
 # 승격된 정지 게이트(STOPPING_GATES 는 escalation/user_decision 뿐 — approval_required 는
@@ -337,6 +348,22 @@ def resolve_structural(run_dir: Path, gate_id, actor: str, response: str, policy
         print("[REJECT] impl-plan 검증 실패 — 자동 수정하지 않는다(정직 실패):", file=sys.stderr)
         for e in errors:
             print("  - %s" % e, file=sys.stderr)
+        print("      (게이트 미해소·원장 무오염 — 이벤트/revision 0 append.)", file=sys.stderr)
+        return 1
+
+    # (1.5) 설계완성도 게이트 — impl task 를 그래프에 편입(task_added 승격)하기 직전, 선언 접점·
+    #       연계 대비 기본 필수 산출물이 산출됐거나 정당화 제외됐는지 결정적 검사(§DC-1 Wave 3).
+    #       validate_impl_plan_adapter 성공 이후·어떤 원장 append 도 하기 전 지점이므로, 오류 시
+    #       원장 무오염(이벤트/revision 0 append)으로 차단한다(validate_impl_plan_adapter 패턴 동형).
+    design_errors = check_design_completeness(
+        Path(workspace) / DESIGN_POLICY_REL,
+        Path(workspace) / DESIGN_MANIFEST_REL,
+    )
+    if design_errors:
+        print("[REJECT] 설계완성도 게이트 차단 — 자동 보정하지 않는다(정직 실패):", file=sys.stderr)
+        for e in design_errors:
+            print("  - %s" % e, file=sys.stderr)
+        print("      Solution Design에서 산출 또는 정당화 제외 필요.", file=sys.stderr)
         print("      (게이트 미해소·원장 무오염 — 이벤트/revision 0 append.)", file=sys.stderr)
         return 1
 

@@ -36,7 +36,10 @@
 - **§DC-5 SD 협업 깊이:** 이번 04 = 단일 라운드·병렬 블라인드(전문가 서로 안 봄). 04 프로토콜 T5/T7 다라운드 미활용 → 전문가가 서로 안에 반응·수렴하도록 심화. 인터뷰 깊이(자율→너무 짧음) 보완 연계.
 - **§DC-6 역할 상한 정책:** Expert Role 상한 3 = 정책 기본값(`.claude/solution-design/policy/`·configurable)·고정 아님. 복잡 프로젝트 상향·역할 추가(UX·보안규제·데이터모델). 최소할당 vs 완성도 균형 재검토.
 - **§DC-7 WBS 소유 문서화:** 관리=오케스트레이션 엔진 · 초안(분해)=Planner 역할 · 실행=Worker (혼동 방지 명문화).
-- **§DC-8 비정본 전반 점검:** 강제·완성도 필요한 계약이 비정본 부록에 있으면 샘 → 전수 스윕·필요분 정본화.
+- **§DC-8 [다음 활성 · 사용자 지정 2026-07-19] 비정본 전수 스윕 (책임 있는 자율 원칙 *적용*):** 방금 정본화한 원칙(ARCH §6 원칙11·CLAUDE.md §비정본 거버넌스)을 **기존 비정본에 실제 적용**한다 — 강제-필요분을 Core/Policy로 승격·순수 참고는 유지. 원칙만 두고 안 쓰면 또 skip됨.
+  - **스윕 대상(실측 2026-07-19):** ① 부록 4종 `planning/docs/appendix/` = projection-catalog·expert-role-catalog(**부분 완료** — DC-1이 필수 10종·역할 구성 승격)·**methodology-mapping·review-dimension-catalog(미검토)** ② "예시일 뿐/강제 아님" 표현 spec = `04`·`05`·`02`(강제-필요분이 예시로 파킹됐는지) ③ runtime = `uahf/framework/runtime/`{module-manifest·step-hosting-protocol}.
+  - **분류 기준(원칙 (a) 테스트):** "조용히 skip되면 중요한 게 빠지나?" → **Yes**=강제-필요: 요구를 Core/Policy로 승격 + 카탈로그/예시는 비정본 문서로 유지 + (자율 여지 있으면)이탈 사유기록 / **No**=순수 자율: 비정본 유지.
+  - **접근:** 각 정독·분류 → 강제-필요분 목록화·승격 위치 확정 → Wave 분해·Worker 위임·CP2·CP3. **검증:** 각 승격이 SP-INV 5(코어에 유형/역할 카탈로그 0) 보존하며 *강제만* 이관했는지. 상세 원칙 = 메모리 `uaf-accountable-autonomy-principle`.
 - **§DC-9 05 wiring 후속:** OQ-PO-B5(actor 재검증)·OQ-PO-B1(게이트 렌더)·Stage B 실코드 산출 → `uaf-orchestration-wiring-gap` 메모리.
 
 ### §DC 좌표·정본 포인터 (착수용)

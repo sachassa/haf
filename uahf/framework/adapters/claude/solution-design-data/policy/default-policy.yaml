@@ -16,8 +16,24 @@ roleSelection:
   basis: "판정 근거가 식별한 설계 관심사에서 파생"
   perConcern: 1                 # 관심사당 최소 필요 역할만
   wholeScopeCoverage: required  # 04 §3.3 커버리지 바닥·SP-INV 9 — 선언 전체 범위 관장 역할은 필수 바닥(전문 역할 상한 불산입)
-  maxSpecialistRoles: 3         # SP-INV 8 — 전문/관심사 역할만 상한(커버리지 바닥 불산입). §DC-6 configurable
-  fixedTeam: "금지"             # SP-INV 5 — 개방 네임스페이스·고정 역할 카탈로그 0
+  maxSpecialistRoles: 4         # SP-INV 8 — 전문/관심사 역할만 상한(커버리지 바닥 불산입). 기본 2(baseSpecialists) + 조건부 2(conditionalSpecialists). §DC-6 configurable
+  fixedTeam: "금지"             # SP-INV 5 — 개방 네임스페이스·고정 역할 카탈로그 0. 아래 defaultComposition은 강제 고정팀이 아니라 "기본값(이탈 시 사유 기록)"이며 fixedTeam=금지와 무모순
+
+  # 기본 역할 구성 (강제 기본값 — 책임 있는 자율: 루트 ARCHITECTURE.md §6 원칙 11 (a)(b))
+  # 역할명은 개방 네임스페이스 예시이며 고정 강제 아님·configurable(§DC-6). 정본=이 정책, 예시 카탈로그=비정본 부록(planning/docs/appendix/expert-role-catalog.md §3.5).
+  # defaultComposition은 "기본값(default)"이지 "강제 고정팀"이 아니다 — 이탈은 deviationRule로 사유 기록 + Validating 게이트 표면화(silentOmission 금지·SP-INV 8 최소할당 존치).
+  defaultComposition:
+    coverageFloor: PM                       # wholeScopeCoverage 바닥 실현 — 완결성 관장·횡단(전문 역할 상한 불산입)
+    baseSpecialists: [기획, 아키텍처]        # 기본 전문역할(항상 파생 후보)
+    conditionalSpecialists:
+      - { role: 디자이너, when: "touchpoint(접점) 선언 시" }   # 조건부 — 접점 선언 시 편입
+      - { role: DBA,     when: "데이터 복잡 시" }              # 조건부 — 데이터 복잡도 신호 시 편입
+
+  # 이탈 규칙 (책임 있는 자율 (b)(c) — silentOmission 금지)
+  deviationRule:
+    trigger: "기본 구성(defaultComposition)에서 역할 추가/제거 시"
+    record:  "사유 기록 — 성숙 run 기록(events/maturation-<run-id>/)에 남김"
+    surface: "Validating 게이트에서 표면화·사용자 확인 (고임팩트 이탈은 즉시)"
 
 # (다) Projection 선택 정책 (04 §3.5 — 동적 선택=기본값 opt-out·전 유형 강제 금지·SP-INV 9 기본 필수 세트)
 projectionSelection:
@@ -52,3 +68,19 @@ projectionSelection:
     silentOmission: "금지"   # 산출도 제외 기록도 없이 구현 경계 넘기 금지 (04 SP-INV 9)
     autoExclude:    "touchpoint/interface 미충족 시 자동 N/A"
     manualExclude:  "always 클래스 제외 시 사유 기록 + 사용자 확인 — 성숙 run 기록(events/maturation-<run-id>/)에 남김"
+
+# (라) 역할→산출물 소유 맵 (04 §3.3 역할·§3.5 Projection 교차 — 책임 있는 자율: 강제 기본값·이탈 사유기록)
+# 각 defaultRequiredSet id 의 소유 역할. 역할명은 roleSelection.defaultComposition 과 동일 개방 네임스페이스 예시(configurable·고정 강제 아님).
+# 소유(owner) = 해당 산출물 작성 책임 역할 — 위임 서브에이전트가 자기 소유 산출물을 작성한다(생산 프로토콜 = 바인딩 §7A).
+# 10 항목은 projectionSelection.defaultRequiredSet 10 id 와 1:1 대응(교차 정합).
+artifactOwnership:
+  - { id: project-plan,     owner: PM,        note: "프로젝트 계획서 + 횡단 완결성 검증(전체 커버리지 관장)" }
+  - { id: requirements-def, owner: 기획 }
+  - { id: business-process, owner: 기획 }
+  - { id: functional-spec,  owner: 기획 }
+  - { id: test-plan-cases,  owner: 기획 }
+  - { id: table-def,        owner: 아키텍처,  assist: DBA, note: "DBA는 데이터 복잡 시 table-def 정밀화 보조" }
+  - { id: interface-spec,   owner: 아키텍처 }
+  - { id: screen-list,      owner: 디자이너 }
+  - { id: menu-structure,   owner: 디자이너 }
+  - { id: screen-design,    owner: 디자이너 }

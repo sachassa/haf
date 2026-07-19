@@ -4,6 +4,51 @@
 용도: 새 세션은 **본 파일 하나로 상태를 인수**한다. 원문 전체 정독 강제 없음 — demand-driven(§단위·필요 시점) 규칙을 따른다. (물리 발화 = `/uaf-continue`)
 지위: `docs/artifact-lifecycle-policy.md` §6이 정한 **UAF 레벨 단일 live 핸드오프**다. 단수·제자리 갱신이며 버전별 파일을 만들지 않는다. 과거 상태는 git 이력이 정본이다. (전신: `docs/next-session-prompt.md` — 본 파일로 개명·재정착 2026-07-17)
 
+> **🔴 갱신 2026-07-19 — §DC-1 코어 강제 = 완결** (branch `feat/dc1-design-completeness`·미머지·미푸시). Wave 1-4로 백엔드 직행 차단 실증: SP-INV 9(코어 04)+필수 산출물 10종(어댑터 정책)+엔진 게이트(`resolve_gate` fail-closed·프레임워크 무수정). 각 Wave CP2 독립검증(테스트 재실행)·CP3 승인. 커밋 `08a3321`(설계+정책)·`8e1f18d`(실행코드). tms 실선언(3접점+연계)으로 필수 10종 미산출 차단 실증. **+책임 있는 자율 원칙**(ARCH §6 원칙11·CLAUDE.md — 필수=Core/Policy 강제·자율=기본값+이탈 사유기록·이탈=게이트 일괄 표면화; "비정본이 항상 문제" 근본 대응·메모리 `uaf-accountable-autonomy-principle`). **+Wave 5-A 생산 프로토콜**(정책·바인딩 §7A·부록 — 역할 구성[PM 커버리지 바닥+기획·아키텍처 기본+디자이너·DBA 조건부]·역할→산출물 소유 맵 1:1·위임 산출·MD 본문+JSON 매니페스트·docs 배치·CP1-3+Validating 게이트 컨펌). 원칙·Wave 5-A 각 CP2/CP3. **잔여:** Wave 5-B(생산 물리 배선·서브에이전트 브리프 템플릿·form-B)·PreToolUse 훅(후순위)·§DC-5/7/8 백로그·tms 실제 10종 설계 산출(별도 제품 트랙). 상세 정본 = 메모리 `uaf-design-completeness-gap`. 이하 §DC-1~9는 원 백로그 기록(§DC-1~4 코어 반영 완료). 이하 §1~§5는 직전 상태(Performance Tuning·산출물 수명).
+
+## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
+
+용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.
+
+### §DC-1 [1순위] 전체 제품 설계(모든 메뉴·기능·프로세스·화면)를 산출·강제하는 단계가 없음
+**증상(실측):** tms-system 오케스트레이션 run이 **UI/UX·전체 기능/화면/프로세스 설계 없이** 백엔드 구현 계획으로 직행했다.
+- `tms-system/impl-plan.json` = 6 task **전부 백엔드/데이터**(domain·master·order-dispatch·settlement·audit + milestone). **UI/UX·화면·PRD·기능맵 task 0건.** SD-D2의 3접점(기사PWA·화주포털·내부웹)이 설계로도 구현으로도 없음.
+- `orchestration/adapters/claude/contract_to_graph.py` seed 프롬프트가 Phase 1을 "마스터+수주+배차+정산코어"로 **하드코딩**하고 백엔드 결정(SD-D4/D7/D9/D11/D16)만 앵커 — UI/UX·기능맵·PRD 요구 0.
+- 같은 파일 `gate_policy()` = proposal→user_decision·impl→review·milestone→approval. **설계완성도 게이트 없음.**
+- 프레임워크 전체 스윕: UI/UX·설계완성도 **강제 규정 0건.** Discovery(`SKILL.md:42`)·SD 둘 다 "화면·기능은 하류"로 미루고 하류(구현 Planning)도 필수화 안 함.
+
+**뿌리:** 전체 설계(PRD·UI/UX·프로세스)를 담을 **Projection이 비정본 부록·선택**(`planning/docs/appendix/projection-catalog.md`·04 §3.5 "예시일 뿐 강제 아님") → 컴파일러·게이트·훅 아무도 안 챙김. **("비정본이 항상 문제")**
+
+### §DC-2 최소 필수 산출물 정의 + 정본화
+- 최소 세트: (1) **전체 기능·범위 명세(PRD)** — 영역이 아니라 모든 기능 (2) **UI/UX 설계**(화면 목록·주요 플로우·와이어프레임 — 접점 선언 프로젝트 필수) (3) **전체 프로세스맵 + 데이터모델(ERD)** (4) **WBS**(위 3개에서 파생·Contract 직행 금지).
+- **정본 승격:** 이 세트를 `planning/specs/04-solution-design.md`에 "필수 Projection 세트"로 등재(비정본 catalog → 정본). 컴파일러·게이트·훅 공통 참조원.
+
+### §DC-3 강제 시점·메커니즘 (검토 세션 추천)
+- **시점 = 구현 착수 직전(설계→구현 경계·UAHF 넘기기 전).** 오케스트레이션 종료 시점 아님(다 짓고 검사는 늦음).
+- **주 장치 = 엔진 게이트:** `contract_to_graph.py`가 접점 선언 시 design/UI-UX 단위를 impl 단위 **앞에** 필수 삽입 + design-completeness 게이트(통과·승인 전 impl ready 금지).
+- **백스톱 = 차단형 훅:** 필수 산출물 없으면 `src/` Write 거부(PreToolUse류). 현 훅은 알림형(SessionStart)뿐 → 차단형 신설 필요(`.claude/settings.json`·`.claude/hooks/` 실재).
+- **왜 둘 다:** 게이트=의미·승인(내용), 훅=존재 최후방어(그래프 오류로 새도 막음). 존재≠완성이므로 훅 단독 불충분.
+
+### §DC-4 UI/UX 단계 신설
+- 접점(웹·앱·포털)이 선언된 프로젝트는 UI/UX 설계 필수 단계. 현재 완전 부재.
+
+### §DC-5~9 나머지 백로그 (전부 수정 대상)
+- **§DC-5 SD 협업 깊이:** 이번 04 = 단일 라운드·병렬 블라인드(전문가 서로 안 봄). 04 프로토콜 T5/T7 다라운드 미활용 → 전문가가 서로 안에 반응·수렴하도록 심화. 인터뷰 깊이(자율→너무 짧음) 보완 연계.
+- **§DC-6 역할 상한 정책:** Expert Role 상한 3 = 정책 기본값(`.claude/solution-design/policy/`·configurable)·고정 아님. 복잡 프로젝트 상향·역할 추가(UX·보안규제·데이터모델). 최소할당 vs 완성도 균형 재검토.
+- **§DC-7 WBS 소유 문서화:** 관리=오케스트레이션 엔진 · 초안(분해)=Planner 역할 · 실행=Worker (혼동 방지 명문화).
+- **§DC-8 비정본 전반 점검:** 강제·완성도 필요한 계약이 비정본 부록에 있으면 샘 → 전수 스윕·필요분 정본화.
+- **§DC-9 05 wiring 후속:** OQ-PO-B5(actor 재검증)·OQ-PO-B1(게이트 렌더)·Stage B 실코드 산출 → `uaf-orchestration-wiring-gap` 메모리.
+
+### §DC 좌표·정본 포인터 (착수용)
+| 항목 | 위치 |
+|---|---|
+| 실측 산출물(백엔드만) | `tms-system/impl-plan.json` |
+| seed 컴파일러·게이트 정책 | `orchestration/adapters/claude/contract_to_graph.py` |
+| 강제 대상 정본 | `planning/specs/04-solution-design.md` §3.5 |
+| 비정본(정본화 대상) | `planning/docs/appendix/projection-catalog.md` |
+| 훅 메커니즘 | `.claude/settings.json`(SessionStart) · `.claude/hooks/` |
+| 관련 메모리 | `uaf-design-completeness-gap` · `uaf-orchestration-wiring-gap` · `uaf-product-tms-system` |
+
 ## §1. 상태 앵커 (git log 대조 가능)
 
 - **산출물 수명 정책 트랙 = 완결** (2026-07-17 사용자 결정·본 커밋): `docs/artifact-lifecycle-policy.md` 제정(`cd9247b`) → 일괄 정리(삭제 406파일 앵커 보존·`ARCHIVE.md` 원장 17행·활성 문서 61개 앵커 전환/판례 인용 제거·CP2 Fail 1건 정정 후 재검증 Pass·pytest 4-트리 236/236). 핸드오프 판례 인용은 전량 제거(라우팅 장치 없음 — 근거는 L-XX·mi·정본 §만). 이연 확인: 2차 산출물 디커플링 트랙(상류 바인딩 데이터 위치 확정)·Frozen spec 02/03의 옛 경로 "예정" 열거(무촉 판정).

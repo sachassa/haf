@@ -283,8 +283,10 @@ class RealPolicySmokeTest(unittest.TestCase):
         self.assertTrue(_REAL_POLICY.exists(), "실 정책 파일 부재: %s" % _REAL_POLICY)
         policy = sdr.load_policy(_REAL_POLICY)
         res = sdr.resolve(policy, ["웹"], ["외부API"], True)
-        # 실 정책 = 10 산출물·5 역할(PM·기획·아키텍처·디자이너·DBA 활성).
-        self.assertEqual(len(res["artifactPlan"]), 10)
+        # 실 정책 = 13 산출물·5 역할(PM·기획·아키텍처·디자이너·DBA 활성).
+        # (Visual Contract 트랙: defaultRequiredSet 에 design-tokens·screen-mock·mock-convergence-record
+        #  3종 가법 → 10→13. 역할 구성은 불변 — 디자이너가 접점 선언 시 이미 활성이고 3종을 소유.)
+        self.assertEqual(len(res["artifactPlan"]), 13)
         self.assertEqual(res["roleComposition"]["roles"],
                          ["PM", "기획", "아키텍처", "디자이너", "DBA"])
         by_id = _plan_by_id(res)

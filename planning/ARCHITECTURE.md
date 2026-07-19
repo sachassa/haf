@@ -21,6 +21,7 @@
 | 2026-07-13 | v1.3 · 보완 C-2 등재 | Gap Analysis(사용자 Target Architecture 대조, 옵션 2 승인) 보완 — §2 디렉터리 실측·§7 라우팅 표에 `docs/appendix/review-dimension-catalog.md`(Integrated Design Review 관점 차원 예시 **비정본 부록**) 등재. 새 계약·불변·용어 창설 0·기존 §9 행 byte 불변. | Advisor (사용자 승인) |
 | 2026-07-13 | v1.3 · v1.4 바인딩 라우팅 등재 | v1.4 W3 — §7 라우팅 표에 **Solution Design Adapter Binding** 1행 추가(정본 = 04 §4 · `uahf/framework/adapters/<adapter>/solution-design-binding.md` — v1.4 W1 신설·CP2 Pass의 등재 반영). 새 계약·불변·용어 창설 0(라우팅 1행만)·기존 §9 행 byte 불변. | Advisor (v1.4 W3) |
 | 2026-07-17 | v1.3 · 참조 정합 | 루트 v1.7 UAF-INV ① 재정의(무수정 폐지·접점 원칙 존치) 정합 — 보호 문면 제거·인용 라벨 갱신, 접점·§ 포인터·계약 무변경·substrate 소비 서술 존치. §0 접점 절·§3 폐쇄성·§5 상위 불변 정합 라벨을 접점 원칙으로 갱신하고 PC-INV 8·UAHF Interface·역참조 금지(의미 2)는 존치. 기존 §9 행 byte 불변·버전 무상승. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-19 | v1.3 · Visual Contract 부록 등재 | Visual Contract 트랙(디자인 필수 요소·원칙 Policy 데이터화 + mock 수렴 규약 §7A/§7C) 마감 등재 — §2 디렉터리·§7 라우팅 표에 `docs/appendix/visual-contract-catalog.md`(**비정본 부록** — 강제 지점은 Policy·게이트·binding) 추가. 새 계약·불변·용어 창설 0·기존 §9 행 byte 불변. | Advisor (사용자 지시 2026-07-19) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 루트 `ARCHITECTURE.md` §9·`planning/specs/03-project-contract.md` §9·`entry/ARCHITECTURE.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -71,6 +72,7 @@ planning Layer의 내부는 다음 요소로 구성된다. 각 요소의 상세 
   - `planning/docs/appendix/expert-role-catalog.md` — Expert Role 예시 **비정본 부록**. Solution Design의 개방 역할 네임스페이스에 대한 참고 카탈로그이며 어떤 계약·용어도 확정하지 않는다(정본: 04 §3.3·SP-INV 5·UAF-INV ⑥ 동형).
   - `planning/docs/appendix/projection-catalog.md` — Projection 유형 예시 **비정본 부록**. Contract=Source of Truth 하의 파생 산출 유형 개방 레지스트리에 대한 참고 카탈로그이며 어떤 계약·용어도 확정하지 않는다(정본: 04 §3.5·SP-INV 5·UAF-INV ⑥ 동형).
   - `planning/docs/appendix/review-dimension-catalog.md` — Integrated Design Review 관점 차원 예시 **비정본 부록**. 통합 리뷰(04 §3.4-D ④)의 검토 관점 차원에 대한 참고 카탈로그이며 어떤 계약·용어도 확정하지 않는다(정본: 04 §3.4·SP-INV 5·UAF-INV ⑥ 동형).
+  - `planning/docs/appendix/visual-contract-catalog.md` — Visual Contract(디자인 필수 요소·원칙·mock 수렴) 해설 **비정본 부록**. 사람용 해설·예시·출처 앵커이며 어떤 계약도 확정하지 않는다 — 강제 지점은 Policy 데이터(`solution-design-data/policy/default-policy.yaml` designElements·designPrinciples)와 게이트(design_completeness)·binding §7A/§7C 배선이다(정본: 04 §3.5·§3.9·SP-INV 5·UAF-INV ⑥ 동형).
   - `planning/.claude/README.md` — override 설정 표면(명찰); 현재 override 없음 (루트 §5 Global Default/override 경계 — `.claude`는 디렉터리 관례 명칭).
   - `planning/README.md`·`planning/ROADMAP.md` — Layer 소개·로드맵(현재 스텁).
 
@@ -150,6 +152,7 @@ planning Layer는 다음을 **수행하지 않는다**(경계). 각 항목은 �
 | Expert Role 예시 카탈로그(비정본 부록 — 계약·용어 미확정) | `planning/docs/appendix/expert-role-catalog.md` |
 | Projection 유형 예시 카탈로그(비정본 부록 — 계약·용어 미확정) | `planning/docs/appendix/projection-catalog.md` |
 | Integrated Design Review 관점 차원 예시 카탈로그(비정본 부록 — 계약·용어 미확정) | `planning/docs/appendix/review-dimension-catalog.md` |
+| Visual Contract 해설 카탈로그(비정본 부록 — 강제 지점 = Policy designElements/designPrinciples·게이트·binding §7A/§7C) | `planning/docs/appendix/visual-contract-catalog.md` |
 | 최상위 Layer 지도 · Project Contract 귀속 | 루트 `ARCHITECTURE.md` §2.1 |
 | 6요소 파이프라인 의미론 · Contract 이중 지위 · 의존 방향 | 루트 `ARCHITECTURE.md` §2.2 · §2.5 |
 | Layer 연결 계약(Discovery Request · Project Contract) | 루트 `ARCHITECTURE.md` §3 |

@@ -26,6 +26,9 @@
 | 2026-07-19 | v1.4 (정합) | §DC-5 U3 — 다라운드 심의 규약 절차(form-A) §7B 신설(무침습 삽입·§8~§14 번호 보존). 04 §3.4-C 다라운드 심의(T5 재제안·T7 재노출)의 바인딩 규약 절차 층 물리화 — 라운드 1 전 활성 역할(비소유 포함) 참여 브리프·라운드 2+ 동료 Proposal 동봉(fresh-context 블라인드 해소)·policy `deliberation.*` 소비 지점(포인터만·실값 U2 소관)·종료 조건(미해소 충돌 0 또는 상한 도달 시 Validating 표면화)·심의 이탈/`excludedByCap`(U1 신설) Validating 일괄 표면화. 실행 호스팅(04 §3.9·§6.1 line 200·§6.2) 불침범. 04·03·02·루트 재정의 0. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
 | 2026-07-19 | v1.4 (정합) | §DC-5 U2 — 다라운드 심의 실값 신설·§7.2 cap 동기화. policy에 `deliberation`(maxRounds 3·convergence unresolvedConflictsZero·peerVisibility conflictParties·deviationRule) 블록 신설, §7.2에 (라) deliberation 값표 등재(§7B.4 소비 지점 3키와 완전 일치·값 정본 문면). F-B drift 정정: §7.2 (나)·§13·§14 `maxSpecialistRoles` 4→5(기본 2 + 조건부 3, 보안·regulated 반영). resolve.py·코어 spec 무수정. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
 | 2026-07-19 | v1.4 (정합) | §DC-1 Wave 5-A — 산출물 생산 프로토콜 형식화(form-A). §7.2 (나)에 기본 역할 구성(`defaultComposition`)·이탈 규칙(`deviationRule`)·역할→산출물 소유 맵(`artifactOwnership`) 등재·`maxSpecialistRoles` 3→4. §7A(산출물 생산 프로토콜 — 위임 산출·Markdown+매니페스트·검증 3층·컨펌 3시점) 신설. §11.3 역할 기본값 격리 지점 등재 정합(SP-INV 5는 코어만 구속). 책임 있는 자율(루트 §6 원칙 11) 물리 실현. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
+| 2026-07-19 | v1.4 (정합) | **Visual Contract 트랙 Wave 3(UX)** — UX 규칙을 UI와 동일 패턴(Policy 데이터 + 브리프/리뷰 주입 + 해설 부록)으로 통합. §7.2 (바) `designElements`에 UX 기본 필수 3종(projectScope `user-journey-map` · screenScope `error-recovery`·`feedback-rules`) 추가(8→11)·UX/UI 요소 경계 주석·제품 의존 항목(온보딩·사용자 유형·UX 카피·다국어) 기본 필수 제외 + 프로젝트 policy 사본 편입 메커니즘(선언-조건부 동형) 명문. (사) `designPrinciples`에 Nielsen 휴리스틱 10종 append(7→17)·`consistency` 상호 참조 주석. 배선(§7A.1·§7C.3a)은 `designPrinciples` 전체 참조라 자동 편입(문면 "7종"→"전체" 정정). §7A.1 원칙 근거 기록 = **문서 단위 1회**(마찰 상한·화면 반복 금지). 범위 감량 6→3(오버엔지니어링 방지·사용자 결정 2026-07-19). 체커 판정 로직 무변경(요소·criteria·designPrinciples tolerant). | Worker (Advisor 위임) |
+| 2026-07-19 | v1.4 (정합) | **Visual Contract 트랙 Wave 2** — Figma UI 디자인 원칙 7종 통합. §7.2 (바)에 `accessibility-floor.criteria`(접근성 실값·정보성·체커 미판정) 문면 추가·(사) `designPrinciples` 7종(hierarchy·progressive-disclosure·consistency·contrast·accessibility·proximity·alignment·`{id,name,gist}`) 값표 신설. §7A.1 디자이너 브리프 원칙 주입 + 화면설계서 원칙별 근거 기록 요구(silentOmission 금지). §7C.3a mock 리뷰 차원 = `designPrinciples` 대조 신설. brief-template `{DESIGN_PRINCIPLES}` 슬롯·매핑 추가. 체커 판정 로직 무변경(criteria·designPrinciples tolerant 실측). policy `designElements.accessibility-floor.criteria`·`designPrinciples` 데이터. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
+| 2026-07-19 | v1.4 (정합) | **Visual Contract 트랙** — 디자인 필수 요소 강제 + mock 수렴 규약. §7.2 (다) `defaultRequiredSet`에 `design-tokens`·`screen-mock`·`mock-convergence-record` 3종 가법(touchpoint·소유 디자이너, 10→13)·(나) `artifactOwnership` 3종 추가. §7.2 (바) `designElements`(screenScope 5·projectScope 3·`appliesWhen: touchpoint`·요소 단위 silentOmission 금지) 값 문면 신설 = Policy+게이트 강제(책임 있는 자율 (a)). §7C(mock 생성·사용자 수렴 규약 — 정본/파생 규율·톤 3안 수렴·`mock-convergence-record` 종료·환경 표면) 신설(무침습·§8~§14 번호 보존). 04 §3.9(무수정) 물리화·재정의 0. policy yaml stale 포인터(uahf 미실재) planning 정정. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — UAF 관행 동형: `planning/specs/04-solution-design.md` §9·자매 부록 §9. 절 번호는 §9지만 배치는 머리다. 본 이력 표는 이번 개정에서 신설되었으며, 이전 개정 계보는 git에 있다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -268,6 +271,11 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 | `menu-structure` | 메뉴 구조도 | `touchpoint` |
 | `screen-design` | 화면 설계서 | `touchpoint` |
 | `interface-spec` | 인터페이스 명세서 | `interface` |
+| `design-tokens` | 디자인 토큰·톤앤매너 확정 기록 | `touchpoint` |
+| `screen-mock` | 화면 mock(HTML) | `touchpoint` |
+| `mock-convergence-record` | mock 수렴 확정 기록 | `touchpoint` |
+
+(신규 3종 = **Visual Contract 트랙** 가법 — 접점 선언 시 required(`touchpoint` 클래스). 소유 = 디자이너(`artifactOwnership`·(나) 참조). 기존 10종 무수정. `design_completeness` 체커가 침묵 누락을 차단하고, 요소 단위 강제는 아래 (바) `designElements` 가 담당한다. 요소별 작성 가이드(잘 만드는 법·예시)는 비정본 부록 `planning/docs/appendix/visual-contract-catalog.md` 소관이다(강제 근거 아님·SP-INV 5).)
 
 **요건 클래스 (`requirementClasses`):**
 
@@ -299,6 +307,56 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 - **Policy as Data 불변.** 위 값(판정 신호·역할 선택 상한·Projection 정책)은 전부 데이터이며, 값을 바꾸는 것만으로 성숙 거동이 조정된다 — Orchestrator 규약 절차나 정본 계약(04 §3.2·§3.3·§3.5·SP-INV)은 변경되지 않는다. 이 값 세트는 **E2E 구동을 위한 최소 실값**이며, 다른 임계·상한이 필요하면 `policy/` 데이터 정정으로 조정한다.
 - **실측 기반 구분(L-07).** 위 값은 본 문서가 소유하는 **정본 값 문면(형태 A)**이며, 물리 데이터 파일(`solution-design-data/policy/default-policy.yaml`, 현행 `uahf/framework/adapters/claude/…`)은 성숙 run E2E로 이 값 기반으로 실재한다(§12 실측).
 
+**(바) 디자인 필수 요소 정책 (`designElements` — Visual Contract 트랙·책임 있는 자율 (a) 물리 실현):**
+
+디자인 필수 요소를 **비정본 부록이 아니라 Policy 데이터 + 게이트로 강제**한다(루트 ARCHITECTURE.md §6 원칙 11 (a)·§DC-1 `defaultRequiredSet` 동형 패턴). `projectionSelection` 과 형제 레벨의 최상위 키이며 `policy/default-policy.yaml` `designElements` 블록과 정확히 일치한다(정본 값 == policy 값·L-07). 접점 선언 시에만 적용된다(`appliesWhen: touchpoint` — 미선언 시 비적용·`classExclusions` 경로가 커버).
+
+| 키 (`designElements`) | 값 | 결정하는 것 |
+|---|---|---|
+| `appliesWhen` | `touchpoint` | 접점(`declaredTouchpoints`) 선언 시에만 적용. 미선언 시 섹션 전체 비적용. |
+| `screenScope` (7종) | UI(Wave 2): `layout-structure`·`navigation`·`component-states`(기본·로딩·빈·오류·비활성 5종)·`data-rules`·`responsive`(브레이크포인트 최소 1) / UX(Wave 3): `error-recovery`(복구 경로)·`feedback-rules`(알림 방식) | **화면 단위** — 각 화면이 covered 또는 정당화 excluded 해야 하는 필수 요소. |
+| `projectScope` (4종) | UI(Wave 2): `design-tokens-values`·`tone-and-manner`(스케일 선택·레퍼런스 앵커·금지 목록)·`accessibility-floor`(명도 대비·포커스 표시·터치 타겟) / UX(Wave 3): `user-journey-map`(핵심 여정) | **프로젝트 단위 1회** 필수 요소. |
+| `exclusionRule.silentOmission` | **금지** | 요소 단위 제외 = `reason` + `confirmedBy` 필수(산출물 제외와 동형·silentOmission 금지). |
+
+- **체커 판정 경계.** `design_completeness` 체커는 활성 시 매니페스트 `designElements.{project,screens}` 의 **선언 완전성만** 결정적으로 판정한다(projectScope 전 요소 + screens 비공집합 + 각 화면 × screenScope 전 요소가 covered/정당화 excluded). `covered` 의 진위·화면 목록 대응 진위는 내용 파싱 없이 불가하므로 **CP2/사용자 게이트(mock 리뷰) 몫**이다(design-manifest.schema.md 경계 문면 동형). 하위호환: 정책에 `designElements` 부재 시 검사 전면 비적용(구 정책 거동 바이트 동일).
+- **책임 있는 자율 정합.** 필수 요소 커버는 Policy(`designElements`) + 게이트(`design_completeness`)로 강제하고(원칙 (a)), 요소 단위 제외는 `reason`+`confirmedBy` 로 사유 기록(원칙 (b)·`design_completeness` 의 excluded 요건과 동형), Validating 게이트에서 일괄 표면화한다(원칙 (c)·§7A.4). 요소별 작성 방법론·예시는 비정본 부록(`visual-contract-catalog.md`) — **강제 근거 아님**(SP-INV 5).
+- **`accessibility-floor.criteria`(접근성 실값·정보성).** `designElements.projectScope.accessibility-floor` 는 선택 필드 `criteria`(문자열 목록)로 접근성 실값을 병기한다: 본문 명도 대비 ≥ 4.5:1(WCAG AA)·대형 텍스트 ≥ 3:1·터치 타겟 ≥ 44×44px·키보드 탐색·포커스 표시·의미 있는 대체 텍스트. `criteria` 는 **검증 게이트(사람 판정)의 기준 문면**이며 `design_completeness` 체커는 판정하지 않는다(체커는 선언 완전성만·추가 키 tolerant). 접근성 원칙 중 기계 판정 가능분의 물리화 지점이다((사) `accessibility` 원칙과 상호 참조).
+- **UX 요소 경계(Wave 3·중복 오해 방지).** UX 요소는 기존 UI 요소와 **다른 축**이다 — `component-states`(상태 화면의 **존재**) vs `feedback-rules`(알림·피드백 **방식**) vs `error-recovery`(복구 **경로**)는 서로 겹치지 않는다.
+- **제품 의존 항목은 기본 필수에 넣지 않는다(오버엔지니어링 방지·사용자 결정 2026-07-19).** Wave 3 기본 필수는 결함-인접·보편 3종(`user-journey-map`·`error-recovery`·`feedback-rules`)만 추가한다. **제품 의존 항목(온보딩·사용자 유형 상세·UX 카피·다국어 등)은 기본 필수 세트에 넣지 않는다** — 넣으면 형식적 제외 기록만 양산된다. 인터뷰·설계에서 필요가 선언되면 **해당 프로젝트의 policy 사본에 데이터로 추가**(Policy as Data·프레임워크 무변경)하여 그 프로젝트에서만 required가 된다. 이는 기존 `touchpoint`/`interface` **선언-조건부 패턴과 동형**이다(선언 시 required·미선언 시 비적용). 편입 후보 목록·절차는 비정본 부록(`visual-contract-catalog.md`) 소관이다.
+
+**(사) 디자인·사용성 원칙 17종 (`designPrinciples` — Visual Contract 트랙·designElements 형제·Policy as Data):**
+
+디자이너 역할이 화면을 설계할 때 따르고, mock 수렴 리뷰(§7C)와 검증 게이트가 대조하는 **UI 디자인 원칙 7종(Wave 2) + UX 사용성 휴리스틱 10종(Wave 3)**을 Policy 데이터로 등재한다. `policy/default-policy.yaml` `designPrinciples` 블록과 정확히 일치한다(정본 값 == policy 값·L-07). `gist` 는 자체 문면이며(원문 전재 아님) 출처는 참고 앵커로만 인용한다(UI: https://www.figma.com/ko-kr/resource-library/ui-design-principles/ · UX: https://www.nngroup.com/articles/ten-usability-heuristics/ · 비정본 관행·UAF-INV ⑥ 정합·방법론 고유명 0).
+
+UI 디자인 원칙 7종 (Wave 2):
+
+| id | 이름 (`name`) | 요지 (`gist`) |
+|---|---|---|
+| `hierarchy` | 계층 구조 | 크기·두께·색·간격으로 정보 우선순위를 시각적으로 유도한다. |
+| `progressive-disclosure` | 점진적 공개 | 단계당 적정 정보량만 노출하고 진행 상황을 명시한다. |
+| `consistency` | 일관성 | 패턴을 전체에서 동일하게 유지하고, 이탈은 근거를 요구한다. |
+| `contrast` | 대비 | 중요 동작·정보에 시각적 우선순위를 부여한다. |
+| `accessibility` | 접근성 | 모두가 지각·조작 가능하게 한다. 기계 판정분은 `accessibility-floor.criteria` 로 물리화(상호 참조). |
+| `proximity` | 근접성 | 관련 있는 요소를 가까이 배치해 관계를 드러낸다. |
+| `alignment` | 정렬 | 그리드 기반으로 요소를 정렬해 질서·스캔 가능성을 만든다. |
+
+UX 사용성 휴리스틱 10종 (Wave 3 — Nielsen):
+
+| id | 이름 (`name`) | 요지 (`gist`) |
+|---|---|---|
+| `visibility-of-system-status` | 시스템 상태 가시성 | 지금 무슨 일이 일어나는지 적시 피드백으로 알린다. |
+| `match-real-world` | 실세계 일치 | 사용자 언어·개념·순서로 말한다(시스템 용어 강요 금지). |
+| `user-control-freedom` | 사용자 제어와 자유 | 실수 후 나갈 비상구·되돌리기/다시하기를 제공한다. |
+| `consistency-standards` | 일관성과 표준 | 같은 것을 같게 표현하고 플랫폼 관례를 따른다. (UI 원칙 `consistency`와 계열 상이 — 판단·중복 조정은 리뷰 게이트 몫·상호 참조) |
+| `error-prevention` | 오류 예방 | 오류 메시지보다, 오류가 나지 않도록 설계로 막는다. |
+| `recognition-over-recall` | 회상보다 인지 | 필요 정보를 노출해 기억 부담을 줄인다. |
+| `flexibility-efficiency` | 유연성과 효율 | 초보·숙련 모두를 위해 단축 경로를 제공한다. |
+| `aesthetic-minimalism` | 미니멀리즘 | 관련 없는 정보를 덜어 신호 대 잡음을 높인다. |
+| `error-recognition-recovery` | 오류 인식·진단·복구 | 오류를 평이한 말로 알리고 원인·해결책을 제시한다. |
+| `help-documentation` | 도움말·문서 | 필요 시 찾기 쉬운 도움말·구체 절차를 제공한다. |
+
+- **강제 지점(라우팅).** 원칙의 강제는 **Policy `designPrinciples` + 브리프/리뷰 배선**에 있다 — (1) 디자이너 역할 브리프에 `designPrinciples` **전체** 주입 + 화면설계서에 원칙별 적용 근거를 **문서 단위 1회**(원칙별 1줄 개요 절·화면마다 반복 금지) 기록 요구(§7A.1·침묵 생략 불가·책임 있는 자율 (b)), (2) §7C mock 리뷰의 리뷰 차원 = `designPrinciples` **전체** 대조(검증자·사용자 수렴 게이트가 같은 기준으로 점검). 배선은 `designPrinciples` 전체를 참조하므로 종수 증가(7→17)에 **배선 문면 변경 없이 자동 편입**된다(Policy as Data). 해설·예/반례는 비정본 부록(`visual-contract-catalog.md`) — **강제 근거 아님**(SP-INV 5).
+
 ---
 
 ## §7A. 산출물 생산 프로토콜 (form-A 규약 — 주 세션이 따르는 절차)
@@ -312,6 +370,7 @@ Solution Design이 **기본 필수 Projection 세트(§7.2 (다))를 어떻게 �
 - **각 역할 = 위임 서브에이전트가 자기 소유 산출물 작성.** `Proposing`(04 §3.4-A)에서 각 Expert Role(§7.2 (나) `defaultComposition`)은 **fresh-context 위임 서브에이전트**로 수행되어, `artifactOwnership`(§7.2 (나)·Policy (라))이 지정한 **자기 소유 산출물만** 작성한다. 이는 §6.1이 확정한 "Expert Role 수행 = 기존 위임 실행 관행 재사용(서브에이전트 위임·완료 보고·독립 검증)"의 산출물 생산 국면 실현이다.
 - **주 세션은 조율·검증만·내용 직접 작성 안 함.** 주 세션(Advisor)은 Orchestrator 규약 절차(§6.1)로 역할 파생·디스패치·`Reconciling`/`Reviewing` 통합·게이트만 수행하고, **산출물 본문을 직접 작성하지 않는다** — 컨택스트 위생(§6.1 역할 추상 호스팅 정합·주 세션 컨택스트를 산출물 본문 생성으로 오염시키지 않음). 이는 04 §3.4-C 최종 결정 소유권(권위 = 사용자 게이트)과 무모순이다 — 주 세션은 통합·수렴만, 본문 생산은 위임.
 - **최소 할당 존치.** 위임 대상 역할은 `defaultComposition` 기본값에서 복잡도 판정이 요구하는 만큼만 편입되며(조건부 역할은 신호 충족 시), 이탈은 `deviationRule`로 기록된다(SP-INV 8·§7.2 (나)).
+- **디자인 원칙 주입(Visual Contract·§7.2 (사)).** 디자이너 역할 브리프에 Policy `designPrinciples` **전체**(UI 7 + UX 10 = 17종·종수 증가 시 자동 편입)를 **주입**한다(brief-template 원칙 주입 슬롯). 화면 설계 산출물(`screen-design`)에는 각 원칙의 **적용 근거를 원칙별 1줄로, 화면설계서 문서 단위 1회**(원칙별 1줄 개요 절) 기록하도록 요구한다 — **화면마다 17줄을 반복하지 않는다**(마찰 상한·형식적 보일러플레이트 방지·사용자 결정 2026-07-19). 원칙을 **침묵 생략하지 않는다**(책임 있는 자율 (b)·silentOmission 금지 동형; 문서 전체에 비적용인 원칙은 "해당 없음 + 사유"를 남긴다). 이 기록은 §7C mock 리뷰·검증 게이트가 대조하는 근거가 된다(리뷰 차원 = `designPrinciples`).
 
 ### §7A.2 형식·배치 (Markdown 본문 + 기계 색인 매니페스트)
 
@@ -411,6 +470,47 @@ Solution Design이 **기본 필수 Projection 세트(§7.2 (다))를 어떻게 �
 - **일괄 표면화 접점.** 심의 과정에서 발생한 기본값 이탈은 §7A.4 (ii)(Validating 게이트 일괄)·(iii)(고임팩트 즉시)의 컨펌 시점 규약에 연결된다 — per-round 상시 질문이 아니라 **Validating에서 한 번에 제시·확인**받는다(루트 ARCHITECTURE.md §6 원칙 11 (c)·CLAUDE.md 비정본 거버넌스 (c)). 표면화 대상은 (i) 심의 중 기본 역할 구성 이탈(역할 추가/제거 — `deviationRule`·§7.2 (나)), (ii) 라운드 상한 도달 잔여 충돌(§7B.5), (iii) 아래 역할 cap 초과 제외다.
 - **역할 cap 초과 제외(`excludedByCap` — U1 신설·본 절은 표면화 접점만).** 활성 후보 역할이 `maxSpecialistRoles`(§7.2 (나)·전문 역할 수 상한) cap을 초과해 심의 편입에서 제외되는 경우의 표기·판정은 **별도 단위(U1)가 신설하는 `excludedByCap`이 소유**하며, **본 절은 그것을 정의하지 않고 표면화 접점만 규정한다**(경계 침범·선취 금지). 즉 U1이 산출하는 `excludedByCap` 제외 목록은, deliberation 이탈·잔여 충돌과 **함께 Validating 게이트에서 일괄 표면화·사용자 확인**된다 — cap으로 제외된 관심사가 조용히 사라지지 않도록(silentOmission 금지·책임 있는 자율 (b)(c)) 게이트에서 사용자에게 제시된다. `excludedByCap`의 스키마·산출 로직은 U1 소관이므로 본 절에서 실값·필드를 확정하지 않는다.
 - **04 §3.4·SP-INV 재정의 0.** 위 표면화 규약은 04 §3.4 상태/전이·§3.4-C 최종 결정 소유권·SP-INV 4(사용자 게이트)·8(최소 할당)·9(설계 커버리지 완성도)를 재정의하지 않고 물리 개입 시점(§5·§7A.4)에 연결할 뿐이다. 진위 판정 기준은 04 §3이다.
+
+---
+
+## §7C. Visual Contract — mock 생성·사용자 수렴 규약 (form-A 규약 — SD 종단·구현 진입 전)
+
+기획 산출물(메뉴·화면·와이어프레임)이 확정된 뒤, **사용자가 구현 착수 전에 목표 이해를 시각적으로 확인**하고 피드백으로 수렴시키는 절차를 form-A 규약으로 확정한다. 이 절은 **04 §3.9 확장 포인트(UI/UX Visual Contract 협의 프로토콜)의 물리화**이며, 04 §3.9·§3.4 `Validating`·SP-INV 4·9를 재정의하지 않고 § 포인터로 인용한다(재정의 0 — 별도 파이프라인 요소 신설 0). 절 번호를 `§7C`로 둔 것은 §8~§14 번호·교차참조를 보존하기 위한 무침습 삽입이다.
+
+### §7C.1 배치 — SD 종단·Validating(사용자 게이트) 앞·구현 오케스트레이션 진입 전
+
+- **위치.** mock 수렴은 Solution Design **성숙 산출(§7A)이 끝난 뒤**, `Validating` 사용자 게이트(§5·04 §3.4 T8~T11) 직전, 그리고 구현 오케스트레이션(`/uaf-implement` → `orchestration/adapters/claude/orchestrate_project.py`) **진입 전**에 놓인다. mock 수렴 종료가 곧 구현 진입 자격이며, 그 뒤 `design_completeness` 게이트(§7A.3 CP2·오케스트레이션 편입 직전)가 최후 방어로 재확인한다.
+- **입력 소비 순서(불변).** 입력 = 확정 기획 산출물(`menu-structure`·`screen-list`·`screen-design`·와이어프레임)과 `design-tokens`다. **기획 산출물 확정 전 mock 생성 금지** — 정본이 확정되지 않은 상태의 mock은 drift의 근원이다.
+
+### §7C.2 정본/파생 규율 — mock = 파생 뷰 (append-only 계보)
+
+- **정본 = 설계 산출물 + 토큰, mock = 파생.** `screen-mock`(HTML)은 확정 와이어프레임·`design-tokens`를 소비해 생성한 **파생 뷰**다. 정본은 언제나 설계 산출물(`<workspace>/docs/*.md`)과 토큰이다.
+- **피드백은 정본을 먼저 갱신.** 사용자 피드백(예: "GNB 추가·LNB 추가·회원가입 스텝 변경")은 **정본 설계 산출물을 먼저 갱신(append-only 계보·§4 기록)한 뒤 mock을 재생성**한다. **mock 파일을 직접 수정해 피드백을 소화하는 것은 금지**한다 — 설계↔mock drift 방지(§7A.2 "본문이 1차 정본" 동형).
+
+### §7C.3 톤 수렴 프로토콜 — 대표 1화면 × 3안 → 토큰 확정 → 일괄 생성
+
+- **최초 mock = 대표 1화면 × 톤 변형 3안.** 톤앤매너 수렴을 위해 대표 화면 1개를 톤 변형 3안으로 제시한다 → 사용자 선택·피드백 → `design-tokens` 확정.
+- **잔여 화면 일괄 생성.** `design-tokens` 확정 후 잔여 화면을 **확정 토큰을 소비해 일괄 생성**한다. 이후 토큰 변경이 필요하면 **토큰 갱신 → 재생성**(§7C.2 정본 우선 규율).
+
+### §7C.3a mock 리뷰 차원 = `designPrinciples` 대조 (Visual Contract Wave 2)
+
+- **같은 기준으로 점검.** mock 수렴 각 라운드에서 검증자·사용자 수렴 게이트는 Policy `designPrinciples` **전체**(§7.2 (사)·UI 7 + UX 10)를 **리뷰 차원**으로 삼아 mock을 대조한다 — 화면설계서에 기록된 원칙별 적용 근거(§7A.1)와 mock의 실제 표현을 원칙 단위(UI: 계층 구조·점진적 공개·일관성·대비·접근성·근접성·정렬 / UX: 상태 가시성·실세계 일치·제어와 자유·표준·오류 예방·인지·효율·미니멀리즘·오류 복구·도움말)로 점검한다.
+- **접근성 실값 대조.** `accessibility` 원칙의 기계 판정 가능분은 `accessibility-floor.criteria`(§7.2 (바)·명도 대비·터치 타겟 등)를 기준으로 대조한다 — 단, 이는 사람 판정 리뷰 차원이며 `design_completeness` 체커의 결정적 판정 대상이 아니다(체커는 선언 완전성만).
+- **원칙 위반은 정본 갱신으로 소화.** 리뷰에서 발견된 원칙 위반은 §7C.2 규율대로 **정본 설계 산출물 갱신 → mock 재생성**으로 소화한다(mock 직접 수정 금지).
+
+### §7C.4 수렴 종료 → `mock-convergence-record` → 오케스트레이션 진입
+
+- **종료 조건.** 사용자 확정(잔여 피드백 0)에 이르면 `mock-convergence-record` 산출물을 산출한다 — **확인자·라운드 수·잔여 피드백 0**을 기록(§4 로그·매니페스트 `produced`). 이 산출물은 `defaultRequiredSet`(§7.2 (다)) touchpoint 클래스이며 접점 선언 프로젝트에서 required다.
+- **진입.** 수렴 종료 후 구현 오케스트레이션에 진입하며, `design_completeness` 게이트가 `design-tokens`·`screen-mock`·`mock-convergence-record` 3종과 `designElements`(§7.2 (바)) 요소 완전성을 최후 방어로 재확인한다(기존 게이트·CP2).
+
+### §7C.5 환경 표면 — 리포 HTML 직접 열람 또는 Artifact 발행(선택)
+
+- **열람 = 리포 HTML 브라우저 직접 열람(도구 설치 0).** `screen-mock`은 리포 내 자기완결 HTML로 두고 브라우저에서 직접 연다 — 외부 도구 설치 0. 필요 시 Artifact 발행(선택)으로 공유 가능하다.
+- **외부 디자인 도구 사용 시.** 외부 도구를 쓰더라도 **정본은 리포 텍스트(설계 산출물+토큰)**이며 외부 링크는 앵커 인용만 남긴다(비강제 관행·산출물 수명 정책 앵커 인용 관례 동형).
+
+### §7C.6 04 §3.9 무수정·재정의 0 (포인터)
+
+- **04 §3.9는 이 §의 상위 확장 포인트이며 무수정이다.** 본 §7C는 04 §3.9 "UI/UX Visual Contract 협의 프로토콜"(명칭만·설계 0)의 물리 규약화이며, 04 코어 문면을 촉하지 않는다(재정의 0). 협의 시점 = Solution Design 사용자 게이트(§3.4 `Validating`·구현 착수 전)라는 04 §3.9 문면과 정합하며, 별도 파이프라인 요소를 신설하지 않는다(SP-INV 5·UAF-INV ⑥ 정합).
 
 ---
 

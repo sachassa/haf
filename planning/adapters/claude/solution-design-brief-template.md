@@ -30,6 +30,10 @@
 > {PEER_PROPOSALS}
 > *(라운드 1(초기 위임)에서는 이 필드를 비우거나 생략한다. 재제안 라운드(T5·04 §3.4-B·binding §7B.2)에서만 주 세션이 채운다 — 충돌 당사자 역할의 해당 라운드 Proposal을 동봉한다. 동봉 범위(충돌 당사자만 vs 전 활성 역할)는 policy `deliberation.peerVisibility`가 정한다(binding §7B.4·실값은 policy 데이터 소관). 이 동봉이 fresh-context를 유지하면서 단일 라운드 블라인드를 해소해 "전문가가 서로의 Proposal을 검토·반응"(04 §3.4-C)을 실현한다. 동봉된 동료 Proposal은 **입력 참고 자료**이며, 너는 여전히 자기 소유 산출물·자기 관심사만 작성·수정한다 — 동료 소유 산출물을 직접 고치지 않는다(컨택스트 위생 아래 규칙).)*
 >
+> ### 디자인 원칙 (디자이너 역할·화면 산출물 소유 시 — binding §7A.1·§7.2 (사))
+> {DESIGN_PRINCIPLES}
+> *(Policy `designPrinciples` **전체**(UI 원칙 7 + UX 휴리스틱 10 = 17종)를 주입한다. 화면 설계 산출물(`screen-design`)에 **각 원칙의 적용 근거를 원칙별 1줄로, 문서 단위 1회**(원칙별 1줄 개요 절) 기록한다 — 화면마다 반복하지 않는다(마찰 상한). 원칙을 침묵 생략하지 않는다(문서 전체 비적용이면 "해당 없음 + 사유"). 이 기록은 §7C mock 리뷰·검증 게이트의 대조 근거가 된다. 화면 산출물을 소유하지 않는 역할 브리프에서는 이 필드를 생략한다.)*
+>
 > ### 컨택스트 위생 규칙 (binding §7A.1)
 > - **자기 소유 산출물만 작성한다.** 다른 역할 소유 산출물을 작성·수정하지 않는다.
 > - **주 세션 컨택스트를 오염시키지 않는다.** 산출물 본문은 이 서브에이전트 컨택스트에서 작성하고, 주 세션에는 완료 보고(산출물 경로·상태)만 반환한다. 본문 전문을 주 세션으로 되돌리지 않는다.
@@ -61,6 +65,7 @@ form-B 로더(`solution_design_resolve.py`·§7A.5) 출력이 이 양식의 어�
 | `{OWNED_ARTIFACTS}` | `artifactPlan[]` 중 `owner == {ROLE}` 이고 `required == true` 인 항목의 `id`·`name` | 역할별 필터·목록화 |
 | `{OUTPUT_PATHS}` | 위 소유 산출물 각 `id` | `<workspace>/docs/<id>.md` 로 전개 |
 | `{PEER_PROPOSALS}` | 라운드 2+ 재제안(T5·binding §7B.2)에서 충돌 당사자 역할의 해당 라운드 Proposal | 주 세션이 손으로 채움(로더 출력 아님) — 라운드 1에서는 비움/생략. 동봉 범위 = policy `deliberation.peerVisibility` |
+| `{DESIGN_PRINCIPLES}` | Policy `designPrinciples[]` 전체(UI 7 + UX 10 = 17종·`id`·`name`·`gist`) | 화면 산출물(`screen-design` 등 touchpoint) 소유 역할(디자이너) 브리프에만 주입. 비소유 역할 브리프에서는 슬롯 생략(binding §7.2 (사)·§7A.1) |
 
 - **비소유 활성 역할에도 참여 브리프 발부(binding §7B.1).** 산출물을 소유하지 않는 활성 역할(예: 보안·성능 등 횡단 리뷰 관심사)에도 이 양식으로 **form-A 참여 브리프**를 발부한다 — 이 경우 `{OWNED_ARTIFACTS}`·`{OUTPUT_PATHS}`는 비고("소유 산출물 없음 — 심의 참여·충돌 지적·커버리지 점검 역할")로 채우되, 심의 참여·완료 보고(의견·open_questions)는 동일하게 요구한다. 소유 산출물이 없다는 이유로 활성 역할에 브리프를 미발부하면 결착 공백이 생긴다(binding §7B.1·T3 전원 제출 Guard). **form-B 로더의 소유 브리프(`artifactPlan[].owner`)는 owner 기준을 유지**하며, 비소유 참여 브리프는 주 세션이 `roleComposition` 활성 집합과 `artifactOwnership` 대조로 판별해 별도 발부한다.
 - **활성/제외 역할.** `roleComposition.activatedConditional`(활성·근거 `by`)만 브리프를 발부한다. `excludedConditional`(제외·근거 `reason`)은 발부하지 않으며, 그 이탈은 `deviationRule`에 따라 성숙 run 기록에 사유로 남기고 Validating 게이트에서 표면화한다(binding §7.2 (나)·§7A.4).

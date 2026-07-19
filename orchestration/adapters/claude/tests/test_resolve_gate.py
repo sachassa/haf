@@ -593,6 +593,185 @@ class TestDesignCompletenessGate(unittest.TestCase):
 
 
 # --------------------------------------------------------------------------
+# designElements 게이트(Visual Contract 트랙) — 디자인 필수 요소 선언 완전성
+# --------------------------------------------------------------------------
+# 정책에 designElements 섹션이 있고 접점이 선언될 때만 활성. defaultRequiredSet 에 touchpoint
+# 항목을 두지 않아(always 6종만) 산출물 요구와 designElements 요구를 격리·집중 검증한다.
+_DE_PROJECT = [
+    {"id": "design-tokens-values", "name": "디자인 토큰 실값"},
+    {"id": "tone-and-manner", "name": "톤앤매너 확정"},
+    {"id": "accessibility-floor", "name": "접근성 최소선"},
+]
+_DE_SCREEN = [
+    {"id": "layout-structure", "name": "레이아웃 구조"},
+    {"id": "navigation", "name": "네비게이션"},
+    {"id": "component-states", "name": "컴포넌트 상태 5종"},
+    {"id": "data-rules", "name": "데이터 표시 규칙"},
+    {"id": "responsive", "name": "반응형 기준"},
+]
+_DESIGN_POLICY_VC = {
+    "projectionSelection": {
+        "requirementClasses": {
+            "always": "항상 required", "touchpoint": "접점 선언 시", "interface": "연계 선언 시",
+        },
+        "defaultRequiredSet": [
+            {"id": "project-plan", "name": "프로젝트 계획서", "requirement": "always"},
+            {"id": "requirements-def", "name": "요구사항 정의서", "requirement": "always"},
+            {"id": "business-process", "name": "업무 프로세스", "requirement": "always"},
+            {"id": "functional-spec", "name": "기능 명세서", "requirement": "always"},
+            {"id": "table-def", "name": "테이블 정의서", "requirement": "always"},
+            {"id": "test-plan-cases", "name": "테스트 계획·케이스", "requirement": "always"},
+        ],
+        "exclusionRule": {"silentOmission": "금지"},
+    },
+    "designElements": {
+        "appliesWhen": "touchpoint",
+        "projectScope": [dict(e) for e in _DE_PROJECT],
+        "screenScope": [dict(e) for e in _DE_SCREEN],
+        "exclusionRule": {"silentOmission": "금지"},
+    },
+}
+_VC_ALWAYS_6 = [
+    {"id": "project-plan", "status": "produced"},
+    {"id": "requirements-def", "status": "produced"},
+    {"id": "business-process", "status": "produced"},
+    {"id": "functional-spec", "status": "produced"},
+    {"id": "table-def", "status": "produced"},
+    {"id": "test-plan-cases", "status": "produced"},
+]
+
+
+def _covered(ids):
+    return {i: {"status": "covered", "pointer": "docs/x.md#%s" % i} for i in ids}
+
+
+class TestDesignElementsGate(unittest.TestCase):
+    _PROJECT_IDS = [e["id"] for e in _DE_PROJECT]
+    _SCREEN_IDS = [e["id"] for e in _DE_SCREEN]
+
+    def _pair(self, *, manifest, policy=_DESIGN_POLICY_VC):
+        import yaml
+        td = Path(tempfile.mkdtemp())
+        (td / "default-policy.yaml").write_text(
+            yaml.safe_dump(policy, allow_unicode=True), encoding="utf-8")
+        (td / "design-manifest.json").write_text(
+            json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+        self.addCleanup(lambda: __import__("shutil").rmtree(str(td), ignore_errors=True))
+        return str(td / "default-policy.yaml"), str(td / "design-manifest.json")
+
+    def _full_manifest(self):
+        return {
+            "declaredTouchpoints": ["web-portal"], "declaredInterfaces": [],
+            "artifacts": list(_VC_ALWAYS_6),
+            "designElements": {
+                "project": _covered(self._PROJECT_IDS),
+                "screens": {"home": _covered(self._SCREEN_IDS)},
+            },
+        }
+
+    # t1 — 하위호환: 구 정책(designElements 무) + 접점 선언 매니페스트 → designElements 검사 비적용.
+    def test_t1_old_policy_no_designelements_unaffected(self):
+        # _DESIGN_POLICY(구 정책·designElements 없음)로 접점 선언 시에도 designElements 오류 0.
+        errors = dc.check_design_completeness(*TestDesignCompletenessGate._pair(
+            self, manifest={
+                "declaredTouchpoints": ["web-portal"], "declaredInterfaces": [],
+                "classExclusions": {"interface": {"reason": "연계 없음", "confirmedBy": "user"}},
+                "artifacts": list(_ALWAYS_6_HELPER),
+            }))
+        self.assertFalse(any("designElements" in e or "요소" in e for e in errors),
+                         "구 정책은 designElements 검사가 비적용이어야 한다: %r" % errors)
+
+    # t2 — 신 정책 + 접점 선언 + 완전 선언 → 오류 0(exit 0).
+    def test_t2_full_declaration_passes(self):
+        self.assertEqual(dc.check_design_completeness(*self._pair(manifest=self._full_manifest())), [])
+
+    # t3 — screens 공집합 → 오류.
+    def test_t3_empty_screens_blocks(self):
+        m = self._full_manifest()
+        m["designElements"]["screens"] = {}
+        errors = dc.check_design_completeness(*self._pair(manifest=m))
+        self.assertTrue(any("screens 가 비어" in e for e in errors), errors)
+
+    # t4 — 화면 1개에서 요소 1개 미선언 → 오류 문면에 화면id·요소id.
+    def test_t4_missing_screen_element_names_screen_and_element(self):
+        m = self._full_manifest()
+        del m["designElements"]["screens"]["home"]["navigation"]
+        errors = dc.check_design_completeness(*self._pair(manifest=m))
+        self.assertTrue(any("home" in e and "navigation" in e for e in errors),
+                        "오류 문면에 화면id·요소id 포함되어야 한다: %r" % errors)
+
+    # t5 — excluded 인데 reason/confirmedBy 결손 → 오류.
+    def test_t5_excluded_missing_confirmedby_blocks(self):
+        m = self._full_manifest()
+        m["designElements"]["project"]["tone-and-manner"] = {"status": "excluded", "reason": "MVP 밖"}
+        errors = dc.check_design_completeness(*self._pair(manifest=m))
+        self.assertTrue(any("tone-and-manner" in e and "confirmedBy" in e for e in errors), errors)
+
+    # t5b — 정당화 excluded(reason+confirmedBy) → 통과.
+    def test_t5b_justified_exclusion_passes(self):
+        m = self._full_manifest()
+        m["designElements"]["project"]["accessibility-floor"] = {
+            "status": "excluded", "reason": "내부 관리자 도구 — 접근성 최소선 후속 이연", "confirmedBy": "user"}
+        self.assertEqual(dc.check_design_completeness(*self._pair(manifest=m)), [])
+
+    # t6 — 접점 미선언 + 신 정책 → designElements 비적용(활성 안 됨).
+    def test_t6_no_touchpoint_designelements_inactive(self):
+        m = {
+            "declaredTouchpoints": [], "declaredInterfaces": [],
+            "artifacts": list(_VC_ALWAYS_6),
+            # designElements 매니페스트 없음 — 접점 미선언이므로 검사 비적용이어야 한다.
+        }
+        errors = dc.check_design_completeness(*self._pair(manifest=m))
+        self.assertEqual(errors, [], "접점 미선언 시 designElements 는 비적용: %r" % errors)
+
+    # t7 — projectScope 요소 미선언 → 오류.
+    def test_t7_missing_project_element_blocks(self):
+        m = self._full_manifest()
+        del m["designElements"]["project"]["accessibility-floor"]
+        errors = dc.check_design_completeness(*self._pair(manifest=m))
+        self.assertTrue(any("accessibility-floor" in e for e in errors), errors)
+
+    # t8 — 결정성: 같은 입력 2회 → 동일 출력.
+    def test_t8_determinism(self):
+        m = self._full_manifest()
+        del m["designElements"]["screens"]["home"]["responsive"]
+        pair = self._pair(manifest=m)
+        self.assertEqual(dc.check_design_completeness(*pair), dc.check_design_completeness(*pair))
+
+
+# always 6종 헬퍼(구 정책 t1 재사용 — _DESIGN_POLICY 는 touchpoint 3종·interface 1종 포함).
+_ALWAYS_6_HELPER = [
+    {"id": "project-plan", "status": "produced"},
+    {"id": "requirements-def", "status": "produced"},
+    {"id": "business-process", "status": "produced"},
+    {"id": "functional-spec", "status": "produced"},
+    {"id": "table-def", "status": "produced"},
+    {"id": "test-plan-cases", "status": "produced"},
+    {"id": "screen-list", "status": "produced"},
+    {"id": "menu-structure", "status": "produced"},
+    {"id": "screen-design", "status": "produced"},
+]
+
+
+# --------------------------------------------------------------------------
+# scaffold 벤더링 미러 — design_completeness.py 로직 본문 바이트 동일(§DC-3 W3 관례)
+# --------------------------------------------------------------------------
+class TestScaffoldMirror(unittest.TestCase):
+    def test_mirror_logic_body_byte_identical(self):
+        repo = _TEST_FILE.parents[4]
+        src = (repo / "orchestration" / "adapters" / "claude" / "design_completeness.py")
+        mirror = (repo / "uahf" / "framework" / "adapters" / "claude" / "scaffold-template"
+                  / "dot-claude" / "hooks" / "design-guard" / "design_completeness.py")
+        src_lines = src.read_text(encoding="utf-8").splitlines(keepends=True)
+        mir_lines = mirror.read_text(encoding="utf-8").splitlines(keepends=True)
+        # 미러 = shebang(1) + 벤더링 헤더 주석(8) + 원본 본문. 헤더 8줄 제거 후 원본과 바이트 동일.
+        self.assertEqual(mir_lines[0], src_lines[0], "shebang 동일")
+        self.assertTrue(all(l.startswith("#") for l in mir_lines[1:9]), "헤더 8줄 주석")
+        self.assertEqual(mir_lines[:1] + mir_lines[9:], src_lines,
+                         "미러 로직 본문은 원본과 바이트 동일해야 한다(헤더 8줄만 차이)")
+
+
+# --------------------------------------------------------------------------
 # n3 — proposingStepRef 파생: proposal 노드 0건/2건 → 오류 + 원장 무변경
 # --------------------------------------------------------------------------
 class TestProposingStepRefDerivation(unittest.TestCase):

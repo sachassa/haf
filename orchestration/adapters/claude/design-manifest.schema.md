@@ -53,9 +53,44 @@
       "reason": "<제외 사유>",               // status=excluded 시 필수·비공백.
       "confirmedBy": "<확인 주체>"           // status=excluded 시 필수(정당화 제외의 사용자 확인 기록).
     }
-  ]
+  ],
+
+  // (선택·Visual Contract 트랙) 디자인 필수 요소 커버리지. 정책 designElements 섹션이 활성일 때만
+  // (= 정책에 designElements 존재 AND declaredTouchpoints 비공집합) 검사된다. 정책 부재/접점 미선언 시
+  // 이 키는 무시된다(하위호환). project = 프로젝트 단위 요소, screens = 화면별 요소.
+  "designElements": {
+    "project": {
+      "<elementId>": { "status": "covered", "pointer": "<산출물 내 위치/경로>" }
+      // 또는 { "status": "excluded", "reason": "<비공백>", "confirmedBy": "<확인 주체>" }
+    },
+    "screens": {
+      "<screenId>": {
+        "<elementId>": { "status": "covered", "pointer": "..." }   // 동일 형태(covered|excluded)
+      }
+    }
+  }
 }
 ```
+
+### designElements 판정 규칙 (체커 — 선언 완전성만)
+
+정책 `designElements` 섹션이 **활성**(정책에 섹션 존재 **AND** `declaredTouchpoints` 비공집합·`appliesWhen: touchpoint`)일 때만 검사한다. 활성 시:
+
+- **(a) projectScope 전 요소** 가 매니페스트 `designElements.project` 에 `covered` 또는 정당화 `excluded` 여야 한다.
+- **(b) screens 비공집합** 필수 — 접점 선언인데 화면 요소 선언이 하나도 없으면 오류(silentOmission).
+- **(c) 각 화면 × screenScope 전 요소** 가 `designElements.screens.<screenId>` 에 `covered`/정당화 `excluded` 여야 한다.
+- **(d) `excluded`** 는 `reason` 비공백 **AND** `confirmedBy` 필수(산출물 `excluded` 요건 동형).
+- **(e) 미선언 요소** 또는 `covered`/`excluded` 아닌 status = 침묵 누락 오류.
+
+| 요소 status | 통과 조건 | 위반 시 |
+|-------------|-----------|---------|
+| `covered`   | 무조건 통과(선언 완전성 충족) | — |
+| `excluded`  | `reason` 비공백 **AND** `confirmedBy` 존재 | 둘 중 하나 결여 → 요건 미충족 오류 |
+| (부재/기타) | — | 침묵 누락 오류(silentOmission 금지) |
+
+**정책 요소의 `criteria`(정보성 — 체커 미판정).** 정책 `designElements` 요소(예: `accessibility-floor`)는 선택 필드 `criteria`(문자열 목록·접근성 실값 등)를 병기할 수 있다. `criteria` 는 **검증 게이트(사람 판정)의 기준 문면**이며 `design_completeness` 체커는 이를 판정하지 않는다(체커는 매니페스트의 covered/정당화 excluded 선언 완전성만 본다). 정책의 추가 키에 체커는 tolerant 하다(하위호환).
+
+**결정성·경계.** 검사 순서는 projectScope(정책 정의 순서) → 화면(매니페스트 삽입 순서) × screenScope(정책 정의 순서)로 결정적이다. 체커는 **선언 완전성만** 판정한다 — `covered` 의 진위(실제로 그 요소가 화면에 반영됐는지)와 `screens` 키가 실제 화면 목록과 대응하는지의 진위는 내용 파싱 없이는 판정 불가하므로 **CP2/사용자 게이트(mock 리뷰) 몫**이다(기존 "결정적 슬라이스·최종 승인은 게이트" 문면 동형). 접점 미선언 시 이 섹션은 비적용이며, touchpoint 클래스 전체 제외는 `classExclusions.touchpoint` 경로가 표면화한다.
 
 ### status 판정 규칙 (체커)
 
@@ -104,14 +139,35 @@ Solution Design에서 설계 산출 필요"). 이것이 설계 미완 프로젝�
     { "id": "screen-design",    "status": "excluded",
       "reason": "MVP 범위에서 상세 화면설계는 후속 스프린트로 이연(와이어프레임만 확정)",
       "confirmedBy": "user" },
-    { "id": "interface-spec",   "status": "produced", "path": "docs/interface-spec.md" }
-  ]
+    { "id": "interface-spec",   "status": "produced", "path": "docs/interface-spec.md" },
+    { "id": "design-tokens",           "status": "produced", "path": "docs/design-tokens.md" },
+    { "id": "screen-mock",             "status": "produced", "path": "mocks/index.html" },
+    { "id": "mock-convergence-record", "status": "produced", "path": "docs/mock-convergence.md" }
+  ],
+  "designElements": {
+    "project": {
+      "design-tokens-values": { "status": "covered", "pointer": "docs/design-tokens.md#values" },
+      "tone-and-manner":      { "status": "covered", "pointer": "docs/design-tokens.md#tone" },
+      "accessibility-floor":  { "status": "covered", "pointer": "docs/design-tokens.md#a11y" }
+    },
+    "screens": {
+      "home": {
+        "layout-structure": { "status": "covered", "pointer": "mocks/home.html" },
+        "navigation":       { "status": "covered", "pointer": "mocks/home.html#gnb" },
+        "component-states":  { "status": "covered", "pointer": "docs/screen-design.md#home-states" },
+        "data-rules":        { "status": "covered", "pointer": "docs/functional-spec.md#home" },
+        "responsive":        { "status": "covered", "pointer": "docs/design-tokens.md#breakpoints" }
+      }
+    }
+  }
 }
 ```
 
-이 예에서 always 6종 + touchpoint 3종(접점 선언)이 required 이며 대부분 produced, `screen-design`
-1종만 사용자 확인을 받아 정당화 제외되었다. interface 선언이 있으므로 `interface-spec` 도 required 이며
-produced 다. 침묵 누락 0 → 게이트 통과.
+이 예에서 always 6종 + touchpoint 6종(접점 선언 — 화면 3종 + Visual Contract 3종)이 required 이며 대부분
+produced, `screen-design` 1종만 사용자 확인을 받아 정당화 제외되었다. interface 선언이 있으므로
+`interface-spec` 도 required 이며 produced 다. 접점 선언으로 `designElements` 가 활성이므로 projectScope 3종 +
+`home` 화면 × screenScope 5종이 모두 covered 다. 침묵 누락 0 → 게이트 통과(단, `covered` 진위·화면 목록
+대응은 CP2/사용자 게이트 mock 리뷰가 판정한다).
 
 ## 예시 — 접점·연계 미선언 프로젝트(클래스 전체 제외 확인)
 

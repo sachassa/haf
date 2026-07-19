@@ -16,6 +16,8 @@
 
 ## B. UI/UX Visual Contract
 
+> **[실체화 완결 2026-07-19 — Visual Contract 트랙]** 디자인 필수 요소(designElements 11종)·필수 산출물 3종(토큰·mock·수렴 기록·touchpoint)·mock 수렴 규약(binding §7A/§7C — 기획 확정→1화면 3안 톤 수렴→정본 우선 갱신→사용자 수렴 기록→오케스트레이션 진입)을 Policy 데이터+design_completeness 게이트로 강제. 잔여: Discovery Eliciting 시각 선호 차원(부분 — 인터뷰 표면화 시 편입 메커니즘으로 커버)·Interactive Prototype(조건 발동형)·실 파일럿(다음 소비 프로젝트).
+
 - **Problem / Motivation**: 사용자는 구현 전에 LLM이 최종 목표를 정확히 이해했는지 **눈으로** 확인할 수 있어야 한다. v1.7에서 Wireframe이 사용자 수정 요구로 사후 주입됐고, 톤앤매너는 침묵 디폴트됐다(mi-0107 Novel) — UI/UX 산출은 단순 디자인 산출물이 아니라 **요구 이해를 검증하는 Visual Contract**다.
 - **Desired Outcome**: `Interview → Requirement Discovery → UX Flow/IA → Wireframe → UI Mockup → (필요 시) Interactive Prototype → User Validation → Final Approval → Autonomous TDD Implementation` 흐름을 성숙 run 프로토콜(04) 위에 UI 제품 유형의 표준 경로로 정식화. Discovery Eliciting에 제품 유형 함의 차원(시각 디자인 선호) 포함.
 - **Why Not in Current Tuning Track**: 기능 확장(파이프라인 단계 추가)이며 성능 튜닝과 직교. 비용을 늘리는 방향이므로 튜닝 후 Baseline 위에서 가치·비용을 측정해야 함.
@@ -23,6 +25,8 @@
 - **Suggested Future Track**: 「Design Collaboration & Visual Contract」 — uahf-control-plane v2→v3 성숙 run을 파일럿으로.
 
 ## C. UI Design Principles (품질 기준)
+
+> **[실체화 완결 2026-07-19 — Visual Contract 트랙]** designPrinciples 17종(Figma UI 7 + Nielsen UX 10·gist 자체 문면) Policy 데이터 등재 + 디자이너 브리프 강제 주입 + 화면설계서 문서 단위 근거 기록 + mock 리뷰 차원(§7C.3a). 접근성 기계 판정분은 accessibility-floor criteria 실값(WCAG AA). 해설 카탈로그 = 비정본 부록(visual-contract-catalog.md — 관례 준수).
 
 - **Problem / Motivation**: 시각 산출물의 품질 기준(톤앤매너·레이아웃·접근성 원칙)이 정본에 없음 — v1.7은 shadcn 기본값으로 디폴트.
 - **Desired Outcome**: UI/UX 산출물의 **품질 기준**으로서의 디자인 원칙(기능 추가 아님·특정 디자인 도구 기능의 UAHF 재구현 금지). Visual Contract(B)의 판정 기준 역할.

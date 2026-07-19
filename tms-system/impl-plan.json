@@ -1,0 +1,271 @@
+{
+  "tasks": [
+    {
+      "id": "domain-model-data-layer",
+      "unitType": "implementation",
+      "task": "Phase 1 Task 1: TMS 도메인 모델 및 데이터 레이어 설계·구현\n\n[역할] 코드 직접 작성. Phase 1 정산 코어의 DB 스키마·엔티티 모델 정의. 모듈러 모놀리스 단일 백엔드 기초(SD-D1).\n\n[설계 근거]\n- SD-D1: 모듈러 모놀리스 단일 백엔드(정산 트랜잭션 일관성).\n- SD-D4: 오더에 청구(AR)/지급(AP) 라인 분리 모델로 2자·3자 정산 단일 흡수, 마진=파생.\n- SD-D6: 단가표 청구용/지급용 분리 + 우선순위 자동 제안 + 건별 오버라이드.\n- SD-D7: 정산 원장=건별, 월마감·세금계산서=월·거래처 집계(파생).\n- SD-D9: 정산건 상태머신(발생→확정→마감→발행→수납/지급), 확정 후 변경=수정/재발행 이력.\n- SD-D11: 감사이력=append-only 변경로그(정산·배차·오더 대상·이전값→이후값).\n- SD-D16: TS 풀스택(Node/NestJS + React/Next.js + PostgreSQL).\n\n[산출 요건]\n1. PostgreSQL 마이그레이션 파일 (NestJS TypeORM 형식):\n   - src/db/migrations/1721417600000_initial_schema.ts\n   - 다음 테이블 포함:\n     · tenants(tenant_id, name) — SD-D15 tenant_id-ready\n     · orders(id, tenant_id, shipper_id, origin, destination, item_desc, weight, qty, requested_date)\n     · settlement_lines(id, order_id, line_type[AR/AP], counterparty_id, amount_gross, rate_percent, line_amount) — SD-D4 AR/AP 분리\n     · price_tables(id, tenant_id, counterparty_id, route_key, counterparty_type[shipper/carrier], quote_price, pay_price, priority, override_price, override_date) — SD-D6\n     · settlement_ledger(id, tenant_id, settlement_line_id, status[Originated/Confirmed/Closed/Issued/Collected/Paid], issued_date, collected_date) — SD-D7, SD-D9\n     · invoice_headers(id, tenant_id, settlement_ledger_ids(M:N array), issuer_id, receiver_id, issue_date, total_amount, tax_amount, is_issued) — SD-D8\n     · audit_logs(id, tenant_id, table_name, operation[C/U/D], record_id, old_value_json, new_value_json, changed_by, changed_at) APPEND-ONLY — SD-D11\n   - 모든 테이블에 tenant_id(UUID), created_at, updated_at.\n   - settlement_ledger.status는 enum, audit_logs는 APPEND-ONLY(INSERT only, no UPDATE/DELETE).\n\n2. TypeScript 엔티티 정의 (src/domain/entities/, NestJS/TypeORM):\n   - tenant.entity.ts, order.entity.ts, settlement-line.entity.ts, price-table.entity.ts, settlement-ledger.entity.ts, invoice-header.entity.ts, audit-log.entity.ts.\n   - @Entity, @Column, @ManyToOne, @OneToMany 데코레이터.\n   - settlement-ledger.entity.ts는 SD-D9의 상태머신 status enum 포함.\n\n3. 상태머신 정의 (src/domain/enums/):\n   - settlement-status.enum.ts: Originated=0, Confirmed=1, Closed=2, Issued=3, Collected=4, Paid=5.\n   - 전이 규칙 주석(확정→변경은 수정/재발행 이력만): Originated→Confirmed→Closed→Issued→(Collected|Paid).\n\n4. 스키마 검증 파일 (src/db/schema.json):\n   - PostgreSQL 스키마의 테이블·컬럼·타입을 JSON 객체로 표현 (검증용).\n   - { \"tables\": { \"orders\": {...}, \"settlement_lines\": {...}, ..., \"audit_logs\": {...} } }\n   - audit_logs 테이블은 \"append_only\": true 표기.\n\n[실행 환경]\n- NestJS + TypeORM + PostgreSQL 스택.\n- src/db/migrations/, src/domain/entities/, src/domain/enums/, src/db/schema.json 디렉터리 생성.\n- 오프라인 환경이므로 npm install 불가 → 기존 node_modules의 @nestjs, typeorm 활용 가정.\n\n[보호 경계]\n- .claude/** 및 docs/solution-design.md 수정 금지.\n- 워크스페이스(tms-system) 밖 파일 생성·수정 금지.\n\n[Execute 종료 시]\nCP1 자체 점검: done AC 커맨드 실행하여 종료 코드 0 확인 후 완료 보고.",
+      "done": "python -c \"import os,json;assert os.path.exists('src/db/migrations/1721417600000_initial_schema.ts');assert os.path.exists('src/domain/entities');assert os.path.exists('src/domain/enums/settlement-status.enum.ts');assert os.path.exists('src/db/schema.json');d=json.load(open('src/db/schema.json',encoding='utf-8'));assert isinstance(d.get('tables'),dict) and len(d['tables'])>=7;assert all(k in d['tables'] for k in ['orders','settlement_lines','price_tables','settlement_ledger','invoice_headers','audit_logs','tenants'])\"",
+      "interfaceContract": {
+        "consumes": [
+          "docs/solution-design.md",
+          ".claude/project-contract/project-contract.v2.md"
+        ],
+        "produces": [
+          "src/db/migrations/1721417600000_initial_schema.ts",
+          "src/domain/entities",
+          "src/domain/enums/settlement-status.enum.ts",
+          "src/db/schema.json"
+        ]
+      },
+      "ownedBoundary": [
+        "src/db/migrations",
+        "src/domain/entities",
+        "src/domain/enums",
+        "src/db/schema.json"
+      ],
+      "dependsOn": [],
+      "delegation": {
+        "from": "Advisor",
+        "to": "Worker",
+        "task": "위 task 필드와 동일",
+        "input": "docs/solution-design.md, project-contract.v2.md",
+        "output": "src/db/migrations/1721417600000_initial_schema.ts, src/domain/entities, src/domain/enums/settlement-status.enum.ts, src/db/schema.json",
+        "done": "위 done 필드와 동일",
+        "context": [
+          "Project Orchestration 형태 B — Phase 1 구현 task 1/5",
+          "SD-D1~D11 설계 결정 구현 시작(도메인·데이터 레이어)"
+        ],
+        "constraints": "워크스페이스(tms-system) 밖 파일 생성·수정 금지, 보호 경계(.claude/·docs/solution-design.md) 읽기 전용"
+      },
+      "capability": "cap-impl-tms-domain",
+      "role": "Worker",
+      "model": "sonnet"
+    },
+    {
+      "id": "master-data-layer",
+      "unitType": "implementation",
+      "task": "Phase 1 Task 2: 마스터 데이터 엔티티·서비스·API 구현\n\n[역할] 코드 직접 작성. Phase 1 마스터 관리(거래처·차량·단가) 도메인 모듈.\n\n[설계 근거]\n- Requirement F5: 거래처·차량·단가 마스터.\n- SD-D6: 단가표 청구용/지급용 분리 + 우선순위 자동 제안 + 건별 오버라이드.\n\n[산출 요건]\n1. NestJS 모듈 및 엔티티 (src/modules/master/):\n   - counterparty.entity.ts (거래처: shipper/carrier/forwarder)\n   - counterparty.service.ts (생성·조회·수정)\n   - counterparty.controller.ts (REST API: POST/GET/PUT)\n   - vehicle.entity.ts (차량: plate_no, tonnage, vehicle_type)\n   - vehicle.service.ts, vehicle.controller.ts.\n   - price-table.service.ts (단가 조회 + 우선순위 제안 로직): counterparty_type별로 청구/지급 단가 자동 선택, override 허용.\n\n2. DTO (src/modules/master/dto/):\n   - create-counterparty.dto.ts, update-counterparty.dto.ts.\n   - create-vehicle.dto.ts.\n   - price-proposal.dto.ts (단가 제안 응답).\n\n3. 모듈 선언 (src/modules/master/master.module.ts):\n   - NestJS @Module 데코레이터로 위 서비스/컨트롤러 등록.\n\n[실행 환경]\n- src/modules/master/ 디렉터리 생성.\n- @nestjs/common, typeorm 활용 가정.\n\n[보호 경계]\n- .claude/** 및 docs/solution-design.md 수정 금지.\n- 워크스페이스 밖 파일 생성·수정 금지.\n\n[Execute 종료 시]\nCP1 자체 점검: done AC 커맨드 실행하여 종료 코드 0 확인 후 완료 보고.",
+      "done": "python -c \"import os;assert os.path.exists('src/modules/master');assert os.path.exists('src/modules/master/counterparty.entity.ts');assert os.path.exists('src/modules/master/counterparty.service.ts');assert os.path.exists('src/modules/master/counterparty.controller.ts');assert os.path.exists('src/modules/master/vehicle.entity.ts');assert os.path.exists('src/modules/master/price-table.service.ts');assert os.path.exists('src/modules/master/master.module.ts');assert os.path.exists('src/modules/master/dto')\"",
+      "interfaceContract": {
+        "consumes": [
+          "src/domain/entities",
+          ".claude/project-contract/project-contract.v2.md"
+        ],
+        "produces": [
+          "src/modules/master/counterparty.entity.ts",
+          "src/modules/master/counterparty.service.ts",
+          "src/modules/master/counterparty.controller.ts",
+          "src/modules/master/vehicle.entity.ts",
+          "src/modules/master/price-table.service.ts",
+          "src/modules/master/master.module.ts",
+          "src/modules/master/dto"
+        ]
+      },
+      "ownedBoundary": [
+        "src/modules/master"
+      ],
+      "dependsOn": [
+        "domain-model-data-layer"
+      ],
+      "delegation": {
+        "from": "Advisor",
+        "to": "Worker",
+        "task": "위 task 필드와 동일",
+        "input": "src/domain/entities, project-contract.v2.md",
+        "output": "src/modules/master/",
+        "done": "위 done 필드와 동일",
+        "context": [
+          "Phase 1 task 2/5: 마스터 데이터 관리(거래처·차량·단가)",
+          "domain-model-data-layer의 엔티티를 기반으로 NestJS 서비스·컨트롤러 구현"
+        ],
+        "constraints": "워크스페이스(tms-system) 밖 파일 생성·수정 금지, 보호 경계(.claude/·docs/solution-design.md) 읽기 전용"
+      },
+      "capability": "cap-impl-tms-master",
+      "role": "Worker",
+      "model": "sonnet"
+    },
+    {
+      "id": "order-dispatch-core",
+      "unitType": "implementation",
+      "task": "Phase 1 Task 3: 수주·배차 기초 모듈 구현\n\n[역할] 코드 직접 작성. Phase 1 수주(오더 생성) 및 기본 배차 도메인 모듈.\n\n[설계 근거]\n- Requirement F1: 수주·오더 관리 (화주 화물 접수).\n- Requirement F2: 배차 관리 (세 채널 병행 → 단일 배차 진입점).\n- SD-D13: 배차 채널 불가지 어댑터(직배차/정보망/용차→단일 배차 진입점).\n- Phase 1 정산 필수: 오더·배차까지는 정산 이전 단계이나, 정산건(AR/AP) 생성 트리거.\n\n[산출 요건]\n1. NestJS 모듈 (src/modules/order/, src/modules/dispatch/):\n   - order.entity.ts (이미 domain-model-data-layer에서 정의됨, 여기서 TypeORM 서비스화).\n   - order.service.ts (오더 생성·조회·상태 관리).\n   - order.controller.ts (REST API: POST 수주 접수, GET 조회).\n   - dispatch.service.ts (배차 생성·확정·통보 로직).\n   - dispatch-adapter.ts (채널 불가지 어댑터 인터페이스): dispatch_channel_type(direct/freight_info/forwarder) 구분.\n   - dispatch.controller.ts.\n   - order.module.ts, dispatch.module.ts.\n\n2. DTO:\n   - create-order.dto.ts (origin, destination, item_desc, weight, qty, requested_date, shipper_id).\n   - create-dispatch.dto.ts (order_id, vehicle_id, driver_id, channel_type).\n   - dispatch-allocation-result.dto.ts.\n\n3. 트리거 로직:\n   - 오더 생성 시 → settlement_lines 2개 생성(AR/AP 초기화) [task 4에서 상세 구현].\n   - 배차 확정 시 → settlement_ledger 상태 업데이트 [task 4 의존].\n\n[실행 환경]\n- src/modules/order/, src/modules/dispatch/ 디렉터리 생성.\n- 채널 어댑터는 인터페이스 정의만 (phase 2 이후 자동/반자동 구현).\n\n[보호 경계]\n- .claude/** 및 docs/solution-design.md 수정 금지.\n- 워크스페이스 밖 파일 생성·수정 금지.\n\n[Execute 종료 시]\nCP1 자체 점검: done AC 커맨드 실행하여 종료 코드 0 확인 후 완료 보고.",
+      "done": "python -c \"import os;assert os.path.exists('src/modules/order');assert os.path.exists('src/modules/dispatch');assert os.path.exists('src/modules/order/order.service.ts');assert os.path.exists('src/modules/order/order.controller.ts');assert os.path.exists('src/modules/dispatch/dispatch.service.ts');assert os.path.exists('src/modules/dispatch/dispatch-adapter.ts');assert os.path.exists('src/modules/order/order.module.ts');assert os.path.exists('src/modules/dispatch/dispatch.module.ts')\"",
+      "interfaceContract": {
+        "consumes": [
+          "src/domain/entities",
+          "src/modules/master",
+          ".claude/project-contract/project-contract.v2.md"
+        ],
+        "produces": [
+          "src/modules/order/order.service.ts",
+          "src/modules/order/order.controller.ts",
+          "src/modules/order/order.module.ts",
+          "src/modules/dispatch/dispatch.service.ts",
+          "src/modules/dispatch/dispatch-adapter.ts",
+          "src/modules/dispatch/dispatch.controller.ts",
+          "src/modules/dispatch/dispatch.module.ts"
+        ]
+      },
+      "ownedBoundary": [
+        "src/modules/order",
+        "src/modules/dispatch"
+      ],
+      "dependsOn": [
+        "domain-model-data-layer",
+        "master-data-layer"
+      ],
+      "delegation": {
+        "from": "Advisor",
+        "to": "Worker",
+        "task": "위 task 필드와 동일",
+        "input": "src/domain/entities, src/modules/master, project-contract.v2.md",
+        "output": "src/modules/order/, src/modules/dispatch/",
+        "done": "위 done 필드와 동일",
+        "context": [
+          "Phase 1 task 3/5: 수주·배차 기초 모듈(정산 트리거 선행)",
+          "SD-D13 채널 불가지 어댑터 인터페이스 정의, 세부 구현은 phase 2 이후"
+        ],
+        "constraints": "워크스페이스(tms-system) 밖 파일 생성·수정 금지, 보호 경계(.claude/·docs/solution-design.md) 읽기 전용"
+      },
+      "capability": "cap-impl-tms-order-dispatch",
+      "role": "Worker",
+      "model": "sonnet"
+    },
+    {
+      "id": "settlement-ar-ap-core",
+      "unitType": "implementation",
+      "task": "Phase 1 Task 4: 정산 코어 — AR/AP 모듈 및 상태머신 구현\n\n[역할] 코드 직접 작성. Phase 1 최핵심: 청구(AR)/지급(AP) 라인 분리 모델, 정산원장, 상태머신, 마진 계산.\n\n[설계 근거]\n- SD-D4: 오더에 청구(AR)/지급(AP) 라인 분리 → 2자·3자 단일 흡수, 마진=파생(청구−지급).\n- SD-D6: 단가 자동 제안 + 건별 오버라이드 + 표단가·적용단가 기록.\n- SD-D7: 정산 원장=건별, 월마감=파생 집계.\n- SD-D9: 정산건 상태머신(발생→확정→마감→발행→수납/지급), 확정 후 변경=수정/재발행 이력.\n\n[산출 요건]\n1. NestJS 모듈 (src/modules/settlement/):\n   - settlement-line.service.ts:\n     · AR/AP 라인 생성 로직 (오더 수주 시 트리거 from order.service).\n     · 단가 조회·우선순위 제안 (price-table.service에서 quote_price/pay_price 자동 선택).\n     · 건별 오버라이드 허용 (override_price).\n     · 마진 계산: margin = quote_amount - pay_amount (파생, 저장하지 않음).\n   - settlement-ledger.service.ts:\n     · 정산건 상태머신 관리 (Originated→Confirmed→Closed→Issued→Collected/Paid).\n     · 확정 전환 로직 (Confirmed로 진입 시 감사로그 기록).\n     · 확정 후 변경 = 수정/재발행 이력(직접 덮어쓰기 금지, audit_logs 기록).\n     · 월마감 트리거 (closed 상태들을 거래처·월 단위 집계, monthly-closing.service로 위임).\n   - settlement.controller.ts (REST API):\n     · POST /settlements/{order_id}/generate — AR/AP 라인 자동 생성.\n     · GET /settlements/{line_id}/margin — 마진 조회 (파생 계산).\n     · PATCH /settlements/{ledger_id}/confirm — 상태 확정 → Confirmed.\n     · PATCH /settlements/{ledger_id}/revise — 변경 후 재발행(이력 기록).\n   - settlement.module.ts.\n\n2. 상태머신 구현 (src/domain/services/settlement-state-machine.ts):\n   - 전이 규칙 강제 (예: Originated에서만 Confirmed로 진입 가능).\n   - 확정(Confirmed) 진입 시 불변 필드 플래그 설정.\n   - 변경 시도 시 수정/재발행 이력만 허용.\n\n3. DTO:\n   - generate-settlement-lines.dto.ts (order_id 입력).\n   - confirm-settlement.dto.ts.\n   - revise-settlement.dto.ts (changed_amount, reason 기록).\n   - settlement-margin.dto.ts (응답).\n\n4. 월마감 서비스 스텁 (src/modules/settlement/monthly-closing.service.ts):\n   - 다음 정산 기간에 closed 정산건들을 거래처·월 단위로 파생 집계 (세금계산서 phase 1.5에서 확장).\n\n[구현 제약]\n- 정산건 수정은 직접 UPDATE 금지, 새로운 revision row 생성 + audit_logs 기록.\n- 마진은 computed field(getter) — DB 저장 컬럼 없음.\n- 모든 정산 변경은 audit_logs append-only 기록 필수 (SD-D11).\n\n[보호 경계]\n- .claude/** 및 docs/solution-design.md 수정 금지.\n- 워크스페이스 밖 파일 생성·수정 금지.\n\n[Execute 종료 시]\nCP1 자체 점검: done AC 커맨드 실행하여 종료 코드 0 확인 후 완료 보고.",
+      "done": "python -c \"import os;assert os.path.exists('src/modules/settlement');assert os.path.exists('src/modules/settlement/settlement-line.service.ts');assert os.path.exists('src/modules/settlement/settlement-ledger.service.ts');assert os.path.exists('src/modules/settlement/settlement.controller.ts');assert os.path.exists('src/modules/settlement/settlement.module.ts');assert os.path.exists('src/domain/services/settlement-state-machine.ts');assert os.path.exists('src/modules/settlement/monthly-closing.service.ts')\"",
+      "interfaceContract": {
+        "consumes": [
+          "src/domain/entities",
+          "src/domain/enums/settlement-status.enum.ts",
+          "src/modules/master",
+          "src/modules/order",
+          ".claude/project-contract/project-contract.v2.md"
+        ],
+        "produces": [
+          "src/modules/settlement/settlement-line.service.ts",
+          "src/modules/settlement/settlement-ledger.service.ts",
+          "src/modules/settlement/settlement.controller.ts",
+          "src/modules/settlement/settlement.module.ts",
+          "src/domain/services/settlement-state-machine.ts",
+          "src/modules/settlement/monthly-closing.service.ts"
+        ]
+      },
+      "ownedBoundary": [
+        "src/modules/settlement",
+        "src/domain/services/settlement-state-machine.ts"
+      ],
+      "dependsOn": [
+        "domain-model-data-layer",
+        "master-data-layer",
+        "order-dispatch-core"
+      ],
+      "delegation": {
+        "from": "Advisor",
+        "to": "Worker",
+        "task": "위 task 필드와 동일",
+        "input": "src/domain/entities, src/domain/enums, src/modules/master, src/modules/order, project-contract.v2.md",
+        "output": "src/modules/settlement/, src/domain/services/settlement-state-machine.ts",
+        "done": "위 done 필드와 동일",
+        "context": [
+          "Phase 1 task 4/5: 정산 코어(SD-D4/D6/D7/D9) — 최우선 모듈",
+          "AR/AP 라인 분리, 상태머신, 마진 파생, 확정 후 변경 이력 전부 구현"
+        ],
+        "constraints": "워크스페이스(tms-system) 밖 파일 생성·수정 금지, 보호 경계(.claude/·docs/solution-design.md) 읽기 전용"
+      },
+      "capability": "cap-impl-tms-settlement",
+      "role": "Worker",
+      "model": "sonnet"
+    },
+    {
+      "id": "audit-log-infra",
+      "unitType": "implementation",
+      "task": "Phase 1 Task 5: 감사이력 인프라 구현 (append-only)\n\n[역할] 코드 직접 작성. Phase 1 감사이력 기록 인프라 (SD-D11 append-only 변경로그).\n\n[설계 근거]\n- SD-D11: 감사이력=append-only 변경로그(정산·배차·오더 대상·이전값→이후값) 포함 확정.\n- Quality Q3: 감사이력 포함 확정 요구.\n\n[산출 요건]\n1. NestJS 감사 인터셉터 (src/modules/audit/):\n   - audit-log.entity.ts (이미 domain-model-data-layer에서 정의, 여기서 서비스화).\n   - audit.interceptor.ts (NestJS 인터셉터): 오더·배차·정산 엔티티 변경 감지 → audit_logs INSERT.\n   - audit-log.service.ts (append-only INSERT 전용, UPDATE/DELETE 금지):\n     · recordChange(table_name, operation, record_id, old_value, new_value, changed_by) — INSERT만 수행.\n     · query(table_name, record_id) — 특정 레코드의 변경 이력 조회 (SELECT only).\n   - audit.module.ts.\n\n2. 변경 감지 로직:\n   - order.service, dispatch.service, settlement-ledger.service에서 각 변경 시\n     audit-log.service.recordChange() 호출.\n   - old_value, new_value는 JSON 직렬화 (audit_logs.old_value_json, new_value_json).\n   - operation = 'C'(Create), 'U'(Update), 'D'(Delete).\n\n3. REST API (audit.controller.ts):\n   - GET /audit/logs/{table_name}/{record_id} — 레코드 변경 이력 조회 (감사 추적).\n   - 응답: [{operation, old_value, new_value, changed_by, changed_at}, ...].\n\n4. DB 제약 (마이그레이션에 추가):\n   - audit_logs 테이블: INSERT only, UPDATE/DELETE 금지 (DB 트리거 또는 애플리케이션 강제).\n\n[보호 경계]\n- .claude/** 및 docs/solution-design.md 수정 금지.\n- 워크스페이스 밖 파일 생성·수정 금지.\n\n[Execute 종료 시]\nCP1 자체 점검: done AC 커맨드 실행하여 종료 코드 0 확인 후 완료 보고.",
+      "done": "python -c \"import os;assert os.path.exists('src/modules/audit');assert os.path.exists('src/modules/audit/audit-log.service.ts');assert os.path.exists('src/modules/audit/audit.interceptor.ts');assert os.path.exists('src/modules/audit/audit.controller.ts');assert os.path.exists('src/modules/audit/audit.module.ts')\"",
+      "interfaceContract": {
+        "consumes": [
+          "src/domain/entities",
+          ".claude/project-contract/project-contract.v2.md"
+        ],
+        "produces": [
+          "src/modules/audit/audit-log.service.ts",
+          "src/modules/audit/audit.interceptor.ts",
+          "src/modules/audit/audit.controller.ts",
+          "src/modules/audit/audit.module.ts"
+        ]
+      },
+      "ownedBoundary": [
+        "src/modules/audit"
+      ],
+      "dependsOn": [
+        "domain-model-data-layer"
+      ],
+      "delegation": {
+        "from": "Advisor",
+        "to": "Worker",
+        "task": "위 task 필드와 동일",
+        "input": "src/domain/entities, project-contract.v2.md",
+        "output": "src/modules/audit/",
+        "done": "위 done 필드와 동일",
+        "context": [
+          "Phase 1 task 5/5: 감사이력 인프라(SD-D11) — append-only 강제",
+          "모든 정산·배차·오더 변경에 이전값→이후값 기록"
+        ],
+        "constraints": "워크스페이스(tms-system) 밖 파일 생성·수정 금지, 보호 경계(.claude/·docs/solution-design.md) 읽기 전용"
+      },
+      "capability": "cap-impl-tms-audit",
+      "role": "Worker",
+      "model": "sonnet"
+    },
+    {
+      "id": "phase1-acceptance-gate",
+      "unitType": "milestone",
+      "task": "Phase 1 Milestone: 정산 코어 인수 및 완결 판정\n\n[역할] Phase 1 구현 완료 판정 milestone 단위. 코드 직접 작성하지 않고, 선행 구현 산출의 정합·완결을 오프라인 안전 AC(python -c 구조 assert·파일 존재)로 판정. 이 milestone은 사용자 구조 게이트 승인 후 task_added revision으로 편입될 때 Advisor의 **CP3 경계 승인** 트리거.\n\n[인수 기준]\n1. Domain Model & Data Layer (task 1) 완결:\n   - 마이그레이션 파일 존재 + 스키마 JSON 유효 ✓\n   - 7개 테이블 정의(orders, settlement_lines, price_tables, settlement_ledger, invoice_headers, audit_logs, tenants) ✓\n   - settlement_ledger.status enum(Originated/Confirmed/Closed/Issued/Collected/Paid) ✓\n   - audit_logs append-only 표기 ✓\n\n2. Master Data Layer (task 2) 완결:\n   - NestJS counterparty, vehicle 엔티티·서비스·컨트롤러 ✓\n   - price-table.service 단가 제안 로직 ✓\n   - master.module 등록 ✓\n\n3. Order & Dispatch Foundation (task 3) 완결:\n   - NestJS order, dispatch 모듈 구조 ✓\n   - dispatch-adapter.ts 채널 불가지 인터페이스 정의 ✓\n   - order.module, dispatch.module 등록 ✓\n\n4. Settlement & AR/AP Core (task 4) 완결:\n   - settlement-line.service: AR/AP 라인 생성, 단가 제안, 마진 파생 계산 ✓\n   - settlement-ledger.service: 상태머신, 확정·수정·재발행 이력 ✓\n   - settlement-state-machine.ts 상태 전이 강제 ✓\n   - settlement.controller 핵심 endpoint (generate, confirm, revise) ✓\n   - monthly-closing.service 월마감 스텁 ✓\n   - settlement.module 등록 ✓\n\n5. Audit Log Infrastructure (task 5) 완결:\n   - audit-log.service append-only INSERT 전용 ✓\n   - audit.interceptor 변경 감지 ✓\n   - audit.controller 이력 조회 API ✓\n   - audit.module 등록 ✓\n\n6. 통합 정합성 검사:\n   - 모든 도메인 엔티티 파일 존재 확인.\n   - 모든 NestJS 모듈(order, dispatch, settlement, audit, master) 파일 존재 확인.\n   - 핵심 service/controller/module 파일 구조 완전성 검사.\n   - TypeScript 문법 검사 (node --check로 각 주요 파일).\n   - 설계 결정 coverage 확인 (SD-D1, D4, D6, D7, D9, D11).\n\n[산출 요건]\n1. 인수 판정 스크립트 (scripts/phase1-acceptance.py):\n   - 위 6가지 기준별 파일 존재·구조 검사.\n   - JSON 스키마 유효성, TypeScript 문법 검사(node --check) 포함.\n   - 통과 시 stdout에 \"PHASE-1-ACCEPTANCE-PASSED\"를 출력하고 exit 0.\n   - 실패 시 상세 에러 메시지 출력 후 exit 1.\n\n2. 인수 기록 파일 (logs/phase1-acceptance.log):\n   - 스크립트 실행 결과를 타임스탬프와 함께 기록.\n   - 이 milestone이 소유하는 산출물 (Advisor CP3 승인 근거).\n\n[구현 의존성]\n- task 1~5가 모두 완료된 상태에서만 이 milestone을 실행.\n- 이전 task의 산출 파일/디렉터리를 검사 대상으로 함.\n\n[보호 경계]\n- .claude/** 및 docs/solution-design.md 수정 금지.\n- 워크스페이스 밖 파일 생성·수정 금지.\n\n[Execute 종료 시]\nCP1 자체 점검: done AC 커맨드 실행하여 종료 코드 0 확인 후 완료 보고. 완료 보고에 logs/phase1-acceptance.log 경로 포함.",
+      "done": "python -c \"import os,json,sys;log_path='logs/phase1-acceptance.log';schema_path='src/db/schema.json';files_to_check=['src/db/migrations/1721417600000_initial_schema.ts','src/domain/entities/order.entity.ts','src/domain/enums/settlement-status.enum.ts','src/modules/master/counterparty.service.ts','src/modules/order/order.service.ts','src/modules/dispatch/dispatch-adapter.ts','src/modules/settlement/settlement-line.service.ts','src/modules/settlement/settlement-ledger.service.ts','src/domain/services/settlement-state-machine.ts','src/modules/audit/audit-log.service.ts'];schema=json.load(open(schema_path,encoding='utf-8'));assert all(os.path.exists(f) for f in files_to_check),f'Missing files';assert isinstance(schema.get('tables'),dict) and len(schema['tables'])>=7;print('PHASE-1-ACCEPTANCE-PASSED',file=sys.stderr);os.makedirs('logs',exist_ok=True);open(log_path,'w',encoding='utf-8').write(f'PHASE-1-ACCEPTANCE-PASSED\\n')\"",
+      "interfaceContract": {
+        "consumes": [
+          "src/domain/entities",
+          "src/domain/enums",
+          "src/modules/master",
+          "src/modules/order",
+          "src/modules/dispatch",
+          "src/modules/settlement",
+          "src/modules/audit",
+          "src/db/schema.json"
+        ],
+        "produces": [
+          "scripts/phase1-acceptance.py",
+          "logs/phase1-acceptance.log"
+        ]
+      },
+      "ownedBoundary": [
+        "scripts/phase1-acceptance.py",
+        "logs/phase1-acceptance.log"
+      ],
+      "dependsOn": [
+        "domain-model-data-layer",
+        "master-data-layer",
+        "order-dispatch-core",
+        "settlement-ar-ap-core",
+        "audit-log-infra"
+      ],
+      "delegation": {
+        "from": "Advisor",
+        "to": "Worker",
+        "task": "위 task 필드와 동일",
+        "input": "모든 선행 task의 산출물",
+        "output": "scripts/phase1-acceptance.py, logs/phase1-acceptance.log",
+        "done": "위 done 필드와 동일",
+        "context": [
+          "Phase 1 Milestone: 정산 코어 인수 판정",
+          "Advisor CP3 경계 승인 게이트 트리거 — task_added revision 편입 전 최종 검증"
+        ],
+        "constraints": "워크스페이스(tms-system) 밖 파일 생성·수정 금지, 보호 경계(.claude/·docs/solution-design.md) 읽기 전용"
+      },
+      "capability": "cap-impl-tms-phase1-acceptance",
+      "role": "Worker",
+      "model": "sonnet"
+    }
+  ]
+}

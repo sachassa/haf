@@ -16,7 +16,7 @@ roleSelection:
   basis: "판정 근거가 식별한 설계 관심사에서 파생"
   perConcern: 1                 # 관심사당 최소 필요 역할만
   wholeScopeCoverage: required  # 04 §3.3 커버리지 바닥·SP-INV 9 — 선언 전체 범위 관장 역할은 필수 바닥(전문 역할 상한 불산입)
-  maxSpecialistRoles: 4         # SP-INV 8 — 전문/관심사 역할만 상한(커버리지 바닥 불산입). 기본 2(baseSpecialists) + 조건부 2(conditionalSpecialists). §DC-6 configurable
+  maxSpecialistRoles: 5         # SP-INV 8 — 전문/관심사 역할만 상한(커버리지 바닥 불산입). 기본 2(baseSpecialists) + 조건부 3(conditionalSpecialists). §DC-6 configurable(초과 시 로더가 선언순 우선 cap 집행·excludedByCap 방출)
   fixedTeam: "금지"             # SP-INV 5 — 개방 네임스페이스·고정 역할 카탈로그 0. 아래 defaultComposition은 강제 고정팀이 아니라 "기본값(이탈 시 사유 기록)"이며 fixedTeam=금지와 무모순
 
   # 기본 역할 구성 (강제 기본값 — 책임 있는 자율: 루트 ARCHITECTURE.md §6 원칙 11 (a)(b))
@@ -29,6 +29,7 @@ roleSelection:
       # when = 사람용 산문(참고) · whenSignal = 기계 신호(form-B 로더가 대조 매칭 — 산문 파싱 안 함).
       - { role: 디자이너, when: "touchpoint(접점) 선언 시", whenSignal: touchpoint }   # 접점 선언 시 편입
       - { role: DBA,     when: "데이터 복잡 시",          whenSignal: dataComplex }   # 데이터 복잡 신호 시 편입
+      - { role: 보안,     when: "규제·컴플라이언스 신호 시", whenSignal: regulated }    # 규제/컴플라이언스 신호 시 편입(심의 참여·산출물 미소유)
 
   # 이탈 규칙 (책임 있는 자율 (b)(c) — silentOmission 금지)
   deviationRule:
@@ -87,3 +88,16 @@ artifactOwnership:
   - { id: screen-list,      owner: 디자이너 }
   - { id: menu-structure,   owner: 디자이너 }
   - { id: screen-design,    owner: 디자이너 }
+
+# (마) 다라운드 심의 정책 (04 §3.4-C 다라운드 심의 — 바인딩 §7B 규약 절차가 소비·§DC-5)
+# 정본 값 문면: 바인딩 §7.2 (라). 소비 지점 표: 바인딩 §7B.4(실값 없음·포인터만). 여기가 실값 정본(정본 값 == policy 값).
+deliberation:
+  maxRounds: 3                          # §DC-5 T5 재제안 라운드 상한(라운드 1 + 재제안 최대 2)·configurable — 상한 도달 시 잔여 충돌 Validating 표면화(바인딩 §7B.5)
+  convergence: unresolvedConflictsZero  # 수렴 기준(미해소 충돌 0) — 04 §3.4-B T4/T6 Guard의 policy 측 파라미터
+  peerVisibility: conflictParties       # 라운드 2+ 동료 Proposal 동봉 범위 기본값(충돌 당사자만·경량). 허용값: conflictParties | allActive(전 활성 역할 동봉으로 상향 가능·configurable)
+
+  # 이탈 규칙 (책임 있는 자율 (b)(c) — silentOmission 금지 · roleSelection.deviationRule 문면 동형)
+  deviationRule:
+    trigger: "심의 기본값(maxRounds·convergence·peerVisibility)에서 이탈 시"
+    record:  "사유 기록 — 성숙 run 기록(events/maturation-<run-id>/)에 남김"
+    surface: "Validating 게이트에서 표면화·사용자 확인 (고임팩트 이탈은 즉시)"

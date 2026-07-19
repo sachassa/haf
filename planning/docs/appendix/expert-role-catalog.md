@@ -20,6 +20,7 @@
 | 2026-07-13 | v1.3 Baseline | Baseline 승격 — v1.3 마일스톤 사용자 Baseline 승인(비정본 부록). | Advisor (사용자 승인) |
 | 2026-07-18 | v1.3 (정합) | §DC-1 Wave 2 — §3.4 신설: 전체 범위/완성도 관장 역할 예시(`wholeScopeCoverage` 바닥·§3.8 SP-INV 9 대응). 역할명 예시일 뿐·개방 네임스페이스·최소 할당과 층위 차이 명시. 사용자 결정 2026-07-18. | Worker (Advisor 위임) |
 | 2026-07-19 | v1.3 (정합) | §DC-1 Wave 5-A — §3.5 신설: 기본 역할 구성(Policy `defaultComposition`) + 역할→산출물 소유(`artifactOwnership`) **예시**(PM·기획·아키텍처·디자이너·DBA·소유 맵). "정본=정책·부록=예시·강제 아님·개방 네임스페이스" 명시(책임 있는 자율 루트 §6 원칙 11 (a)). 정본(04 §3.3·바인딩 §7.2) 재정의 0·일반 역할명(방법론/벤더/모델명 0). 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
+| 2026-07-19 | v1.3 (정합) | §DC-6 U1 — §3.5 두 표에 조건부 **보안** 역할 1행 추가(규제·컴플라이언스 신호 시·산출물 미소유=심의 참여). 정본 = Policy(`default-policy.yaml` `conditionalSpecialists`·`maxSpecialistRoles` 5)·이 부록은 예시일 뿐 강제 아님(§0 비정본 선언·SP-INV 5 무촉). 정본(04 §3.3·바인딩 §7.2) 재정의 0. 사용자 승인 2026-07-19. | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — UAF 관행 동형: `planning/specs/04-solution-design.md` §9·`planning/docs/appendix/methodology-mapping.md` §9. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -125,6 +126,7 @@
 | (예시) 아키텍처 | 기본 전문역할(`baseSpecialists`) | 데이터 모델·인터페이스 설계 관심사 |
 | (예시) 디자이너 | 조건부(`conditionalSpecialists` — 접점 선언 시) | 화면·메뉴·상호작용 관심사 |
 | (예시) DBA | 조건부(`conditionalSpecialists` — 데이터 복잡 시) | 데이터 정의 정밀화 보조 관심사 |
+| (예시) 보안 | 조건부(`conditionalSpecialists` — 규제·컴플라이언스 신호 시) | 규제·컴플라이언스·보안 제약 심의 관심사(산출물 미소유 — 심의 참여) |
 
 **역할→산출물 소유 예시(Policy `artifactOwnership` 대응 — 소유 = 작성 책임):**
 
@@ -135,6 +137,7 @@
 | (예시) 아키텍처 | `table-def`·`interface-spec` |
 | (예시) 디자이너 | `screen-list`·`menu-structure`·`screen-design` |
 | (예시) DBA | `table-def` 정밀화 **보조**(소유 아님 — 아키텍처 소유에 대한 조건부 보조) |
+| (예시) 보안 | (소유 산출물 없음 — 규제·컴플라이언스 신호 시 심의에 참여하는 조건부 역할이며 `defaultRequiredSet` 산출물을 소유하지 않는다) |
 
 - **예시일 뿐·강제 아님.** 위 역할명·소유 매핑은 **예시일 뿐 표준·고정 역할이 아니며**, 실제 역할·소유는 프로젝트별 Capability 선언(04 §3.3)과 복잡도 판정(04 §3.2), 그리고 Policy 기본값(§7.2)으로부터의 정당화된 이탈(`deviationRule`)의 결과다. 이 부록은 어떤 구성도 채택·권고·표준화하지 않는다(§1·§6).
 - **기본값 = 정책(강제)·예시 = 부록(문서).** 빠지면 안 되는 기본 구성·소유·필수 세트는 **Policy가 기본값으로 강제**하고(바인딩 §7.2·§7A), 이탈은 사유 기록 + 게이트 표면화한다(silentOmission 금지). 이 부록은 그 정책이 어떻게 보일 수 있는지의 예시를 시연할 뿐, "부록이니 선택"으로 강제를 완화하지 않는다(루트 §6 원칙 11 (a)(b)(c)).

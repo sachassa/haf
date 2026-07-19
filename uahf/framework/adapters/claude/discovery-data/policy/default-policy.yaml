@@ -4,12 +4,17 @@
 policyId: default-policy
 
 # (가) 임계값 정책 — 차원별 Confidence 포화·Ready 임계 θ (02 §3.11 5차원 · §3.12 [0,1] 스칼라)
+# §DC-5 깊이 보완 대안 A · 사용자 결정 2026-07-19 · configurable.
+#   목적: 얕은 인터뷰가 조기에 포화 신호를 내지 못하도록 목표 임계 θ를 보수적으로 상향(+0.05).
+#   레버 범위: 02 §3.13/§3.15가 허용하는 "차원별 목표 임계"(Policy as Data)만 조정 — 신규 필드·floor 개념 없음.
+#   budget 균형: θ 상향폭(+0.05)은 예산 대비 보수적. 최다 예산 차원(intent·requirement=10)에 최고 θ(0.85·0.80)를
+#     두어, 상향된 차원이 hard 경계(40)에 상시 부딪히지 않게 배분. budget 구조·값 무변경(아래 (나)).
 thresholds:
-  intent: 0.80
-  requirement: 0.75
-  constraint: 0.70
-  risk: 0.70
-  architecture: 0.75
+  intent: 0.85        # ← 0.80 (예산 10, 최다)
+  requirement: 0.80   # ← 0.75 (예산 10, 최다)
+  constraint: 0.75    # ← 0.70 (예산 6)
+  risk: 0.75          # ← 0.70 (예산 6)
+  architecture: 0.80  # ← 0.75 (예산 8)
 
 # (나) 예산 정책 — Question Budget (02 §3.14)
 budget:

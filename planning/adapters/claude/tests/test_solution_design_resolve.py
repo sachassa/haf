@@ -5,6 +5,8 @@
   - 접점 선언 X → 디자이너 excludedConditional·위 3종 required=false·classExclusions.touchpoint placeholder.
   - 연계 선언 O/X → interface-spec required true/false 대응.
   - --data-complex O → DBA 활성 / X → DBA excludedConditional.
+  - --regulated O → 보안 활성 / X → 보안 excludedConditional·보안은 산출물 미소유(artifactPlan 10 불변).
+  - cap(maxSpecialistRoles) 초과 → excludedByCap 결정적 방출(선언순 우선)·부재 시 미집행·불량값 오류.
   - always 6종 항상 required·owner 정확.
   - 결정성: 같은 입력 2회 호출 → 동일 JSON.
   - 실 정책(default-policy.yaml) 기반 스모크 1건.
@@ -39,7 +41,7 @@ def _fixture_policy() -> dict:
         "policyId": "test-policy",
         "roleSelection": {
             "wholeScopeCoverage": "required",
-            "maxSpecialistRoles": 4,
+            "maxSpecialistRoles": 5,
             "fixedTeam": "금지",
             "defaultComposition": {
                 "coverageFloor": "PM",
@@ -47,6 +49,7 @@ def _fixture_policy() -> dict:
                 "conditionalSpecialists": [
                     {"role": "디자이너", "when": "접점 선언 시", "whenSignal": "touchpoint"},
                     {"role": "DBA", "when": "데이터 복잡 시", "whenSignal": "dataComplex"},
+                    {"role": "보안", "when": "규제·컴플라이언스 신호 시", "whenSignal": "regulated"},
                 ],
             },
         },
@@ -167,6 +170,74 @@ class DataComplexTest(unittest.TestCase):
         res = sdr.resolve(_fixture_policy(), [], [], False)
         excluded = [e["role"] for e in res["roleComposition"]["excludedConditional"]]
         self.assertIn("DBA", excluded)
+
+
+class RegulatedSignalTest(unittest.TestCase):
+    def test_security_activated_when_regulated(self):
+        # (a) regulated 주입 시 보안 활성 — keyword 파라미터 경로.
+        res = sdr.resolve(_fixture_policy(), [], [], False, regulated=True)
+        activated = [a["role"] for a in res["roleComposition"]["activatedConditional"]]
+        self.assertIn("보안", activated)
+        self.assertIn("보안", res["roleComposition"]["roles"])
+
+    def test_security_excluded_when_not_regulated(self):
+        # (b) 미주입 시 excludedConditional 에 보안 — 위치인자 4-arg 호출(파급 0 확인).
+        res = sdr.resolve(_fixture_policy(), [], [], False)
+        excluded = [e["role"] for e in res["roleComposition"]["excludedConditional"]]
+        self.assertIn("보안", excluded)
+        self.assertNotIn("보안", res["roleComposition"]["roles"])
+
+    def test_security_owns_no_artifact(self):
+        # 보안은 defaultRequiredSet 산출물 미소유 — artifactPlan 항목 수 불변(10종).
+        res = sdr.resolve(_fixture_policy(), [], [], False, regulated=True)
+        self.assertEqual(len(res["artifactPlan"]), 10)
+
+
+class CapEnforcementTest(unittest.TestCase):
+    def _low_cap_policy(self) -> dict:
+        # 인라인 fixture — 낮은 cap(3): base 2 + 조건부 슬롯 1 만 허용.
+        p = _fixture_policy()
+        p["roleSelection"]["maxSpecialistRoles"] = 3
+        return p
+
+    def test_excluded_by_cap_deterministic_declaration_order(self):
+        # (c) cap 초과: touchpoint·dataComplex·regulated 전부 활성 → 조건부 3개 활성 시도.
+        # cap 3, base 2 → 조건부 슬롯 1. 선언순(디자이너·DBA·보안) 우선: 디자이너 유지, DBA·보안 cap 제외.
+        res = sdr.resolve(self._low_cap_policy(), ["웹"], [], True, regulated=True)
+        rc = res["roleComposition"]
+        activated = [a["role"] for a in rc["activatedConditional"]]
+        self.assertEqual(activated, ["디자이너"])
+        capped = [e["role"] for e in rc["excludedByCap"]]
+        self.assertEqual(capped, ["DBA", "보안"])  # 선언 후순위부터·결정적 순서.
+        # base 는 항상 보존·roles 는 coverageFloor+base+통과 조건부만.
+        self.assertEqual(rc["roles"], ["PM", "기획", "아키텍처", "디자이너"])
+
+    def test_cap_determinism(self):
+        p1 = self._low_cap_policy()
+        p2 = self._low_cap_policy()
+        r1 = sdr.resolve(p1, ["웹"], [], True, regulated=True)
+        r2 = sdr.resolve(p2, ["웹"], [], True, regulated=True)
+        self.assertEqual(r1, r2)
+
+    def test_no_cap_exclusion_when_under_limit(self):
+        # 정상(cap 5) fixture: 전 신호 활성해도 base2+조건부3=5 ≤ 5 → excludedByCap 공집합.
+        res = sdr.resolve(_fixture_policy(), ["웹"], [], True, regulated=True)
+        self.assertEqual(res["roleComposition"]["excludedByCap"], [])
+        self.assertEqual(res["roleComposition"]["roles"],
+                         ["PM", "기획", "아키텍처", "디자이너", "DBA", "보안"])
+
+    def test_cap_absent_disables_enforcement(self):
+        # maxSpecialistRoles 부재 시 cap 미집행(excludedByCap 공집합).
+        p = _fixture_policy()
+        del p["roleSelection"]["maxSpecialistRoles"]
+        res = sdr.resolve(p, ["웹"], [], True, regulated=True)
+        self.assertEqual(res["roleComposition"]["excludedByCap"], [])
+
+    def test_cap_invalid_value_raises(self):
+        p = _fixture_policy()
+        p["roleSelection"]["maxSpecialistRoles"] = 0
+        with self.assertRaises(sdr.PolicyError):
+            sdr.resolve(p, ["웹"], [], True, regulated=True)
 
 
 class AlwaysClassTest(unittest.TestCase):

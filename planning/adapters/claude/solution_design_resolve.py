@@ -38,6 +38,13 @@ whenSignal 기계 매칭(산문 when 파싱 금지 — 결정성):
     - touchpoint  → --touchpoints 비공집합일 때 활성.
     - interface   → --interfaces 비공집합일 때 활성.
     - dataComplex → --data-complex 플래그일 때 활성.
+    - regulated   → --regulated 플래그일 때 활성(규제·컴플라이언스 신호).
+
+전문 역할 상한 집행(maxSpecialistRoles·cap·§DC-6):
+  base(baseSpecialists) + 활성 조건부(activatedConditional)의 합이 정책 maxSpecialistRoles 를
+  초과하면 초과분을 결정적으로 제외한다 — 우선순위 = 정책 conditionalSpecialists **선언 순서**
+  (base 역할은 항상 보존·cap 산입, coverageFloor 는 불산입). 제외분은 excludedByCap 로 방출한다.
+  cap 값·역할명을 코드에 하드코딩하지 않는다 — 전부 정책에서 읽는다.
 
 오프라인 안전(불변):
   - 네트워크·npm·빌드 0. 파일 판독·구조 계산만.
@@ -81,7 +88,8 @@ _KNOWN_CLASSES = (_ALWAYS, _TOUCHPOINT, _INTERFACE)
 _SIG_TOUCHPOINT = "touchpoint"
 _SIG_INTERFACE = "interface"
 _SIG_DATA_COMPLEX = "dataComplex"
-_KNOWN_SIGNALS = (_SIG_TOUCHPOINT, _SIG_INTERFACE, _SIG_DATA_COMPLEX)
+_SIG_REGULATED = "regulated"
+_KNOWN_SIGNALS = (_SIG_TOUCHPOINT, _SIG_INTERFACE, _SIG_DATA_COMPLEX, _SIG_REGULATED)
 
 
 class PolicyError(Exception):
@@ -121,7 +129,7 @@ def _is_required(requirement: str, has_touchpoint: bool, has_interface: bool) ->
 
 
 def _signal_value(signal: str, has_touchpoint: bool, has_interface: bool,
-                  data_complex: bool) -> bool:
+                  data_complex: bool, regulated: bool) -> bool:
     """whenSignal 기계 신호 → bool. 미지의 signal 은 상류(resolve)에서 오류 처리."""
     if signal == _SIG_TOUCHPOINT:
         return has_touchpoint
@@ -129,14 +137,29 @@ def _signal_value(signal: str, has_touchpoint: bool, has_interface: bool,
         return has_interface
     if signal == _SIG_DATA_COMPLEX:
         return data_complex
+    if signal == _SIG_REGULATED:
+        return regulated
     return False
 
 
 # ==========================================================================
 # ① roleComposition — 역할 구성 결정적 계산
 # ==========================================================================
+def _read_max_specialist_roles(role_sel: dict) -> int | None:
+    """maxSpecialistRoles(cap) 를 정책에서 읽는다 — 값 하드코딩 0. 부재 시 None(cap 미집행).
+
+    존재하면 양의 정수여야 한다(스키마 위반은 표면화·추측 금지). bool 은 int 하위형이므로 배제.
+    """
+    if "maxSpecialistRoles" not in role_sel:
+        return None
+    cap = role_sel.get("maxSpecialistRoles")
+    if isinstance(cap, bool) or not isinstance(cap, int) or cap < 1:
+        raise PolicyError("roleSelection.maxSpecialistRoles 가 양의 정수가 아니다: %r" % (cap,))
+    return cap
+
+
 def _compute_role_composition(policy: dict, has_touchpoint: bool, has_interface: bool,
-                              data_complex: bool) -> dict:
+                              data_complex: bool, regulated: bool) -> dict:
     role_sel = policy.get("roleSelection")
     if not isinstance(role_sel, dict):
         raise PolicyError("정책에 roleSelection 매핑이 없다(스키마 위반)")
@@ -176,12 +199,31 @@ def _compute_role_composition(policy: dict, has_touchpoint: bool, has_interface:
                 "conditionalSpecialists[%d](role=%r) whenSignal 이 알려진 신호 %r 중 하나가 아니다: %r"
                 " — 정책에 기계 whenSignal 병기 필요(산문 when 파싱 안 함)"
                 % (i, role, list(_KNOWN_SIGNALS), signal))
-        if _signal_value(signal, has_touchpoint, has_interface, data_complex):
+        if _signal_value(signal, has_touchpoint, has_interface, data_complex, regulated):
             activated.append({"role": role, "by": "whenSignal=%s 신호 충족(선언됨)" % signal})
         else:
             excluded.append({"role": role, "reason": "whenSignal=%s 신호 미충족(미선언)" % signal})
 
-    # roles = coverageFloor + base + activated 전체·중복 제거·정책 입력순 보존.
+    # --- 전문 역할 상한(cap) 집행 — 값·역할명 하드코딩 0, 전부 정책에서 판독(§DC-6·SP-INV 8) ---
+    # 산입: base(항상 보존) + 활성 조건부. 불산입: coverageFloor(커버리지 바닥·상한 제외·policy L18).
+    # 초과 시 우선순위 = 정책 conditionalSpecialists **선언 순서**(activated 는 이미 선언순) —
+    # base 는 항상 보존하고, 초과분은 활성 조건부 중 **선언 후순위(뒤쪽)**부터 excludedByCap 로 방출.
+    cap = _read_max_specialist_roles(role_sel)
+    excluded_by_cap: list = []
+    if cap is not None and (len(base) + len(activated)) > cap:
+        conditional_slots = cap - len(base)
+        if conditional_slots < 0:
+            conditional_slots = 0  # base 만으로 이미 상한 초과 — 활성 조건부 전원 cap 제외.
+        kept = activated[:conditional_slots]
+        for a in activated[conditional_slots:]:
+            excluded_by_cap.append({
+                "role": a["role"],
+                "reason": "maxSpecialistRoles=%d 초과 — 선언 후순위로 cap 밀림(base %d + 활성 조건부)"
+                          % (cap, len(base)),
+            })
+        activated = kept
+
+    # roles = coverageFloor + base + (cap 통과) activated 전체·중복 제거·정책 입력순 보존.
     roles: list = []
     for r in [coverage_floor] + list(base) + [a["role"] for a in activated]:
         if r not in roles:
@@ -192,6 +234,7 @@ def _compute_role_composition(policy: dict, has_touchpoint: bool, has_interface:
         "base": list(base),
         "activatedConditional": activated,
         "excludedConditional": excluded,
+        "excludedByCap": excluded_by_cap,
         "roles": roles,
     }
 
@@ -299,12 +342,13 @@ def _compute_manifest_scaffold(required_items: list, artifact_plan: list,
 # ==========================================================================
 # 엔진 실행
 # ==========================================================================
-def resolve(policy: dict, touchpoints: list, interfaces: list, data_complex: bool) -> dict:
+def resolve(policy: dict, touchpoints: list, interfaces: list, data_complex: bool,
+            regulated: bool = False) -> dict:
     has_touchpoint = bool(touchpoints)
     has_interface = bool(interfaces)
 
     role_composition = _compute_role_composition(
-        policy, has_touchpoint, has_interface, data_complex)
+        policy, has_touchpoint, has_interface, data_complex, regulated)
     owner_of = _build_owner_map(policy)
     required_items = _load_required_set(policy)
     artifact_plan = _compute_artifact_plan(
@@ -346,6 +390,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
                         help="쉼표구분 외부 연계 선언 목록(비면 공집합). 주 세션이 주입.")
     parser.add_argument("--data-complex", action="store_true",
                         help="데이터 복잡 신호(whenSignal=dataComplex 활성화).")
+    parser.add_argument("--regulated", action="store_true",
+                        help="규제·컴플라이언스 신호(whenSignal=regulated 활성화).")
     parser.add_argument("--out", default=None,
                         help="manifestScaffold 를 이 경로에 기록(선택 편의). 기존 파일 있으면 "
                              "덮어쓰지 않고 오류(순수 판독·산출은 SD 소관).")
@@ -360,7 +406,7 @@ def main(argv: list[str]) -> int:
 
     try:
         policy = load_policy(Path(args.policy))
-        result = resolve(policy, touchpoints, interfaces, args.data_complex)
+        result = resolve(policy, touchpoints, interfaces, args.data_complex, args.regulated)
     except PolicyError as exc:
         print("[POLICY-ERROR] %s" % exc, file=sys.stderr)
         return 2

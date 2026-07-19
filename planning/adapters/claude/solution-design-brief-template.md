@@ -1,7 +1,7 @@
 # Solution Design 역할 위임 브리프 — 템플릿 (form-A 데이터 문서)
 
-상태: v1.4 정합 (§DC-1 Wave 5-B)
-상위 규약: `planning/adapters/claude/solution-design-binding.md` §6(역할 호스팅)·§7A(산출물 생산 프로토콜)·§7A.5(form-B 배선)
+상태: v1.4 정합 (§DC-1 Wave 5-B · §DC-5 다라운드 심의)
+상위 규약: `planning/adapters/claude/solution-design-binding.md` §6(역할 호스팅)·§7A(산출물 생산 프로토콜)·§7A.5(form-B 배선)·§7B(다라운드 심의 규약 절차)
 성격: **데이터 문서(양식)** — 실행 코드가 아니다. 주 세션(Advisor)이 `Proposing`(04 §3.4-A)에서 각 역할 서브에이전트를 **form-A로 소환**할 때 발부하는 지시서 양식이다.
 
 ---
@@ -25,6 +25,10 @@
 > ### 출력 경로 (Output Paths)
 > {OUTPUT_PATHS}
 > *(각 소유 산출물 본문 = `<workspace>/docs/<id>.md` · 단일 Markdown 문서 — 같은 내용을 다른 형식으로 중복 저장하지 않는다·binding §7A.2)*
+>
+> ### 심의 라운드 2+ 동료 Proposal (선택 — binding §7B.2, 라운드 1에서는 생략)
+> {PEER_PROPOSALS}
+> *(라운드 1(초기 위임)에서는 이 필드를 비우거나 생략한다. 재제안 라운드(T5·04 §3.4-B·binding §7B.2)에서만 주 세션이 채운다 — 충돌 당사자 역할의 해당 라운드 Proposal을 동봉한다. 동봉 범위(충돌 당사자만 vs 전 활성 역할)는 policy `deliberation.peerVisibility`가 정한다(binding §7B.4·실값은 policy 데이터 소관). 이 동봉이 fresh-context를 유지하면서 단일 라운드 블라인드를 해소해 "전문가가 서로의 Proposal을 검토·반응"(04 §3.4-C)을 실현한다. 동봉된 동료 Proposal은 **입력 참고 자료**이며, 너는 여전히 자기 소유 산출물·자기 관심사만 작성·수정한다 — 동료 소유 산출물을 직접 고치지 않는다(컨택스트 위생 아래 규칙).)*
 >
 > ### 컨택스트 위생 규칙 (binding §7A.1)
 > - **자기 소유 산출물만 작성한다.** 다른 역할 소유 산출물을 작성·수정하지 않는다.
@@ -56,7 +60,9 @@ form-B 로더(`solution_design_resolve.py`·§7A.5) 출력이 이 양식의 어�
 | `{ROLE}` | `roleComposition.roles[]` 의 각 역할 | `roles` 목록의 각 역할마다 브리프 1건 발부 |
 | `{OWNED_ARTIFACTS}` | `artifactPlan[]` 중 `owner == {ROLE}` 이고 `required == true` 인 항목의 `id`·`name` | 역할별 필터·목록화 |
 | `{OUTPUT_PATHS}` | 위 소유 산출물 각 `id` | `<workspace>/docs/<id>.md` 로 전개 |
+| `{PEER_PROPOSALS}` | 라운드 2+ 재제안(T5·binding §7B.2)에서 충돌 당사자 역할의 해당 라운드 Proposal | 주 세션이 손으로 채움(로더 출력 아님) — 라운드 1에서는 비움/생략. 동봉 범위 = policy `deliberation.peerVisibility` |
 
+- **비소유 활성 역할에도 참여 브리프 발부(binding §7B.1).** 산출물을 소유하지 않는 활성 역할(예: 보안·성능 등 횡단 리뷰 관심사)에도 이 양식으로 **form-A 참여 브리프**를 발부한다 — 이 경우 `{OWNED_ARTIFACTS}`·`{OUTPUT_PATHS}`는 비고("소유 산출물 없음 — 심의 참여·충돌 지적·커버리지 점검 역할")로 채우되, 심의 참여·완료 보고(의견·open_questions)는 동일하게 요구한다. 소유 산출물이 없다는 이유로 활성 역할에 브리프를 미발부하면 결착 공백이 생긴다(binding §7B.1·T3 전원 제출 Guard). **form-B 로더의 소유 브리프(`artifactPlan[].owner`)는 owner 기준을 유지**하며, 비소유 참여 브리프는 주 세션이 `roleComposition` 활성 집합과 `artifactOwnership` 대조로 판별해 별도 발부한다.
 - **활성/제외 역할.** `roleComposition.activatedConditional`(활성·근거 `by`)만 브리프를 발부한다. `excludedConditional`(제외·근거 `reason`)은 발부하지 않으며, 그 이탈은 `deviationRule`에 따라 성숙 run 기록에 사유로 남기고 Validating 게이트에서 표면화한다(binding §7.2 (나)·§7A.4).
 - **required=false 산출물.** `artifactPlan[]` 중 `required == false` 인 항목(접점/연계 미선언 클래스)은 브리프에 포함하지 않으며, `manifestScaffold.classExclusions.<class>{reason,confirmedBy}` 를 사용자 확인으로 채워 표면화한다(binding §7A.4 (iii)·`design_completeness` 체커 차단 근거).
 - **owner 정본.** 소유 역할 매핑의 정본은 Policy `artifactOwnership` 이다(binding §7.2 (나)·(라)). 이 양식은 로더가 그 매핑을 읽어 방출한 `artifactPlan[].owner` 를 소비할 뿐, 소유 관계를 재정의하지 않는다.

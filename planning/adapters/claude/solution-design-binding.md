@@ -237,7 +237,7 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 | 파생 근거 (`basis`) | 판정 근거가 식별한 설계 관심사(위 (가) 신호가 가리키는 미결 관심사) — 관심사에서 역할을 파생 |
 | 관심사당 역할 (`perConcern`) | 최소 1 (관심사당 최소 필요 역할만) |
 | 전문 역할 수 상한 (`maxSpecialistRoles`) | **4** — 전문/관심사 역할만 상한, 불필요한 다중 역할 구성을 강제하지 않는다(SP-INV 8). 기본 2(`baseSpecialists`) + 조건부 2(`conditionalSpecialists`)를 담을 여유값이며, 전체 커버리지 바닥(`coverageFloor`)은 이 상한에 **불산입**(§DC-6 configurable). |
-| 기본 역할 구성 (`defaultComposition`) | **강제 기본값(이탈 시 사유 기록)** — `coverageFloor`(전체 커버리지 바닥 실현) + `baseSpecialists`(기본 전문역할) + `conditionalSpecialists`(조건부 편입: 접점 선언·데이터 복잡 등 신호 충족 시). 이는 **책임 있는 자율**(루트 ARCHITECTURE.md §6 원칙 11 (a)(b))의 물리 실현 — 빠지면 안 되는 기본 구성을 비정본 부록이 아니라 **Policy 기본값으로 강제**하되, 그것이 **고정 고정팀은 아니다**(`fixedTeam=금지`와 무모순 — 기본값이지 강제 고정팀이 아님·SP-INV 8 최소할당 존치). 역할명은 **개방 네임스페이스 예시**이며 configurable(§DC-6). 구체 역할 예시·소유 산출물은 비정본 부록(expert-role-catalog.md §3.5) 소관이다(SP-INV 5). |
+| 기본 역할 구성 (`defaultComposition`) | **강제 기본값(이탈 시 사유 기록)** — `coverageFloor`(전체 커버리지 바닥 실현·PM 예시) + `baseSpecialists`(기본 전문역할: 기획·아키텍처) + `conditionalSpecialists`(조건부 편입). 조건부 역할은 사람용 산문 `when`과 **기계 신호 `whenSignal`을 병기**한다(정본 값 == policy 값·L-07): `{ role: 디자이너, when: "접점 선언 시", whenSignal: touchpoint }`(접점 선언 시 편입) · `{ role: DBA, when: "데이터 복잡 시", whenSignal: dataComplex }`(데이터 복잡 신호 시 편입). form-B 로더(`solution_design_resolve.py`·§7A.5)는 산문 `when`을 파싱하지 않고 **`whenSignal`을 기계 대조 매칭**해 결정적으로 활성/제외를 계산한다(산문 파싱 금지·결정성). 이는 **책임 있는 자율**(루트 ARCHITECTURE.md §6 원칙 11 (a)(b))의 물리 실현 — 빠지면 안 되는 기본 구성을 비정본 부록이 아니라 **Policy 기본값으로 강제**하되, 그것이 **고정 고정팀은 아니다**(`fixedTeam=금지`와 무모순 — 기본값이지 강제 고정팀이 아님·SP-INV 8 최소할당 존치). 역할명은 **개방 네임스페이스 예시**이며 configurable(§DC-6). 구체 역할 예시·소유 산출물은 비정본 부록(expert-role-catalog.md §3.5) 소관이다(SP-INV 5). |
 | 이탈 규칙 (`deviationRule`) | **silentOmission 금지**(책임 있는 자율 (b)(c)) — 기본 구성에서 역할 추가/제거 시 **사유 기록**(성숙 run 기록 `events/maturation-<run-id>/`) + **Validating 게이트 표면화·사용자 확인**(고임팩트 이탈은 즉시). "기본값이니 조용히 이탈"을 폐기한다. |
 | 전체 커버리지 바닥 (`wholeScopeCoverage=required`) | **필수 바닥** — 선언된 전체 프로젝트 범위를 관장하는 커버리지 capability를 반드시 포함한다(04 §3.3·§3.8 SP-INV 9). `defaultComposition.coverageFloor`(PM 예시)가 이 바닥을 실현한다. 최소 할당(SP-INV 8)의 예외가 아니라 그 위의 필수 바닥이며 전문 역할 상한에 **불산입**된다 — 두 원칙은 **층위가 다르다**(04 §3.3 인용: 최소 할당은 각 좁은 관심사에 대해 전문 역할을 필요 이상으로 늘리지 않음을, 커버리지 바닥은 그와 독립적으로 선언 범위 전체가 관장 없이 비는 일이 없음을 규율 — 모순 아님). 커버리지 capability도 고정 역할명이 아니라 Capability 선언으로 표현된다(개방 네임스페이스·SP-INV 5). |
 | 역할→산출물 소유 맵 (`artifactOwnership`) | 각 `defaultRequiredSet` id의 소유 역할(작성 책임) — `defaultComposition`과 동일 개방 네임스페이스 예시로 10 id를 1:1 매핑(PM=project-plan+횡단 완결성 / 기획=requirements-def·business-process·functional-spec·test-plan-cases / 아키텍처=table-def·interface-spec, DBA 보조 / 디자이너=screen-list·menu-structure·screen-design). 생산 프로토콜은 §7A. |
@@ -332,6 +332,23 @@ Solution Design이 **기본 필수 Projection 세트(§7.2 (다))를 어떻게 �
 
 이 세 지점은 silentOmission 금지(SP-INV 9·`exclusionRule.silentOmission=금지`)의 사용자 개입 실현이며, 04 §3.4·§3.8 SP-INV 4·9를 재정의하지 않는다.
 
+### §7A.5 form-B 배선 흐름 (결정적 부분 물리화 — 실행 호스팅은 여전히 미설계)
+
+§7A.1~§7A.4의 form-A 규약 중 **결정적으로 계산 가능한 부분**(어떤 역할을 띄우고·각자 무엇을 소유하며·접점/연계/데이터복잡 선언에 따라 무엇이 필수인지)을 form-B 로더 `planning/adapters/claude/solution_design_resolve.py`로 물리화한다. 이 로더는 `entry_resolve.py`(형태 B 로더)·`design_completeness.py`(결정적 게이트 체커)와 **동일 성격**이다 — LLM 0·결정적·오프라인 안전·순수 판독·계산해서 방출까지만(실행 안 함). 배선 흐름은 6단계다.
+
+| # | 단계 | 주체 | 성격 |
+|---|---|---|---|
+| (1) | SD 복잡도 판정에서 **접점/연계/데이터복잡 신호 확정** — 입력 인스턴스 vN·워크스페이스 증거에서 판정(§7.2 (가)). 03에 접점 구조필드가 없으므로 주 세션이 주입한다(entry_resolve `--folder` 주입 동형·§DC-8). | 주 세션(Advisor) | 규약 절차(form-A) |
+| (2) | `solution_design_resolve.py --policy <policy.yaml> [--touchpoints …] [--interfaces …] [--data-complex]` 호출 → `roleComposition`(활성/제외 근거)·`artifactPlan`(id·name·owner·requirement·required)·`manifestScaffold`(채워질 자리) 수령. | form-B 로더 | 결정적·LLM 0 |
+| (3) | 브리프 템플릿(`solution-design-brief-template.md`)을 `artifactPlan`으로 채워 **역할별 위임 브리프 발부** — 각 역할을 fresh-context 서브에이전트로 소환(주 세션 form-A·§6.1 "기존 위임 관행 재사용"). **로더가 소환하지 않는다** — 소환은 주 세션이 한다. | 주 세션(Advisor) | 규약 절차(form-A) |
+| (4) | 각 역할이 **자기 소유 산출물 작성**(`<workspace>/docs/<id>.md`) + `design-manifest.json` 해당 artifact `status` 를 `pending`→`produced`(또는 정당화 `excluded`)로 갱신·CP1 자체점검(§7A.1~§7A.3). | 역할 서브에이전트 | 위임 실행 |
+| (5) | CP2 — `design_completeness.py <policy.yaml> <design-manifest.json>` 결정적 체커로 횡단 완결성 판정(침묵 누락 차단·SP-INV 9). | 커버리지 역할 + 결정적 체커 | 결정적 |
+| (6) | Validating 사용자 게이트(§5·04 §3.4 T8~T11) — 성숙/스킵은 사용자 응답 통과(SP-INV 4·불가침). | 주 세션 + 사용자 | 게이트 |
+
+- **실행 호스팅은 여전히 미설계(04 §3.9).** form-B 로더는 (2)의 **계산·방출까지만** 한다 — 역할 서브에이전트를 자동 소환·구동하거나 산출물 본문을 자동 생성하는 실행 코드(형태 B step 실행기)는 **설계하지 않는다**. 그것은 04 §3.9 확장 포인트이며 §6.2(line 200)가 "설계하지 않는다"로 명시 유보했다. (3)의 소환은 주 세션(Advisor)이 form-A로 수행하는 **기존 위임 관행 재사용**이다(§6.1). 로더가 subagent 를 spawn 하거나 Agent/Task API 를 호출하면 경계 위반이다.
+- **결정적/비결정적 분담.** (1) 신호 확정·(3) 실제 소환·(4) 본문 작성·(6) 게이트는 판단·실행을 요하는 form-A 규약이며, (2) 역할 구성/소유/필수 계산과 (5) 완성도 판정만이 결정적 form-B로 물리화된다. 이 분담은 §0 형태 A→B 공존(structure.md §7 C-1 — 04 §3 Core Contract 변경 0)과 정합한다.
+- **manifestScaffold 는 뼈대일 뿐.** 로더가 방출하는 `manifestScaffold.artifacts[].status="pending"`은 **작업중 placeholder**이며, `design_completeness` 체커는 `produced`/`excluded` 만 인정한다 — (4)에서 생산 완료 후 status 가 갱신되어야 (5) 게이트를 통과한다.
+
 ---
 
 ## §8. Provenance 성숙 run 내부 형식 확정
@@ -419,7 +436,9 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 | `…/solution-design-data/events/maturation-<run-id>/events.jsonl`·`policy/default-policy.yaml` | 실재 (형식·값 정본 문면 소유) | 형식·값 정본 문면 실재(본 문서 소유) — 물리 인스턴스(maturation-r001…r003)는 성숙 run E2E로 생성 후 아카이브 `@cd9247b`. `policy/default-policy.yaml`은 실재. |
 | `uahf/framework/adapters/claude/discovery-data/contracts/uahf/project-contract.v2.md` (성숙 산출 — superseding 인스턴스) | 실재 (경로 정본 = contract-binding §4.2) | 실재 — 성숙 경로 v1→v2 append(v1 문면 byte 불변, PC-INV 9). |
 | 소비 프로젝트 `.claude/solution-design/` (일반 관례) | 경로 관례 확정(정본) | 본 저장소에는 미존재(정상 — 일반 관례는 소비 프로젝트 배치 대상). |
-| 성숙 실행 규약 절차 로더·기록기·Policy 로더(형태 B) | 미도입 (형태 B 예정) | 미도입 — Bootstrap 상태(형태 A). |
+| `planning/adapters/claude/solution_design_resolve.py` (산출물 생산 프로토콜 form-B 로더 — 역할 구성·소유·필수 계산·방출) | 실재 (§7A.5 form-B 배선) | 실재 — §DC-1 Wave 5-B 도입. 결정적·LLM 0·오프라인 안전·실행 호스팅 0(계산·방출까지만). 테스트 `planning/adapters/claude/tests/test_solution_design_resolve.py` 통과. |
+| `planning/adapters/claude/solution-design-brief-template.md` (역할별 위임 브리프 양식 — form-A 데이터 문서) | 실재 (§7A.5 (3) 소환 브리프) | 실재 — §DC-1 Wave 5-B 도입. 플레이스홀더 양식(주 세션이 artifactPlan 으로 채움). |
+| 성숙 실행 규약 절차 기록기·실행 호스팅(형태 B step 실행기) | 미도입 (형태 B 예정) | 미도입 — 기록기·실행 호스팅(역할 자동 소환·본문 자동 생성)은 04 §3.9 확장 포인트로 미설계(§6.2·§7A.5). |
 
 - **핵심 구분.** 본 문서가 확정한 백엔드 트리·기록 직렬화 어휘·게이트 채널·Policy 값·Provenance 성숙 run 내부 형식은 **정본 문면(형태 A)**이며, 물리 데이터 자산은 성숙 run E2E로 생성되었다 — run 원장 인스턴스(`solution-design-data/events/…`)는 산출물 수명 정책(`docs/artifact-lifecycle-policy.md`)에 따라 앵커 보존 `@cd9247b`로 전환되었고, superseding v2 계약 인스턴스는 실재를 유지한다. 본 문서는 구조·형식·경로·값의 정본 문면을 소유하고, 그 물리 위치(현행 `uahf/framework/adapters/claude/…`)의 최종 확정은 2차 산출물 디커플링 트랙 소관이다(L-07).
 - 실측과 불일치하는 서술은 0건이다 — 미존재를 실재로, 실재를 미존재로 쓰지 않는다(L-07).

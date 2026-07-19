@@ -26,8 +26,9 @@ roleSelection:
     coverageFloor: PM                       # wholeScopeCoverage 바닥 실현 — 완결성 관장·횡단(전문 역할 상한 불산입)
     baseSpecialists: [기획, 아키텍처]        # 기본 전문역할(항상 파생 후보)
     conditionalSpecialists:
-      - { role: 디자이너, when: "touchpoint(접점) 선언 시" }   # 조건부 — 접점 선언 시 편입
-      - { role: DBA,     when: "데이터 복잡 시" }              # 조건부 — 데이터 복잡도 신호 시 편입
+      # when = 사람용 산문(참고) · whenSignal = 기계 신호(form-B 로더가 대조 매칭 — 산문 파싱 안 함).
+      - { role: 디자이너, when: "touchpoint(접점) 선언 시", whenSignal: touchpoint }   # 접점 선언 시 편입
+      - { role: DBA,     when: "데이터 복잡 시",          whenSignal: dataComplex }   # 데이터 복잡 신호 시 편입
 
   # 이탈 규칙 (책임 있는 자율 (b)(c) — silentOmission 금지)
   deviationRule:

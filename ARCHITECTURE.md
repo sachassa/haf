@@ -28,6 +28,7 @@
 | 2026-07-17 | v1.6 | §5 `.claude` 절에 "UAF 관리 거버넌스 vs UAHF 하네스 거버넌스 (별개)" 명문화 1건 추가 — 루트 `.claude/` Agent 거버넌스(AGENT.md·agents)=UAF-레벨 총괄 관리, UAHF 하네스 거버넌스=그 배포 `.claude/`(scaffold-template 유래)로 분리 서술(4-역할 구조 차용·상호 무참조·self-host 개발/배포 실행 구분). 상위-레벨 UAHF 명칭 잔재 정리(root `.claude/` AGENT.md·agents·CLAUDE.md UAF 재귀속·ROADMAP:24)와 짝. 파이프라인 6요소·UAF-INV·P1~P5·§10/§11 규범 문면 무변·새 설계 결정 0. | Advisor |
 | 2026-07-17 | v1.7 | §8 UAF-INV ① 재정의 — "무수정"(동결) 폐지(UAHF→UAF 승격 이행 완료로 보호 장치 해제)·접점 원칙(Project Contract 단일 접점) 존치·불변 번호 ① 유지(재번호 0·①~⑥ 순서·카운트 무변·내용만 재정의). 라이브 본문 정합 8곳: §0 근거 정본(:10)·§0 접점 절 표제(:42)·§2.2 다이어그램 태그(:105)·§2.2 UAHF 불릿(:115)·§2.5 병존 주(:138)·§6 Stable Core(:193)·§8 UAF-INV ① 본문(:228)·§10 주(:253). §9 이력 행·§8 폐지 경위 주석 제외 라벨 잔존 0. P1~P5·6요소 파이프라인·책임 경계표 담당4/비담당5·§ 포인터 참조 원칙 무변·새 설계 결정 0. 사용자 결정 2026-07-17. | Advisor (사용자 결정) |
 | 2026-07-17 | v1.7 (정합) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §0 근거 정본(:8)·§0 라우터 선언(:38)의 삭제 산출물 참조 앵커 전환(`docs/v1.2.1-context-and-design.md@cd9247b`, 2곳). 논지·계약·규범 문면 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-19 | v1.7 (Draft) | §6 설계 원칙 11(책임 있는 자율) 신설 — 비정본 거버넌스: 필수는 Core/Policy 강제·자율은 기본값+사유기록·이탈은 게이트 표면화. §6·§1 카운트 10→11 정합. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, uahf/framework/core/structure.md §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. 표 내 옛 행의 `uaf/ARCHITECTURE.md`·`§3`·`9종` 등 표기는 그 개정 시점의 정확한 이력 기록이므로 그대로 둔다.)
 
@@ -62,7 +63,7 @@
 - UAF 구조 6요소의 **순서와 위상**, 요소 간 **의존 방향**을 단방향으로 명문화한다 (§2).
 - Layer 사이를 잇는 **연결 계약**(Discovery Request·Project Contract)을 서술한다 (§3).
 - **knowledge 횡단 Base**(§4)와 **`.claude` Global Default/override 합성 경계**(§5)를 선언한다.
-- UAF가 따르는 **설계 원칙 10종**·**사용자 고정 원칙 P1~P5**·**불변 규칙 UAF-INV 6건**·**책임 경계**·**용어**를 확정한다 (§6~§12). 특히 후속 병렬 작업의 선행 확정 인터페이스인 **Discovery Request 추상**을 §12에서 고정한다.
+- UAF가 따르는 **설계 원칙 11종**·**사용자 고정 원칙 P1~P5**·**불변 규칙 UAF-INV 6건**·**책임 경계**·**용어**를 확정한다 (§6~§12). 특히 후속 병렬 작업의 선행 확정 인터페이스인 **Discovery Request 추상**을 §12에서 고정한다.
 
 이 문서는 상위 구조의 정본(라우터)이다. 각 Layer의 구현·내부 계약을 정의하지 않는다 — 그것은 각 Layer 정본 소관이다.
 
@@ -187,9 +188,9 @@ knowledge ◀──Consult── 모든 Layer   (횡단 — 파이프라인 파�
 
 ---
 
-## §6. 설계 원칙 (Design Principles — 10종)
+## §6. 설계 원칙 (Design Principles — 11종)
 
-UAF는 다음 10종 원칙을 따른다. UAHF와 동형인 원칙은 UAHF 정본을 § 포인터로 참조하며 재정의하지 않는다.
+UAF는 다음 11종 원칙을 따른다. UAHF와 동형인 원칙은 UAHF 정본을 § 포인터로 참조하며 재정의하지 않는다.
 
 1. **AI-Agnostic** — UAF는 특정 AI 모델·실행 환경에 종속되지 않는다. Entry·Discovery의 물리 실현은 Adapter 소관이다 (`uahf/ARCHITECTURE.md` §3.1 동형 원칙을 UAF 레벨에 적용).
 2. **Stable Contract** — Project Contract는 장기 호환을 유지하는 공식 계약(Public API)이다. Discovery 내부 변경과 독립적으로 안정을 유지한다 (P3, §7).
@@ -201,6 +202,7 @@ UAF는 다음 10종 원칙을 따른다. UAHF와 동형인 원칙은 UAHF 정본
 8. **Policy as Data** — 진입 판별의 결정 테이블, Discovery의 임계값·예산·종료 규칙은 코드가 아니라 **데이터(Policy)**다. 정책 변경이 엔진 변경을 요구하지 않는다.
 9. **Future Extensibility** — 신규 Entry·Strategy·Runtime은 Layer·엔진 변경 없이 **Registry 행·Policy 데이터 추가만으로** 확장된다. Framework 전체를 다시 쓰지 않는다 (`uahf/ARCHITECTURE.md` §8 동형 지향을 UAF 레벨에 적용).
 10. **Knowledge Consult (횡단)** — `knowledge/`는 파이프라인 단계가 아니라 **모든 Layer가 Consult하는 횡단 공용 Knowledge Base**다. 어느 Layer든 knowledge를 회수해 결정을 뒷받침하되, knowledge는 파이프라인 payload를 흘려보내지 않는다 (§4, context-and-design §3·§4, `knowledge/ARCHITECTURE.md`).
+11. **책임 있는 자율 (Accountable Autonomy).** 자율을 주되 **침묵 이탈**을 금한다. (a) 빠지면 안 되는 것(필수 산출·전 영역 커버·불가침 절차)은 비정본 부록이 아니라 **Core·Policy·게이트로 강제**한다 — 비정본 부록은 참고 문서일 뿐 강제 근거가 아니다. (b) 남은 자율은 **Policy 기본값 + 이탈 시 사유 기록**이다(silentOmission 금지). (c) 이탈·제외는 **사용자 게이트에서 일괄 표면화·확인**한다(고임팩트는 즉시). "비정본=선택=조용히 skip"을 폐기한다(운영 정본: `.claude/CLAUDE.md` §비정본 거버넌스).
 
 ---
 

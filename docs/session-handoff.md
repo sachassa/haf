@@ -84,8 +84,8 @@
 
 ## §3. 다음 작업 (별도 새 세션 — 본 세션 미착수)
 
-- **Interview Entry-to-Runtime Audit** (사용자 지정 2026-07-14). 정의·범위·성공 기준은 착수 세션에서 사용자 지시로 확정한다 — 본 파일은 명칭과 시작점만 기록하며 범위를 추정하지 않는다.
-- 착수 시 최소 read-set: 본 §1 앵커 + 착수 세션의 사용자 지시. 관련 정본은 필요 §만 demand-driven(후보 포인터: `entry/specs/01-entry.md`·`discovery`/`orchestration` specs — 실제 선택은 지시 범위 확정 후).
+- **[1순위] §DC-9 05 wiring 후속** (사용자 지정 2026-07-19): OQ-PO-B5(actor 재검증)·OQ-PO-B1(게이트 큐 사용자 표면 렌더 문법). 착수 read-set: `orchestration/adapters/claude/project-orchestration-binding.md` §5.7 OQ 목록 + 메모리 `uaf-orchestration-wiring-gap`. 참고: Stage B 실코드 실증은 tms 트랙 종료(앵커 `4934bc8`)로 다음 소비 프로젝트 몫이며, 그 전에 **seed 컴파일러 tms 하드코딩 일반화**(`contract_to_graph.py`) 선행 권고.
+- **Interview Entry-to-Runtime Audit** (사용자 지정 2026-07-14 — 차순위 유지). 정의·범위·성공 기준은 착수 세션에서 사용자 지시로 확정한다 — 본 파일은 명칭과 시작점만 기록하며 범위를 추정하지 않는다. 착수 시 최소 read-set: 본 §1 앵커 + 착수 세션의 사용자 지시. 관련 정본은 필요 §만 demand-driven(후보 포인터: `entry/specs/01-entry.md`·`discovery`/`orchestration` specs — 실제 선택은 지시 범위 확정 후).
 
 ## §4. 미결·이월 항목 (다음 관련 세션에서 참조)
 

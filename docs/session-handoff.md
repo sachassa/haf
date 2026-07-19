@@ -4,7 +4,7 @@
 용도: 새 세션은 **본 파일 하나로 상태를 인수**한다. 원문 전체 정독 강제 없음 — demand-driven(§단위·필요 시점) 규칙을 따른다. (물리 발화 = `/uaf-continue`)
 지위: `docs/artifact-lifecycle-policy.md` §6이 정한 **UAF 레벨 단일 live 핸드오프**다. 단수·제자리 갱신이며 버전별 파일을 만들지 않는다. 과거 상태는 git 이력이 정본이다. (전신: `docs/next-session-prompt.md` — 본 파일로 개명·재정착 2026-07-17)
 
-> **🔴 갱신 2026-07-19 — §DC-1 코어 강제 = 완결** (branch `feat/dc1-design-completeness`·미머지·미푸시). Wave 1-4로 백엔드 직행 차단 실증: SP-INV 9(코어 04)+필수 산출물 10종(어댑터 정책)+엔진 게이트(`resolve_gate` fail-closed·프레임워크 무수정). 각 Wave CP2 독립검증(테스트 재실행)·CP3 승인. 커밋 `08a3321`(설계+정책)·`8e1f18d`(실행코드). tms 실선언(3접점+연계)으로 필수 10종 미산출 차단 실증. **+책임 있는 자율 원칙**(ARCH §6 원칙11·CLAUDE.md — 필수=Core/Policy 강제·자율=기본값+이탈 사유기록·이탈=게이트 일괄 표면화; "비정본이 항상 문제" 근본 대응·메모리 `uaf-accountable-autonomy-principle`). **+Wave 5-A 생산 프로토콜**(정책·바인딩 §7A·부록 — 역할 구성[PM 커버리지 바닥+기획·아키텍처 기본+디자이너·DBA 조건부]·역할→산출물 소유 맵 1:1·위임 산출·MD 본문+JSON 매니페스트·docs 배치·CP1-3+Validating 게이트 컨펌). 원칙·Wave 5-A 각 CP2/CP3. **잔여:** Wave 5-B 코어(form-B 로더 `solution_design_resolve.py`·브리프 템플릿·배선 §7A.5)=완결 2026-07-19(기록기·실행 호스팅[04 §3.9]은 미도입 유지)·PreToolUse 훅(후순위)·§DC-5/6/7/9 백로그(§DC-8 완결 2026-07-19 — 비정본 승격 불필요·접점 제외 표면화 옵션 b 해소·옵션 a 잔여)·tms 실제 10종 설계 산출(별도 제품 트랙). 상세 정본 = 메모리 `uaf-design-completeness-gap`. 이하 §DC-1~9는 원 백로그 기록(§DC-1~4 코어 반영 완료). 이하 §1~§5는 직전 상태(Performance Tuning·산출물 수명).
+> **🔴 갱신 2026-07-19 — §DC-1 코어 강제 = 완결** (branch `feat/dc1-design-completeness`·미머지·미푸시). Wave 1-4로 백엔드 직행 차단 실증: SP-INV 9(코어 04)+필수 산출물 10종(어댑터 정책)+엔진 게이트(`resolve_gate` fail-closed·프레임워크 무수정). 각 Wave CP2 독립검증(테스트 재실행)·CP3 승인. 커밋 `08a3321`(설계+정책)·`8e1f18d`(실행코드). tms 실선언(3접점+연계)으로 필수 10종 미산출 차단 실증. **+책임 있는 자율 원칙**(ARCH §6 원칙11·CLAUDE.md — 필수=Core/Policy 강제·자율=기본값+이탈 사유기록·이탈=게이트 일괄 표면화; "비정본이 항상 문제" 근본 대응·메모리 `uaf-accountable-autonomy-principle`). **+Wave 5-A 생산 프로토콜**(정책·바인딩 §7A·부록 — 역할 구성[PM 커버리지 바닥+기획·아키텍처 기본+디자이너·DBA 조건부]·역할→산출물 소유 맵 1:1·위임 산출·MD 본문+JSON 매니페스트·docs 배치·CP1-3+Validating 게이트 컨펌). 원칙·Wave 5-A 각 CP2/CP3. **§DC-3 PreToolUse 백스톱 = 완결 2026-07-19**(branch 동일·미머지): 차단형 **운영 훅** 3 Wave — W1 `orchestration/adapters/claude/pretooluse_design_guard.py`(design_completeness 재사용·스코프=게이트 워크스페이스+src/·fail-closed on finding/fail-open on guard error) + 리포 `.claude/settings.json` PreToolUse 배선 + 테스트 9종, **메인+서브에이전트 Write 라이브 차단 실증**(PreToolUse 서브에이전트 발화 경험 확증); W2 `hooks-binding.md` §4.5 운영 훅 경계 명문화(**운영 훅≠Hooks Component 바인딩**·PreToolUse∉08 카탈로그→INV-2 미저촉·**spec 08 무수정**·DP-E3 stale 정정); W3 scaffold 벤더링(`dot-claude/hooks/design-guard/`·settings.example·install-manifest·scaffold-binding §6·PyYAML 전제조건). 각 CP2/CP3. 엔진 게이트(fail-closed)+훅 백스톱 **이중방어**+미래 상속 완성. 백로그=인프라 부재 fail-open. 상세=메모리 `uaf-design-completeness-gap`. **잔여:** Wave 5-B 코어(form-B 로더 `solution_design_resolve.py`·브리프 템플릿·배선 §7A.5)=완결 2026-07-19(기록기·실행 호스팅[04 §3.9]은 미도입 유지)·§DC-5/6/7/9 백로그(§DC-8 완결 2026-07-19 — 비정본 승격 불필요·접점 제외 표면화 옵션 b 해소·옵션 a 잔여)·tms 실제 10종 설계 산출(별도 제품 트랙). 상세 정본 = 메모리 `uaf-design-completeness-gap`. 이하 §DC-1~9는 원 백로그 기록(§DC-1~4 코어 반영 완료). 이하 §1~§5는 직전 상태(Performance Tuning·산출물 수명).
 
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
@@ -23,11 +23,11 @@
 - 최소 세트: (1) **전체 기능·범위 명세(PRD)** — 영역이 아니라 모든 기능 (2) **UI/UX 설계**(화면 목록·주요 플로우·와이어프레임 — 접점 선언 프로젝트 필수) (3) **전체 프로세스맵 + 데이터모델(ERD)** (4) **WBS**(위 3개에서 파생·Contract 직행 금지).
 - **정본 승격:** 이 세트를 `planning/specs/04-solution-design.md`에 "필수 Projection 세트"로 등재(비정본 catalog → 정본). 컴파일러·게이트·훅 공통 참조원.
 
-### §DC-3 강제 시점·메커니즘 (검토 세션 추천)
+### §DC-3 [완결 2026-07-19] 강제 시점·메커니즘
 - **시점 = 구현 착수 직전(설계→구현 경계·UAHF 넘기기 전).** 오케스트레이션 종료 시점 아님(다 짓고 검사는 늦음).
-- **주 장치 = 엔진 게이트:** `contract_to_graph.py`가 접점 선언 시 design/UI-UX 단위를 impl 단위 **앞에** 필수 삽입 + design-completeness 게이트(통과·승인 전 impl ready 금지).
-- **백스톱 = 차단형 훅:** 필수 산출물 없으면 `src/` Write 거부(PreToolUse류). 현 훅은 알림형(SessionStart)뿐 → 차단형 신설 필요(`.claude/settings.json`·`.claude/hooks/` 실재).
-- **왜 둘 다:** 게이트=의미·승인(내용), 훅=존재 최후방어(그래프 오류로 새도 막음). 존재≠완성이므로 훅 단독 불충분.
+- **주 장치 = 엔진 게이트(완결):** `resolve_gate.py`가 `check_design_completeness`를 task_added 승격 직전 호출·**fail-closed**(§DC-1 Wave 3). 설계 미완이면 impl 편입 차단.
+- **백스톱 = 차단형 훅(완결 2026-07-19):** `pretooluse_design_guard.py` PreToolUse **운영 훅** — 게이트-소비 워크스페이스의 `src/` Write 시 `check_design_completeness` 재실행, 설계 미완이면 deny. 리포 `.claude/settings.json` 배선 + scaffold 상속. **메인+서브에이전트 발화 라이브 실증.** 알림형(SessionStart)뿐이던 상태에서 차단형 신설 완료. 정본 경계 = `hooks-binding.md` §4.5(운영 훅≠Hooks Component·spec 08 무수정).
+- **왜 둘 다:** 게이트=의미·승인(내용), 훅=존재 최후방어(그래프 오류로 새도 막음). 존재≠완성이므로 훅 단독 불충분. → 이중방어 실재.
 
 ### §DC-4 UI/UX 단계 신설
 - 접점(웹·앱·포털)이 선언된 프로젝트는 UI/UX 설계 필수 단계. 현재 완전 부재.

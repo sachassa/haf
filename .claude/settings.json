@@ -20,6 +20,20 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "python \"$CLAUDE_PROJECT_DIR/orchestration/adapters/claude/pretooluse_design_guard.py\"",
+            "timeout": 15,
+            "statusMessage": "설계완성도 백스톱(src/ 차단)"
+          }
+        ]
+      }
     ]
   }
 }

@@ -17,6 +17,10 @@ installedArtifacts:             # Scaffold가 생성·소유한 산출물 목록
   - .claude/agents/planner.md
   - .claude/agents/worker.md
   - .claude/agents/verifier.md
+  - .claude/settings.json      #   (배치된 Config Project scope — settings.json.example 유래)
+  - .claude/hooks/design-guard/                       #   (설계완성도 백스톱 훅 디렉터리)
+  - .claude/hooks/design-guard/pretooluse_design_guard.py   #   (PreToolUse guard — 벤더링 미러)
+  - .claude/hooks/design-guard/design_completeness.py       #   (결정적 checker — 벤더링 미러)
   - framework/core/            #   (배치된 Core 계약 문서)
   - framework/runtime/         #   (배치된 Runtime 프로토콜 문서)
   - framework/adapters/        #   (배치된 Adapter Binding 산출물)

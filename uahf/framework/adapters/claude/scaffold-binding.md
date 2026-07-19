@@ -33,6 +33,7 @@
 | 2026-07-06 | v1.0 Draft (r2 — 근거 괄호 정합) | OQ-W1 Advisor 재량 해소 — 값에 결합된 근거 괄호는 값 서술의 일부이며 시점 기록이 아니다. §4 필드 표 frameworkVersion 행의 근거 괄호 `(ROADMAP v0.9)`→`(ROADMAP v1.0)` 갱신(값이 v1.0이 된 지금 "현 릴리스"의 근거 = ROADMAP v1.0 섹션). **동종 전수 대조(L-06·BP-01 — `ROADMAP v0.9` 3지점):** line 138 값 결합 근거 괄호 = 갱신 / line 20 근거 정본 목록(문서 유래)·line 32 r1 이력 행(시점 기록) = 불변(L-10). 그 외 무변경 — `specVersion`=`"v0.1"` 불변·install-manifest.template.md 무접촉(이 사안 해당 없음). r1 위임문 "ROADMAP v0.9 참조 갱신 대상 아님" 규칙의 과잉 전칭을 Advisor 소관 결함으로 정정(값 결합 근거 괄호는 그 규칙 적용 대상 아님). 12 §3 계약 재정의 0. | Worker (Advisor 개정 지시, Task T3 r2) |
 | 2026-07-07 | v1.0 Baseline | v1.0 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 21/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·삭제 산출물 참조(docs/v0.9-install-guide.md §8 실측 행) @cd9247b 앵커 전환. scaffold-template/·framework 경로는 계약·라이브로 유지. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-19 | (상태 유지 — 자산 추가) | 설계완성도 PreToolUse 백스톱(§DC-3)을 scaffold 템플릿에 **벤더링**. `dot-claude/hooks/design-guard/`에 `pretooluse_design_guard.py`·`design_completeness.py` 2파일(정본 원본 = `orchestration/adapters/claude/` 동명 2파일의 **정확 미러** + 벤더링 헤더 주석·코드 로직 무변경) 신설 — 독립 소비 리포에 `orchestration/` 트리 부재 대응(자기완결 병치 import, guard 무변경). `dot-claude/settings.json.example`에 `hooks.PreToolUse`(matcher `Write\|Edit\|MultiEdit`·`.claude/hooks/design-guard/` 소비-상대 경로·`//hooks` 안내 키) 배선. §6 트리·§6.1 표·§6.2 운영 훅 경계 주(Component 아님·memory-guard.sh 선례 동형·CK-6 판정 대상 밖 — 설치 대상이 `.claude/`이지 Core 아님)·`install-manifest.template.md` installedArtifacts(design-guard 2파일 + `.claude/settings.json`)·`scaffold-template/README.md` 구성 표·PyYAML 전제조건 문서화 반영. 템플릿 파일 수 13→15(§8·§11 갱신). 벤더링 미러 스모크 실측: 임시 워크스페이스 + 정책(always 1)·매니페스트 부재 → guard subprocess stdout `permissionDecision=="deny"`·exit 0 관측(병치 checker import 성립 실증). **백로그: 인프라 부재(PyYAML 등) 시 fail-open 강화** — 이번 개정은 정확 미러(동작 무변경)로만 벤더링하고 재오픈하지 않음(검증된 프레임워크 guard 보존). 12 §3 계약 재정의 0·새 CK/사유 코드 창설 0·원본(orchestration/·리포 `.claude/settings.json`·Wave1 테스트) 무수정. | Worker (Advisor 위임, §DC scaffold 벤더링) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -185,11 +186,14 @@ framework/adapters/claude/scaffold-template/
 │  ├─ AGENT.md                     #   규약 문서 초기본 (Governance)
 │  ├─ CLAUDE.md                    #   Advisor 진입점 + Config Project scope 초기값·안내
 │  ├─ settings.json.example        #   Config Project scope 초기값 (선택) → .claude/settings.json
-│  └─ agents/
-│     ├─ advisor.md                #   Advisor 정의 초기본 (실행 모델 미지정 = 세션 상속)
-│     ├─ planner.md                #   Planner 정의 초기본 (model: opus)
-│     ├─ worker.md                 #   Worker 정의 초기본 (model: opus)
-│     └─ verifier.md               #   Verifier 정의 초기본 (model: opus)
+│  ├─ agents/
+│  │  ├─ advisor.md                #   Advisor 정의 초기본 (실행 모델 미지정 = 세션 상속)
+│  │  ├─ planner.md                #   Planner 정의 초기본 (model: opus)
+│  │  ├─ worker.md                 #   Worker 정의 초기본 (model: opus)
+│  │  └─ verifier.md               #   Verifier 정의 초기본 (model: opus)
+│  └─ hooks/design-guard/          #   운영 훅(설계완성도 백스톱 §DC-3) — Component 아님
+│     ├─ pretooluse_design_guard.py #  PreToolUse guard(벤더링 미러 — 정본=orchestration/adapters/claude/)
+│     └─ design_completeness.py     #  결정적 checker(벤더링 미러·병치 import·PyYAML 전제)
 ├─ framework/
 │  ├─ core/README.md               # Core 경계 자리 (AI 비의존 — CK-6 대상)
 │  ├─ runtime/README.md            # Runtime 경계 자리 (AI 비의존 — CK-6 대상)
@@ -205,6 +209,7 @@ framework/adapters/claude/scaffold-template/
 | Agent 정의 (4종) | `dot-claude/agents/{advisor,planner,worker,verifier}.md` | `.claude/agents/*.md` | 12 §3.2-A, 02 §4.1 |
 | Config — Global scope 초기화 | (문서 기본값 제공 — 물리 소스는 사용자 환경 소관) | 사용자 전역 설정 (미배치) | 12 §3.2-A, 01 §3.2-B |
 | Config — Project scope 초기화 | `dot-claude/CLAUDE.md`·`dot-claude/AGENT.md`·`dot-claude/settings.json.example` | `.claude/*`·`.claude/settings.json` | 12 §3.2-A, 01 §3.2-B |
+| (운영 훅 — 필수 6요소 아님) 설계완성도 백스톱 | `dot-claude/hooks/design-guard/{pretooluse_design_guard.py·design_completeness.py}` | `.claude/hooks/design-guard/*` | §DC-3, 운영 훅(memory-guard.sh 선례 동형) |
 | specs 디렉터리 | `specs/README.md`(자리·배치 안내) | `specs/`(+ 기준선 배치) | 12 §3.2-A |
 | Core / Adapter 경계 | `framework/{core,runtime,adapters}/README.md`(자리) | `framework/core/`·`framework/runtime/`·`framework/adapters/` | 12 §3.2-A, 01 §3.2-E |
 | Install Manifest (§3.2-B) | `install-manifest.template.md` | 프로젝트 내 매니페스트 파일 | 12 §3.2-B, §4 |
@@ -216,6 +221,7 @@ framework/adapters/claude/scaffold-template/
 - **Global scope은 사용자 환경 소관.** Global scope(Framework 전역 기본값)의 물리 소스는 사용자·환경 전역 설정이며 Scaffold가 초기화·덮어쓰지 않는다(§2 행 3). 템플릿은 Global 기본값을 문서 기본값으로만 제공한다.
 - **Core부 AI 비의존(CK-6 자체 전수 스캔).** 템플릿의 Core부(`framework/core/README.md`·`framework/runtime/README.md`)는 AI 의존 토큰 0건으로 작성되었다. 본 Task가 CK-6 방법(텍스트 검색 전수 스캔, §5)으로 금지 요소 후보 집합 전 범위를 자체 스캔한 결과 **instance 토큰 0건**이다(§8 실측 — 카테고리 명·컴포넌트/문서 파일명은 금지 토큰이 아니다). 이는 설치된 Core 디렉터리가 CK-6을 통과하도록 의도된 것이며, 템플릿이 물리적으로 Adapter 경계 이하(격리 지점, C-3 허용)에 있음과 무관하다. `framework/adapters/README.md`(Adapter 경계 자리)는 격리 지점이므로 CK-6 대상이 아니다.
 - **초기본의 성격.** 4역할 정의·규약 문서는 **초기본(starter)**이며, 계약 정본(02 §4.1·Glossary §3.2-E)을 재정의하지 않고 참조·바인딩한다. 실행 모델 지정은 현행 실물 관행(worker·planner·verifier `model: opus`, advisor 세션 상속)을 따르되 그 의미 정본이 02 §4.1임을 각 파일이 주석한다. 대상 프로젝트는 이를 시작점으로 삼아 자기 프로젝트 규약을 얹는다.
+- **설계완성도 백스톱 훅(운영 훅 — Component 아님).** `dot-claude/hooks/design-guard/`의 2파일(`pretooluse_design_guard.py`·`design_completeness.py`)은 `orchestration/adapters/claude/` 원본의 **벤더링 미러(정확 복사 + 벤더링 헤더 주석)**다. 독립 소비 리포에는 `orchestration/` 트리가 없으므로, 백스톱이 자기완결로 동작하도록 두 파일을 `.claude/hooks/design-guard/`에 병치 배치한다(guard 가 병치된 checker 를 `Path(__file__).parent` 기준으로 import — 원본 코드 무변경). 배선은 `settings.json.example`의 `hooks.PreToolUse`(matcher `Write|Edit|MultiEdit`)에 있고 설치 시 `.claude/settings.json` 으로 배치된다. 이 디렉터리는 **운영 훅 스크립트 자리**이지 Hooks Component 의 Hook Module 이 아니다(manifest.md 미배치 — 운영 훅 vs Component 경계). `.claude/hooks/`의 loose 스크립트 관례는 `memory-guard.sh` 선례와 동형이다. **전제조건: PyYAML** — checker 가 정책 YAML 을 파싱하므로 소비 리포에 PyYAML 설치가 필요하다(README 명시). 미러의 CK-6 정합: 벤더링 스크립트는 AI 모델명 토큰 0건(원본도 0)이며, 이 훅 디렉터리는 Adapter 경계 이하(격리 지점)이자 설치 대상이 `.claude/`(Adapter Binding)이지 Core 디렉터리(`framework/core`·`framework/runtime`)가 아니므로 CK-6(설치된 Core 디렉터리 AI 의존 0건) 판정 대상 밖이다.
 
 ---
 
@@ -246,7 +252,7 @@ Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: �
 |---|---|---|
 | `framework/adapters/claude/` 자매 바인딩 8문서 + adapter-conformance.md | 실재 | 실재 — runtime·memory·verifier·loop·workflow·hooks·skills·plugins-binding.md 8파일 + adapter-conformance.md 확인. |
 | `framework/adapters/claude/scaffold-binding.md` (본 문서) | 실재 (본 산출로 생성) | 실재 (이 파일). 생성 전 미존재였음(사전 실측 확인). |
-| `framework/adapters/claude/scaffold-template/` (프로젝트 템플릿) | 실재 (본 산출로 생성 — 13파일) | 실재 — 13파일 확인: README.md·install-manifest.template.md·dot-claude/{AGENT.md·CLAUDE.md·settings.json.example·agents/4종}·framework/{core,runtime,adapters}/README.md·specs/README.md. |
+| `framework/adapters/claude/scaffold-template/` (프로젝트 템플릿) | 실재 (본 산출로 생성 — 13파일; 2026-07-19 개정으로 15파일 — §9) | 실재 — 13파일 확인(2026-07-06): README.md·install-manifest.template.md·dot-claude/{AGENT.md·CLAUDE.md·settings.json.example·agents/4종}·framework/{core,runtime,adapters}/README.md·specs/README.md. **2026-07-19 개정(§9): dot-claude/hooks/design-guard/{pretooluse_design_guard.py·design_completeness.py} 2파일 추가 = 15파일.** |
 | scaffold-template/ Core부 AI 의존 토큰 (CK-6 자체 전수 스캔) | 0건 (instance 토큰) | 0건 — `scaffold-template/framework/{core,runtime}/`에 대해 금지 요소 후보 집합 전수 스캔, instance 토큰 0. (카테고리 명·문서 파일명 매치는 금지 토큰 아님.) |
 | `.claude/agents/` 4종 (템플릿 원형) | 실재 (advisor·planner·worker·verifier.md) | 실재 — 4파일 확인. 본 문서는 참조만·무수정. |
 | `.claude/AGENT.md`·`.claude/CLAUDE.md` (템플릿 원형) | 실재 | 실재 — 2파일 확인. 무수정. |
@@ -285,7 +291,7 @@ Active Lesson L-07(상태 서술은 실측 후 기록 — A5 재작업 사례: �
 - **§3:** Install/VerifyInstall/Uninstall 3연산 물리 절차를 12 §3.1과 **1:1 단계 대응**(memory-binding.md §3 관례) — reason 코드 대응·멱등성(INV-4)·제거 안전(INV-5) 물리 보장. 형태 A 문서 절차(DP-U1).
 - **§4:** Install Manifest 직렬화 — Markdown + front-matter, 6필드 물리 표기, `frameworkVersion`=`"v1.0"`·`specVersion`=`"v0.1"`(INV-7).
 - **§5:** CK-1~CK-8 물리 검사 방법(검사 도구 바인딩 — 존재 확인/정독 = 파일 조회, 전수 스캔 = 텍스트 검색, 시연 = 명령 실행; verifier-binding.md §5 VT 관례). CK-6 자체 전수 스캔 결과 포함(instance 토큰 0).
-- **§6:** scaffold-template/ 구조·내용 목록 정본(13파일 트리·12 §3.2-A 필수 6요소 대응·`dot-claude/`→`.claude/` 매핑·Global scope 사용자 환경 소관·Module scope 미초기화·Core부 AI 비의존 CK-6 clean).
+- **§6:** scaffold-template/ 구조·내용 목록 정본(13파일 트리 + 2026-07-19 개정 design-guard 운영 훅 2파일 = 15파일·12 §3.2-A 필수 6요소 대응·설계완성도 백스톱 운영 훅(§DC-3·벤더링 미러·PyYAML 전제)·`dot-claude/`→`.claude/` 매핑·Global scope 사용자 환경 소관·Module scope 미초기화·Core부 AI 비의존 CK-6 clean).
 - **§7:** 12 §4.2 이식 교체 지점 1~7 대응 표("교체되는 것 / 유지되는 것") — 유지 열이 이식 불변(C-1) 재확인.
-- **§8:** 상태 서술 실측 대조(2026-07-06 직접 실측) — 자매 8문서+adapter-conformance·scaffold-template/ 13파일·Core부 CK-6 0건·라이브 원형 실물 실재; `framework/scaffold/`·`.claude/settings.json` 부재; specs 15. 실측 불일치 0건(A5/L-07 재발 방지).
+- **§8:** 상태 서술 실측 대조(2026-07-06 직접 실측) — 자매 8문서+adapter-conformance·scaffold-template/ 13파일(2026-07-19 개정 후 15파일 — §9)·Core부 CK-6 0건·라이브 원형 실물 실재; `framework/scaffold/`·`.claude/settings.json` 부재; specs 15. 실측 불일치 0건(A5/L-07 재발 방지).
 - 12 §3 계약 재정의·확장 0 · 새 바인딩·새 CK·새 사유 코드 창설 0 · Frozen specs 계수 15 · Glossary 밖 새 용어 0. 구체 AI·환경·형식 토큰은 이 Adapter 경계·scaffold-template/(격리 지점)에서 허용된다. 형제 Task(PS2) 불인용(07 R2). 라이브 표면 무수정 — 3산출물만 생성(07 R4).

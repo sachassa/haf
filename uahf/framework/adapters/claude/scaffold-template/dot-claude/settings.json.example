@@ -10,5 +10,22 @@
   "permissions": {
     "//": "대상 프로젝트의 권한 정책 초기값 자리. 프로젝트 요구에 맞게 조정한다.",
     "allow": []
+  },
+  "//hooks": "설계완성도 백스톱(§DC-3): 필수 설계 산출물(design-manifest) 미완 시 src/ Write 차단. guard·checker는 .claude/hooks/design-guard/에 벤더링됨. 전제조건: PyYAML 설치 필요(checker가 policy YAML 파싱).",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/design-guard/pretooluse_design_guard.py\"",
+            "timeout": 15,
+            "statusMessage": "설계완성도 백스톱(src/ 차단)"
+          }
+        ]
+      }
+    ]
   }
 }

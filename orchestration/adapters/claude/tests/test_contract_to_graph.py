@@ -33,12 +33,13 @@ import contract_to_graph as c2g  # noqa: E402
 from gates import GatePolicy  # noqa: E402  (무수정 import — orchestration/framework)
 from step import Step  # noqa: E402  (무수정 import — uahf/framework/loop/step-host)
 
-_TMS_ROOT = _REPO_ROOT / "tms-system"
+# 소비 워크스페이스 픽스처(tms-system 트랙 종료·삭제 2026-07-19 — 실 경로 의존 제거).
+_TMS_ROOT = _TEST_FILE.parent / "fixtures" / "consumer-ws"
 
 
 class ResolveContractTests(unittest.TestCase):
-    def test_tms_real_path_selects_v2(self) -> None:
-        """done 1 — 실 tms-system 경로에서 v2 를 고른다(v1 아님)."""
+    def test_fixture_path_selects_v2(self) -> None:
+        """done 1 — 픽스처 워크스페이스(v1·v2 병존)에서 v2 를 고른다(v1 아님)."""
         p = c2g.resolve_contract(_TMS_ROOT)
         self.assertTrue(p.is_absolute())
         self.assertEqual(p.name, "project-contract.v2.md")

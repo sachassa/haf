@@ -176,7 +176,7 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 - **`orchestrate_project.py`** — `<project_root>`를 컴파일→run_dir 물리화(소비 프로젝트 워크스페이스 무삭제·RUNS_DIR 직속 삭제가드)→중립 `build_orchestrator_k` 무수정 재사용→`orch.run()`→exit-code 매핑(§2 종료 코드 2 상속). `--model`(seed 티어)·`--policy`(기본 `auto_approve` — headless 쓰기·게이트와 직교) override.
 - **`resolve_gate.py`** — 게이트 해소: impl-plan 어댑터 검증(F4 계약 수용 = `unitType∈{implementation,milestone}`·milestone≥1·implementation≥1·milestone DAG 종단·`resolve_w` 구조 헬퍼 동일 강도 재사용) **먼저**(실패 시 원장 무변경) → `append_gate_resolution(actor=…)` → 각 구현 task `accept_revision(task_added·basis.gateEventRef)`.
 
-**tms-system(pc-tms-001 v2) 실 run 실측(run 데이터 = `runs/orch-tms-phase1-smoke/`):**
+**tms-system(pc-tms-001 v2) 실 run 실측(run 데이터 = `runs/orch-tms-phase1-smoke/` — tms 트랙 종료로 앵커 전환 `4934bc8`·ARCHIVE.md·2026-07-19):**
 
 - Stage A: seed proposal 단위(실 LLM·`haiku`)가 Contract v2 + solution-design 정독 후 `impl-plan.json`(6 task = implementation 5 + milestone 1·DAG 종단) 산출 → CP2(`cp2-pass` 이벤트·상시 하한) → **`user_decision_required` 게이트 물리 정지(exit 2·`logs/stop-signal.json` pending_gates 기록)**.
 - 게이트 해소: `resolve_gate.py` 가 impl-plan 어댑터 검증 통과 후 **실 사용자(actor=`human`·simulated=false)** 해소 이벤트 append → 6 `task_added` revision(basis.proposingStepRef=impl-plan-phase1·gateEventRef=해소 게이트) 승격. events.jsonl 5(dispatch·cp2-pass·gate-required·resolution-provenance·gate-resolved)·revisions.jsonl 6·artifacts.jsonl 1·active_graph 7노드(fold)·ready_set=선행 impl 단위(결정적 재개 준비).

@@ -29,6 +29,10 @@
   {
     "declaredTouchpoints": [ ... ],   # 접점(웹·앱·포털) 선언. 비공집합 → touchpoint 클래스 required.
     "declaredInterfaces":  [ ... ],   # 외부 연계 선언. 비공집합 → interface 클래스 required.
+    "classExclusions": {              # 클래스 전체 제외 확인(고임팩트 이탈 표면화·원칙 11 (c)).
+      "touchpoint": {"reason","confirmedBy"},   # 접점 미선언으로 touchpoint 클래스 전체 제외 시 필수.
+      "interface":  {"reason","confirmedBy"}     # 연계 미선언으로 interface 클래스 전체 제외 시 필수.
+    },
     "artifacts": [ {"id","status","path"?,"reason"?,"confirmedBy"?}, ... ]
   }
   status ∈ {produced, excluded}. produced=산출(선택 path 존재검사). excluded=정당화 제외
@@ -36,8 +40,12 @@
 
 required 판정(requirementClasses):
   - always     : 항상 required.
-  - touchpoint : declaredTouchpoints 비공집합일 때만 required(미선언 → 자동 N/A·스킵).
-  - interface  : declaredInterfaces 비공집합일 때만 required(미연계 → 자동 N/A·스킵).
+  - touchpoint : declaredTouchpoints 비공집합일 때만 required. 미선언 시 정책에 touchpoint 항목이
+                 있으면 클래스 전체 제외이므로 classExclusions.touchpoint{reason,confirmedBy} 확인 필요
+                 (없으면 차단 — 조용한 자동 N/A 폐기·고임팩트 이탈 표면화·silentOmission 금지).
+  - interface  : declaredInterfaces 비공집합일 때만 required. 미선언 시 정책에 interface 항목이
+                 있으면 클래스 전체 제외이므로 classExclusions.interface{reason,confirmedBy} 확인 필요
+                 (없으면 차단 — 위와 동형).
 
 오프라인 안전(불변):
   - 네트워크·npm·npx·tsc·빌드 0. 파일 판독·구조 검사만.
@@ -124,6 +132,23 @@ def _load_policy_required(policy_path: Path) -> tuple[list, list]:
     return items, errors
 
 
+def _reason_confirmed_ok(obj) -> tuple[bool, list]:
+    """정당화 제외 요건(reason 비공백 AND confirmedBy 존재) 판정 — (ok, 누락항목목록) 반환.
+
+    개별 artifact 의 excluded 블록과 클래스 제외(classExclusions)가 동일 규칙을 공유한다.
+    """
+    reason = obj.get("reason") if isinstance(obj, dict) else None
+    confirmed = obj.get("confirmedBy") if isinstance(obj, dict) else None
+    reason_ok = isinstance(reason, str) and bool(reason.strip())
+    confirmed_ok = bool(confirmed) and (not isinstance(confirmed, str) or bool(confirmed.strip()))
+    miss: list = []
+    if not reason_ok:
+        miss.append("reason(비공백)")
+    if not confirmed_ok:
+        miss.append("confirmedBy")
+    return (reason_ok and confirmed_ok), miss
+
+
 def _is_required(requirement: str, has_touchpoint: bool, has_interface: bool) -> bool:
     """requirementClasses 규칙으로 required 여부 판정."""
     if requirement == _ALWAYS:
@@ -147,7 +172,10 @@ def check_design_completeness(policy_path, manifest_path) -> list:
          - produced → 통과(path 주어지면 존재 검사).
          - excluded → reason 비공백 AND confirmedBy 존재해야 통과(정당화 제외).
          - 부재/기타 status → 침묵 누락 오류(silentOmission 금지).
-      6) required 아님(touchpoint/interface 미선언) → 자동 N/A·스킵.
+      6) touchpoint/interface 클래스가 미선언으로 전체 제외될 때(정책에 해당 클래스 항목이 있는데
+         미트리거): 조용한 자동 N/A 대신 매니페스트 classExclusions.<class>{reason,confirmedBy}
+         확인을 요구한다(없으면 차단 — 고임팩트 이탈 표면화·원칙 11 (c)·silentOmission 금지).
+         클래스가 선언(트리거)되면 6은 적용 안 되고 per-item(5)이 적용된다.
     """
     manifest_path = Path(manifest_path)
     policy_path = Path(policy_path)
@@ -174,6 +202,7 @@ def check_design_completeness(policy_path, manifest_path) -> list:
     touchpoints = manifest.get("declaredTouchpoints")
     interfaces = manifest.get("declaredInterfaces")
     artifacts = manifest.get("artifacts")
+    class_exclusions = manifest.get("classExclusions")
 
     errors: list = []
     if touchpoints is not None and not isinstance(touchpoints, list):
@@ -185,6 +214,12 @@ def check_design_completeness(policy_path, manifest_path) -> list:
     if not isinstance(artifacts, list):
         errors.append("artifacts 가 목록이 아니다: %r" % (artifacts,))
         artifacts = []
+    # classExclusions 방어적 파싱(없으면 빈 dict, dict 아니면 오류 표면화).
+    if class_exclusions is None:
+        class_exclusions = {}
+    elif not isinstance(class_exclusions, dict):
+        errors.append("classExclusions 가 매핑(dict)이 아니다: %r" % (class_exclusions,))
+        class_exclusions = {}
 
     has_touchpoint = bool(touchpoints)
     has_interface = bool(interfaces)
@@ -205,13 +240,41 @@ def check_design_completeness(policy_path, manifest_path) -> list:
 
     manifest_dir = manifest_path.resolve().parent
 
-    # (4)(5)(6) required 판정 + 산출/정당화 제외 검사(defaultRequiredSet 입력 순서 보존).
+    # (6) 클래스 전체 제외 표면화 — 고정 순서(touchpoint→interface)로 결정적으로 검사·append.
+    #     정책에 클래스 C 항목이 있는데 C 가 미트리거(미선언)면 조용한 자동 N/A 대신
+    #     classExclusions.C{reason,confirmedBy} 확인을 요구한다(원칙 11 (c)·silentOmission 금지).
+    _class_labels = {_TOUCHPOINT: "접점", _INTERFACE: "연계"}
+    for cls, triggered in ((_TOUCHPOINT, has_touchpoint), (_INTERFACE, has_interface)):
+        class_ids = [it["id"] for it in required_items if it["requirement"] == cls]
+        if not class_ids:
+            continue  # 정책에 해당 클래스 항목 없음 — 요구 안 함.
+        if triggered:
+            continue  # 클래스 선언(트리거)됨 — per-item(5) 로 검사.
+        # 미선언 → 클래스 전체 제외. classExclusions.<cls> 확인 필요.
+        excl = class_exclusions.get(cls)
+        if not isinstance(excl, dict):
+            errors.append(
+                "%s 미선언으로 %s 클래스 전체 제외(%s) — 사유+사용자 확인"
+                "(classExclusions.%s {reason,confirmedBy}) 필요"
+                "(고임팩트 이탈 표면화·원칙 11 (c)·silentOmission 금지)"
+                % (_class_labels[cls], cls, "·".join(class_ids), cls)
+            )
+            continue
+        ok, miss = _reason_confirmed_ok(excl)
+        if not ok:
+            errors.append(
+                "%s 미선언으로 %s 클래스 전체 제외(%s) — classExclusions.%s 요건 미충족: %s 누락"
+                "(고임팩트 이탈 표면화·원칙 11 (c)·silentOmission 금지)"
+                % (_class_labels[cls], cls, "·".join(class_ids), cls, "·".join(miss))
+            )
+
+    # (4)(5) required 판정 + 산출/정당화 제외 검사(defaultRequiredSet 입력 순서 보존).
     for item in required_items:
         rid = item["id"]
         name = item["name"]
         req = item["requirement"]
         if not _is_required(req, has_touchpoint, has_interface):
-            continue  # 자동 N/A(touchpoint/interface 미선언) — 스킵.
+            continue  # 미트리거 클래스 — 클래스 제외(6)에서 이미 표면화 검사됨. per-item 스킵.
 
         art = by_id.get(rid)
         if art is None:
@@ -236,18 +299,8 @@ def check_design_completeness(policy_path, manifest_path) -> list:
             continue
 
         if status == _STATUS_EXCLUDED:
-            reason = art.get("reason")
-            confirmed = art.get("confirmedBy")
-            reason_ok = isinstance(reason, str) and reason.strip()
-            confirmed_ok = bool(confirmed) and (
-                not isinstance(confirmed, str) or confirmed.strip()
-            )
-            if not (reason_ok and confirmed_ok):
-                miss = []
-                if not reason_ok:
-                    miss.append("reason(비공백)")
-                if not confirmed_ok:
-                    miss.append("confirmedBy")
+            ok, miss = _reason_confirmed_ok(art)
+            if not ok:
                 errors.append(
                     "정당화 제외 요건 미충족 — 필수 산출물 '%s'(id=%s) status=excluded 이나 %s 누락"
                     % (name, rid, "·".join(miss))

@@ -47,8 +47,8 @@ projectionSelection:
   # requirement 클래스 정의 (SP-INV 9 — 요건 클래스별 default-required 조건)
   requirementClasses:
     always:     "항상 default-required — 제외는 설계단계 명시 결정 + 사유 기록 + 사용자 확인만"
-    touchpoint: "접점(웹·앱·포털) 선언 시 required — 미선언 시 자동 N/A"
-    interface:  "외부 연계 선언 시 required — 미연계 시 자동 N/A"
+    touchpoint: "접점(웹·앱·포털) 선언 시 required — 미선언 시 클래스 제외: 표면화·확인 필요(classExclusions)"
+    interface:  "외부 연계 선언 시 required — 미선언 시 클래스 제외: 표면화·확인 필요(classExclusions)"
 
   # 기본 필수 Projection 세트 (성숙 경로 default-required 부분집합 — 정본 값 문면: 바인딩 §7.2 (다))
   defaultRequiredSet:
@@ -66,7 +66,9 @@ projectionSelection:
   # 제외 규칙 (SP-INV 9 — 침묵 누락 금지)
   exclusionRule:
     silentOmission: "금지"   # 산출도 제외 기록도 없이 구현 경계 넘기 금지 (04 SP-INV 9)
-    autoExclude:    "touchpoint/interface 미충족 시 자동 N/A"
+    # touchpoint/interface 클래스가 미선언으로 전체 제외될 때: 조용한 자동 N/A 폐기 —
+    # 클래스 드롭을 사유+사용자 확인(classExclusions.<class>)으로 표면화(고임팩트 이탈·원칙 11 (c)).
+    classExclusionOnNonDeclaration: "표면화 — declaredTouchpoints/declaredInterfaces 공집합으로 클래스가 제외되면 매니페스트 classExclusions.<class>{reason,confirmedBy} 필수. 조용한 자동 N/A 금지(silentOmission 금지 동형)."
     manualExclude:  "always 클래스 제외 시 사유 기록 + 사용자 확인 — 성숙 run 기록(events/maturation-<run-id>/)에 남김"
 
 # (라) 역할→산출물 소유 맵 (04 §3.3 역할·§3.5 Projection 교차 — 책임 있는 자율: 강제 기본값·이탈 사유기록)

@@ -136,9 +136,15 @@ _DESIGN_POLICY = {
 }
 
 # 접점·연계 미선언 → always 6종만 required·전부 produced인 통과 매니페스트.
+# 정책에 touchpoint/interface 항목이 있으나 미선언이므로 클래스 전체 제외를
+# classExclusions{reason,confirmedBy}로 표면화·확인해야 게이트를 통과한다(원칙 11 (c)).
 _DESIGN_MANIFEST_OK = {
     "declaredTouchpoints": [],
     "declaredInterfaces": [],
+    "classExclusions": {
+        "touchpoint": {"reason": "접점 없는 배치/파이프라인 프로젝트 — UI 클래스 전체 제외", "confirmedBy": "user"},
+        "interface": {"reason": "외부 연계 없음 — 인터페이스 클래스 전체 제외", "confirmedBy": "user"},
+    },
     "artifacts": [
         {"id": "project-plan", "status": "produced"},
         {"id": "requirements-def", "status": "produced"},
@@ -446,10 +452,14 @@ class TestDesignCompletenessGate(unittest.TestCase):
 
     def test_justified_exclusion_passes(self):
         # 접점 선언(screen-list 등 required) 후 정당화 제외(reason+confirmedBy) → 통과.
+        # 연계는 미선언이므로 interface 클래스 전체 제외를 classExclusions.interface 로 확인해야 통과.
         errors = dc.check_design_completeness(*self._pair(
             manifest={
                 "declaredTouchpoints": ["web-portal"],
                 "declaredInterfaces": [],
+                "classExclusions": {
+                    "interface": {"reason": "외부 연계 없음", "confirmedBy": "user"},
+                },
                 "artifacts": [
                     {"id": "project-plan", "status": "produced"},
                     {"id": "requirements-def", "status": "produced"},
@@ -483,6 +493,79 @@ class TestDesignCompletenessGate(unittest.TestCase):
                 ],
             }))
         self.assertTrue(any("정당화 제외 요건 미충족" in e for e in errors), errors)
+
+    # --- 클래스 전체 제외 표면화(원칙 11 (c)) — 케이스 A(미확인 차단)·B(확인 통과) ---
+    _ALWAYS_6 = [
+        {"id": "project-plan", "status": "produced"},
+        {"id": "requirements-def", "status": "produced"},
+        {"id": "business-process", "status": "produced"},
+        {"id": "functional-spec", "status": "produced"},
+        {"id": "table-def", "status": "produced"},
+        {"id": "test-plan-cases", "status": "produced"},
+    ]
+
+    def test_touchpoint_class_dropped_without_confirmation_blocks(self):
+        # 케이스 A(touchpoint): 정책에 touchpoint 항목 존재 + 접점 미선언 + classExclusions 없음 → 차단.
+        errors = dc.check_design_completeness(*self._pair(
+            manifest={
+                "declaredTouchpoints": [],
+                "declaredInterfaces": ["payment-gateway"],  # interface 는 선언(트리거)해 격리.
+                "artifacts": list(self._ALWAYS_6) + [
+                    {"id": "interface-spec", "status": "produced"},
+                ],
+            }))
+        self.assertTrue(
+            any("touchpoint 클래스 전체 제외" in e and "classExclusions" in e for e in errors),
+            "접점 미선언+classExclusions 부재는 차단되어야 한다: %r" % errors,
+        )
+
+    def test_interface_class_dropped_without_confirmation_blocks(self):
+        # 케이스 A(interface 동형): interface 항목 존재 + 연계 미선언 + classExclusions 없음 → 차단.
+        errors = dc.check_design_completeness(*self._pair(
+            manifest={
+                "declaredTouchpoints": ["web-portal"],  # touchpoint 는 선언해 격리.
+                "declaredInterfaces": [],
+                "artifacts": list(self._ALWAYS_6) + [
+                    {"id": "screen-list", "status": "produced"},
+                    {"id": "menu-structure", "status": "produced"},
+                    {"id": "screen-design", "status": "produced"},
+                ],
+            }))
+        self.assertTrue(
+            any("interface 클래스 전체 제외" in e and "classExclusions" in e for e in errors),
+            "연계 미선언+classExclusions 부재는 차단되어야 한다: %r" % errors,
+        )
+
+    def test_class_exclusion_missing_confirmedby_blocks(self):
+        # 케이스 A 변형: classExclusions.touchpoint 있으나 confirmedBy 누락 → 요건 미충족 차단.
+        errors = dc.check_design_completeness(*self._pair(
+            manifest={
+                "declaredTouchpoints": [],
+                "declaredInterfaces": [],
+                "classExclusions": {
+                    "touchpoint": {"reason": "UI 없음"},  # confirmedBy 누락.
+                    "interface": {"reason": "연계 없음", "confirmedBy": "user"},
+                },
+                "artifacts": list(self._ALWAYS_6),
+            }))
+        self.assertTrue(
+            any("touchpoint 클래스 전체 제외" in e and "confirmedBy" in e for e in errors),
+            "classExclusions 요건 미충족(confirmedBy 누락)은 차단되어야 한다: %r" % errors,
+        )
+
+    def test_class_exclusion_confirmed_passes(self):
+        # 케이스 B: 접점·연계 미선언 + classExclusions{reason,confirmedBy} 확인 + always 6종 produced → 통과.
+        errors = dc.check_design_completeness(*self._pair(
+            manifest={
+                "declaredTouchpoints": [],
+                "declaredInterfaces": [],
+                "classExclusions": {
+                    "touchpoint": {"reason": "접점 없는 배치 프로젝트", "confirmedBy": "user"},
+                    "interface": {"reason": "외부 연계 없음", "confirmedBy": "user"},
+                },
+                "artifacts": list(self._ALWAYS_6),
+            }))
+        self.assertEqual(errors, [], "클래스 제외 확인(reason+confirmedBy)은 통과: %r" % errors)
 
     def _pair(self, *, manifest):
         """임시 정책·매니페스트 파일 쌍을 만들어 (policy_path, manifest_path) 반환(체커 직접 호출용)."""

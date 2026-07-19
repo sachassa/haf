@@ -272,15 +272,15 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 | 클래스 | 의미 |
 |---|---|
 | `always` | 항상 default-required — 제외는 설계단계 명시 결정 + 사유 기록 + 사용자 확인만 |
-| `touchpoint` | 접점(웹·앱·포털) 선언 시 required — 미선언 시 자동 N/A |
-| `interface` | 외부 연계 선언 시 required — 미연계 시 자동 N/A |
+| `touchpoint` | 접점(웹·앱·포털) 선언 시 required — 미선언 시 클래스 제외: 표면화·확인 필요(classExclusions) |
+| `interface` | 외부 연계 선언 시 required — 미선언 시 클래스 제외: 표면화·확인 필요(classExclusions) |
 
 **제외 규칙 (`exclusionRule` — SP-INV 9 침묵 누락 금지):**
 
 | 규칙 | 값 |
 |---|---|
 | `silentOmission` | **금지** — 산출도 제외 기록도 없이 구현 경계를 넘기지 않는다(04 §3.8 SP-INV 9) |
-| `autoExclude` | touchpoint/interface 미충족 → 자동 N/A |
+| `classExclusionOnNonDeclaration` | 표면화 — declaredTouchpoints/declaredInterfaces 공집합으로 클래스가 제외되면 매니페스트 classExclusions.<class>{reason,confirmedBy} 필수. 조용한 자동 N/A 금지(silentOmission 금지 동형). |
 | `manualExclude` | `always` 클래스 제외 시 사유 기록 + 사용자 확인 — 성숙 run 기록(`events/maturation-<run-id>/`)에 남긴다 |
 
 - **Policy as Data 불변.** 위 값(판정 신호·역할 선택 상한·Projection 정책)은 전부 데이터이며, 값을 바꾸는 것만으로 성숙 거동이 조정된다 — Orchestrator 규약 절차나 정본 계약(04 §3.2·§3.3·§3.5·SP-INV)은 변경되지 않는다. 이 값 세트는 **E2E 구동을 위한 최소 실값**이며, 다른 임계·상한이 필요하면 `policy/` 데이터 정정으로 조정한다.
@@ -328,7 +328,7 @@ Solution Design이 **기본 필수 Projection 세트(§7.2 (다))를 어떻게 �
 |---|---|---|
 | (i) | **제외 발생 시 inline** | `always` 클래스 산출물을 제외할 때 매니페스트 `confirmedBy`에 사용자 확인을 즉시 기록(design-manifest.schema.md `excluded` 요건·§7.2 `manualExclude`). |
 | (ii) | **Validating 게이트 일괄** | 성숙 종단 직전 Validating(§5)에서 **전체 산출물 + 매니페스트를 일괄 제시·승인**(§7.2 `deviationRule.surface`). |
-| (iii) | **고임팩트 이탈 즉시** | 기본 구성·필수 세트에서의 고임팩트 이탈은 (ii)를 기다리지 않고 즉시 표면화(원칙 11 (c) "고임팩트는 즉시"). |
+| (iii) | **고임팩트 이탈 즉시** | 기본 구성·필수 세트에서의 고임팩트 이탈은 (ii)를 기다리지 않고 즉시 표면화(원칙 11 (c) "고임팩트는 즉시"). **접점/연계 미선언에 의한 touchpoint/interface 클래스 전체 제외는 고임팩트 이탈이므로 표면화·확인**(매니페스트 `classExclusions.<class>{reason,confirmedBy}`·`exclusionRule.classExclusionOnNonDeclaration`) — 없으면 `design_completeness` 체커가 차단. |
 
 이 세 지점은 silentOmission 금지(SP-INV 9·`exclusionRule.silentOmission=금지`)의 사용자 개입 실현이며, 04 §3.4·§3.8 SP-INV 4·9를 재정의하지 않는다.
 

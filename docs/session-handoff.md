@@ -8,6 +8,8 @@
 
 > **🔴 갱신 2026-07-19(2) — Visual Contract 트랙 = 완결**(백로그 §B+§C 실체화·사용자 지시·본 커밋). 3 Wave: **W1** 필수 산출물 +3종(design-tokens·screen-mock·mock-convergence-record·touchpoint) + designElements 필수 요소 + design_completeness 요소 검사(fail-closed·하위호환 바이트 보존) + binding §7C mock 수렴 규약(기획 확정→1화면 3안 톤 수렴→**피드백은 정본 설계 산출물 먼저 갱신 후 mock 재생성**→사용자 수렴 기록→오케스트레이션 진입·04 §3.9 슬롯 물리화·spec 무수정) · **W2** designPrinciples(Figma UI 7·gist 자체 문면·출처 앵커)+accessibility-floor criteria 실값(WCAG AA)+§7A.1 디자이너 브리프 주입·§7C.3a 리뷰 차원 · **W3** UX 요소 3종(여정 맵·오류 복구·피드백 규칙)+Nielsen 10종(계 17)+근거 기록=문서 단위 1회. **사용자 결정(오버엔지니어링 방지): 강제 바닥 최소 — designElements=11종만, 제품 의존 항목(온보딩·사용자 유형·UX 카피·다국어)은 기본 세트 제외·인터뷰 표면화 시 프로젝트 policy 사본 데이터 추가로 편입**(부록 §2a·binding §7.2 (바) 메커니즘). 테스트 271→281(+10)·CP2 10항목 전건 Pass(신구 체커 바이트 대조·적대 실증·이탈 5건 전건 타당)·CP3 승인. planning/ARCHITECTURE §2·§7 부록 등재. 상세 = 메모리 `uaf-visual-contract-track`. **잔여(후속 후보): 설계→구현 충실도 게이트**(구현 화면↔mock·토큰 대조 — 구현 CP2 리뷰 차원 or dev-browser 스크린샷 대조·백로그 §D 연결)·scaffold 기본 토큰 템플릿(제품 2개째)·Interactive Prototype(조건 발동형).
 
+> **🔴 갱신 2026-07-19(3) — OQ-PO-B2(해소 어휘 성숙) 종결 → §DC-9 계열 OQ 전건 마감.** 문서·설계 수준 종결(사용자 결정 A·엔진 코드 무변경): `orchestration/adapters/claude/project-orchestration-binding.md` §6/§7/§8만 갱신 — orchestration 해소 어휘가 재시도-비계수를 **이미 충족**함을 명문화(전용 `gate-resolved`/`outcome=pass`/`retry_count=0`; OQ-SH-5 fail-계수 결합은 `outcome=fail` 재사용 UAHF step-host 층 국한·무수정 경계상 별도 트랙)·stale 포인터 "05 §9 OQ 3"(05 spec §9=순수 이력표·OQ 절 부재·전수 실측) 정정·'해소 취소(revoke)' = 신규 **OQ-PO-B6** 저순위 재스코프. 순수 문서 변경(코드 델타 0). 상세 = §3 다음 작업·아래 §DC-9.
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.
@@ -86,7 +88,7 @@
 
 ## §3. 다음 작업 (별도 새 세션 — 본 세션 미착수)
 
-- ~~[1순위] §DC-9 05 wiring 후속~~ — **완결 2026-07-19**(본 커밋·상세 위 §DC-9). 잔여 OQ = B2(해소 어휘 성숙·이월 유지)뿐.
+- ~~[1순위] §DC-9 05 wiring 후속~~ — **완결 2026-07-19**(상세 위 §DC-9). ~~잔여 OQ = B2~~ → **OQ-PO-B2(해소 어휘 성숙) = 종결 2026-07-19**(문서·설계 수준·사용자 결정 A·엔진 코드 무변경). binding §6/§7/§8만 갱신: orchestration 해소 어휘가 재시도-비계수를 **이미 충족**함을 명문화(`gate-resolved`/`outcome=pass`/`retry_count=0` — OQ-SH-5 fail-계수 결합은 `outcome=fail` 재사용 UAHF step-host 층 국한·무수정 경계상 별도 트랙)·stale 포인터 "05 §9 OQ 3"(05엔 OQ 절 부재·실측) 정정·'해소 취소'는 신규 **OQ-PO-B6** 저순위 재스코프. **§DC-9 계열 OQ 전건 종결.**
 - **다음 트랙 = 사용자 지시 대기.** 후보(우선순위 미확정 — 확정 권위는 사용자):
   - **Interview Entry-to-Runtime Audit** (사용자 지정 2026-07-14 — 차순위 유지). 정의·범위·성공 기준은 착수 세션에서 사용자 지시로 확정한다 — 본 파일은 명칭과 시작점만 기록하며 범위를 추정하지 않는다. 착수 시 최소 read-set: 본 §1 앵커 + 착수 세션의 사용자 지시. 관련 정본은 필요 §만 demand-driven(후보 포인터: `entry/specs/01-entry.md`·`discovery`/`orchestration` specs — 실제 선택은 지시 범위 확정 후).
   - ~~seed 컴파일러 tms 하드코딩 일반화~~ — **완결 2026-07-19**(사용자 지정·본 커밋). `contract_to_graph.py` 도메인 하드코딩 전면 제거: 프로젝트 표기/버전/run_id/seed id/경계 문구 = 파생(root.name·파일명 v\<N\>·`_slug`·내용 파싱 0 불변), 도메인 설계 앵커 블록 → 일반 지시(설계 앵커 자가 식별·결정 식별자 인용·**전 영역 계층 편향 없이 커버** — §DC-1 백엔드 편향 뿌리 제거), `resolve_gate.py` `PROPOSING_STEP_REF` 하드코딩 제거 → graph.json proposal 노드 파생(F4↔F5 교차 계약 동시·통합 관통 테스트). 테스트 234→245(+11)·CP2 10항목 전건 Pass(적대 픽스처 acme-erp v3 도메인 토큰 유출 0·순수성 해시 실증)·CP3 승인. binding §8 1행(§5.7 역사 기록 무촉). **Stage B 실코드 실증의 선행 조건 해소** — 다음 소비 프로젝트에서 즉시 착수 가능. CP2 관찰(비차단): 오프라인 AC allowlist의 python/node 경사(환경 제약·비-JS/Python 스택 등장 시 확장 검토 백로그).

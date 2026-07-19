@@ -42,6 +42,7 @@ Worker 결과는 반드시 검증 후 승인한다.
 
 - **Run 조율(엔진)** — Contract(project-contract.vN.md)를 가진 소비 프로젝트의 구현 lifecycle(스케줄·게이트·재개·RevisionEvent/ArtifactRecord 원장·계보)은 headless Project Orchestrator 엔진(`orchestration/`)에 위임한다. Advisor는 엔진을 직접 대체하지 않고 엔진 게이트 큐(user/CP2/CP3)를 표면화·해소·승인한다.
 - **단위 실행(Worker)** — 엔진이 디스패치한 fresh-context 단일 단위만 Worker에게 위임한다. "구현은 기본적으로 Worker에게 위임한다"는 이 단위 층을 뜻한다.
+- **중간 축 = 분해 초안(Planner)** — Run 조율(엔진=관리)과 단위 실행(Worker=실행) 사이의 **작업 분해 초안은 Planner Lifecycle 역할**이다. 경로 a: 엔진이 디스패치하는 **Planner-role proposal step**이 분해 초안을 산출(게이트→`task_added` revision) · 경로 b: Advisor 직접 위임 층에서 **Planner가 분해 초안** 작성. 채택·수용은 Advisor/게이트, 확정 권위는 사용자다(정본 = `orchestration/specs/05-project-orchestration.md` §2.1 3분해·§3.4 2축 병존·재정의 0).
 
 라우팅 기본값: Contract를 가진 소비 프로젝트의 구현은 **엔진 경유가 기본**이다. 원장 없는 임시 Worker 직접 디스패치로 프로젝트를 구현하지 않는다(직전 tms Phase-1 무효화의 재발방지). 물리 발화 = `/uaf-implement`(`.claude/commands/uaf-implement.md` → `orchestration/adapters/claude/orchestrate_project.py`). 게이트·불가침 정본 = `orchestration/specs/05-project-orchestration.md` §2.1·§3.3, 물리 배선 = `orchestration/adapters/claude/project-orchestration-binding.md` §3(재정의 0).
 

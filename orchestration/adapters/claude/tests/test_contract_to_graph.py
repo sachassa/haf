@@ -84,7 +84,7 @@ class SeedGraphStepSchemaTests(unittest.TestCase):
         task = self._seed_task()
         self.assertEqual(task["id"], "impl-plan-phase1")
         self.assertEqual(task["unitType"], "proposal")
-        self.assertEqual(task["role"], "Worker")
+        self.assertEqual(task["role"], "Planner")
         self.assertEqual(task["capability"], "cap-impl-plan")
         self.assertEqual(task["dependsOn"], [])
         self.assertEqual(task["ownedBoundary"], ["impl-plan.json"])

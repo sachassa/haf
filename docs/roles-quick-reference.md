@@ -22,7 +22,7 @@
 
 충돌이 발견되면 이 문서를 정본으로 삼지 않는다. 02를 따르고 Advisor에게 보고한다.
 
-**구성.** §1~§3은 AI 비의존 역할 계약 요약이다 (Core Contract — 02 §3). §4는 실행 환경 바인딩이다 (02 §4.1). Core 섹션(§1~§3, §5)에는 특정 AI 모델명·제품 기능명이 등장하지 않는다 (02 INV-7, DoD-3).
+**구성.** §1~§4는 AI 비의존 역할 계약 요약이다 (Core Contract — 02 §3; §4 WBS/작업 분해 소유 포함). §5는 실행 환경 바인딩이다 (02 §4.1). Core 섹션(§1~§4, §6)에는 특정 AI 모델명·제품 기능명이 등장하지 않는다 (02 INV-7, DoD-3).
 
 **포인터 표기.** 별도 표기가 없으면 `02 §…`=uahf/specs/02-agent.md, `03 §…`=uahf/specs/03-loop.md, `06 §…`=uahf/specs/06-verifier.md, `07 §…`=uahf/specs/07-workflow.md, `Glossary §…`=uahf/specs/00-glossary.md.
 
@@ -81,9 +81,32 @@ Planner 초안 범위 (AGENT.md Delegation): 작업 계획 · 작업 분해 · W
 
 ---
 
-# 4. Adapter Binding (환경 의존 — 본문과 분리)
+# 4. WBS / 작업 분해 소유 (요약 — 포인터만)
 
-§1~§3 역할 계약은 AI 비의존이다 (Core Contract, 02 §3). 아래는 v0.x 실행 환경 바인딩이다 (02 §4.1). 이식 시 이 절만 교체된다. 역할 경계·메시지 필수 필드·Invariants는 유지된다 (02 §4.2).
+"작업 분해"의 정본 용어는 **Work Graph**다 (Glossary J-07 · 정본 07 §3.2-A). "WBS"는 서술 라벨이며 새 용어가 아니다. 이 절은 소유 주체를 요약할 뿐 07·02·05의 계약을 재정의하지 않는다 (§0 규약).
+
+작업 분해 소유는 세 주체로 나뉜다 (삼분).
+
+| 주체 | 무엇을 | 정본 포인터 |
+|---|---|---|
+| 관리 = **오케스트레이션 엔진** | 분해 결과 그래프의 스케줄·게이트·재개·원장(RevisionEvent)·계보 등 기계적 조율 | 05 §2.1 (기계적 조율 = Project Orchestrator) |
+| 초안 분해 = **Planner** | 구현 계획·작업 분해 **초안** 작성 (Lifecycle 역할) | 02 §3.2-A · 05 §3.4 (4역할 = Lifecycle 의무 축) |
+| 실행 = **Worker** | 엔진이 디스패치한 확정 단일 단위 실행 | 05 §2.1 · AGENT.md (단위 실행) |
+
+이 삼분이 실현되는 **2경로**:
+
+- **경로 (a) — Contract 소비 프로젝트:** 엔진 컴파일러가 **Planner-role proposal step**을 디스패치해 분해 초안을 산출하고, 게이트 통과 후 `task_added` revision으로 합성한다 (05 §2.1 의미 판단 축 · §3.2 RevisionEvent).
+- **경로 (b) — Advisor 직접 위임 층:** Planner가 분해 초안을 작성한다 (02 §3.2-A · AGENT.md Delegation).
+
+어느 경로든 초안의 **수용은 게이트**, 확정 권위는 **사용자**다 (05 §2.1). 엔진(관리)과 Worker(실행) 사이의 **중간 축이 Planner(초안 분해)**다.
+
+§ 포인터: 05 §2.1 · 05 §3.4 · 07 §3.2 · 02 §3.2-A · Glossary Work Graph J-07.
+
+---
+
+# 5. Adapter Binding (환경 의존 — 본문과 분리)
+
+§1~§4 역할 계약은 AI 비의존이다 (Core Contract, 02 §3). 아래는 v0.x 실행 환경 바인딩이다 (02 §4.1). 이식 시 이 절만 교체된다. 역할 경계·메시지 필수 필드·Invariants는 유지된다 (02 §4.2).
 
 - 역할 정의 파일: 각 역할은 `.claude/agents/`의 정의 파일로 바인딩된다 — `advisor.md` / `planner.md` / `worker.md` / `verifier.md`.
 - 상위 규약 바인딩: `.claude/AGENT.md`가 모든 역할 정의의 상위 규약이다. `.claude/CLAUDE.md`가 Advisor를 프로젝트 진입점(주 세션)에 바인딩한다.
@@ -92,7 +115,7 @@ Planner 초안 범위 (AGENT.md Delegation): 작업 계획 · 작업 분해 · W
 
 ---
 
-# 5. 정본과 포인터
+# 6. 정본과 포인터
 
 | 대상 | 정본 |
 |---|---|

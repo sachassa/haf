@@ -225,6 +225,10 @@ def build_seed_graph(
     interfaceContract·delegation.input/output/done/context·id)를 모두 채운다.
 
     mode·phase_scope 는 goal·프롬프트 문면에 반영되는 개방 데이터다(엔진 판단 대상 아님).
+
+    seed proposal 노드의 role=Planner 다 — 이 스텝의 실제 일 = 확정 설계 소비→구현 task 실행
+    계획(impl-plan) 산출 = 작업 분해 초안 = Planner Lifecycle capability(05 §3.4·§DC-7). 이
+    스텝이 생성하는 impl 자식 task 는 실행 단위이므로 seed 프롬프트 내 role=Worker 로 유지된다.
     """
     contract_path = Path(contract_path).resolve()
     sd_path = _solution_design_path(project_root)
@@ -237,7 +241,7 @@ def build_seed_graph(
     )
     delegation = {
         "from": "Advisor",
-        "to": "Worker",
+        "to": "Planner",
         "task": prompt,
         "input": (
             "Project Contract v2(읽기 전용·" + str(contract_path) + ") + "
@@ -268,7 +272,9 @@ def build_seed_graph(
         "dependsOn": [],
         "delegation": delegation,
         "capability": "cap-impl-plan",
-        "role": "Worker",
+        # 이 proposal 스텝 = 분해 초안 = Planner Lifecycle capability(05 §3.4 2축 직교·§DC-7).
+        # 반면 이 스텝이 생성하는 impl 자식 task 는 실행 단위이므로 seed 프롬프트 내 role=Worker 유지(불변).
+        "role": "Planner",
         "model": model,
         "unitType": "proposal",  # 게이트 descriptor(정책 매칭용·개방 데이터).
     }

@@ -33,6 +33,8 @@ Planner는 Advisor 위임 하에 다음의 초안을 작성한다 (AGENT.md §Ro
 
 Planner의 산출물은 전부 초안이다.
 
+Planner capability(분해 초안)는 **두 경로**로 실현된다 — 경로 a: Contract 소비 프로젝트에서 오케스트레이션 엔진이 디스패치하는 **Planner-role proposal step**으로(게이트 통과 후 `task_added` revision으로 합성) · 경로 b: **Advisor 직접 위임** 하에 Planner가 분해 초안 작성. 어느 경로든 산출물은 초안이며 채택·수용은 Advisor/게이트, 확정 권위는 사용자다 (`orchestration/specs/05-project-orchestration.md` §2.1 3분해·§3.4 2축 병존·재정의 0).
+
 Planner는 제안한다. 결정하지 않는다.
 
 계획의 채택, Architecture 결정, 최종 승인, 정책 변경은 Advisor의 권한이다 (AGENT.md §Delegation, 사용자 결정).

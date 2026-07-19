@@ -32,6 +32,7 @@
 | 2026-07-14 | T2 (Performance Tuning) | **§3.3 `review_required` 행만 재저술** — 재검증 Verifier 세션 재기동을 항상 수행하던 것에서 **유효 CP2 evidence(`cp2-pass`) 소비로 해소**(해소 마커가 근거 `cp2-pass`를 명시 참조·provenance 사슬)로 전환하고, 유효 evidence 부재·stale(재실행/retry · supersede/revision 영향 · 기록된 artifact 해시 불일치) 또는 정책 `requireIndependentReview` 요구 시 추가 독립 리뷰 단위 디스패치(Verifier·`uahf/specs/06-verifier.md` §3.2-E VT-1~5 재사용)를 **fallback 으로 존치**함을 명문화. 중립 코드 정합(`find_valid_cp2_evidence`·`_settle_review_gate`·`GatePolicyEntry.requireIndependentReview`·`gate-review` 마커 ref 가법 필드 `basis`/`mode`). **PO-INV 4(코드 하한 불변·`review_required`는 floor 게이트 아님)·상시 CP2(SH-INV-4)·PO-INV 1(판단 금지)·append-only·결정적 재개 무촉** — 게이트 존치·해소 근거만 변경. §3.3 이외 문면 일절 무변경. 사용자 승인 2026-07-14(Baseline 개정 게이트 통과). | Worker (Advisor 위임·T2) |
 | 2026-07-17 | v1.6 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. ① 인용/근거 4곳(§0 근거정본 §8 포인터·§0 UAHF 관계·§6·§7)을 "①의 핵심=무수정"→"substrate 라이브러리 무수정 import는 §2.5 하향 소비로 UAF-INV ①(접점 원칙)과 병존(루트 §8 병존 주)"으로 재서술. 의미 3(substrate 무수정 import/재사용·§6 "무수정 경계" 표제·내용·라이브러리 무수정 인용) 존치. PO-INV 1~8·§3 계약·게이트 5종·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
 | 2026-07-17 | v1.6 (정합) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §0 근거정본(:8)의 삭제 산출물(설계 정본) 참조 앵커 전환(`docs/project-orchestration-design.md@cd9247b`). PO-INV·§3 계약·게이트·§ 포인터 문면 무변경(참조 정합·버전 무상승). | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-19 | v1.6 (명확화) | §DC-7 WBS(작업 분해) 소유 삼분 명확화 — §2.1 3분해 표 뒤에 명확화 문장 1개 append(관리=엔진 / 초안 분해=Planner Lifecycle 역할 / 실행=Worker · 2경로[a 엔진이 Planner-role proposal step 디스패치 / b Advisor 직접 위임 Planner 초안]). 위 §2.1 3분해·§3.4 2축 병존(4역할 Lifecycle 축 × Expert Role capability 축)의 인용 파생일 뿐 **재정의 0·새 계약/역할/용어 창설 0**("WBS"는 서술 라벨·정본 용어=Work Graph[Glossary J-07]). PO-INV·§3 계약·게이트·§9 기존 행 문면 무변경. | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, `entry/specs/01-entry.md` §9·`planning/specs/04-solution-design.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -92,6 +93,8 @@ Project Orchestrator는 **Discovery·Solution Design 산출물을 인수해 프�
 | **기계적 조율** — 스케줄(ready_set)·게이트 강제·재시도·재개·기록·정책 평가·revision 검증·artifact 인덱스 | **Project Orchestrator** (중립 코드) | deterministic · 판단 0 (SH-INV-1 동형) |
 | **의미 판단** — 설계 Proposal·분해 제안·역할 할당 제안·리뷰 판정·모호성 해소 | 국소 fresh-context **Step** (`uahf/specs/02-agent.md` §3.1 4역할 Lifecycle 의무 + `04-solution-design` §3.3 Expert Role capability) | LLM — 격리 번들 입력·요약 반환 (step-hosting-protocol §3.2) |
 | **확정 권위** — Contract 확정·성숙 승인·실행 착수·중대 결정 | **사용자** (UAF-INV ⑤ — 루트 §8) | 게이트 큐 경유 |
+
+**WBS(작업 분해) 소유 명확화 (재정의 아님 — 위 3분해·§3.4 2축 인용).** 위 "의미 판단" 축의 **분해/설계 proposal step은 Planner Lifecycle 역할로 수행**된다 — 초안 분해는 `uahf/specs/02-agent.md` §3.2-A Planner capability이며(§3.4 "4역할=Lifecycle 의무 축, Expert Role=capability 내용 축, 직교 병존"), 엔진(기계적 조율)이 그 위 스케줄·게이트·원장·계보를 관리하고(위 표 1행), 확정 impl 단위의 실행은 Worker다(엔진 디스패치 단일 단위). 즉 **관리=엔진 / 초안 분해=Planner / 실행=Worker**의 삼분이며, 셋 다 위 3분해·§3.4 병존 축의 파생이다(신규 계약·새 역할 창설 0). 이 삼분이 실현되는 2경로 — (a) Contract 소비 프로젝트: 엔진 컴파일러가 **Planner-role proposal step**을 디스패치해 분해 초안을 산출하고 게이트 통과 후 `task_added` revision으로 합성(§3.2 RevisionEvent) · (b) Advisor 직접 위임 층: Planner가 분해 초안을 작성(`uahf/specs/02-agent.md` §3.2-A). 어느 경로든 수용은 게이트 소유·확정 권위는 사용자다(위 표 3행·§3.2 결정성 ①).
 
 ### 2.2 headless·사용자 채널 분리·substrate 라이브러리 재사용
 

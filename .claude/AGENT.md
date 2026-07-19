@@ -143,6 +143,7 @@ Consult → Plan → Execute → Verify → Learn → Memory Update → Complete
 - 계획 채택·최종 승인·정책 변경은 Advisor가 한다.
 - **위임 범위 비례화** — 위임·탐색의 규모를 작업 범위에 비례시킨다. 파일·위치가 이미 알려진 바운드된 질문은 인라인 또는 단일 Agent로 처리하고, 다중 fan-out(병렬 탐색 Agent 여럿)은 범위가 불확실할 때만 쓴다. 각 서브 Agent의 반환 보고는 메인 컨택스트로 유입되므로, 범위에 맞지 않는 fan-out은 컨택스트를 낭비한다 (§Core Principles Token Efficiency).
 - **Run 조율 vs 단위 실행 구분** — Contract-scoped 소비 프로젝트의 구현은 ad-hoc Worker 직접 디스패치가 아니라 Project Orchestrator 엔진(그래프→게이트→디스패치)으로 라우팅한다. 위 위임 필드(input·output·done…)는 그 엔진이 조율하는 단일 단위 실행에 적용된다. 물리 발화 = `/uaf-implement` → `orchestration/adapters/claude/orchestrate_project.py`(05 §2.1·재정의 0).
+- **중간 축 = 분해 초안(Planner)** — 위 2층(Run 조율=엔진 / 단위 실행=Worker) 사이의 **작업 분해 초안은 Planner Lifecycle 역할**이다(엔진=관리·Worker=실행 사이의 중간 축). 두 경로로 실현된다 — 경로 a: 엔진이 디스패치하는 **Planner-role proposal step**이 분해 초안을 산출(게이트 통과 후 `task_added` revision) · 경로 b: Advisor 직접 위임 층에서 **Planner가 분해 초안** 작성. 어느 경로든 채택·수용은 Advisor/게이트, 확정 권위는 사용자다(05 §2.1 3분해·§3.4 2축 병존·재정의 0).
 
 ---
 

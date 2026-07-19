@@ -82,6 +82,22 @@
 - **Dependency**: T1 산출물(collect_metrics·run-metrics·bundle_payload 지표)·invoke 원자료 스키마·(Skill 방향 채택 시) G(Skill Routing)와 접점.
 - **Suggested Future Track**: 「Continuous Telemetry / Lifecycle Observability」 독립 개선 트랙. 재개 트리거 = 실사용 병목 반복 관찰(Measurement First — 느낌 기반 재개 금지). 기존 확정 우선순위(B+C→D→G→A+F→E)에는 미배정 — 순위 편입은 사용자 결정.
 
+## I. 다라운드 심의 라이브 대화형 호스팅 (사용자 지시 등재 2026-07-19 — 기록만·트랙 후보)
+
+- **Problem / Motivation**: 현행 다라운드 심의는 **형태 A 서면 왕복**이다 — 각 라운드가 fresh-context 서브에이전트 재소환이고, "전문가가 서로의 Proposal을 검토·반응"(04 §3.4-C)은 **브리프에 동료 Proposal을 동봉**하는 방식으로, 충돌 감지·중계는 Advisor(주 세션)가 규약 절차로 수행한다(solution-design-binding §7B — 실행 호스팅은 04 §3.9 확장 포인트로 의도적 미설계·§6.1 line 200). **사용자의 원래 설계 방향은 에이전트 간 라이브 대화형 심의**였다 — 서면 왕복은 라운드당 재소환·중계 오버헤드가 있고, 실시간 상호 반박·즉석 수렴의 심의 밀도가 낮다. 실측 선례: cheongryong-bubble maturation-r001(2026-07-19) — 라운드 1(4역할 병렬) → 독립 검증자 교차 검출 → 라운드 2 서면 재제안의 Advisor 중계 패턴.
+- **Desired Outcome**: 04 §3.9 확장 포인트(Expert Role 실행 호스팅)의 **호스팅 설계**로서 라이브 대화형 심의를 도입 — 역할 에이전트들이 하나의 심의 세션(또는 상호 메시징)에서 Proposal을 직접 교환·반박·수렴. **계약은 유지, 호스팅만 교체**: 심의 의미론(04 §3.4 상태·전이 T3~T7·수렴 Guard)·게이트(Validating·SP-INV 4)·원장(append-only events·StateTransition 기록)·Policy(deliberation.maxRounds·convergence·peerVisibility)는 무변이며, §7B 규약 절차 층의 "브리프 동봉 서면 왕복" 실현만 라이브 호스팅으로 대체된다(structure.md §7 C-1 동형 — 형태 A→호스팅 전환에도 Core Contract 변경 0).
+- **Why Not Now**: 실행 호스팅은 04 §3.9가 의도적으로 미설계로 유보한 확장 포인트이며(§6.1 "새 병렬 실행 프레임워크 창설 0"), 라이브 호스팅은 새 실행 인프라(에이전트 간 대화 채널·심의 세션 관리·원장 기록 브리지) 설계가 필요한 Framework Capability다. 현행 형태 A는 동작 실증됨(maturation-r001) — 교체는 비용·효과 측정 위에서.
+- **Dependency**: 04 §3.9(확장 포인트 정본)·solution-design-binding §6·§7B(현행 form-A 규약 — 교체 대상 층)·환경의 멀티에이전트 대화 capability(에이전트 간 메시징/공유 세션) 가용성·G(Skill & Capability Routing)와 접점. 원장 기록(§4 레코드 어휘)은 라이브 심의 중에도 유지되어야 함(라운드·전이 재구성 가능성 보존).
+- **Suggested Future Track**: 「Live Deliberation Hosting」 — 호스팅 계층 교체 트랙. 기존 확정 우선순위(B+C→D→G→A+F→E)에는 미배정 — 순위 편입은 사용자 결정(H 선례 동형).
+
+## J. 오케스트레이션 에스컬레이션 해소·재작업 경로 (실측 등재 2026-07-20 — 기록만·결함성 공백)
+
+- **Problem / Motivation**: cheongryong-bubble impl-s14-15 run 실측 — 대형 통합 단위가 실행 타임아웃(config timeout=900s)×3으로 `Escalated` 종단 후, ① **stop-signal.json이 에스컬레이션 정지 시 갱신되지 않아** 낡은(이미 해소된) user_decision 게이트를 담고 있고 `resolve_gate.py --gate-kind escalation`이 "게이트 없음"으로 거부(해소 채널 물리 단절), ② **Escalated가 fold에서 종단**이라 `--resume`이 재디스패치하지 않음(timeout 상향·재작업 지시의 엔진 경로 부재) — 에스컬레이션의 설계 의미(상위 위임)는 맞으나, 상위가 "조건 변경 후 재작업"을 지시할 물리 경로가 없어 Advisor 대역 완수(원장 밖 위임)로 우회하게 됨.
+- **Desired Outcome**: ① 모든 정지 사유에서 stop-signal 일관 갱신(escalation_required 게이트 포함), ② 에스컬레이션 해소 응답에 재작업 지시(retry 카운터 리셋·config 패치 반영) 경로 추가 — 해소 이벤트 append → resume 시 해당 단위 Execute 재진입, ③ (예방) 단위 규모 대비 타임아웃 산정 — Planner 브리프에 invoke 예산 힌트 또는 per-unit timeout.
+- **Why Not Now**: 05 spec/게이트 코드 변경이며 현재 개발 run 진행 중 — Advisor 대역 완수+원장 기록으로 우회 가능. 완료 후 독립 트랙.
+- **Dependency**: `orchestration/framework/orchestrator/gates.py`·런처 stop-signal 기록부·resolve_gate.py·05 §3.3.
+- **Suggested Future Track**: 「Escalation Rework Path」 소형 트랙. 우선순위 미배정(사용자 결정).
+
 ---
 
 ## 실사용 Dogfooding Evidence (2026-07-14 — 사용자 직접 사용·확인 실측)

@@ -78,7 +78,7 @@ def slugify_run_id(raw: Any) -> str:
     """run_id 를 물리 디렉터리 안전 슬러그로 정규화한다.
 
     영숫자·`.`·`_`·`-` 외 문자(공백·특수문자)를 `-` 로 치환하고 앞뒤 구분자를 제거한다.
-    예: "orch-tms-Phase 1" → "orch-tms-Phase-1"(공백 제거). 빈 결과는 "run" 으로 폴백한다.
+    예: "orch-myproj-Phase 1" → "orch-myproj-Phase-1"(공백 제거). 빈 결과는 "run" 으로 폴백한다.
     """
     s = _SLUG_UNSAFE.sub("-", str(raw)).strip("-._")
     return s or "run"
@@ -246,11 +246,15 @@ def run_and_map(orch: Any, invoker: Any, run_dir: Any) -> int:
 # --------------------------------------------------------------------------
 # CLI — 실 claude CLI 발화(make_invoker) 경로
 # --------------------------------------------------------------------------
-def _resolve_slug(run_id: Any, phase_scope: str) -> str:
-    """resume 시 run_dir 이름을 재현하기 위한 슬러그 산출(compile 과 동일 규칙)."""
+def _resolve_slug(run_id: Any, phase_scope: str, project_name: str) -> str:
+    """resume 시 run_dir 이름을 재현하기 위한 슬러그 산출(compile 과 동일 규칙).
+
+    compile 의 run_id 파생("orch-" + 워크스페이스 루트 폴더명 + "-" + phase_scope)을 동일하게
+    재현한다(도메인 하드코딩 0). --run-id override 시 그 값을 슬러그 정규화한다.
+    """
     if run_id:
         return slugify_run_id(run_id)
-    return slugify_run_id("orch-tms-" + str(phase_scope))
+    return slugify_run_id("orch-" + str(project_name) + "-" + str(phase_scope))
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -275,7 +279,7 @@ def main(argv: list[str] | None = None) -> int:
     root = Path(args.project_root).resolve()
 
     if args.resume:
-        slug = _resolve_slug(args.run_id, args.phase)
+        slug = _resolve_slug(args.run_id, args.phase, root.name)
         run_dir = RUNS_DIR / slug
         if not run_dir.exists():
             print("[ERR] --resume 대상 run_dir 부재: %s" % run_dir, file=sys.stderr)

@@ -174,7 +174,8 @@ class DryRunAssemblyTests(_RunDirCleanup):
             orch, cfg = op.build(run_dir, noop)
             graph = orch.active_graph()
             self.assertEqual(len(graph["tasks"]), 1, "seed 단일 proposal 노드")
-            self.assertEqual(graph["tasks"][0]["id"], "impl-plan-phase1")
+            # seed id = seed_task_id(phase_scope) 파생 — phase_scope="Phase 1" → "impl-plan-phase-1".
+            self.assertEqual(graph["tasks"][0]["id"], "impl-plan-phase-1")
             self.assertEqual(graph["tasks"][0]["unitType"], "proposal")
 
             # 실 claude CLI 미발화(no-op invoker 는 한 번도 호출되지 않음).
@@ -305,18 +306,30 @@ class RunIdSlugTests(_RunDirCleanup):
     def test_phase_scope_slug_has_no_space(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             root = _make_project_root(Path(td))
-            # run_id 미지정 → compile 값("orch-tms-Phase 1")을 슬러그 정규화.
+            # run_id 미지정 → compile 값("orch-<root.name>-Phase 1")을 슬러그 정규화.
+            # _make_project_root 의 root.name = "consumer-project".
             run_dir, cfg = op.prepare_run(root, phase_scope="Phase 1")
             run_dir = self._track(run_dir)
             self.assertNotIn(" ", run_dir.name, "run_dir 디렉터리명 공백 없음")
-            self.assertEqual(run_dir.name, "orch-tms-Phase-1")
+            self.assertEqual(run_dir.name, "orch-consumer-project-Phase-1")
             self.assertEqual(cfg["run_id"], run_dir.name, "config.run_id 일치")
 
     def test_slugify_unit(self) -> None:
-        self.assertEqual(op.slugify_run_id("orch-tms-Phase 1"), "orch-tms-Phase-1")
+        self.assertEqual(op.slugify_run_id("orch-myproj-Phase 1"), "orch-myproj-Phase-1")
         self.assertEqual(op.slugify_run_id("a/b:c*d"), "a-b-c-d")
         self.assertEqual(op.slugify_run_id("  spaced  "), "spaced")
         self.assertEqual(op.slugify_run_id("---"), "run")
+
+    def test_resolve_slug_derives_from_root_name(self) -> None:
+        # resume 재현 규칙 = compile 과 동일("orch-" + root.name + "-" + phase_scope·도메인 0).
+        self.assertEqual(
+            op._resolve_slug(None, "phase1", "consumer-ws"), "orch-consumer-ws-phase1"
+        )
+        self.assertEqual(
+            op._resolve_slug(None, "Phase 1", "my-proj"), "orch-my-proj-Phase-1"
+        )
+        # --run-id override 우선.
+        self.assertEqual(op._resolve_slug("custom id", "phase1", "x"), "custom-id")
 
 
 if __name__ == "__main__":

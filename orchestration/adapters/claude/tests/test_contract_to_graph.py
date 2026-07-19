@@ -33,14 +33,14 @@ import contract_to_graph as c2g  # noqa: E402
 from gates import GatePolicy  # noqa: E402  (무수정 import — orchestration/framework)
 from step import Step  # noqa: E402  (무수정 import — uahf/framework/loop/step-host)
 
-# 소비 워크스페이스 픽스처(tms-system 트랙 종료·삭제 2026-07-19 — 실 경로 의존 제거).
-_TMS_ROOT = _TEST_FILE.parent / "fixtures" / "consumer-ws"
+# 중립 소비 워크스페이스 픽스처(도메인 무관·root.name = "consumer-ws").
+_CONSUMER_ROOT = _TEST_FILE.parent / "fixtures" / "consumer-ws"
 
 
 class ResolveContractTests(unittest.TestCase):
     def test_fixture_path_selects_v2(self) -> None:
         """done 1 — 픽스처 워크스페이스(v1·v2 병존)에서 v2 를 고른다(v1 아님)."""
-        p = c2g.resolve_contract(_TMS_ROOT)
+        p = c2g.resolve_contract(_CONSUMER_ROOT)
         self.assertTrue(p.is_absolute())
         self.assertEqual(p.name, "project-contract.v2.md")
 
@@ -68,9 +68,9 @@ class SeedGraphStepSchemaTests(unittest.TestCase):
     """done 2 — seed 단일 task 가 실제 Step 검증을 누락 0 통과."""
 
     def _seed_task(self) -> dict:
-        contract = c2g.resolve_contract(_TMS_ROOT)
+        contract = c2g.resolve_contract(_CONSUMER_ROOT)
         graph = c2g.build_seed_graph(
-            contract, _TMS_ROOT, mode="greenfield", phase_scope="phase1"
+            contract, _CONSUMER_ROOT, mode="greenfield", phase_scope="phase1"
         )
         self.assertEqual(len(graph["tasks"]), 1)
         return graph["tasks"][0]
@@ -100,9 +100,9 @@ class SeedGraphStepSchemaTests(unittest.TestCase):
             self.assertIn(k, task["delegation"])
 
     def test_graph_keys(self) -> None:
-        contract = c2g.resolve_contract(_TMS_ROOT)
+        contract = c2g.resolve_contract(_CONSUMER_ROOT)
         graph = c2g.build_seed_graph(
-            contract, _TMS_ROOT, mode="greenfield", phase_scope="phase1"
+            contract, _CONSUMER_ROOT, mode="greenfield", phase_scope="phase1"
         )
         self.assertEqual(set(graph.keys()), {"goal", "tasks", "dependencies", "completion"})
         self.assertEqual(graph["dependencies"], [])
@@ -128,9 +128,9 @@ class MilestoneCp3WiringTests(unittest.TestCase):
     """항목 7 정정 — milestone(CP3 approval) 배선이 결정적으로 트리거 가능함을 증명."""
 
     def _prompt(self) -> str:
-        contract = c2g.resolve_contract(_TMS_ROOT)
+        contract = c2g.resolve_contract(_CONSUMER_ROOT)
         graph = c2g.build_seed_graph(
-            contract, _TMS_ROOT, mode="greenfield", phase_scope="phase1"
+            contract, _CONSUMER_ROOT, mode="greenfield", phase_scope="phase1"
         )
         return graph["tasks"][0]["task"]
 
@@ -143,9 +143,9 @@ class MilestoneCp3WiringTests(unittest.TestCase):
 
     def test_seed_done_ac_checks_milestone(self) -> None:
         """seed done AC 가 milestone 최소 1건 + implementation 최소 1건을 검사."""
-        contract = c2g.resolve_contract(_TMS_ROOT)
+        contract = c2g.resolve_contract(_CONSUMER_ROOT)
         graph = c2g.build_seed_graph(
-            contract, _TMS_ROOT, mode="greenfield", phase_scope="phase1"
+            contract, _CONSUMER_ROOT, mode="greenfield", phase_scope="phase1"
         )
         done = graph["tasks"][0]["done"]
         self.assertIn("milestone", done)
@@ -180,7 +180,7 @@ class CompilePurityTests(unittest.TestCase):
     """done 4 — compile 3키 dict·디스크 미기록(tmp 격리)."""
 
     def test_three_keys(self) -> None:
-        out = c2g.compile(_TMS_ROOT, mode="greenfield", phase_scope="phase1")
+        out = c2g.compile(_CONSUMER_ROOT, mode="greenfield", phase_scope="phase1")
         self.assertEqual(set(out.keys()), {"config", "graph", "gate_policy"})
         self.assertIn("workspace_dir", out["config"])
         self.assertIn("run_id", out["config"])
@@ -213,9 +213,9 @@ class OfflineSafeAcTests(unittest.TestCase):
     _FORBIDDEN = ("tsc", "npm install", "npm run build", "npx")
 
     def _collect_ac_strings(self) -> list[str]:
-        contract = c2g.resolve_contract(_TMS_ROOT)
+        contract = c2g.resolve_contract(_CONSUMER_ROOT)
         graph = c2g.build_seed_graph(
-            contract, _TMS_ROOT, mode="greenfield", phase_scope="phase1"
+            contract, _CONSUMER_ROOT, mode="greenfield", phase_scope="phase1"
         )
         task = graph["tasks"][0]
         return [task["done"], task["delegation"]["done"], task["task"]]
@@ -250,13 +250,13 @@ class OfflineSafeAcTests(unittest.TestCase):
 class ConfigSchemaTests(unittest.TestCase):
     def test_build_config_keys(self) -> None:
         cfg = c2g.build_config(
-            "orch-tms-phase1", str(_TMS_ROOT),
+            "orch-consumer-ws-phase1", str(_CONSUMER_ROOT),
             allowed_tools=["Read", "Write"], timeout=900,
         )
         for k in ("run_id", "policy", "retry_limit", "timeout",
                   "allowed_tools", "output_format", "workspace_dir"):
             self.assertIn(k, cfg)
-        self.assertEqual(cfg["workspace_dir"], str(_TMS_ROOT))
+        self.assertEqual(cfg["workspace_dir"], str(_CONSUMER_ROOT))
         self.assertEqual(cfg["policy"], "interactive")
 
     def test_allowed_tools_offline_no_npm(self) -> None:
@@ -265,6 +265,69 @@ class ConfigSchemaTests(unittest.TestCase):
         self.assertNotIn("npm", joined)
         self.assertIn("Bash(node:*)", c2g.DEFAULT_ALLOWED_TOOLS)
         self.assertIn("Bash(python:*)", c2g.DEFAULT_ALLOWED_TOOLS)
+
+
+class SlugAndSeedIdTests(unittest.TestCase):
+    """순수 파생 헬퍼(_slug·seed_task_id·contract_version) 단위 검증."""
+
+    def test_slug_normalizes(self) -> None:
+        self.assertEqual(c2g._slug("Phase 1"), "phase-1")
+        self.assertEqual(c2g._slug("phase1"), "phase1")
+        self.assertEqual(c2g._slug("a/b:c*d"), "a-b-c-d")
+        self.assertEqual(c2g._slug("---"), "run")          # 빈 결과 폴백.
+        self.assertEqual(c2g._slug("정산 코어"), "run")     # 비ASCII → 폴백.
+
+    def test_seed_task_id_derives(self) -> None:
+        # phase1 은 하드코딩 전신 값과 파생적으로 일치.
+        self.assertEqual(c2g.seed_task_id("phase1"), "impl-plan-phase1")
+        self.assertEqual(c2g.seed_task_id("phase2"), "impl-plan-phase2")
+        self.assertEqual(c2g.seed_task_id("Phase 1"), "impl-plan-phase-1")
+
+    def test_contract_version_parses_filename(self) -> None:
+        p = c2g.resolve_contract(_CONSUMER_ROOT)  # v2 픽스처.
+        self.assertEqual(c2g.contract_version(p), 2)
+
+    def test_contract_version_rejects_nonversion(self) -> None:
+        with self.assertRaises(ValueError):
+            c2g.contract_version(Path("some/random.md"))
+
+
+class GeneralizationTests(unittest.TestCase):
+    """n1·n2 — 도메인 하드코딩 제거·소비 프로젝트 파생 실증(tms 부재)."""
+
+    def test_root_name_derived_and_tms_absent(self) -> None:
+        """n1 — consumer-ws 픽스처로 compile 시 표기가 root.name 에서 파생되고 'tms' 부재."""
+        out = c2g.compile(_CONSUMER_ROOT, mode="incremental", phase_scope="phase1")
+        goal = out["graph"]["goal"]
+        run_id = out["config"]["run_id"]
+        seed = out["graph"]["tasks"][0]
+        prompt = seed["task"]
+        constraints = seed["delegation"]["constraints"]
+
+        # root.name("consumer-ws") 파생.
+        self.assertIn("consumer-ws", goal)
+        self.assertIn("consumer-ws", prompt)
+        self.assertIn("consumer-ws", constraints)
+        self.assertEqual(run_id, "orch-consumer-ws-phase1")
+        # Contract 버전(v2) 파생(내용 파싱 0·파일명 유래).
+        self.assertIn("v2", goal)
+
+        # 도메인 하드코딩(대소문자 무시 'tms'·정산·SD-D 앵커) 부재.
+        for blob in (goal, prompt, constraints, run_id, out["config"]["run_id"]):
+            self.assertNotIn("tms", blob.lower(), "tms 잔존: " + blob[:80])
+        self.assertNotIn("정산", prompt)
+        self.assertNotIn("SD-D", prompt)
+        self.assertNotIn("pc-tms-001", prompt)
+
+    def test_phase_scope_varies_seed_id_and_run_id(self) -> None:
+        """n2 — phase_scope 상이 시 seed id·run_id 가 파생적으로 변한다."""
+        out1 = c2g.compile(_CONSUMER_ROOT, mode="incremental", phase_scope="phase1")
+        out2 = c2g.compile(_CONSUMER_ROOT, mode="incremental", phase_scope="phase2")
+
+        self.assertEqual(out1["graph"]["tasks"][0]["id"], "impl-plan-phase1")
+        self.assertEqual(out2["graph"]["tasks"][0]["id"], "impl-plan-phase2")
+        self.assertEqual(out1["config"]["run_id"], "orch-consumer-ws-phase1")
+        self.assertEqual(out2["config"]["run_id"], "orch-consumer-ws-phase2")
 
 
 if __name__ == "__main__":

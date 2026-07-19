@@ -102,12 +102,18 @@ def _two_milestone_plan():
     ]}
 
 
-def _design_task():
+def _seed_proposal_task(tid: str = "impl-plan-phase1"):
+    """물리 graph.json 에 심는 seed proposal 노드(F4 build_seed_graph 형태 모사).
+
+    derive_proposing_step_ref 가 unitType=="proposal" 노드 id 를 파생하므로, 기본 id 를
+    전신 하드코딩 값("impl-plan-phase1")과 동일하게 두어 proposingStepRef 기대값을 보존한다.
+    """
     return {
-        "id": "design", "task": "설계", "done": "설계 완료",
-        "interfaceContract": "설계 문서", "ownedBoundary": ["docs/design.md"],
+        "id": tid, "task": "impl-plan 제안 step", "done": "impl-plan.json 산출",
+        "interfaceContract": "impl-plan 제안 계약", "ownedBoundary": ["impl-plan.json"],
         "dependsOn": [], "delegation": dict(_SENTINEL_DELEG),
-        "capability": "design", "role": "Advisor", "model": "opus", "unitType": "design",
+        "capability": "cap-impl-plan", "role": "Planner", "model": "sonnet",
+        "unitType": "proposal",
     }
 
 
@@ -171,7 +177,8 @@ def _write_design(run: Path, *, policy=_DESIGN_POLICY, manifest=_DESIGN_MANIFEST
         )
 
 
-def _build_run(base: Path, gate_kind: str, gate_id: str, *, plan=None, seed_design: bool = True) -> Path:
+def _build_run(base: Path, gate_kind: str, gate_id: str, *, plan=None, seed_design: bool = True,
+               graph_tasks=None) -> Path:
     run = base / "run"
     (run / "logs").mkdir(parents=True)
     (run / "workspace").mkdir(parents=True)
@@ -184,8 +191,13 @@ def _build_run(base: Path, gate_kind: str, gate_id: str, *, plan=None, seed_desi
         json.dumps({"workspace_dir": str(run / "workspace"), "run_id": "test-run"}),
         encoding="utf-8",
     )
+    # 물리 그래프(graph.json) — orchestrate_project 가 물리화하는 초기 그래프 모사. 기본 =
+    # 단일 seed proposal 노드(derive_proposing_step_ref 파생 기준). graph_tasks 로 0건/2건 등
+    # 이상 그래프를 주입해 파생 오류 경로를 재현한다(n3).
+    if graph_tasks is None:
+        graph_tasks = [_seed_proposal_task()]
     (run / "graph.json").write_text(
-        json.dumps({"tasks": [_design_task()]}), encoding="utf-8"
+        json.dumps({"tasks": graph_tasks}), encoding="utf-8"
     )
     # 정책 데이터 기본값({}) — userActorClass=human·escalationResolvers=(Advisor,human).
     (run / "gate_policy.json").write_text("{}", encoding="utf-8")
@@ -578,6 +590,76 @@ class TestDesignCompletenessGate(unittest.TestCase):
             json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
         self.addCleanup(lambda: __import__("shutil").rmtree(td, ignore_errors=True))
         return str(sd / "default-policy.yaml"), str(sd / "design-manifest.json")
+
+
+# --------------------------------------------------------------------------
+# n3 — proposingStepRef 파생: proposal 노드 0건/2건 → 오류 + 원장 무변경
+# --------------------------------------------------------------------------
+class TestProposingStepRefDerivation(unittest.TestCase):
+    def test_derive_single_proposal(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g", plan=None)
+            self.assertEqual(rg.derive_proposing_step_ref(run), "impl-plan-phase1")
+
+    def test_zero_proposal_node_blocks_and_ledger_untouched(self):
+        # 물리 그래프에 proposal 노드 0건(implementation 만) → 파생 불가·비영 종료·원장 무변경.
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(
+                Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=_valid_plan(),
+                graph_tasks=[_task("impl-only", "src/x.py", [])],  # unitType=implementation.
+            )
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertNotEqual(rc, 0, "proposal 0건 그래프는 파생 실패로 비영 종료")
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before, "events.jsonl 무변경")
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before, "revisions.jsonl 무변경")
+
+    def test_two_proposal_nodes_blocks_and_ledger_untouched(self):
+        # proposal 노드 2건 → 파생 모호·비영 종료·원장 무변경(추측 0).
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(
+                Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=_valid_plan(),
+                graph_tasks=[_seed_proposal_task("p1"), _seed_proposal_task("p2")],
+            )
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertNotEqual(rc, 0, "proposal 2건 그래프는 파생 모호로 비영 종료")
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before)
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before)
+
+
+# --------------------------------------------------------------------------
+# n4 — F4→F5 통합 관통: compile → 물리화(graph.json) → resolve_gate 승격.
+#      proposingStepRef 가 파생 seed id 와 일치함을 실증(격리 검증만으로 끝내지 않음).
+# --------------------------------------------------------------------------
+class TestF4F5Integration(unittest.TestCase):
+    def test_compile_to_resolve_gate_proposing_ref_matches_derived(self):
+        fixture = _TEST_FILE.parent / "fixtures" / "consumer-ws"
+        # phase2 로 컴파일 → seed id = "impl-plan-phase2"(기본값 아님·진짜 파생 실증).
+        compiled = f4.compile(fixture, mode="incremental", phase_scope="phase2")
+        seed_id = compiled["graph"]["tasks"][0]["id"]
+        self.assertEqual(seed_id, "impl-plan-phase2", "compile seed id 는 phase_scope 파생")
+
+        with tempfile.TemporaryDirectory() as td:
+            # compile 이 만든 실제 그래프를 graph.json 으로 물리화(관통 경로).
+            run = _build_run(
+                Path(td), GATE_USER_DECISION_REQUIRED, "g-int", plan=_valid_plan(),
+                graph_tasks=compiled["graph"]["tasks"],
+            )
+            # resolve_gate 는 graph.json 에서 proposingStepRef 를 파생한다(하드코딩 아님).
+            self.assertEqual(rg.derive_proposing_step_ref(run), seed_id)
+
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertEqual(rc, 0, "관통 해소는 0")
+
+            revs = _read_jsonl(run / "revisions.jsonl")
+            added = [r for r in revs if r.get("kind") == "task_added"]
+            self.assertEqual(len(added), 3)
+            for r in added:
+                self.assertEqual(
+                    (r.get("basis") or {}).get("proposingStepRef"), seed_id,
+                    "승격 basis.proposingStepRef 가 compile 파생 seed id 와 일치해야 한다",
+                )
 
 
 if __name__ == "__main__":

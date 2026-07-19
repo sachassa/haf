@@ -29,8 +29,9 @@
          만 적격(binding §3.3). 부적격 actor 는 원장 무변경 + 비영 종료.
       3) 적격 시 provenance annotation + append_gate_resolution(actor) append.
          그 뒤 방출된 각 구현 task 를 accept_revision(KIND_TASK_ADDED, ...,
-         proposingStepRef="impl-plan-phase1", gateEventRef=gate_id) 로 승격
-         (accept_revision 이 gate-pass 이벤트 실재를 재검증).
+         proposingStepRef=<graph.json proposal 노드 id 파생>, gateEventRef=gate_id) 로 승격
+         (accept_revision 이 gate-pass 이벤트 실재를 재검증). proposingStepRef 는 하드코딩이
+         아니라 run_dir/graph.json 의 proposal 노드에서 파생한다(F4↔F5 교차 계약).
   - escalation 게이트(CP3 non-Pass escalation 포함): actor ∈ escalationResolvers 자격 확인 후
     append_gate_resolution(actor) append. revision 승격 없음(escalation 은 분해 제안 아님).
 
@@ -107,7 +108,7 @@ GATE_KIND_MAP = {
 }
 
 IMPL_PLAN_FILE = "impl-plan.json"
-PROPOSING_STEP_REF = "impl-plan-phase1"
+GRAPH_FILE = "graph.json"
 
 PROVENANCE_NOTE = (
     "주 세션이 headless 엔진의 정지 게이트를 해소한 provenance 기록 — 시뮬레이션 아님"
@@ -261,6 +262,32 @@ def validate_impl_plan_adapter(plan) -> list:
 
 
 # ==========================================================================
+# proposingStepRef 파생 — 물리 그래프(graph.json)에서 proposal 노드 id (F4↔F5 교차 계약)
+# ==========================================================================
+def derive_proposing_step_ref(run_dir: Path) -> str:
+    """run_dir/graph.json 의 unitType=="proposal" 단일 노드 id 를 파생한다(하드코딩 제거).
+
+    orchestrate_project._materialize_run_dir 가 물리화한 초기 그래프(graph.json)를 읽어
+    proposal 노드(= F4 seed 노드·seed_task_id 파생값)의 id 를 승격 basis.proposingStepRef 로
+    쓴다. proposal 노드가 **정확히 1건이 아니면**(0건/2건 이상) ValueError — 호출부가 원장
+    무변경으로 비영 종료한다(검증-먼저 원칙 동형·추측 0).
+    """
+    graph = load_json(run_dir / GRAPH_FILE)
+    tasks = graph.get("tasks") or []
+    proposals = [
+        t.get("id") for t in tasks
+        if isinstance(t, dict) and t.get("unitType") == "proposal"
+        and isinstance(t.get("id"), str) and t.get("id").strip()
+    ]
+    if len(proposals) != 1:
+        raise ValueError(
+            "graph.json 의 proposal 노드가 정확히 1건이 아니다(proposingStepRef 파생 불가): "
+            "발견 %d건 %r" % (len(proposals), proposals)
+        )
+    return proposals[0]
+
+
+# ==========================================================================
 # stop-signal.json 에서 해소 대상 gate_id·gateKind 복원 (추측 0)
 # ==========================================================================
 def recover_gate(run_dir: Path, wanted_kind: str):
@@ -334,6 +361,15 @@ def _write_record(
 def resolve_structural(run_dir: Path, gate_id, actor: str, response: str, policy: GatePolicy) -> int:
     gate_kind = GATE_USER_DECISION_REQUIRED
 
+    # (0) proposingStepRef 파생 — 물리 그래프에서(하드코딩 제거·F4↔F5 교차 계약). proposal 노드가
+    #     정확히 1건이 아니면 원장 무변경으로 비영 종료(검증-먼저·어떤 append 도 하기 전).
+    try:
+        proposing_step_ref = derive_proposing_step_ref(run_dir)
+    except (FileNotFoundError, ValueError) as exc:
+        print("[ERR] proposingStepRef 파생 실패 — 원장 무변경·게이트 pending 유지: %s" % exc,
+              file=sys.stderr)
+        return 1
+
     # (1) 검증 먼저 — 어떤 원장 append 도 하기 전에. (원장 무오염 보장.)
     cfg = load_json(run_dir / "config.json")
     workspace = cfg.get("workspace_dir") or str(run_dir / "workspace")
@@ -399,7 +435,7 @@ def resolve_structural(run_dir: Path, gate_id, actor: str, response: str, policy
     for st in plan["tasks"]:
         try:
             rev = orch.accept_revision(
-                KIND_TASK_ADDED, st, proposingStepRef=PROPOSING_STEP_REF, gateEventRef=gate_id
+                KIND_TASK_ADDED, st, proposingStepRef=proposing_step_ref, gateEventRef=gate_id
             )
         except Exception as exc:  # noqa: BLE001  (구조 misuse·근거 미실재 등 정직 표면화)
             print(
@@ -413,7 +449,7 @@ def resolve_structural(run_dir: Path, gate_id, actor: str, response: str, policy
     print("[RESOLVE] gate_id=%s resolved by actor=%s (simulated=false)." % (gate_id, actor))
     print("[VALIDATE] impl-plan 검증 통과.")
     print("[REVISION] task_added %d 건 append (basis.proposingStepRef=%s gateEventRef=%s):"
-          % (len(accepted), PROPOSING_STEP_REF, gate_id))
+          % (len(accepted), proposing_step_ref, gate_id))
     for seq, sid, ut in accepted:
         print("  - seq=%s id=%s unitType=%s" % (seq, sid, ut))
     return 0

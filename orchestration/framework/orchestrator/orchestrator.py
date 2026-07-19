@@ -42,8 +42,10 @@ from gates import (
     GATE_ESCALATION_REQUIRED,
     GATE_REVIEW_REQUIRED,
     REF_KIND_APPROVAL,
+    REF_KIND_RESOLVED,
     REF_KIND_REVIEW,
     REVIEW_MODE_EVIDENCE_REUSE,
+    STOPPING_GATES,
     GatePolicy,
     append_approval_marker,
     append_gate_requirement,
@@ -167,18 +169,65 @@ class ProjectOrchestrator:
             return ref.get("gate_id")
         return None
 
-    def _gate_event_exists(self, gate_ref: Any) -> bool:
-        """revision 을 근거짓는 게이트 **통과** 이벤트가 실재하는가(PO-INV 5).
+    def _event_grounds_gate(self, event: dict[str, Any], gate_ref: Any) -> bool:
+        """이 이벤트가 gate_ref 를 근거지을 자격이 있는가(PO-INV 5 + OQ-PO-B5 actor 재검증).
 
-        게이트 통과(승인·해소)만 revision 을 근거지을 수 있다 — outcome == "pass" 로
-        한정한다. S3 게이트 요구 이벤트(outcome == "escalated")는 아직 미해소이므로
-        revision 을 근거지어서는 안 된다(요구만으로 그래프 변경 0). S2 게이트 승인 이벤트는
-        전부 outcome == "pass" 이므로 이 한정은 S2 거동을 보존한다(강화적 정정).
+        기본 = 실재 검증(PO-INV 5): outcome == "pass" 이고 gate_id 가 일치하면 근거로
+        인정한다. 게이트 통과(승인·해소)만 revision 을 근거지을 수 있다 — S3 게이트 요구
+        이벤트(outcome == "escalated")는 미해소이므로 근거가 아니다(요구만으로 그래프 변경 0).
+
+        OQ-PO-B5 강화(2026-07-19·해소): 매칭 pass 이벤트가 **정지 게이트 해소로 자신을
+        선언**하고(ref.kind == REF_KIND_RESOLVED 그리고 ref.gateKind ∈ STOPPING_GATES)
+        self.gate_policy 가 존재하면, 그 해소 actor 가 정책상 적격일 때만
+        (gate_policy.is_eligible_resolver) 근거로 인정한다. 05 §3.3 확정 권위를 엔진 근거
+        검증에 반영한다 — user_decision_required 는 사용자 actor 클래스(userActorClass)의
+        해소 이벤트만·escalation_required 는 허용 resolver 집합(escalationResolvers)의 해소
+        이벤트만 승격 근거가 된다. 부적격 actor 의 pass 해소 이벤트는 로그에 남아도(append-only)
+        승격 근거가 되지 못한다.
+
+        거동 보존 3면(불가침):
+          (a) 레거시 이벤트(ref.kind == "gate"·gateKind 부재·S2 관례) → 실재-만 검증(강화
+              무적용). 정지 게이트 해소 선언이 아니므로 else 분기로 근거 인정.
+          (b) 비정지 gateKind(review_required/approval_required 등)를 실은 gate-resolved
+              이벤트 → 실재-만 검증. is_eligible_resolver 는 비정지 gateKind 에 항상 False 라
+              일괄 적용 시 test_artifacts 의 approval_required 근거 rework 패턴이 깨진다 —
+              적용 범위를 STOPPING_GATES 로 한정하는 이유다.
+          (c) self.gate_policy is None(S2 조립·게이트 처리 0 원칙) → 실재-만 검증(적격성
+              판정 불가·게이트 정책 부재 시 근거 실재만으로 수용).
+        """
+        if event.get("outcome") != "pass":
+            return False
+        if self._event_gate_id(event) != gate_ref:
+            return False
+        ref = event.get("ref")
+        if isinstance(ref, dict):
+            gate_kind = ref.get("gateKind")
+            if (
+                ref.get("kind") == REF_KIND_RESOLVED
+                and gate_kind in STOPPING_GATES
+                and self.gate_policy is not None
+            ):
+                # 정지 게이트 해소 선언 + 정책 존재 → actor 적격성까지 요구(OQ-PO-B5).
+                return self.gate_policy.is_eligible_resolver(gate_kind, event.get("actor"))
+        # 레거시·비정지·정책 부재 → 실재-만 검증(거동 보존 3면).
+        return True
+
+    def _gate_event_exists(self, gate_ref: Any) -> bool:
+        """revision 을 근거짓는 게이트 **통과** 이벤트가 자격 있게 실재하는가(PO-INV 5·OQ-PO-B5).
+
+        각 이벤트를 `_event_grounds_gate` 로 판정한다 — 정지 게이트 해소를 선언하는 pass
+        이벤트는 적격 actor 일 때만 근거가 되고, 그 외(레거시·비정지·정책 부재)는 종전대로
+        실재-만 검증이다(거동 보존 3면·해당 메서드 docstring).
+
+        `accept_revision`(수용 시점)과 `_grounded_revisions`(재개 fold 필터) 양쪽에서 쓰이므로
+        이 강화는 **수용 시점과 재개 시점 모두**에 걸린다 — 부적격-근거 revision 은 수용도
+        거부되고, 우회 append 되어 원장에 있더라도 fold 에서 배제된다(방어적 이중화의 엔진 측
+        완성).
         """
         if not gate_ref:
             return False
         return any(
-            e.get("outcome") == "pass" and self._event_gate_id(e) == gate_ref
+            self._event_grounds_gate(e, gate_ref)
             for e in self.event_store.read_all()
         )
 

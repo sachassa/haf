@@ -12,11 +12,13 @@
 
 from __future__ import annotations
 
+import io
 import json
 import shutil
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 # --- 경로 배선: 런처 모듈 디렉터리 ---------------------------------------------
@@ -243,6 +245,34 @@ class ExitCodeMappingTests(_RunDirCleanup):
             g0 = marker["pending_gates"][0]
             self.assertIn("gate_id", g0)
             self.assertIn("gateKind", g0)
+
+    def test_gate_stop_preserves_lines_and_appends_render(self) -> None:
+        # 회귀(OQ-PO-B1 배선): 정지 게이트 시 기존 [STOP]/[PENDING-GATES] 라인을 보존하고
+        # 그 이후에 render_gates 사람 친화 블록을 추가 출력한다(렌더는 부가 표면·가법).
+        with tempfile.TemporaryDirectory() as td:
+            root = _make_project_root(Path(td))
+            run_dir, _cfg = op.prepare_run(
+                root, phase_scope="Phase 1", run_id="orch-test-render",
+            )
+            run_dir = self._track(run_dir)
+
+            stub = _StubInvoker()
+            orch, _c = op.build(run_dir, stub)
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                code = op.run_and_map(orch, stub, run_dir)
+            out = buf.getvalue()
+
+            self.assertEqual(code, 2)
+            # 기존 라인 보존(바이트 형태).
+            self.assertIn("[STOP] gate pending=", out)
+            self.assertIn("[PENDING-GATES] ", out)
+            # 렌더 블록이 [PENDING-GATES] '이후'에 추가된다.
+            self.assertIn("미해소 정지 게이트 큐", out)
+            self.assertLess(out.index("[PENDING-GATES] "), out.index("미해소 정지 게이트 큐"))
+            # 사용자 결정 게이트 라벨·해소 명령 표면화.
+            self.assertIn("사용자 결정 대기(확정 권위)", out)
+            self.assertIn("resolve_gate.py", out)
 
     def test_completed_returns_0(self) -> None:
         with tempfile.TemporaryDirectory() as td:

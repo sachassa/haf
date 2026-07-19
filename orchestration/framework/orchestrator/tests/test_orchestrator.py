@@ -53,6 +53,12 @@ from stephost_bridge import (  # noqa: E402
     ROLE_VERIFIER,
     ROLE_WORKER,
 )
+from gates import (  # noqa: E402
+    GATE_APPROVAL_REQUIRED,
+    GATE_USER_DECISION_REQUIRED,
+    GatePolicy,
+    append_gate_resolution,
+)
 
 
 # --------------------------------------------------------------------------
@@ -369,6 +375,102 @@ class POINV1_NoJudgment(unittest.TestCase):
         self.assertTrue(result.stopped, result.status)
         self.assertEqual(result.stop_reason, "escalated")
         self.assertIn("s1", result.stopped_tasks)
+
+
+# ==========================================================================
+# OQ-PO-B5 — 게이트 근거 실재 검증에 해소 actor 자격 재검증 (설계 D1)
+#
+# _gate_event_exists 강화: 정지 게이트 해소를 선언하는 pass 이벤트(ref.kind=gate-resolved·
+# gateKind ∈ STOPPING_GATES)는 gate_policy 존재 시 적격 actor 일 때만 revision 을 근거지을
+# 수 있다. 거동 보존 3면(레거시 ref.kind="gate"·비정지 gateKind·gate_policy None)은
+# 실재-만 검증을 유지한다. 이 강화는 accept_revision(수용)·_grounded_revisions(fold) 양시점.
+# ==========================================================================
+def _stopping_policy():
+    """정지 게이트 적격성 판정용 정책(user_decision=human·escalation={Advisor,human})."""
+    return GatePolicy(user_actor_class="human", escalation_resolvers=("Advisor", "human"))
+
+
+def _new_task_revision_args():
+    """근거 검증 대상 revision 인자(s3 task_added·gateEventRef 는 케이스별 지정)."""
+    return dict(kind=KIND_TASK_ADDED, payload=task_payload("s3", depends_on=["s2"]),
+                proposingStepRef="p")
+
+
+class POINV5_B5_ResolverActorReverification(unittest.TestCase):
+    def _orch(self, *, gate_policy):
+        store = InMemoryEventStore()
+        ledger = RevisionLedger(InMemoryRevisionStore(), initial_two_task())
+        orch = ProjectOrchestrator(ledger, store, MockInvoker(), gate_policy=gate_policy)
+        return orch, ledger
+
+    def test_t1_ineligible_stopping_resolver_rejected(self):
+        # gate_policy 있음 + user_decision 을 부적격 actor(Advisor)로 해소 → 승격 근거 부적격.
+        orch, ledger = self._orch(gate_policy=_stopping_policy())
+        append_gate_resolution(orch.log, "g-user", GATE_USER_DECISION_REQUIRED, actor=ROLE_ADVISOR)
+        with self.assertRaises(RevisionRejected) as ctx:
+            orch.accept_revision(**_new_task_revision_args(), gateEventRef="g-user")
+        self.assertEqual(ctx.exception.reason, REASON_UNGROUNDED_REVISION)
+        self.assertEqual(len(ledger.store.read_all()), 0)  # 원장 오염 0.
+
+    def test_t2_eligible_stopping_resolver_accepted(self):
+        # gate_policy 있음 + 적격 actor(=userActorClass=human) → 수용.
+        orch, ledger = self._orch(gate_policy=_stopping_policy())
+        append_gate_resolution(orch.log, "g-user", GATE_USER_DECISION_REQUIRED, actor="human")
+        rev = orch.accept_revision(**_new_task_revision_args(), gateEventRef="g-user")
+        self.assertIsNotNone(rev)
+        self.assertEqual(len(ledger.store.read_all()), 1)
+        self.assertEqual(
+            set(t["id"] for t in orch.active_graph()["tasks"]), {"s1", "s2", "s3"})
+
+    def test_t3_gate_policy_none_accepts_stopping_resolution_s2_preserved(self):
+        # gate_policy None + 동일 gate-resolved 이벤트 → 기존대로 수용(S2 보존·실재-만 검증).
+        orch, ledger = self._orch(gate_policy=None)
+        # 부적격 actor 여도 정책 부재 시 적격성 판정 없이 실재-만으로 수용.
+        append_gate_resolution(orch.log, "g-user", GATE_USER_DECISION_REQUIRED, actor=ROLE_ADVISOR)
+        rev = orch.accept_revision(**_new_task_revision_args(), gateEventRef="g-user")
+        self.assertIsNotNone(rev)
+        self.assertEqual(len(ledger.store.read_all()), 1)
+
+    def test_t4_legacy_gate_event_accepted_with_policy(self):
+        # 레거시 ref.kind="gate"(gateKind 부재) + gate_policy 있음 → 기존대로 수용(강화 무적용).
+        orch, ledger = self._orch(gate_policy=_stopping_policy())
+        _append_gate_event(orch, "g-legacy")  # ref={"kind":"gate","gate_id":...}·actor=Advisor
+        rev = orch.accept_revision(**_new_task_revision_args(), gateEventRef="g-legacy")
+        self.assertIsNotNone(rev)
+        self.assertEqual(len(ledger.store.read_all()), 1)
+
+    def test_t5_nonstopping_gatekind_resolution_accepted(self):
+        # 비정지 gateKind(approval_required) gate-resolved + gate_policy 있음 → 기존대로 수용.
+        #   is_eligible_resolver(approval_required, ...) 는 False 지만 적용 범위(STOPPING_GATES)
+        #   밖이므로 실재-만 검증이 적용된다(test_artifacts L540 rework 근거 패턴 보존).
+        orch, ledger = self._orch(gate_policy=_stopping_policy())
+        append_gate_resolution(orch.log, "g-appr", GATE_APPROVAL_REQUIRED, actor=ROLE_ADVISOR)
+        rev = orch.accept_revision(**_new_task_revision_args(), gateEventRef="g-appr")
+        self.assertIsNotNone(rev)
+        self.assertEqual(len(ledger.store.read_all()), 1)
+
+    def test_t6_fold_excludes_ineligible_grounding_until_eligible_appears(self):
+        # 부적격-근거 revision 이 원장에 이미 있을 때(accept 우회) fold 가 배제하고,
+        # 적격 이벤트가 추가되면 다시 포함한다(재개 시 방어·양시점 강화).
+        store = InMemoryEventStore()
+        rstore = InMemoryRevisionStore()
+        rstore.append(RevisionEvent(
+            revisionSeq=1, kind=KIND_TASK_ADDED,
+            payload=task_payload("s3", depends_on=["s2"]),
+            basis={"proposingStepRef": "p", "gateEventRef": "g-user"},
+        ).to_dict())
+        orch = ProjectOrchestrator(
+            RevisionLedger(rstore, initial_two_task()), store, MockInvoker(),
+            gate_policy=_stopping_policy())
+
+        # 부적격 해소(Advisor)만 → s3 은 fold 에서 배제(그래프 미반영).
+        append_gate_resolution(orch.log, "g-user", GATE_USER_DECISION_REQUIRED, actor=ROLE_ADVISOR)
+        self.assertEqual([t["id"] for t in orch.active_graph()["tasks"]], ["s1", "s2"])
+
+        # 적격 해소(human) 추가 → s3 다시 fold 에 포함(재개 시 재확인).
+        append_gate_resolution(orch.log, "g-user", GATE_USER_DECISION_REQUIRED, actor="human")
+        self.assertEqual(
+            set(t["id"] for t in orch.active_graph()["tasks"]), {"s1", "s2", "s3"})
 
 
 if __name__ == "__main__":

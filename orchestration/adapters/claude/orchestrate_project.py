@@ -216,6 +216,19 @@ def run_and_map(orch: Any, invoker: Any, run_dir: Any) -> int:
               % json.dumps([g.get("gate_id") for g in result.pending_gates],
                            ensure_ascii=False))
         print("[PENDING-GATES] %s" % json.dumps(result.pending_gates, ensure_ascii=False))
+        # 사람 친화 게이트 큐 렌더(부가 표면·OQ-PO-B1). 위 [STOP]/[PENDING-GATES] 라인과
+        # stop-signal.json 을 **바이트 보존**한 뒤 그 이후에 render_gates 렌더 함수를 재사용해
+        # 추가 출력한다. 렌더는 부가 표면이므로 실패(import·파싱)해도 정지 신호를 깨지 않는다
+        # (렌더 실패 시 기존 출력만 유지·방어). policy 는 render_gates.load_pending 이 동일 경로
+        # (gate_policy.json)에서 로드하고, 렌더 입력은 run 결과 result.pending_gates(권위)를 쓴다.
+        try:
+            import render_gates  # noqa: E402  (같은 어댑터 경계·form-B 순수 렌더)
+
+            _pending, policy = render_gates.load_pending(run_dir)
+            print(render_gates.render_pending(result.pending_gates, policy))
+        except Exception as exc:  # noqa: BLE001  (렌더는 부가 표면 — 정지 신호 불변)
+            print("[RENDER-SKIP] 게이트 큐 렌더 생략(정지 신호는 유효): %s" % exc,
+                  file=sys.stderr)
         return 2
 
     if result.status == "stopped":
@@ -294,5 +307,25 @@ def main(argv: list[str] | None = None) -> int:
     return run_and_map(orch, invoker, run_dir)
 
 
+def _force_utf8_console() -> None:
+    """CLI 진입 시 stdout/stderr 를 UTF-8 로 재구성한다(Windows cp949 콘솔 방어).
+
+    정지 게이트 시 render_gates 사람 친화 블록(한국어 문면)을 자동 출력하므로, cp949 등
+    비-UTF-8 콘솔에서도 렌더가 `[RENDER-SKIP]` 로 떨어지지 않고 실제 표면화되게 한다(§3.2
+    런처 자동 출력 취지 보존). 재구성 가능한 TextIOWrapper 일 때만 적용·실패 무시(어댑터
+    격리 지점의 물리 표면 보정·중립 코드 무변경). 테스트는 main()/run_and_map 을 직접
+    호출하므로 이 경로 미경유·무영향.
+    """
+    for stream_name in ("stdout", "stderr"):
+        stream = getattr(sys, stream_name, None)
+        reconfig = getattr(stream, "reconfigure", None)
+        if reconfig is not None:
+            try:
+                reconfig(encoding="utf-8")
+            except (ValueError, OSError):
+                pass
+
+
 if __name__ == "__main__":
+    _force_utf8_console()
     sys.exit(main())

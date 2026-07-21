@@ -1,0 +1,26 @@
+{
+  "stop_reason": "gate",
+  "stopped_tasks": [
+    "gate-unit-impl-plan-m1-2-m1-defects-2-md-read-3-acquisition-py-parse-list-subs-output-yt-dlp-info-subprocess-run-text-true-cp949-stderr-90-m1-3-157-429-done-ac-fixtures-yt-dlp-out-m1-live-docs-7-orchestration-mode-incremental"
+  ],
+  "pending_gates": [
+    {
+      "gate_id": "gate-unit-impl-plan-m1-2-m1-defects-2-md-read-3-acquisition-py-parse-list-subs-output-yt-dlp-info-subprocess-run-text-true-cp949-stderr-90-m1-3-157-429-done-ac-fixtures-yt-dlp-out-m1-live-docs-7-orchestration-mode-incremental",
+      "gateKind": "user_decision_required",
+      "target": {
+        "artifactClass": null,
+        "interventionCondition": null,
+        "targetClass": null,
+        "transition": null,
+        "unitId": "impl-plan-m1-2-m1-defects-2-md-read-3-acquisition-py-parse-list-subs-output-yt-dlp-info-subprocess-run-text-true-cp949-stderr-90-m1-3-157-429-done-ac-fixtures-yt-dlp-out-m1-live-docs-7-orchestration-mode-incremental",
+        "unitType": "proposal"
+      },
+      "scoped_question": {
+        "gateKind": "user_decision_required",
+        "unitId": "impl-plan-m1-2-m1-defects-2-md-read-3-acquisition-py-parse-list-subs-output-yt-dlp-info-subprocess-run-text-true-cp949-stderr-90-m1-3-157-429-done-ac-fixtures-yt-dlp-out-m1-live-docs-7-orchestration-mode-incremental"
+      },
+      "since": 3
+    }
+  ],
+  "note": "정지 게이트 물리 정지 — 실 사용자/상위 개입 대기(exit 2). autonomy policy 와 무관하게 정지 게이트는 보존된다(PO-INV 4)."
+}

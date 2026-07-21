@@ -121,7 +121,9 @@
   2. **`logs/failure.json`** — top-level `except` 에서 트레이스백 + 실행 컨텍스트(run_id·current_unit·stage·config)를 구조화 기록. 기존 `stop-signal.json` 규약과 동형으로 얹는다.
   3. **종료 코드 규약 명문화** — `0`=완료 / `2`=게이트 정지(정상) / 그 외=실패. 현재 `exit 2` 가 정상 정지라는 사실을 매 세션 문서에서 되찾아야 한다.
   4. **per-unit timeout** — 현재 config `timeout` 은 전역이며, 단위 규모 대비 산정이 없다(백로그 J 의 예방책 ③과 동일 지점).
+  4-b. **unit id 슬러그 길이 무제한 → 원장이 커밋 불가해진다**(실측 2026-07-21 · `impl-yt-stt-m1fix2`). `--phase` 문자열이 seed unit id 로 슬러그화되고 그 id 가 `logs/invoke-NN-<Role>-<unitId>.json`·`steps/<unitId>.json` 파일명에 **그대로** 들어간다. phase 에 결함 요약을 담는 것은 이미 관례인데(선례 `impl-yt-stt-m1fix`), 이번엔 파일명 **239자**·전체 경로 **367자**가 되어 **git 이 `Filename too long` 으로 인덱싱을 거부**했다 — 즉 **run 원장을 커밋할 수 없다**. 직전 run 은 118자로 우연히 통과했을 뿐이다(경계에 걸쳐 있었다). 우회는 `git config core.longpaths true`(이번에 적용)이나, 근본 해법은 **unit id 슬러그에 길이 상한 + 해시 접미**(예: 앞 48자 + `-<sha8>`)를 두어 id 유일성과 파일명 안전을 함께 만족시키는 것이다. 원장 보존이 UAF 의 핵심 산출인 만큼 **조용한 유실 경로**로 취급해야 한다.
   5. **`--resume` 의 run-id 재파생 함정**(2026-07-21 실측) — `--resume` 은 **기존 run_dir 을 쓰는 명령인데도 `--run-id` 를 다시 요구**한다. 생략하면 런처가 run-id 를 compile 기본값에서 재파생해(`--phase` 기본 'Phase 1' 결합) 실제 run(`impl-yt-stt-m1`)이 아닌 **존재하지 않는 경로**(`orch-yt-stt-Phase-1`)를 찾고 `[ERR] --resume 대상 run_dir 부재` 로 종료한다. 원 run_id 를 모르는 상태에서 resume 하면 조용히 엉뚱한 곳을 본다. **개선안**: `--resume` 시 (a) run_dir 을 명시 인자로 받거나, (b) 직전 run 을 자동 해소하거나, (c) 최소한 후보 run_dir 목록을 오류 메시지에 제시. 현재는 오류 메시지가 "부재"만 알리고 **실재하는 run 이 옆에 있다는 사실을 알려주지 않는다**.
+     - **재발 실측(2026-07-21 · `impl-yt-stt-m1fix2`)**: 등재 뒤 같은 세션에서 **다시 밟았다**. 그리고 근본 원인 하나가 더 드러났다 — **`.claude/commands/uaf-implement.md` §2 의 재개 예시가 `python orchestrate_project.py <project_root> --resume` 로만 표기**되어 런처 계약(`_resolve_slug(args.run_id, args.phase, root.name)`)과 어긋난다. `--run-id` 를 준 run 은 그 예시대로 하면 **반드시 실패**한다. 즉 이 함정은 코드 결함인 동시에 **명령 문서가 틀린 사용법을 가르치는** 문서 결함이다. 개선안 (a)~(c) 중 무엇을 택하든 **`uaf-implement.md` §2 예시 정정은 코드 변경 0 으로 즉시 가능**하다.
 - **Why Not Now**: 런처·오케스트레이터 코드 변경이며, 등재 시점에 M1 run 이 진행 중이었다(진행 중 run 과 충돌 위험). 발사 규율(층 1)·행동 규율(층 3)은 코드 변경 0 으로 즉시 적용해 당면 사고는 막았다.
 - **Dependency**: `orchestration/adapters/claude/orchestrate_project.py`(런처 stop-signal 기록부) · `orchestration/framework/orchestrator/` 실행 루프 · 05 §3.3.
 - **관련 — J 와의 상하류 구분(우선순위 판단용)**: **J = 타임아웃이 걸린 *뒤*의 복구 경로**(Escalated 후 재작업 지시 채널 부재). **L = 타임아웃조차 안 걸리고 매달리는 *앞* 구간**(정체 자체를 아무도 모름). L 이 상류이며, L 없이는 J 가 발동할 기회조차 관측되지 않는다. H(Continuous Telemetry)와도 구분된다 — H = 누적 계측·분석, L = **장애 탐지**.
@@ -142,6 +144,39 @@
 - **Dependency**: `orchestration/framework/orchestrator/gates.py`(CP2 verdict 처리·rework 되돌림) · `contract_to_graph.py`(milestone 브리프 생성부) · 05 §3.3.
 - **관련**: [[uaf-orchestration-wiring-gap]] 의 교훈 "Wave 경계 계약 통합검증 필수"의 **재발**이다 — 교훈은 기록돼 있었으나 **기계 강제가 없어** 같은 유형이 다시 났다(책임 있는 자율 (a): 빠지면 안 되는 것은 비정본 교훈이 아니라 Core·게이트로 강제해야 한다).
 - **Suggested Future Track**: 「Cross-Unit Defect Sweep」 소형 트랙. 우선순위 미배정(사용자 결정).
+
+---
+
+## N. 조건부 승인의 하류 전달 배선 부재 (실측 등재 2026-07-21 — 기록만·게이트 표현력 공백)
+
+- **Problem / Motivation**: 사용자 구조 게이트(`user_decision_required`)는 사실상 **승인/거부 이진**이다. 실제 사용자 결정은 "조건부 승인 — 이러이러한 보강을 넣고 진행"인 경우가 흔한데, **그 조건을 하류 Worker 에게 전달할 배선이 없다.**
+- **실증(2026-07-21 · `impl-yt-stt-m1fix2`)**: 사용자가 3 task 계획을 **조건부 승인**(보강 2건: ① 측정 실패≠무음 구분 기록 필수화 ② `run_acquisition` 시그니처 호환 실검증)했다. 그러나 `resolve_gate.py` 의 `--response` 는 `_append_provenance`/`_write_record` 로 **원장에 기록만** 되고, 실제 승격되는 것은 `impl-plan.json` 본문이다(`resolve_structural` → `task_added` revision). 즉 **응답 텍스트는 Worker 프롬프트에 도달하지 않는다.** 보강을 실제로 반영하려면 Advisor 가 **Worker 산출물인 `impl-plan.json` 을 직접 편집**해야 했다(원본은 `impl-plan.json.pre-advisor-augment` 로 보존하고 편집 사실을 `--response` 에 기록해 provenance 는 남겼다).
+- **왜 문제인가**: (a) **원장 무결성 훼손** — ArtifactRecord 상 "proposal step 산출"과 실제 내용이 어긋난다. Advisor 편집분과 Worker 산출분이 사후에 구분되지 않는다. (b) **우회가 규약화되지 않음** — 이번엔 백업+provenance 기록으로 정직하게 처리했으나, 이는 **관행이지 강제가 아니다**. 다른 세션은 조용히 덮어쓸 수 있다. (c) 대안인 "게이트 거부 후 재수립"은 조건이 seed 에 전달될 경로도 없어 같은 문제로 되돌아온다.
+- **Desired Outcome**:
+  1. `--response` 를 **하류 주입 채널로 승격** — 해소 응답을 `task_added` 되는 각 task 의 delegation context 에 **추가 지시로 주입**(원 산출물은 불변 유지). 원장에는 "원 산출 + 게이트 조건"이 분리 보존된다.
+  2. 또는 **`conditional-approval` 해소 종류 신설** — 조건 목록을 구조화 필드로 받아 승격 시 병합하고, 조건 미반영을 CP2 가 검사할 수 있게 한다.
+  3. 최소 대안: Advisor 산출물 편집을 **정식 절차로 명문화**(백업 파일명 규약·provenance 필수 필드). 지금은 이번 run 의 임시 관행일 뿐이다.
+- **Why Not Now**: `resolve_gate.py`·05 §3.3 게이트 어휘 변경이며, 등재 시점에 해당 run 이 진행 중이었다.
+- **Dependency**: `orchestration/adapters/claude/resolve_gate.py`(`resolve_structural`·`_append_provenance`) · `contract_to_graph.py`(delegation context 조립) · 05 §3.3.
+- **관련**: CP3 비-Pass 시의 `escalation_required` 경로(백로그 J)와 **같은 계열의 표현력 문제**다 — J 는 "거부 후 재작업 지시 채널 부재", N 은 "**승인하면서** 조건 붙일 채널 부재".
+
+---
+
+## O. AC 실출력 픽스처 규율 · 자기출제 구조 (실측 등재 2026-07-21 — 기록만·검증 구조 공백)
+
+- **Problem / Motivation**: 두 겹이다. **(가) 오프라인 AC 가 "합성 입력 AC" 로 잘못 번역되면 외부 도구 계약이 통째로 검증 밖에 난다.** **(나) Worker 가 자기 검증 스크립트를 소유하면 자기 시험지를 자기가 출제한다.**
+- **실증(2026-07-21 · yt-stt M1)**: 1차 수정 run(`impl-yt-stt-m1fix`)은 **rework 0 · CP3 Pass** 로 끝났고 AC 도 "실증형"(tempfile 로 대괄호 폴더 생성 + 몽키패치로 함수 실호출)이었다. 그럼에도 Advisor 실기 검증에서 **결함 3계열이 살아 있었다**:
+  - `_parse_list_subs_output` 이 실제 yt-dlp 헤더(`[info] Available automatic captions for <id>:`)를 `startswith("Available …")` 로 검사해 **입력이 무엇이든 항상 빈 목록**을 반환(M0 프로브는 `search()` 라 정상 동작 — **재작성 회귀**).
+  - `subprocess.run(..., text=True)` 가 cp949 로 디코딩해 한글 경로 stderr 에서 `UnicodeDecodeError` → **reader 스레드에서 터져 주 흐름은 `rc==0` 수신**, stderr 만 유실 → 측정 미매치 → `-90.0` 폴백 → 동률 시 `max()` 가 dict 첫 키 `mono`(위상 상쇄 채널) 선택 → **정상 오디오를 무음 실패로 오판**.
+  - 파서 수정이 **잠복 결함을 깨우는** 관계도 있었다(자막 157종 전량 `--sub-langs` 투입 → 429). 결함 간 의존이 AC 설계에 반영돼 있지 않았다.
+- **구조적 사실**: "실증형 AC" 라는 라벨은 **충분조건이 아니다.** 몽키패치로 *내 함수를 실제 호출*하는 것과 **외부 프로세스의 실제 출력을 실제로 먹이는 것**은 다른 층위다. 전자만 하면 외부 도구 계약(출력 포맷·인코딩·종료 동작)은 영원히 가정으로 남는다.
+- **Desired Outcome**:
+  1. **실출력 픽스처 규율** — 외부 도구를 호출하는 단위는 그 도구의 **실제 출력을 캡처해 리포에 고정**하고 AC 가 그것을 소비하도록 요구한다(네트워크 없이 실계약 검증). 2차 수정 run 에서 실제로 이 방식을 썼고(`yt-stt/fixtures/yt-dlp.list-subs.*.txt` 2건) **결함이 재현·해소됐다** — 규율의 유효성은 실증됐다. 브리프 생성부(`contract_to_graph.py`)나 Policy 에서 강제할 지점을 정할 것.
+  2. **검증 스크립트 소유 분리(자기출제 해소)** — 구현 단위와 그 AC 스크립트를 **다른 단위가 소유**하게 하거나, 최소한 milestone/CP2 가 AC 자체의 적정성(합성 대체 여부·assert 실값 유무)을 판정하게 한다. 2차 run 은 **명세가 assert 실값을 못박고**(157종·`ko`/`ko-orig`·영상ID 미유출·±1.0dB·`selected=='right'`) **Advisor 가 독립 검증을 별도 작성**해 덮었으나(6/6 PASS), 둘 다 **사람 개입이지 기계 강제가 아니다**.
+  3. **인코딩 회귀 스윕** — `subprocess` 출력 디코딩을 로케일에 맡기는 패턴은 한국어 경로 환경에서 **관측 경로 유실**을 낳는다. 규율은 `.claude/AGENT.md` §Invariants(관측 경로 유실 금지)·`.claude/CLAUDE.md`(배선)로 고정했으나, **UAF 자체 스크립트 전수 스윕은 미실시**다(이 세션에서 `graph.json` 출력이 `UnicodeEncodeError` 로 깨진 실측 있음).
+- **Why Not Now**: 브리프 생성부·게이트 판정 변경이며, 등재 시점에 해당 run 이 막 종결됐다.
+- **Dependency**: `contract_to_graph.py`(task/AC 브리프 조립) · `orchestration/framework/orchestrator/gates.py`(CP2 판정 축) · 05 §3.3.
+- **관련**: **M(횡단 결함 검지)과 인접하나 별건**이다 — M 은 "같은 결함이 여러 단위에 퍼졌을 때 먼저 통과한 단위가 남는다", O 는 "**AC 의 입력이 가짜라서 단위 하나조차 제대로 검증되지 않는다**". M 을 고쳐도 O 는 남는다.
 
 ---
 

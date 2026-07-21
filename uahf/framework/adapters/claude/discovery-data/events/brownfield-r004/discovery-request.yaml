@@ -1,0 +1,18 @@
+# Discovery Request (Entry Resolution 산출 — 구조화 레코드)
+# 직렬화 형식 정본 = entry-binding.md §5.1 / 기록 위치 정본 = discovery-binding.md §4.2 (DP-X8)
+# Entry Resolution 실수행 기록: 2026-07-20, 형태 B 로더(entry/adapters/claude/entry_resolve.py) 2회 호출 — 주 세션(Advisor) 게이트 제시
+#   1차: uaf-new 발화(논리 Entry /new) --folder C:\my-claude-project\trade-agent_v1 --intent new
+#     관측: contract-presence 무 · repository-presence 유 → 결정 테이블 행 2 매칭
+#     policy.ref = user-confirmation-gate (conflict: repository-present) → 게이트 제시(01 EN-INV 6)
+#     사용자 확인(2026-07-20): "/continue로 재해소" 선택 — 기존 폴더 이어가기(Brownfield) 의도 확인
+#   2차(재해소): --entry continue --folder C:\my-claude-project\trade-agent_v1 --intent existing
+#     관측: contract-presence 무 · repository-presence 유 → 결정 테이블 행 6 매칭 · gate=false → mode=brownfield 방출
+# 대상 워크스페이스: C:\my-claude-project\trade-agent_v1\ — 실재(실측: git repo + src/apps/tests/docs/wiki 등 실질 콘텐츠).
+#   사용자 진술: UAF가 아닌 타 하네스 프레임워크로 구축하다 중단된 프로젝트. "분석부터"(Brownfield 증거 스캔) 후 UAF로 이어서 개발.
+mode: brownfield
+inputs:
+  - sourceType: contract-presence
+    observed: 무
+  - sourceType: repository-presence
+    observed: 유
+policy: default-policy   # discovery-data/policy/default-policy.yaml 참조 (Policy as Data)

@@ -1,0 +1,22 @@
+[RESULT] status=stopped stop_reason=gate epochs=1
+[GRAPH] tasks=["impl-plan-phase-1"]
+[STATES] {"impl-plan-phase-1": "Passed"}
+[INVOKES] total=2
+[STOP] gate pending=["gate-unit-impl-plan-phase-1"] -> exit code 2
+[PENDING-GATES] [{"gate_id": "gate-unit-impl-plan-phase-1", "gateKind": "user_decision_required", "target": {"artifactClass": null, "interventionCondition": null, "targetClass": null, "transition": null, "unitId": "impl-plan-phase-1", "unitType": "proposal"}, "scoped_question": {"gateKind": "user_decision_required", "unitId": "impl-plan-phase-1"}, "since": 5}]
+# 미해소 정지 게이트 큐 (1건)
+
+아래 게이트는 headless 엔진이 물리 정지(exit 2)한 미해소 정지 게이트다. `pending_gates` 파생 뷰에서 직접 파생했다(원장 무변경). 적격 actor 가 해소 명령으로 게이트-해소 이벤트를 append 한 뒤 `--resume` 하면 결정적으로 재개된다.
+
+## [1] 사용자 결정 대기(확정 권위)
+- gate_id: `gate-unit-impl-plan-phase-1`
+- gateKind: `user_decision_required`
+- target: `{"artifactClass": null, "interventionCondition": null, "targetClass": null, "transition": null, "unitId": "impl-plan-phase-1", "unitType": "proposal"}`
+- 결정/해소 사항: 단위 impl-plan-phase-1에 사용자 결정 대기(확정 권위) 게이트가 걸려 있습니다.
+  - (원 scoped_question: `{"gateKind": "user_decision_required", "unitId": "impl-plan-phase-1"}`)
+- since: 요구 순번 5 — run 전역 append 순서·물리 시각 아님(binding §3.1)
+- 적격 해소 actor: human
+- 해소 명령:
+  ```
+  python orchestration/adapters/claude/resolve_gate.py <run_dir> --gate-kind user_decision --actor human [--response "<응답 원문>"]
+  ```

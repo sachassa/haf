@@ -1,0 +1,5 @@
+[RESULT] status=completed stop_reason=None epochs=1
+[GRAPH] tasks=["impl-plan-phase-1", "m0-acquisition-probe", "m0-ocr-risk1-probe", "m0-stt-risk12-probe", "m0-risk-report", "m0-gate-milestone"]
+[STATES] {"impl-plan-phase-1": "Passed", "m0-acquisition-probe": "Passed", "m0-ocr-risk1-probe": "Passed", "m0-stt-risk12-probe": "Passed", "m0-risk-report": "Passed", "m0-gate-milestone": "Passed"}
+[INVOKES] total=11
+[COMPLETE] all units Passed.

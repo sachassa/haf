@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-impl-plan-m1-3-m1-defects-3-md",
+  "gateKind": "user_decision_required",
+  "resolved_by_actor": "human",
+  "simulated": false,
+  "response": "사용자 승인 2026-07-21. Advisor 독립 검증(CP2 상당) 결과 impl-plan 3 task 가 M1-DEFECTS-3.md §5 AC-1~9 를 전건 배정하고 §6 불가침 경계를 준수함을 확인함 — 구조 계약(implementation 2 + milestone 1 · DAG 종단) 만족 · 경계 비중첩 · fixtures/docs/.claude 소유 0건 · AC-4(manual 호출 0건이면 실패) 문면 명시 · 실측 픽스처 3종 실입력 · 인프라 부재와 회귀 구분 명시. 비차단 관찰 1건 = AC-8 리터럴 스윕의 오탐 여지(milestone 이 포착).",
+  "resolved": true,
+  "note": "주 세션 게이트 해소 기록. resolved 는 gates.is_resolved(적격성 포함) 파생 결과다 — 부적격 actor 의 append 는 로그에 남아도 resolved=false 로 게이트가 pending 이다."
+}

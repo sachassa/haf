@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-impl-plan-m1-4-m1-defects-4-md",
+  "gateKind": "user_decision_required",
+  "resolved_by_actor": "human",
+  "simulated": false,
+  "response": "사용자 승인 2026-07-21. Advisor 독립 검증(CP2 상당): 구조 계약 만족(implementation 2 + milestone 1·DAG 종단) · 불가침 §6-7 대상(pipeline_m1.py·meta_schema.py·storage.py·downmix_gate.py) 소유 0건으로 회귀 원인이 경계에서 차단됨 · fixtures/docs/.claude/out 소유 0건 · AC-1~9 전건 배정(1~6 검증기 / 7·8 milestone / 9는 3차 스윕 재구동으로 재확인) · §6.6 out 쓰기 금지를 seed 가 능동 포착해 3차 스크립트 패턴 답습을 경고 · §3.1 회귀 지점('yt-dlp 호출 0회 명시 확인') 문면 반영.",
+  "resolved": true,
+  "note": "주 세션 게이트 해소 기록. resolved 는 gates.is_resolved(적격성 포함) 파생 결과다 — 부적격 actor 의 append 는 로그에 남아도 resolved=false 로 게이트가 pending 이다."
+}

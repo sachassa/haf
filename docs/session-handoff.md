@@ -113,6 +113,29 @@
 >
 > **교훈(재사용 가치 높음)**: **훅은 단위 검증으로 작동을 주장할 수 없다.** 스크립트가 옳아도 배선이 죽으면 결과는 "아무것도 막지 않음"이고, 그 실패는 침묵한다. 훅을 새로 배선하거나 경로를 옮기면 **실제 도구 호출로 차단을 확인**한다. 이는 백로그 L(Run Observability)·"파이프 금지·exit 보존" 과 같은 계열 — **관측되지 않는 강제는 강제가 아니다.**
 
+> **🔴 갱신 2026-07-21(5) — yt-stt Contract v4 발행·승인·커밋. 기술 안 8건 확정. 다음 = Projection 7종 개정.**
+>
+> **직전 1순위였던 "Contract v4 작성" = 종결**(yt-stt `fd21ef3`). 다만 착수 순서를 바꿨다 — 종전 핸드오프 §④는 `v4 작성 → Projection 개정 → 기술 안 7건 승인` 순이었는데, **7건 중 4건(`layer` 값 집합·M4↔M5 순서·프로세스 번호·OQ-1 처분)이 v4 본문에 들어갈 내용을 결정**한다. 그대로 하면 v4를 쓴 뒤 다시 고쳐야 하고 append-only 계약에서 그것은 v5 발행을 뜻한다. **결정을 선행**시켰다.
+>
+> **원 7건이 8건이 됐다** — 결정 과정에서 2건이 추가로 드러났다.
+> - `layer` 필드의 값 집합이 **이미 두 벌**이었다(`table-def.md:138` glossary = 화면OCR/수동자막/문맥/참고자료 · `:179-188` 전사본 = fact/voice/context/residual). 같은 이름이 문서 안에서 다른 집합을 갖고 있었고, FR-7 외부 참고자료의 자리는 어느 쪽에도 없었다.
+> - **회귀 기준선의 정답 판정 규칙이 번인 OCR에 묶여 있었다**(`test-plan-cases.md:49·55` TRAP-2·TRAP-8 = "번인 자막 근거로만 확정"). 정답 데이터는 확정돼 있어 불변이지만, 규칙 문면이 새 도구가 재현할 수 없는 경로를 가리키게 된다.
+>
+> **확정 8건**: D1 `layer` 5값(`fact/voice/context/screen/reference`)·축약 F/S/C/R 폐기·두 벌 통합 · D2 `frames/transition/` 폐지 · D3 `selected_terms`·`selection_note` 폐지+RISK-6 종결+**묶음 사전 경유 금지** · D4 M4 통합(FR-10+OCR)·P3-a/P3-b 분할(P번호 시프트 0) · D5 `facts/burnt-in.md`→`facts/subtitle.md` · D6 OQ-1·OQ-M0-A 종결+**OQ-M4-A** 신설 · D7 RISK-1 부결 문면 보존+반전 레코드 · D8 TRAP-2·8 판정 규칙 교체. 원장 = `yt-stt/V4-DECISIONS.md`(커밋됨).
+>
+> **CP2 독립 검증에서 결함 3건 검출**(Worker 보고를 근거로 쓰지 않고 산출물 자체로 판정 — Advisor 직접 수정 후 재검증 Pass):
+> - **C1** `projections`를 7종에서 8종으로 늘린 오기. `docs/solution-design.md`는 Projection이 아니라 **7종으로 라우팅하는 인덱스**이며 해당 파일 머리말이 스스로 그렇게 선언한다. `design_completeness` CP2 PASS도 7종 기준이라 8로 바꾸면 매니페스트와 계약이 어긋난다. **원인은 Advisor 브리프** — 결정 원장에 "docs 8종"이라 쓴 것이 Worker를 오도했다(파일 수 8 = Projection 7 + 인덱스 1). 원장에 문서 수 주의 블록을 추가해 다음 단계 재발을 막았다.
+> - **C2** `assumptionLedger` 신규 가정이 "강의실 촬영이 표준 형태"라고 촬영 형태를 단정했다. yt-stt는 **범용** 도구인데 표본 2로 표준을 못박은 것이고, 같은 계약의 RISK-2가 슬라이드형에서는 판독이 성립함을 인정해 **두 서술이 충돌**한다. 새 구조는 P3-b 게이트가 프레임마다 런타임 판정하므로 가정 자체가 불필요하다 → **런타임 게이트 위임**으로 교체.
+> - **C3** `scopeDeviation`이 "[v4] 범위 이탈 0건"이라 선언하는데 실제로는 3건(M0-3 폐기·RISK-11 추가·가정 신설)이었다. **Worker가 완료 보고에서 스스로 올린 것이 이탈의 증거**인데 계약 표면에서는 0건이 됐다 — 책임 있는 자율 (b)의 사유 기록이 지워지는 형태다. 3건 명시로 정정.
+>
+> **append-only 실증**: v1(17,190B)·v2(12,998B)·v3(23,145B) + `docs/*.md` 8종 = **11파일 SHA256을 작성 전에 고정하고 작성 후 대조**해 불일치 0을 확인했다. `git status` 수정 0건. 검증 수단 = sha256sum 대조·git status·PyYAML 파싱·ripgrep 패턴 스윕 9종(`residual`·`F/S/C/R`·`frames/transition`·`selected_terms`·`selection_note`·`burnt-in`·`OQ-1`·`OQ-M0-A`·`8종`). **한계** = D1~D8의 반영 여부는 확인했으나 서술 내용의 설계적 타당성을 전부 재심사한 것은 아니며, `docs/*.md` 본문은 범위 밖이라 열람하지 않았다.
+>
+> **교훈(재사용 가치 높음)**: **Advisor 브리프의 부정확이 Worker 결함으로 나타난다.** C1은 Worker의 실수가 아니라 내가 원장에 쓴 "docs 8종"이 만든 것이다. 위임 규율은 "Worker 결과를 검증한다"인데, 검증에서 걸린 것이 **위임자 자신의 입력 오류**일 수 있다. 결함의 귀속을 Worker로 단정하면 같은 브리프로 재위임해 재발한다.
+>
+> **다음 착수**: **Projection 7종 개정**(선행 감사 = 수정 168건·삭제 23곳·미결정 20건). v4가 발행됐으므로 선행 조건은 해소됐다. 착수 시 체크리스트 = `yt-stt/V4-DECISIONS.md` §Projection 개정 체크리스트(누락되기 쉬운 3종 = OCR 경로 선언 6곳 중복·OQ-M0-A 문장 5곳 복제·RISK-1 배너 4곳 바이트 동일 요구 / 구조 파급 = 역방향 간선·교정 입력이 출력 이후로 이동·`facts/burnt-in.md` 생성 경로 2개·`meta.downmix.measurements` 구조 변경). 최소 read-set = 본 갱신 블록 + `yt-stt/.claude/project-contract/project-contract.v4.md` + `yt-stt/V4-DECISIONS.md`.
+>
+> **미해소 이월**: UAF 자체 스크립트 인코딩 스윕 · 메모리 중 "강제 필요한데 메모리에만 있는" 항목 재검토 · 감사 미결정 20건 · 백로그 K·L·M·N·O 미착수 · RISK-6은 종결됐으나 RISK-9·10·11 및 신설 OQ-M4-A는 미해소.
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.

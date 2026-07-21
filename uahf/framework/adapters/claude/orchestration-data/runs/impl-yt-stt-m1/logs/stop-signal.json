@@ -1,0 +1,27 @@
+{
+  "stop_reason": "gate",
+  "stopped_tasks": [
+    "gate-unit-m1-gate-milestone"
+  ],
+  "pending_gates": [
+    {
+      "gate_id": "gate-unit-m1-gate-milestone",
+      "gateKind": "escalation_required",
+      "target": {
+        "artifactClass": null,
+        "interventionCondition": null,
+        "targetClass": null,
+        "transition": null,
+        "unitId": "m1-gate-milestone",
+        "unitType": "milestone"
+      },
+      "scoped_question": {
+        "cause": "cp3_not_pass",
+        "gateKind": "escalation_required",
+        "unitId": "m1-gate-milestone"
+      },
+      "since": 25
+    }
+  ],
+  "note": "정지 게이트 물리 정지 — 실 사용자/상위 개입 대기(exit 2). autonomy policy 와 무관하게 정지 게이트는 보존된다(PO-INV 4)."
+}

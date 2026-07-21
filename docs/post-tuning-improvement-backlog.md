@@ -100,6 +100,51 @@
 
 ---
 
+## K. Solution Design 성숙 시 Projection 정본 포인터 갱신 누락 (실측 등재 2026-07-21 — 기록만·stale 결함)
+
+- **Problem / Motivation**: yt-stt Contract v3 개정 세션 실측 — Solution Design 성숙 run이 Contract v1→v2 superseding 인스턴스를 산출했으나, **그 성숙 run이 만든 Projection 7종 전부의 헤더 근거 정본 포인터가 `project-contract.v1.md`를 그대로 가리킨 채 남았다**(`docs/{project-plan,requirements-def,business-process,functional-spec,table-def,interface-spec,test-plan-cases}.md` 4행 · 전수 grep 확증). 즉 Projection은 v2 성숙의 산출물인데 자기 근거로는 v1을 지목한다. `docs/solution-design.md`(인덱스)만 v2를 가리켜 문서군 내부에서 포인터가 갈렸다. v3 개정 시점에는 격차가 두 버전으로 벌어질 참이었고, 사람이 별건 스윕에서 우연히 발견해 수동 정정했다(사용자 승인 범위 이탈로 처리·v3 provenance.scopeDeviation 기록).
+- **왜 결함인가**: 하류 구현 task는 "설계 결정 앵커를 인용하라"는 지시를 받고 Projection 헤더의 정본 포인터를 따라간다. 포인터가 낡으면 **이미 superseded 된 인스턴스의 결정을 앵커로 삼는다** — append-only 계보(PC-INV 9)가 옛 인스턴스를 보존하고 있으므로 파일은 실재하고, 따라서 **실패하지 않고 조용히 틀린다**. 탐지 수단이 사람의 우연한 스윕뿐이다.
+- **Desired Outcome**: ① 성숙 경로(`Matured` 전이)가 superseding 인스턴스 산출 시 **Projection 헤더 정본 포인터 갱신을 강제**하거나, ② Projection이 버전을 하드코딩하지 않고 "최신 vN"을 가리키는 간접 참조를 쓰게 하거나, ③ design-manifest CP2 결정적 체커에 **포인터 정합 검사**(각 artifact 헤더의 Contract 참조 == 현재 인스턴스)를 추가한다. ③이 가장 저렴하고 기존 체커 자리에 들어간다.
+- **Why Not Now**: 04 spec 성숙 경로 또는 design_completeness 체커 개정이며, 이번 세션 범위(yt-stt 설계 반영)를 벗어난다. 소비 프로젝트 측 stale은 이미 수동 해소됨.
+- **Dependency**: `planning/specs/04-solution-design.md` 성숙 경로(`Matured` 산출 규정) · design-manifest CP2 체커 · `planning/specs/03-project-contract.md` §3.4(append-only·supersedes).
+- **관련**: [[uaf-design-manifest-path-defect]] 계열(design-manifest ↔ 실제 산출물 배선 결함)과 같은 축 — 매니페스트가 산출물의 **경로**는 알지만 산출물이 **어느 인스턴스에 귀속되는지**는 검사하지 않는다.
+- **Suggested Future Track**: 「Projection Provenance Integrity」 소형 트랙. 우선순위 미배정(사용자 결정).
+
+---
+
+## L. Run Observability — Heartbeat · Failure Record · 종료코드 규약 (사용자 지시 등재 2026-07-21 — 기록만·운영 결함)
+
+- **Problem / Motivation**: 사용자 실측(복수 세션 반복) — 백그라운드 스크립트·서브에이전트가 **오류를 내거나 대기 상태에 오래 빠져도 주 세션도 사용자도 모른 채 계속 대기**했고, 사용자가 물어봐야 확인하는 일이 반복됐다. 실패 모드 3종의 위험도가 다르다: **F1 죽음**(exception·crash — 프로세스가 끝나므로 완료 알림이 온다) / **F2 매달림**(hang·무한대기 — **종료 이벤트가 없어 알림이 원리적으로 안 온다**) / **F3 오해석**(정상 게이트 정지 `exit 2` 를 실패로, 또는 그 반대). **진짜 병목은 F2** 이며, "예외를 상위에 전달"만으로는 해결되지 않는다 — 침묵이 "진행 중"인지 "멈춤"인지 구분하려면 **진행의 능동적 증거(하트비트)** 가 필요하다.
+- **실증(2026-07-21 · yt-stt impl-yt-stt-m1 run)**: 런처를 `... 2>&1 | tail -40` 로 발사한 결과 ① 종료 전까지 진행 출력이 0(파이프가 관측 창을 막음), ② 엔진의 실제 종료 코드 `exit 2`(게이트 정지)가 파이프라인에 삼켜져 하네스에 **exit 0** 으로 보고됨 — 엔진이 실패(exit 1)했어도 동일하게 exit 0 으로 보였을 것이다(F3 실물). 발사 규율 측 대응은 [[feedback-background-task-watchdog]] 로 고정했고, 아래는 **엔진 측 계약** 소관이다.
+- **Desired Outcome**:
+  1. **`logs/heartbeat.json`** — `{ts, current_unit, stage, elapsed_s, invokes}` 를 주기 갱신. **F2 탐지의 유일한 수단** — 외부 감시자가 "마지막 진행 시각"으로 정체를 판정할 수 있게 한다.
+  2. **`logs/failure.json`** — top-level `except` 에서 트레이스백 + 실행 컨텍스트(run_id·current_unit·stage·config)를 구조화 기록. 기존 `stop-signal.json` 규약과 동형으로 얹는다.
+  3. **종료 코드 규약 명문화** — `0`=완료 / `2`=게이트 정지(정상) / 그 외=실패. 현재 `exit 2` 가 정상 정지라는 사실을 매 세션 문서에서 되찾아야 한다.
+  4. **per-unit timeout** — 현재 config `timeout` 은 전역이며, 단위 규모 대비 산정이 없다(백로그 J 의 예방책 ③과 동일 지점).
+  5. **`--resume` 의 run-id 재파생 함정**(2026-07-21 실측) — `--resume` 은 **기존 run_dir 을 쓰는 명령인데도 `--run-id` 를 다시 요구**한다. 생략하면 런처가 run-id 를 compile 기본값에서 재파생해(`--phase` 기본 'Phase 1' 결합) 실제 run(`impl-yt-stt-m1`)이 아닌 **존재하지 않는 경로**(`orch-yt-stt-Phase-1`)를 찾고 `[ERR] --resume 대상 run_dir 부재` 로 종료한다. 원 run_id 를 모르는 상태에서 resume 하면 조용히 엉뚱한 곳을 본다. **개선안**: `--resume` 시 (a) run_dir 을 명시 인자로 받거나, (b) 직전 run 을 자동 해소하거나, (c) 최소한 후보 run_dir 목록을 오류 메시지에 제시. 현재는 오류 메시지가 "부재"만 알리고 **실재하는 run 이 옆에 있다는 사실을 알려주지 않는다**.
+- **Why Not Now**: 런처·오케스트레이터 코드 변경이며, 등재 시점에 M1 run 이 진행 중이었다(진행 중 run 과 충돌 위험). 발사 규율(층 1)·행동 규율(층 3)은 코드 변경 0 으로 즉시 적용해 당면 사고는 막았다.
+- **Dependency**: `orchestration/adapters/claude/orchestrate_project.py`(런처 stop-signal 기록부) · `orchestration/framework/orchestrator/` 실행 루프 · 05 §3.3.
+- **관련 — J 와의 상하류 구분(우선순위 판단용)**: **J = 타임아웃이 걸린 *뒤*의 복구 경로**(Escalated 후 재작업 지시 채널 부재). **L = 타임아웃조차 안 걸리고 매달리는 *앞* 구간**(정체 자체를 아무도 모름). L 이 상류이며, L 없이는 J 가 발동할 기회조차 관측되지 않는다. H(Continuous Telemetry)와도 구분된다 — H = 누적 계측·분석, L = **장애 탐지**.
+- **Suggested Future Track**: 「Run Observability」 소형 트랙. 우선순위 미배정(사용자 결정) — 단 J 착수 시 L 을 선행으로 묶는 것을 권고.
+
+---
+
+## M. 횡단 결함 검지 — Cross-Unit Defect Sweep (실측 등재 2026-07-21 — 기록만·검증 구조 공백)
+
+- **Problem / Motivation**: yt-stt `impl-yt-stt-m1` run 실측 — CP2(Verifier)가 `m1-pipeline-orchestrator` 단위에서 실제 결함을 정확히 잡아 rework 시켰다(`glob.glob(os.path.join(video_dir, "video.720p.*"))` 에서 보관 규약상 폴더명 `<제목> [<영상ID>]` 의 **리터럴 대괄호가 glob 문자 클래스로 오인**되어 파일이 존재해도 매치가 절대 성공하지 않음 → 자산 스킵·재개가 항상 무력화 → HTTP 429 재발). **그런데 완전히 동일한 결함이 선행 단위 `m1-acquisition-ytdlp`(`acquisition.py`)에 4곳 있었고, 그 단위는 이미 CP2 를 통과해 Complete 로 확정된 상태였다** — 그중 1곳(`video.720p.*`)은 지적받은 코드와 **글자 그대로 동일**하다.
+- **구조적 사실**: **CP2 는 단위별 검증이다.** 같은 원인이 여러 단위에 퍼져 있으면 **먼저 통과한 단위는 그대로 남는다.** 엔진은 지적된 단위만 rework 하고 동료 단위를 다시 보지 않는다. 이는 엔진 버그가 아니라 **단위별 검증의 본질적 한계**이며, 현재 이 한계를 메우는 것은 Advisor 의 통합 검증뿐인데 **그 층도 같은 턴에 이 결함을 놓쳤다**(검사할 축을 미리 정해두고 그 축만 본 결과 — 무음 게이트 존중 여부는 짚었으나 glob 대괄호는 못 봄).
+- **왜 위험한가**: 횡단 결함은 **각 단위의 AC 를 개별적으로는 전부 통과한다**(구문 유효·파일 존재·구조 assert). 실패가 통합 실행 시점에만 드러나는데, 오프라인 AC 환경에서는 그 시점이 오지 않는다. 게다가 이번 사례처럼 **상위 설계가 심은 재발방지 요건을 하위 구현이 조용히 무력화**하는 형태를 띤다.
+- **Desired Outcome**:
+  1. **결함 패턴 전파 스윕** — CP2 가 어느 단위에서 결함을 확정(rework)하면, 그 **결함 패턴(정규식·심볼·API 사용형)을 run 내 이미 Complete 인 동료 단위에 자동 재스윕**하고, 히트가 있으면 해당 단위를 rework 대상으로 되돌린다(원장에 근거 이벤트 append). 최소 구현은 rework verdict 문면에서 코드 패턴을 추출해 `grep` 하는 수준으로도 유효하다.
+  2. **milestone 단위의 통합 AC 강화** — phase 경계 milestone 이 개별 파일 존재·구문 검사에 머물지 말고 **단위 간 계약 정합·공통 결함 패턴 검사**를 포함하도록 Planner 브리프에 요구.
+  3. (경량 대안) rework 발생 시 **Advisor 게이트로 표면화**해 사람이 동료 단위 스윕을 지시할 수 있게 한다 — 자동화 전 단계.
+- **Why Not Now**: gates.py/오케스트레이터 rework 경로 변경이며, 등재 시점에 M1 run 이 진행 중이었다. 소비 프로젝트 측 결함 4건은 **후속 수정 run 으로 조치**(사용자 결정 2026-07-21) — 원장 밖 직접 수정을 택하지 않아 2층 규율을 지켰다.
+- **Dependency**: `orchestration/framework/orchestrator/gates.py`(CP2 verdict 처리·rework 되돌림) · `contract_to_graph.py`(milestone 브리프 생성부) · 05 §3.3.
+- **관련**: [[uaf-orchestration-wiring-gap]] 의 교훈 "Wave 경계 계약 통합검증 필수"의 **재발**이다 — 교훈은 기록돼 있었으나 **기계 강제가 없어** 같은 유형이 다시 났다(책임 있는 자율 (a): 빠지면 안 되는 것은 비정본 교훈이 아니라 Core·게이트로 강제해야 한다).
+- **Suggested Future Track**: 「Cross-Unit Defect Sweep」 소형 트랙. 우선순위 미배정(사용자 결정).
+
+---
+
 ## 실사용 Dogfooding Evidence (2026-07-14 — 사용자 직접 사용·확인 실측)
 
 v1.7 산출물(uahf-control-plane)을 **사용자가 실제로 사용하며 발견한** 문제들 — 본 백로그 A~G의 실측 근거로 보존한다. 이번 성능 튜닝 트랙에서는 구현·수정하지 않는다. 물리 흔적(consumer 저장소 워킹트리 미커밋 변경 — EventTimelinePanel.tsx key 수정·check-error.js·package.json)은 **그대로 보존** 방침 확정(2026-07-14 사용자 승인·앵커 dd2fd73 무결).

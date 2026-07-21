@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-m1-gate-milestone",
+  "gateKind": "escalation_required",
+  "resolved_by_actor": "Advisor",
+  "simulated": false,
+  "response": "조건부 수용 — M1 Phase 경계 조건부 완료로 마감(사용자 확정 2026-07-21). CP3 Conditional 의 근거인 결함 2계열은 은폐하지 않고 후속 수정 run 으로 이관한다: (1) acquisition.py 의 glob 대괄호 결함 4곳(84·85·115·146행 — 보관 규약 '<제목> [<영상ID>]' 의 리터럴 대괄호가 glob 문자클래스로 오인·pipeline_m1.py 에서 CP2 가 확정한 것과 동일 원인이나 해당 단위는 선행 통과로 미수정), (2) pipeline_m1.py 의 assets_exist AND 조건 — '자막 파일 존재'로 '자막 확인 완료'를 판정하므로 자막이 실제로 없는 영상은 영구 미확인 상태가 되어 매 resume 마다 yt-dlp --list-subs 원격 재호출(FR-11(c) 위반·HTTP 429 재발). 해소 방향 = meta.stages 에 자막 확인 시도 상태를 독립 추적. 두 결함 모두 동일한 429 재발방지 축이므로 단일 후속 run 으로 묶는다. M1 산출 6단위는 유지한다.",
+  "resolved": true,
+  "note": "주 세션 게이트 해소 기록. resolved 는 gates.is_resolved(적격성 포함) 파생 결과다 — 부적격 actor 의 append 는 로그에 남아도 resolved=false 로 게이트가 pending 이다."
+}

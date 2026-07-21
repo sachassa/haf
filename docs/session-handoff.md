@@ -10,6 +10,21 @@
 
 > **🔴 갱신 2026-07-19(3) — OQ-PO-B2(해소 어휘 성숙) 종결 → §DC-9 계열 OQ 전건 마감.** 문서·설계 수준 종결(사용자 결정 A·엔진 코드 무변경): `orchestration/adapters/claude/project-orchestration-binding.md` §6/§7/§8만 갱신 — orchestration 해소 어휘가 재시도-비계수를 **이미 충족**함을 명문화(전용 `gate-resolved`/`outcome=pass`/`retry_count=0`; OQ-SH-5 fail-계수 결합은 `outcome=fail` 재사용 UAHF step-host 층 국한·무수정 경계상 별도 트랙)·stale 포인터 "05 §9 OQ 3"(05 spec §9=순수 이력표·OQ 절 부재·전수 실측) 정정·'해소 취소(revoke)' = 신규 **OQ-PO-B6** 저순위 재스코프. 순수 문서 변경(코드 델타 0). 상세 = §3 다음 작업·아래 §DC-9.
 
+> **🔴 갱신 2026-07-21 — yt-stt Contract v3 + M1 구현 + 결함 수정 run 완주. 백로그 K·L·M 신설.**
+>
+> **소비 프로젝트 `yt-stt`**(`C:\my-claude-project\yt-stt` · UAF 밖 · **git 저장소 아님**):
+> - **Contract v3 확정**(`pc-yt-stt-003`) — M0 실측 반영. 문서 9종 개정(Contract 신규 + Projection 7종 + 인덱스). v1(17,190B)·v2(12,998B) **문면 불변**(append-only PC-INV 9). CP2 11항목 → 지적 4건 조치 → 잔여 0 → 사용자 승인.
+>   - RISK-2·RISK-12 **해소** / RISK-1 **부분 해소**(업스케일 전제로 1차 팩트 층 유지·강등안 부결) / RISK-6·9·10·11 **미해결 유지**.
+>   - 신설: **OQ-M0-A**(광역 OCR 가독률 재측정·케이스 M0-3·임계 TBD) · **OCR 전처리 업스케일**(2x↑) 파이프라인 단계 · `ocrUpscale`/`upscale` 스키마 필드 · 환경 전제 2건(`HF_HUB_DISABLE_SYMLINKS=1`·자막 429 스킵).
+> - **M1 run `impl-yt-stt-m1`** — 6단위 Passed · CP3 **Conditional** → 에스컬레이션 → Advisor 조건부 수용 → completed. 산출 `scripts/m1/` 7종.
+> - **수정 run `impl-yt-stt-m1fix`** — 4단위 Passed · **rework 0** · CP3 Pass · completed. 결함 2계열 해소(`acquisition.py` glob 대괄호 4곳 → `os.listdir` 접두어 매칭 / `pipeline_m1.py` `assets_exist` → `_subtitle_check_complete`). 명세 = `yt-stt/M1-DEFECTS.md`. **Advisor 독립 실증 전건 통과**(엔진 AC 와 별개 케이스).
+>
+> **UAF 백로그 신설 3건**(기록만·미착수): **K** Projection 정본 포인터 stale(SD 성숙이 헤더 갱신 안 함 — append-only 라 파일이 실재해 **조용히 틀린다**) · **L** Run Observability(heartbeat·failure record·종료코드 규약·per-unit timeout·`--resume` run-id 재파생 함정) · **M** Cross-Unit Defect Sweep(**CP2 는 단위별이라 횡단 결함에 눈이 없다** — 먼저 통과한 동료 단위는 그대로 남는다).
+>
+> **실측 교훈 2건(재사용 가치 높음):**
+> 1. **AC 가 구문·존재만 검사하면 동작이 틀려도 통과한다.** M1 원 결함이 그래서 통과했고, 수정 run 은 AC 를 **실증형**(tempfile 로 대괄호 폴더 생성 + 몽키패치로 함수 실제 호출)으로 바꿔 rework 0 으로 끝났다. **통과 자체가 증거가 되게 하라.**
+> 2. **백그라운드 발사 시 파이프 금지·종료코드 보존·감시 무장.** 이 세션에서 엔진 종료 코드 `2`·`1`·`2` 가 하네스에 전부 `exit 0` 으로 보고됐다(파이프라인이 삼킴). 특히 두 번째는 **진짜 실패**였다. 규율 = 메모리 `feedback-background-task-watchdog`.
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.
@@ -89,7 +104,31 @@
 ## §3. 다음 작업 (별도 새 세션 — 본 세션 미착수)
 
 - ~~[1순위] §DC-9 05 wiring 후속~~ — **완결 2026-07-19**(상세 위 §DC-9). ~~잔여 OQ = B2~~ → **OQ-PO-B2(해소 어휘 성숙) = 종결 2026-07-19**(문서·설계 수준·사용자 결정 A·엔진 코드 무변경). binding §6/§7/§8만 갱신: orchestration 해소 어휘가 재시도-비계수를 **이미 충족**함을 명문화(`gate-resolved`/`outcome=pass`/`retry_count=0` — OQ-SH-5 fail-계수 결합은 `outcome=fail` 재사용 UAHF step-host 층 국한·무수정 경계상 별도 트랙)·stale 포인터 "05 §9 OQ 3"(05엔 OQ 절 부재·실측) 정정·'해소 취소'는 신규 **OQ-PO-B6** 저순위 재스코프. **§DC-9 계열 OQ 전건 종결.**
-- **다음 트랙 = 사용자 지시 대기.** 후보(우선순위 미확정 — 확정 권위는 사용자):
+### 🔵 2026-07-21 기준 다음 착수 후보 (우선순위 = 사용자 확정)
+
+**(가) yt-stt M2 구현 — 가장 자연스러운 이어가기**
+```
+python orchestration/adapters/claude/orchestrate_project.py "C:/my-claude-project/yt-stt" \
+  --phase "M2" --mode incremental --run-id impl-yt-stt-m2 > <로그파일> 2>&1
+echo "ENGINE_EXIT=$?" >> <로그파일>
+```
+- M2 = 1차 팩트 층(수동/번인 자막 확정 전사 + 화면 OCR). **OCR 경로 = 프레임 → OCR 전처리 업스케일(2x↑) → WinRT OCR**(v3 신규 결정).
+- 착수 전 최소 read-set: `yt-stt/.claude/project-contract/project-contract.v3.md` + `yt-stt/docs/project-plan.md` §1 M2 + 메모리 `uaf-product-yt-stt`.
+- **M2 에서 반드시 확인할 것**: RISK-6 선별 관문(무선별 힌트 주입 금지는 **실증**됨 — 규칙은 여전히 open) · `ocrUpscale`/`upscale` 기록 · OQ-M0-A 대응 케이스 M0-3.
+
+**(나) yt-stt 실기 검증 — 오프라인 미검증분 해소**
+- M1 산출은 **코드 구조·판정 논리만 실증**됐다. 실제 `yt-dlp`/`ffmpeg` 실행은 AC 범위 밖(오프라인 환경).
+- 미확인: `DEFAULT_SILENCE_THRESHOLD_DB` 상수 근거(실측 vs 도메인 상식).
+
+**(다) UAF 백로그 K·L·M 착수** — 셋 다 이번 세션 실측 기반. **L 이 J 의 상류**이므로 J 착수 시 L 을 선행으로 묶을 것.
+
+**(라) M3 착수 시 선결 확인(잊으면 사고)**: 무음 게이트의 `{"failed": True}` 를 STT 층이 실제로 확인하는가. **"무음이면 STT 로 넘기지 않는다"는 강제가 코드가 아니라 규약에만 있다** — 위상 반전 사고(HANDOFF §6-①) 재발 경로가 정확히 여기다.
+
+**(마) 커밋 미실시** — 이번 세션 변경(백로그 K·L·M · 본 핸드오프 · run 원장 3건)은 **미커밋**이다. 소비 프로젝트 `yt-stt` 는 git 저장소가 아니어서 되돌리기·해시 검증이 불가하다는 점 유의.
+
+---
+
+- **기존 트랙 후보**(우선순위 미확정 — 확정 권위는 사용자):
   - **Interview Entry-to-Runtime Audit** (사용자 지정 2026-07-14 — 차순위 유지). 정의·범위·성공 기준은 착수 세션에서 사용자 지시로 확정한다 — 본 파일은 명칭과 시작점만 기록하며 범위를 추정하지 않는다. 착수 시 최소 read-set: 본 §1 앵커 + 착수 세션의 사용자 지시. 관련 정본은 필요 §만 demand-driven(후보 포인터: `entry/specs/01-entry.md`·`discovery`/`orchestration` specs — 실제 선택은 지시 범위 확정 후).
   - ~~seed 컴파일러 tms 하드코딩 일반화~~ — **완결 2026-07-19**(사용자 지정·본 커밋). `contract_to_graph.py` 도메인 하드코딩 전면 제거: 프로젝트 표기/버전/run_id/seed id/경계 문구 = 파생(root.name·파일명 v\<N\>·`_slug`·내용 파싱 0 불변), 도메인 설계 앵커 블록 → 일반 지시(설계 앵커 자가 식별·결정 식별자 인용·**전 영역 계층 편향 없이 커버** — §DC-1 백엔드 편향 뿌리 제거), `resolve_gate.py` `PROPOSING_STEP_REF` 하드코딩 제거 → graph.json proposal 노드 파생(F4↔F5 교차 계약 동시·통합 관통 테스트). 테스트 234→245(+11)·CP2 10항목 전건 Pass(적대 픽스처 acme-erp v3 도메인 토큰 유출 0·순수성 해시 실증)·CP3 승인. binding §8 1행(§5.7 역사 기록 무촉). **Stage B 실코드 실증의 선행 조건 해소** — 다음 소비 프로젝트에서 즉시 착수 가능. CP2 관찰(비차단): 오프라인 AC allowlist의 python/node 경사(환경 제약·비-JS/Python 스택 등장 시 확장 검토 백로그).
   - **§DC-8(a)** 03 접점 코어 필드 · **02 개정 트랙**(강제 깊이 바닥·U4 대안 C) — 백로그.

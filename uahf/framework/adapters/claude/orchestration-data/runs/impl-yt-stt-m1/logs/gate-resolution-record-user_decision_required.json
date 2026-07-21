@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-impl-plan-m1",
+  "gateKind": "user_decision_required",
+  "resolved_by_actor": "human",
+  "simulated": false,
+  "response": "승인 — M1 구현 계획 5단위(storage-meta·acquisition-ytdlp·audio-downmix-gate·pipeline-orchestrator·gate-milestone) 승인. 사용자 확정 2026-07-21. 재개 후 CP2에서 자막 판별(--list-subs 강제)·로컬 자산 시 자막 재호출 스킵(429) 두 재발방지 요건의 실재를 Advisor가 확인한다.",
+  "resolved": true,
+  "note": "주 세션 게이트 해소 기록. resolved 는 gates.is_resolved(적격성 포함) 파생 결과다 — 부적격 actor 의 append 는 로그에 남아도 resolved=false 로 게이트가 pending 이다."
+}

@@ -12,6 +12,7 @@
     "allow": []
   },
   "//hooks": "설계완성도 백스톱(§DC-3): 필수 설계 산출물(design-manifest) 미완 시 src/ Write 차단. guard·checker는 .claude/hooks/design-guard/에 벤더링됨. 전제조건: PyYAML 설치 필요(checker가 policy YAML 파싱).",
+  "//hooks-path": "command 는 프로젝트 루트 기준 상대경로다. $CLAUDE_PROJECT_DIR 을 쓰지 않는다 — UAF 저장소에서 A-B-A 대조로 실측(2026-07-21): 변수형은 PreToolUse 훅이 차단을 내지 않았고(Windows 10 + Git Bash + shell:bash), 상대경로·절대경로는 차단했다. 훅 실패는 조용히 통과하므로 이 차이는 눈에 띄지 않는다. 절대경로는 설치 경로가 미정인 템플릿에서 쓸 수 없어 상대경로로 둔다. uaf-assumed: 설치 대상 환경에서의 재실측은 하지 않았다 — 근거는 UAF 저장소 실측의 이전이다.",
   "hooks": {
     "PreToolUse": [
       {
@@ -20,7 +21,7 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/design-guard/pretooluse_design_guard.py\"",
+            "command": "PYTHONIOENCODING=utf-8 python .claude/hooks/design-guard/pretooluse_design_guard.py",
             "timeout": 15,
             "statusMessage": "설계완성도 백스톱(src/ 차단)"
           }

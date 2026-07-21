@@ -66,7 +66,8 @@ Advisor 자신의 사실·완전성 주장도 검증 대상이다 — "Worker �
 
 `.claude/AGENT.md` §Invariants **이진 상태(0 아니면 1)**·**근거 표기 이진(확인함 아니면 추정)**의 물리 강제다. 불변 자체는 AGENT.md가 소유하며 여기서 재정의하지 않는다(재정의 0).
 
-- **차단 장치** = `.claude/hooks/binary_state_guard.py` (PreToolUse **운영 훅** — `hooks-binding.md` §4.5 경계상 Hooks Component 바인딩이 아니다). `.claude/settings.json` PreToolUse `Write|Edit|MultiEdit`에 배선.
+- **차단 장치** = `.claude/hooks/binary_state_guard.py` (PreToolUse **운영 훅** — `hooks-binding.md` §4.5 경계상 Hooks Component 바인딩이 아니다). `.claude/settings.json` PreToolUse `Write|Edit|MultiEdit`에 배선. **라이브 차단 실증 완료**(2026-07-21 — 금지어 `.md` 쓰기 deny · 이탈 마커 통과 · 근거 없는 완전성 주장 deny · Edit 경로 deny · 정상 문면 통과).
+- **훅 배선 경로는 상대경로로 쓴다.** `$CLAUDE_PROJECT_DIR` 은 이 환경의 PreToolUse 훅에서 차단을 내지 못했다(2026-07-21 A-B-A 대조 실측 — 상대경로=차단 → 변수형=통과 → 상대경로=차단). **훅이 실패해도 도구 호출은 조용히 통과**하므로 배선이 죽어도 표면에 드러나지 않는다 — 훅을 새로 배선하거나 경로를 옮길 때는 단위 검증이 아니라 **실제 도구 호출로 차단을 확인**한다. 근거·경계 = `uahf/framework/adapters/claude/hooks-binding.md` §4.5(재정의 0).
 - **왜 훅인가.** 규율을 문서에만 두면 지켜지지 않는다 — 2026-07-21 세션에서 메모리에 규율이 있는데도 잘못 적용됐고, Advisor가 "부수 방어(권장)"라고 써서 그 항목이 실행층에서 실제로 누락됐다. 애매한 표기는 게이트가 통과/차단 어느 쪽도 판정하지 못해 **관성으로 통과**한다.
 - **스코프 = 새로 쓰는 텍스트만.** `Write`는 `content`, `Edit`/`MultiEdit`는 `new_string`만 본다. 기존 파일 본문은 읽지 않는다 — 사용자 결정 "신규부터 + 닿는 것만"(2026-07-21)의 구현이다. 대상은 `.md`뿐이며 코드는 오탐 위험 때문에 제외한다.
 - **불변 = fail-open.** stdin 파싱 실패·내부 예외는 절대 차단하지 않는다(자기-DoS 방지). 확정 위반만 차단한다.

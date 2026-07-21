@@ -28,14 +28,14 @@
           {
             "type": "command",
             "shell": "bash",
-            "command": "python \"$CLAUDE_PROJECT_DIR/orchestration/adapters/claude/pretooluse_design_guard.py\"",
+            "command": "PYTHONIOENCODING=utf-8 python orchestration/adapters/claude/pretooluse_design_guard.py",
             "timeout": 15,
             "statusMessage": "설계완성도 백스톱(src/ 차단)"
           },
           {
             "type": "command",
             "shell": "bash",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/binary_state_guard.py\"",
+            "command": "PYTHONIOENCODING=utf-8 python .claude/hooks/binary_state_guard.py",
             "timeout": 10,
             "statusMessage": "이진 원칙 가드(상태·근거)"
           }

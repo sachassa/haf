@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-impl-plan-m2-1-m2-brief-md",
+  "gateKind": "user_decision_required",
+  "resolved_by_actor": "human",
+  "simulated": false,
+  "response": "impl-plan 승인 — Advisor CP2 v2 PASS(v1 결함[fix-4 픽스처 facts/ 오염·disk-fallback 죽은코드] 해소 확인·task4 회귀가드 확인·select_fact_source 1-arg 시그니처 교차일치·음성대조 translation-only 보존) 후 사용자 승인 2026-07-23",
+  "resolved": true,
+  "note": "주 세션 게이트 해소 기록. resolved 는 gates.is_resolved(적격성 포함) 파생 결과다 — 부적격 actor 의 append 는 로그에 남아도 resolved=false 로 게이트가 pending 이다."
+}

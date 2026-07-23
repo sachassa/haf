@@ -288,6 +288,74 @@
 > 4. **UAF 백로그 P** — `_slug` 길이 절단.
 > 5. 최소 read-set = 본 갱신 블록 + 갱신 (8) + `yt-stt/M1-DEFECTS-4.md`.
 
+> **🔴 갱신 2026-07-23(10) — 2트랙 표본 수집 완주 · fix-4 실경로 검증(실제 429 자연 발생) · JS 런타임 환경 차단 발견+워크어라운드. 1순위 종결.**
+>
+> **직전 1순위 "표본 수집 재개" = 종결.** `uaf-verified:` git status — 보호 경계(scripts/·fixtures/·docs/·.claude/) 변경 없음, out/m2-samples/ 에 신규 폴더 2개(TED·위사)만. **검색 범위** = yt-stt working tree. yt-stt 커밋 미실시(신규 out/ 미커밋).
+>
+> ## ① fix-4(등급 역전) 실경로 검증 — 실제 429 자연 발생
+> `uaf-verified:` TED `kz-I5zIGbj4`("Why I Love My Bad Days"·수동 자막 사전 확인) 실경로 수집 + 저장 `meta.json` 독립 판독(runner 요약을 근거로 쓰지 않고 디스크 아티팩트 직접). **검색 범위** = 이 표본의 out/ meta·subs.
+> - 수동 `manual.en.vtt` 7,740B 취득 성공(실제 사람 캡션 육안 확인 — "I was one month out from my Olympic race in Rio") → `meta.subtitles.downloaded.manual.en` 기록.
+> - 자동(`ko`)이 실제 HTTP 429. fix-4 등급 처리로 비차단 → `autoFailure` 에 429 사유 기록·예외 미전파·`subtitles ≠ null`·`failed=false`·acq/ingest/downmix 전부 ok.
+> - fix-4 이전 로직이라면 자기봉인(auto 429 예외 전파 → 취득한 manual 폐기 → subtitles=null). **오프라인 AC 12/12 위에 남아있던 층을 실제 429 가 밟아 검증했다** — "실경로 1회가 층을 드러낸다" 교훈 재적중(이번엔 코드가 옳았고 실제 429 가 이를 입증).
+>
+> ## ② 위사 공집합 경로 검증
+> `uaf-verified:` 위사 `YY_mbFY7y4E`(채널 @wisa-tv·온도메인 제휴마케팅) 수집 + meta 판독. `subtitleKinds.manual=[]`·`downloaded.manual={}`·`failed=false` — 수동 자막 없음을 정상 입력으로 완주. auto(ko) 성공(autoFailure=None).
+>
+> ## ③ JS 런타임 환경 차단 (신규·중요) — yt-stt 제품 함의
+> `uaf-verified:` 첫 TED 수집이 429 아닌 403 으로 실패: `No supported JavaScript runtime ... deno` + `HTTP Error 403 Forbidden`. yt-dlp 2026.07.04 + YouTube JS 챌린지 강화(2일 전 수집은 성공했음)로 **미디어(video/audio) 다운로드가 deno/node 런타임 없이 403**. `--list-subs`(메타)는 통과하나 포맷 취득 차단.
+> - **해소**: node v24.15.0 존재 → `--js-runtimes node` 직접 테스트로 audio 3.9MB 취득 성공 확증 → yt-dlp 설정 파일(`~/.config/yt-dlp/config` · `%APPDATA%\yt-dlp\config` · **ASCII-only** — yt-dlp 가 설정을 cp949 로 읽어 한글 주석이 파싱 에러를 냈다) 에 `--js-runtimes node` 배치 → `acquisition.py` 무수정으로 내부 호출 전부 적용(`[debug] JS runtimes: node-24.15.0` 로딩 확인).
+> - **⚠ 환경 뮤테이션**: 위 yt-dlp 설정은 이 머신의 모든 yt-dlp 호출에 적용된다(되돌리기 = 파일 삭제). 세션 워크어라운드이며 프로젝트 전제로 승격할지는 미결(사용자 결정).
+> - **⚠ 제품 함의(백로그·신규 결함/전제)**: `acquisition.py` 가 `--js-runtimes` 를 붙이지 않아 **deno 없는 환경에서 yt-stt 미디어 취득이 깨진다**(yt-dlp 기본 활성 런타임 = deno 뿐). 대응 = 환경 전제 문서화 or acquisition.py 런타임 처리. 이번 세션은 워크어라운드로 수집만 진행하고 코드 반영은 다음 사이클로 이연(사유: 수집이 1순위·사용자 결정 대상).
+>
+> ## ④ 부수 관찰
+> - **F3′ 중복 실물 확인**: TED `auto.en.vtt`·`auto.en-orig.vtt` 42,029B 바이트 동일 · 위사 `auto.ko.vtt`·`auto.ko-orig.vtt` 25,933B 바이트 동일. dedup(fix-5) 값 재확인.
+> - **F3′ dedup 은 fix-3 규칙 개정임이 확인됨(백로그)**: `uaf-verified:` `verify_defects3_acquisition.py` AC-5(L99-100)·AC-6(L126-127)이 en+en-orig·ko+ko-orig 를 둘 다 요청함을 단언 → dedup 시 그 AC revise 필수. `M1-DEFECTS-4.md §6.8` 무수정 경계도 뒤집힌다. 사용자 결정 = 수집 먼저·dedup 나중(별도 fix-5·verify_defects3 AC 개정 동반).
+> - **prefix 매칭 quirk(비차단·잠복)**: 위사 `downloaded.auto` 가 `ko`·`ko-orig` 두 키 모두 `auto.ko-orig.vtt` 를 가리킨다(`_download_subtitle_kind` 의 `startswith("auto.ko")` 가 `auto.ko-orig` 도 포착). 두 파일 바이트 동일이라 무해하나, 두 코드가 달랐다면 오배선. dedup 시 소멸.
+> - **auto 부분성공 기록 갭(비차단)**: TED `auto.en`·`auto.en-orig` 파일은 디스크에 있으나 ko 429 로 auto 호출이 실패 반환돼 `downloaded.auto={}`. 참고 등급이라 비차단.
+> - **OQ-M1-A 표본 +2**: TED mono -19.8 / L·R -19.6 · 위사 mono -14.6 / L·R -14.5 — 둘 다 정상 스테레오. 위상 상쇄 사례는 위사 `r9Hs79sqfeI`(-54.8) 1건뿐이라 임계 미해소 유지.
+> - **TED 기존 표본 `_JlQOnnEwxc` meta 복구 미실시**(별도 조치·`verify_defects4_acquisition.py` AC 픽스처라 무촉 유지).
+>
+> ## ⑤ 다음 착수 (갱신 (9) ⑤ 대체) — M2 는 새 세션에서(사용자 지시 2026-07-23 "다음 작업 새 세션에서")
+> **M2 dispatch-ready 계획(스코핑 완료·결정 2건 확정).** 새 세션 절차: (i) 아래 결정 2건을 `yt-stt/M2-BRIEF.md` 로 물리화 → (ii) 엔진 dispatch `python orchestration/adapters/claude/orchestrate_project.py "C:/my-claude-project/yt-stt" --phase "M2 1차 팩트 층 (정본 명세 = M2-BRIEF.md)" --mode incremental --run-id impl-yt-stt-m2` (로그 리다이렉트 + `echo ENGINE_EXIT=$?`) → (iii) 사용자 구조 게이트에서 impl-plan 검증 → CP2 → milestone CP3.
+> - **M2 = 1차 팩트 층**: 경로 (a) 수동 자막 有 → `facts/subtitle.md`(확정 전사·layer=`fact`)+확정 용어 하류 · 경로 (b) 無 → 공집합 명시 기록("확인 안 함" ↔ "팩트 없음" 구분·빈 `facts/` 정상). 입력 = `meta.json.subtitleKinds.manual` + `subs/manual.*`. **OCR 은 M2 범위 아님**(v4 D1/D2/D4/D5 로 M4/P3-b 이동). RISK-6 종결(D3·선별 게이트 없음). 앵커 = FR-3·FS-3·table-def §2.1·§4.3.
+> - **결정 1(사용자 확정 2026-07-23)**: M2 = 팩트 층만 출하 · **OQ-M1-A(무음 임계) 열어둔다** — 위상 상쇄 표본이 `r9Hs79sqfeI`(-54.8) 1건뿐이라 임계 미확정(정상 4건: TED -19.6·위사 -14.5·`_JlQOnnEwxc` -21·`rijkvfvJe2U`). 합격선 숫자 발명 금지 정책 준수. 무음 임계는 M1 다운믹스 게이트 소관이라 팩트 층과 별개.
+> - **결정 2(사용자 확정 2026-07-23·설계 공백 보충)**: 다중 수동 자막 언어 시 **팩트 = 원어(음성 언어) 수동 자막**. 번역 자막은 전사가 아니라 팩트 아님. **원어 수동 자막이 없으면 팩트 층 공집합 취급.** M1 이 원어를 auto `-orig` 로 판별하므로 구현 가능(우리 TED 표본은 원어 en·수동 en 으로 깔끔). 이 규칙은 문서 공백 보충이므로 canon(Contract v5/Projection) 반영 여부는 별도 판단(백로그).
+> - **완결 판정** = FR-3 (a)(b)(c) + project-plan 부록 A 완결 원칙(오교정 0·타임스탬프 불가침·원본 불변·층 출처 명시·침묵 성공 금지). FS-3 미결 없음.
+> - **보호 경계**(M2 impl 읽기 전용): Contract v1~v4(append-only)·docs Projection 7종+solution-design·scripts/m1·scripts/m0·fixtures·tests/baseline. 데이터 주의 = `meta.downmix.measurements` 는 `{level_db, measured}` 객체(스칼라 아님).
+> - **⚠ 워크어라운드 유지(삭제 금지·사용자 지시 2026-07-23 "우회는 놔두고")**: yt-dlp 설정 `~/.config/yt-dlp/config`·`%APPDATA%\yt-dlp\config` 의 `--js-runtimes node`(ASCII-only). **삭제하면 향후 유튜브 수집이 다시 403**. M2 자체는 디스크 표본을 소비해 새 다운로드가 불필요하나 워크어라운드는 유지한다. 제품 반영(코드/전제)은 백로그.
+> - **최소 read-set**(M2 세션) = 본 갱신 블록 + `yt-stt/docs/functional-spec.md` FS-3 · `requirements-def.md` FR-3 · `table-def.md` §2.1 + 메모리 `uaf-product-yt-stt`.
+>
+> **동시 백로그**(M2 후보): JS 런타임 제품 반영(전제 문서화 or acquisition.py 런타임 처리) · F3′ dedup fix-5(규칙 개정 + verify_defects3 AC-5/6 revise + `M1-DEFECTS-4.md §6.8` 경계 갱신) · UAF 백로그 P(`_slug` 길이 절단) · TED 기존 표본 `_JlQOnnEwxc` meta 복구.
+
+> **🔴 갱신 2026-07-23(11) — yt-stt M2(1차 팩트 층) 구현 완료·커밋 `5013bad`. CP2 v1 REJECT→v2 실증. 세션 마무리.**
+>
+> **직전 1순위 "M2 구현" = 종결**(yt-stt master `5013bad`·9파일). 엔진 orchestration run `impl-yt-stt-m2` — proposal+4단위(fact_selection·subtitle_transcript·pipeline·milestone). `uaf-verified:` run_dir STATES 판독 = 5단위 Passed·resume 로그 `ENGINE_EXIT=0` 실판독(래퍼 echo 아님). **검색 범위** = run_dir events/graph.json + 산출 파일 + git.
+>
+> ## ① CP2 v1 REJECT — impl-plan이 fix-4 픽스처에 쓰려 함 (귀속=브리프·B-5)
+> 1차 impl-plan CP2 독립검증에서 차단성 결함: task3이 **committed fix-4 픽스처 `_JlQOnnEwxc` 폴더에 `facts/`를 쓰는** 계획. `uaf-verified:` `git ls-files`=그 폴더 4파일 추적·`verify_defects4_acquisition.py:28-29`가 §5 고정입력으로 참조. **검색 범위** = git ls-files + verify_defects4 grep. **귀속=내 브리프** — v1 §2가 픽스처를 표본으로 열거+§4(b) "구현조 판정" 허용 → Planner 오도. 부수: **disk-fallback 로직도 브리프 발명**(두 클린 표본 미사용·fix-4가 self-sealing을 이미 고쳐 production에 `subtitles=null` 없음 = 죽은 코드).
+> → **사용자 결정 REJECT + 브리프 수정.** 재위임 전 브리프부터 고침(B-5 절차). 브리프 v2: `_JlQOnnEwxc` 표본 제외(read-only·무촉)·disk-fallback 제거·시그니처 `select_fact_source(meta)` 1-arg. 개정 사유는 브리프 개정이력에 원장화(run_dir는 재-dispatch 시 wipe되므로).
+>
+> ## ② 재proposal → CP2 PASS + 자가 회귀가드
+> v2 impl-plan CP2 재검증: `_JlQOnnEwxc` 언급이 금지/부정단언 문맥뿐(스윕: impl-plan.json 전문 grep 8회)·disk-fallback 제거·시그니처 교차일치(task3의 `run_m2`가 1-arg 호출)·음성대조 보존. **Planner가 자발적으로 회귀가드 추가** — task3 `assert not exists([_JlQOnnEwxc]/facts)` + task4 판정항목7(픽스처 미침범). → 사용자 승인(`actor=human·simulated=false` — 확정 권위 대행 안 함).
+>
+> ## ③ Advisor 독립 CP3 — 17/17 PASS
+> `uaf-verified:` 엔진 auto-Pass·gate_check_m2(자기출제) 미사용·별도 스크립트로 실표본+적대케이스 판정. **검색 범위** = out/m2-samples 2표본 + fact_selection/pipeline 산출 + git status.
+> - **오교정 0** — kz `facts/subtitle.md` 111줄 ↔ `manual.en.vtt` 111큐 글자 동일(불일치 0).
+> - **판별력** — 음성대조(원어 en·번역 ko만 → `translation-only`) + **적대(엔진 AC 미포함)**: 원어+번역 둘 다 다운로드 시 **원어 선택**(번역 아님).
+> - 타임스탬프 단일·단조 · BOM 없음 · 팩트원=`manual.*` · **픽스처 무촉** · **추적파일 수정 0**(scripts/m1·docs·.claude·픽스처 meta/subs 불변) · 재실행 원본 불변.
+> - 결정 2 구현: 원어=팩트·번역 아님·원어부재=공집합. Option C(M1 `_detect_origin_lang` import·순수 meta·`subtitleKinds.auto`의 `-orig` 신호).
+>
+> ## ④ 산출·확인필요·백로그
+> - 산출(커밋 `5013bad`): `scripts/m2/`{`fact_selection`·`subtitle_transcript`·`pipeline_m2`·`gate_check_m2`·`GATE_RECORD_M2`} + kz `facts/subtitle.md`(111줄) + 위사 `facts/EMPTY-SET.md` + `M2-BRIEF.md`·`impl-plan.json`. 표본 미디어·meta·subs 미커밋(대용량 제외·사용자 결정).
+> - **확인 필요 목록**(§6 "완료=목록 제출"·비차단): ① Option C가 `-orig` 신호 의존(부재 영상 미확인) ② §3 규칙 계약(Contract v5) 반영 보류.
+> - **미세 관찰(백로그 후보)**: `fact_selection`이 "원어 탐지됐으나 다운로드 실패" 케이스를 `translation-only`로 라벨 — 결과는 공집합으로 옳으나 사유 라벨 부정확(표본 미저촉).
+> - **엔진 dispatch 백로그 P 미저촉 실측**: `_slug`가 한글을 전량 제거 → 긴 `--phase`도 seed 파일명 `impl-plan-m2-1-m2-brief-md.json`(31자)로 접힘. 백로그 P는 긴 **ASCII** phase에만 유효.
+>
+> ## ⑤ 다음 착수 (세션 마무리 중)
+> - **OQ-M1-A(무음 임계)는 M2에서 안 닫음**(결정 1 — 위상 상쇄 표본 1건뿐·합격선 미발명). M2는 팩트 층만 출하.
+> - 후보: **M3(2차 STT)** — 선결 = 무음 게이트 `{"failed":True}`를 STT층이 실제 확인하는가(위상반전 사고 재발 경로·규약만 있고 코드 강제 미확인) · F3′ dedup(fix-5) · JS런타임 제품반영 · UAF 백로그 P/K/L/M/N/O.
+> - **미커밋 이월**: UAF 핸드오프(§갱신10+11 — 사용자가 yt-stt만 커밋 선택)·yt-stt 표본 미디어. yt-stt M2 코드는 커밋됨(`5013bad`).
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.

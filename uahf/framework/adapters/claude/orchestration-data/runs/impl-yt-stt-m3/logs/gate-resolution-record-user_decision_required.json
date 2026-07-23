@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-impl-plan-m3-2-stt-m3-brief-md",
+  "gateKind": "user_decision_required",
+  "resolved_by_actor": "human",
+  "simulated": false,
+  "response": "impl-plan v3 승인(사용자 결정 2026-07-23). Advisor CP2 v3 독립 판정 PASS — 옵션 D 완전 반영(elapsed 측정 stt_engine.transcribe_audio 이동·pipeline 소비·스텁 realistic 4.2)·v2 결함(pipeline wall-clock+즉시반환 스텁) 회귀 방어(done AC rtm<20)·completion_gate 무변경·픽스처 무촉 유지. 미세 관찰 2건 CP3 실측 대상.",
+  "resolved": true,
+  "note": "주 세션 게이트 해소 기록. resolved 는 gates.is_resolved(적격성 포함) 파생 결과다 — 부적격 actor 의 append 는 로그에 남아도 resolved=false 로 게이트가 pending 이다."
+}

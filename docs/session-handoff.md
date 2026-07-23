@@ -356,6 +356,31 @@
 > - 후보: **M3(2차 STT)** — 선결 = 무음 게이트 `{"failed":True}`를 STT층이 실제 확인하는가(위상반전 사고 재발 경로·규약만 있고 코드 강제 미확인) · F3′ dedup(fix-5) · JS런타임 제품반영 · UAF 백로그 P/K/L/M/N/O.
 > - **미커밋 이월**: UAF 핸드오프(§갱신10+11 — 사용자가 yt-stt만 커밋 선택)·yt-stt 표본 미디어. yt-stt M2 코드는 커밋됨(`5013bad`).
 
+> **🔴 갱신 2026-07-24(12) — yt-stt M3(2차 음성 STT 층) 구현 완료·커밋 `9d1f275`. escalated 2회 해소·Advisor 독립 CP3 19/19.**
+>
+> **M3 = 종결**(yt-stt master `9d1f275`·8파일 1529줄). 엔진 run `impl-yt-stt-m3` 5단위(silence-gate·completion-gate·stt-engine·pipeline·milestone) 전건 Passed·**ENGINE_EXIT=0** 완주. UAF run 원장 커밋(본 커밋).
+>
+> ## ① escalated 2회 — 둘 다 Advisor 브리프/CP2 귀속 (B-5)
+> - **escalated-1(§8↔seed 충돌)**: dispatch v1 proposal이 900초 실행 컨텍스트 타임아웃 2회→retry-limit 초과→escalated. 원인 = M3-BRIEF §8("실증형 AC·실제 audio16k 먹이기·몽키패치 대체 금지")이 proposal seed 의 "done=오프라인 안전 검사만" 제약과 정면 충돌 → Planner 가 구현 task done 에 실제 large-v3 STT 실행을 넣음. **해소 = §8 개정**(엔진 task done=오프라인 / 실제 large-v3=Advisor CP3 분리).
+> - **escalated-2(completion_gate 임계↔stub elapsed)**: resume 에서 gate 3단위 Passed 후 pipeline escalated. 원인 = pipeline 이 wall-clock 으로 elapsed 측정 → 즉시반환 스텁에서 극소(0.1s) → completion_gate realtime 40x 거짓양성(임계 20x). **Worker 가 sleep/clamp 위조를 §6-1(무음 위장 없음) 위반이라 거부하고 정직하게 escalate**(이진 원칙 작동 실증). **해소 = 옵션 D**(§3.4 — elapsed 측정 책임을 pipeline wall-clock→`stt_engine.transcribe_audio` 반환으로 이동). done AC 에 `rtm<20` 회귀 방어 추가.
+> - **핵심 교훈**: **정적 CP2 로는 done AC 간 동적 상충**(게이트 임계↔스텁 elapsed)을 못 본다. 엔진 Verifier CP2 도 통과시켰고(정적) Worker 실행에서 드러났다(동적). 메모리 `feedback-delegation-brief-defect-attribution` 재적중(이번엔 실행-시점 동적 결함).
+>
+> ## ② Advisor 독립 CP3 = 19/19 PASS (엔진 밖·실제 large-v3)
+> `uaf-verified:` 위사 표본(공집합·전구간) 실제 large-v3 STT 1회(445s 순수·별도 스크립트·엔진 auto-Pass·gate_check_m3 자기출제 미사용). **검색 범위** = 위사 산출(transcript.raw.txt·json·meta) + 픽스처(`_JlQOnnEwxc`)/kz 무촉 + git. 오교정 0(raw 60줄==json 60seg text)·타임스탬프 단조·형식 단일·BOM 없음·json 무선별(id·seek·tokens·words 등)·meta R7(large-v3·cpu:int8·ko)·픽스처/kz 무촉·**한국어 STT 품질 육안 정확**. 엔진 gate_check_m3 GATE_EXIT=0 별도 확인.
+>
+> ## ③ 비차단 관찰(백로그)
+> - **duration=0 → realtime 게이트 무력**: `stages.stt.realtimeMultiplier=0.0`은 M1 이 `meta.duration`을 미기록(0.0·impl-plan task1이 이미 지목)해서 나온 값. completion_gate realtime 축이 duration=0에서 무의미. 다만 위상반전 **주 방어인 0줄 축은 유효**(실제 60줄)라 비치명. 대응 = M1 duration 기록 or completion_gate duration=0 별도 처리.
+> - fact_selection "번역만" 라벨 부정확(M2 백로그)·select_device 경계값 2048 미검증(CP3 실측 대상)·completion_gate 임계 20.0 하드코딩(§9 방침).
+>
+> ## ④ UAF 하네스 백로그 신설 2건
+> - **Q(신설)**: proposal seed "오프라인 done" 제약 ↔ 브리프 "실제 실행 AC" 충돌 해소 메커니즘 부재. 무거운 실행 검증이 필요한 phase 에서 브리프가 seed 제약을 모르면 escalated. 대응 = seed 제약을 브리프 작성 규율에 명시 or 브리프 검증에서 대조.
+> - **R(신설)**: 정적 CP2 가 done AC 간 동적 상충을 못 본다. escalated-2가 실증. 대응 = CP2에 "게이트 임계↔테스트 시나리오 정합" 점검 or done AC 상호 실행 대조.
+>
+> ## ⑤ 다음 착수
+> - **M4(3차 문맥 교정 + 최후 수단 화면 OCR·P3-a/P3-b)** — 선결 = M3 산출(`transcript.raw.txt`·voice층)을 교정 입력으로 소비. Contract v4 에서 M4=FR-10+OCR 통합·M4↔M5 역전 해소.
+> - 동시 백로그: F3′ dedup(fix-5)·JS런타임 제품반영·UAF 백로그 K/L/M/N/O/P/**Q/R**·duration=0 realtime 무력·위임 규율 B-1/B-3/B-4.
+> - 미커밋 이월: yt-stt 표본 transcript/meta/subs(대용량·사용자 결정).
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.

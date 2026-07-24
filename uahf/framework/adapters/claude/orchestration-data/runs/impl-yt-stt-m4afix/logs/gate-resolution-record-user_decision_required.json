@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-impl-plan-m4-a-fix-notes-json-m4a-brief-md-v2",
+  "gateKind": "user_decision_required",
+  "resolved_by_actor": "human",
+  "simulated": false,
+  "response": "승인. 사용자 지시(후속 수정 run 으로 notes.json 스키마 침묵 실패 해소)의 이행 범위와 일치함을 Advisor CP2 로 확인했다. 커버리지 = M4A-BRIEF v2 §3.3a 3항(단일 소스 모듈·브리프가 그것을 렌더·미지 키는 확인 필요 목록 등재)이 전부 배정됨(task1 classify_unknown_keys · task2 브리프 문면 · task3 merge needsReview 연결 · task5 재확인). 차단 결함 0. CP3 확인 항목 2건 = (1) task3 이 v1 CP3 31/31 통과 코드 3모듈을 수정하므로 회귀 위험 — Advisor 가 v1 31체크를 회귀 기준선으로 재실행해 덮는다 (2) task4 표류 가드가 키를 자체 리터럴로 보유하면 가드도 같이 낡으므로 단일 소스 참조 여부를 실측한다.",
+  "resolved": true,
+  "note": "주 세션 게이트 해소 기록. resolved 는 gates.is_resolved(적격성 포함) 파생 결과다 — 부적격 actor 의 append 는 로그에 남아도 resolved=false 로 게이트가 pending 이다."
+}

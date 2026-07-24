@@ -1,0 +1,17 @@
+{
+  "allowed_tools": [
+    "Write",
+    "Read",
+    "Edit",
+    "Glob",
+    "Grep",
+    "Bash(node:*)",
+    "Bash(python:*)"
+  ],
+  "output_format": "json",
+  "policy": "auto_approve",
+  "retry_limit": 2,
+  "run_id": "impl-yt-stt-m4a",
+  "timeout": 900,
+  "workspace_dir": "C:\\my-claude-project\\yt-stt"
+}

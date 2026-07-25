@@ -1,0 +1,9 @@
+{
+  "gate_id": "gate-unit-impl-plan-m4a-fix2-merge-gate-evidence-validation-defect-fix-spec-m4a-defects-md",
+  "gateKind": "user_decision_required",
+  "resolved_by_actor": "human",
+  "simulated": false,
+  "response": "사용자 승인(2026-07-25) — 구현 계획 3 task 승인. 선행 Advisor CP2 근거: tasks 3(implementation 2 + milestone 1) · 11키 스키마 전건 · dependsOn 정합(milestone 이 두 implementation 에 의존) · ownedBoundary 3분리(merge_gate.py / brief_render.py / gate_check+GATE_RECORD)로 소유 경계 충돌 0 · done AC 가 구문·존재가 아니라 동작 검사형(근거 케이스 10행 실행 대조 — facts/EMPTY-SET.md 거부·subs/manual 통과·screen/ocr.md 층불일치 거부·공백 문자열 거부·산문 변경 통과로 R-5 범위 보존) · brief_render AC 가 공집합/팩트보유 두 렌더를 실제 생성해 대조하고 notes_schema.KEYS 회귀까지 검사 · 보호 경계 문면 반영 확인. 재현성: 선행 run impl-yt-stt-m4afix2 의 산출본(CP2 통과·보존)과 task id 3건 및 done AC 크기가 동일하다. 조건 없음.",
+  "resolved": true,
+  "note": "주 세션 게이트 해소 기록. resolved 는 gates.is_resolved(적격성 포함) 파생 결과다 — 부적격 actor 의 append 는 로그에 남아도 resolved=false 로 게이트가 pending 이다."
+}

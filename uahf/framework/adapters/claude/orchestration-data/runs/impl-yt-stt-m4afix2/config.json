@@ -1,0 +1,33 @@
+{
+ "allowed_tools": [
+  "Write",
+  "Read",
+  "Edit",
+  "Glob",
+  "Grep",
+  "Bash(node:*)",
+  "Bash(python:*)"
+ ],
+ "output_format": "json",
+ "policy": "auto_approve",
+ "retry_limit": 5,
+ "run_id": "impl-yt-stt-m4afix2",
+ "timeout": 2400,
+ "workspace_dir": "C:\\my-claude-project\\yt-stt",
+ "_advisorAugment": {
+  "at": "2026-07-25",
+  "actor": "Advisor",
+  "why": "proposal step 이 timeout=900 을 3회 초과해 retry-limit(2) 소진·Escalated. 산출물(impl-plan.json)은 유효(CP2 PASS)하나 완료 보고가 시간 안에 도달하지 못했다. 재시도가 같은 상한에 다시 걸리는 것을 막기 위해 상한을 올린다.",
+  "changed": {
+   "timeout": [
+    900,
+    2400
+   ],
+   "retry_limit": [
+    2,
+    5
+   ]
+  },
+  "backup": "config.json.pre-advisor-timeout-raise"
+ }
+}

@@ -416,6 +416,60 @@
 > - 동시 백로그: F3′ dedup(fix-5)·JS런타임 제품반영·duration=0 realtime 무력·UAF 백로그 K/L/M/N/O/P/Q/R·위임 규율 B-1/B-3/B-4.
 > - 미커밋 이월: yt-stt `out/` 표본(대용량·종전 사용자 결정 유지).
 
+> **🔴 갱신 2026-07-25(14) — yt-stt M4-a 릴레이 실행 완결(첫 실제 LLM 교정) + 병합 게이트 결함 4건 해소 + UAF `DEFAULT_TIMEOUT` 상향. 백로그 J 재발 실증·반증.**
+>
+> **직전 1순위였던 "M4-a 릴레이 실행" = 종결.** run 3개 — `impl-yt-stt-m4afix2`(Escalated·폐기) · `impl-yt-stt-m4afix3`(4단위 Passed·`ENGINE_EXIT=0`·커밋 `7e72df8`) · `impl-yt-stt-m4a-relay`(**6단위 Passed·`INVOKES=11`·`ENGINE_EXIT=0`**). UAF 측 커밋 `96c07f6`.
+>
+> ## ① 릴레이 실행 — 이 프로젝트의 UAF 편입 동기가 해소됐다
+>
+> `uaf-verified:` Advisor 독립 CP3 **41/41 PASS**(엔진 밖·별도 스크립트·`GATE_RECORD_M4A_RELAY.md` 미사용·**산출물이 디스크에 없던 시점에 작성**). **검색 범위** = 위사 표본 raw 60줄 + 4청크 work/ 22파일 + 산출 3종 + 사전 기준선 165파일 해시 + git HEAD 대조.
+> - **산출**: `transcript.corrected.md`(5,879B·60줄) · `transcript.corrected.diff.md`(3,159B·4항목 6필드) · `residual-spans.json`(3,700B·**8건** = `uncorrected` 5 + `lowConfidence` 3).
+> - **⭐⭐ carry 연속성이 실제 교정 근거가 됐다.** chunk01 이 `에디센스`→`애드센스` 2건을 확정 → `carry.confirmedTerms` 누적 → **chunk03 이 그 전례를 근거로 `에디션스`→`애드센스` 교정**. evidence 문면이 그것을 명시하고, 동시에 "철자 패턴이 기존 확정 사례와 정확히 일치하지 않아(에디센스 vs 에디션스) 확신 낮음"으로 `lowConfidence` 등재했다. **앞→뒤 순차 전달이 물리로 작동한 첫 실증**이며 Worker 13명 수기 팬아웃 브리프 미저장(UAF 편입 동기)의 직접 해소다.
+> - **교정 4건 / 60줄**(chunk01 2 · chunk02 0 · chunk03 2 · chunk04 0) · **layer 전부 `context`**(팩트 공집합이므로 `fact` 0 — 강화된 게이트가 강제). 숫자 6곳 전부 사유와 함께 보존.
+> - **해석 금지가 실행층에서 작동했다** — `조치로`(쇼츠로 후보)·`실행사`(시행사 후보)·`광고매체로`·`영상을 킵니다`·조사 오류를 전부 "그 자리에서 성립한다"며 `uncorrected` 로 보류. 오교정 0 우선(비대칭) 준수. 보류분이 P3-b 입력이 되는 설계된 흐름.
+> - **침묵 통과 차단 작동** — done AC `assert not (changes==[] and notes==[])` + 브리프 §4 문면. chunk02·04 가 `changes=0` 을 내면서 판단 근거를 notes 에 남겼다.
+> - **`OQ-M4-A` 근거 실물 확보** — 잔여 오독 8건. 프레임 트리거 규칙의 숫자를 실측 위에서 논의 가능(**여전히 미해소** — 숫자 발명 금지).
+>
+> ## ② 병합 게이트 근거 검증 결함 4건 — 귀속 = Advisor 브리프
+>
+> `uaf-verified:` 계약(`table-def` §7.5 4항 "허용 근거 = 팩트 근거"·§4.4 "역추적 가능한 참조")보다 구현이 약했다. 실호출 재현 + `git show HEAD` 대조.
+> - **결함 1** `_evidence_layer` 가 `layer=="fact"` 면 `evidence` 를 읽지 않고 통과 → 임의 산문·빈 문자열·공백만으로 숫자 변경이 병합됐다. **결함 2** `_FACT_EVIDENCE_MARKERS` 의 `facts/` 접두가 **팩트 공집합 기록 `facts/EMPTY-SET.md` 까지 팩트 근거로 인정**(위사가 정확히 이 경우). **결함 3** 브리프가 공집합 귀결을 미명시 + 성립 불가능한 `facts/subtitle.md` 예시 제시. **결함 4** `screen` 자기신고 동형(M4-b 에서 재발 경로).
+> - **귀속 = Advisor 브리프.** `M4A-BRIEF` §8 음성 대조가 "근거 없음→거부 / 근거 있음→통과" **두 축만** 요구하고 "거짓·공허한 근거→거부" 축이 없었다. **Advisor CP3 38/38 도 같은 두 축만 밟았다 — 명세가 안 쓴 축은 검증기도 안 봤다.**
+> - 해소 = R-1~R-5(`M4A-DEFECTS.md` §3·전부 §4.4 열거에서 도출·발명 0). CP3 39/39 PASS(음성 대조 7건이 실제 거부·그중 5건이 수정 전엔 통과했음을 HEAD 대조로 재현·양성 2건과 R-5 범위 1건 보존).
+> - **⭐ 통과한 항목도 이유를 봐야 한다** — A10(`layer=screen`+팩트 앵커)은 수정 전에도 거부됐지만 사유가 `numeric-invalid-evidence-layer`(우연)였고 수정 후 `numeric-evidence-layer-mismatch`(정확)로 바뀌었다. 통과 여부만 봤다면 이 개선을 확인할 수 없었다.
+>
+> ## ③ UAF — `DEFAULT_TIMEOUT` 900→2400 + 백로그 J 재발·반증
+>
+> `uaf-verified:` `contract_to_graph.py:51`. **근거 = 원장 실측 5건** — cheongryong-bubble `impl-s14-15-ui-sound` 가 같은 단위에서 **3회 연속**(retry 0·1·2 소진→Escalated) · `impl-s16-18-final` 1 · `impl-s04-08-core` 1 · yt-stt `m4afix2` 1. **검색 범위** = `DEFAULT_TIMEOUT`·`timeout=900` ripgrep 스윕 + 적중 run events 판독. 테스트 25+90 전건 통과(회귀 0). 상향 후 새 run 이 첫 시도에 proposal 완주.
+> - **백로그 J 가 이미 등재한 결함의 재발이다**(2026-07-20 청룡 버블 실측 — 같은 원인 900초×3·같은 증상 stop-signal 미갱신). 제가 "새 발견"이라 보고했던 것을 정정한다.
+> - **⭐ J 의 좌표를 확정했다** — `escalated` 이벤트에 **`gate_id` 가 없다**(`cycle_id` 만 있다). `recover_gate` 는 `stop-signal.json` 의 `pending_gates[].gate_id` 를 요구하고 주석이 "추측 0" 을 명시하므로 stop-signal 을 손으로 만들려면 **없는 gate_id 를 발명**해야 한다. 런처의 미기록은 **의도된 설계**다(`orchestrate_project.py:18-19` — `stop_reason=="gate"` 분기만 기록). `--gate-kind escalation` CLI·`escalationResolvers` 정책·`uaf-implement.md` §2 문서가 모두 있는데 **retry 소진 경로에서는 도달 불가능**하고, `--retry-limit` 상향으로도 부활하지 않는다(실측 `INVOKES=0` 즉시 재정지).
+> - **⚠ 앞선 보고 정정**: 세션 중 이를 "J 의 '우회 가능' 판단이 반증됐다"고 보고했으나 **과한 표현이었다.** J 가 말한 우회는 **엔진 밖 처리**(Advisor 대역 완수)이며 그 자체는 여전히 가능하다. 다만 그것은 「Run 조율 우회 금지」 불변에 저촉되므로, **원장을 보존하려면 현 run 폐기 + 새 run-id 재실행이 유일한 경로**다(이번에 택한 길). 즉 J 의 회피책이 거버넌스 불변과 충돌함이 확인된 것이고, 그 사실을 백로그 §J 에 등재했다. `m4afix2` 원장은 이 증거로 보존한다.
+>
+> ## ④ 엔진 구조 게이트가 Advisor CP2 를 잡았다 (거버넌스 실증)
+>
+> 릴레이 impl-plan 의 `carry.json` 이 4 task `ownedBoundary` 에 중복 등재돼 게이트 해소가 **`[REJECT]` 6쌍 비중첩 위반**으로 거부됐다(원장 무오염·이벤트/revision 0 append). **Advisor CP2 는 "순차라 충돌 없다"고 판단해 통과시켰다** — 엔진이 잡았다. 귀속 = Advisor 브리프(§3.1 이 `carry.json` 소유권을 정하지 않았다). 해소 = B-5 절차대로 **브리프 §3.1a 선행 신설**(공유 상태 3종을 chunk01 단독 등재·소유 등재 ≠ 유일 기록자·`prepare()` 멱등성 근거) → impl-plan 직접 편집(백업+provenance·백로그 N 관행).
+>
+> ## ⑤ 이번 세션 결함 귀속 집계 — Advisor 5건 · 검증기 5건
+>
+> **Advisor 귀속 5건**: ①병합 게이트 음성 대조 축 누락(결함 4건의 원인) ②`merge_gate` 를 "순수 함수"라 서술(AST 로 반증 — 원본 해시 검사가 이미 파일을 연다) ③게이트 기록을 보호 경계에 미명시(`gate_check_m4a.py` 재실행이 `GATE_RECORD_M4A.md` 를 덮는 구조적 반복) ④`carry.json` 소유권 미정(엔진이 잡음) ⑤Escalated 결함을 "새 발견"이라 오보(백로그 J 재발).
+> **검증기 결함 5건**: ①결함 아닌 케이스(A10)를 결함 목록에 넣음 ②**부분문자열이 FS-5 정본 인용문을 오검출해 거짓 통과**(차분 기반으로 재설계) ③sanity check 조건 오류 ④릴레이 기준선을 선행 run 이전 시점으로 잡아 거짓 FAIL ⑤허용 목록에 Advisor 자신의 브리프 수정분 누락.
+> **Worker 코드 결함 = 0.** 요구받은 것을 정확히 구현했다.
+>
+> ## ⑥ 비차단 관찰 (다음 사이클 입력)
+>
+> - **`carry` 교정자 산출 갈래는 누적이 아니라 교체다**(`update_carry` docstring 명시·의도된 설계). `confirmedTerms`(기계 파생)만 누적한다. 논리는 있다 — 교정자 산출은 맥락 메모이고 누적하면 오래된 추정이 계속 흘러간다. **결함 아님.**
+> - **⚠ 브리프 렌더 문면이 이를 오해시킨다** — `<key>Provided=False` 면 "**이번 청크까지** 산출이 없었다는 뜻"이라 렌더되는데 실제는 "이번 청크에서"다. **chunk02 교정자가 정확히 이 지점에서 오해**해 "이월됨"이라 기록했다(이월되지 않고 교체된다). M4-a 결함 2(키 미명시)와 같은 계열 — 한 낱말이 동작을 오해시킨다. 비차단(연속성은 `confirmedTerms` 담당).
+> - **§6 확인항목 1(타임스탬프 중복) = 잠복 미발현.** `[02:27]` 2줄을 교정자가 건드리지 않아 `build_diff_entries` 의 `changes_by_ts` dict 키 충돌 경로가 밟히지 않았다. **다만 교정자가 직접 코드를 확인해 위험을 등재했다** — 브리프에 확인 항목을 둔 목적이 이것이다(밟히지 않아도 침묵하지 않게).
+> - `evidence` 앵커가 가리키는 파일의 **실재는 검증하지 않는다**(사용자 확정 — 근거 판정 경로에 파일 접근 미도입). 존재하지 않는 `facts/subtitle.md` 앵커는 강화 후에도 통과한다.
+>
+> ## ⑦ 다음 착수 후보
+>
+> - **(가) M4-b(P3-b) 착수 판단** — `OQ-M4-A` 근거 실물(잔여 오독 8건)이 확보됐다. 트리거 규칙(전후 범위·장수·PPT형 판정 주체)을 이제 실측 위에서 사용자와 결정할 수 있다. **숫자 발명 금지는 유효**하다.
+> - **(나) UAF 백로그 J 근본 수정** — Escalated 해소 채널 신설(런처가 모든 정지 사유에서 stop-signal 갱신 or `resolve_gate` 가 원장에서 좌표 복원). 이번 세션이 J 의 "우회 가능" 전제를 반증했으므로 우선순위가 올라갔다.
+> - **(다) 브리프 렌더 문면 정정**(위 ⑥ "이번 청크까지") + 게이트 기록 보호 경계 명문화.
+> - **(라) F3′ dedup(fix-5)** · JS런타임 제품 반영 · `duration=0` · 백로그 K·L·M·N·O·P·Q·R · 위임 규율 B-1·B-3·B-4.
+> - **미커밋 이월 판단 필요**: yt-stt `out/` 텍스트 1.5MB(미디어 제외) — 릴레이 산출 3종(13KB)+`work/` 22파일(111KB)이 이 사이클의 실측 증거다. `transcript.raw.txt`(원본)도 미추적이라 교정본만 커밋하면 반쪽이 된다.
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.

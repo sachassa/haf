@@ -95,8 +95,14 @@
 - **Problem / Motivation**: cheongryong-bubble impl-s14-15 run 실측 — 대형 통합 단위가 실행 타임아웃(config timeout=900s)×3으로 `Escalated` 종단 후, ① **stop-signal.json이 에스컬레이션 정지 시 갱신되지 않아** 낡은(이미 해소된) user_decision 게이트를 담고 있고 `resolve_gate.py --gate-kind escalation`이 "게이트 없음"으로 거부(해소 채널 물리 단절), ② **Escalated가 fold에서 종단**이라 `--resume`이 재디스패치하지 않음(timeout 상향·재작업 지시의 엔진 경로 부재) — 에스컬레이션의 설계 의미(상위 위임)는 맞으나, 상위가 "조건 변경 후 재작업"을 지시할 물리 경로가 없어 Advisor 대역 완수(원장 밖 위임)로 우회하게 됨.
 - **Desired Outcome**: ① 모든 정지 사유에서 stop-signal 일관 갱신(escalation_required 게이트 포함), ② 에스컬레이션 해소 응답에 재작업 지시(retry 카운터 리셋·config 패치 반영) 경로 추가 — 해소 이벤트 append → resume 시 해당 단위 Execute 재진입, ③ (예방) 단위 규모 대비 타임아웃 산정 — Planner 브리프에 invoke 예산 힌트 또는 per-unit timeout.
 - **Why Not Now**: 05 spec/게이트 코드 변경이며 현재 개발 run 진행 중 — Advisor 대역 완수+원장 기록으로 우회 가능. 완료 후 독립 트랙.
+- **재발 실측 (2026-07-25 · yt-stt `impl-yt-stt-m4afix2`)**: `uaf-verified:` 같은 결함이 다른 소비 프로젝트에서 재발했다(proposal step 이 timeout=900 초과 3회 → retry-limit(2) 소진 → Escalated). **검색 범위** = 이 run 의 events/logs + `resolve_gate.py`·`orchestrate_project.py` 소스 + `DEFAULT_TIMEOUT`·`timeout=900` 저장소 스윕. 위 ①②에 더해 다음 좌표를 확정했다.
+  - **`escalated` 이벤트에 `gate_id` 필드가 없다** — `cycle_id`(step id)만 있다. `recover_gate` 는 `stop-signal.json` 의 `pending_gates[].gate_id` 를 요구하고 주석이 "추측 0" 을 명시하므로, stop-signal 을 손으로 만들려면 **없는 gate_id 를 발명**해야 한다. 즉 ①은 파일 부재 문제가 아니라 **좌표 자체의 부재**다.
+  - **런처의 stop-signal 미기록은 의도된 설계다** — `orchestrate_project.py:18-19` 가 `stop_reason=="gate"` 일 때만 기록하도록 명시한다(Escalated 는 그 외 분기). 즉 ①의 수정 지점은 런처이며 버그가 아니라 계약 불일치다(`resolve_gate.py` 가 파일 존재를 무조건 전제).
+  - **`--retry-limit` 상향으로도 부활하지 않는다** — 실측: `--resume --retry-limit 5` 가 `INVOKES=0` 으로 즉시 재정지(원장 fold 가 Escalated 를 종단으로 확정). ②의 "timeout 상향·재작업 지시 경로 부재"가 CLI 우회로도 메워지지 않음을 확인.
+  - **⚠ "우회 가능"의 실제 비용**: J 가 제시한 우회(Advisor 대역 완수)는 **엔진 밖 처리**를 뜻한다. 그것은 `.claude/CLAUDE.md`·`AGENT.md` 「Run 조율 우회 금지」에 저촉되므로, 원장을 보존하려면 **현 run 을 폐기하고 새 run-id 로 재실행**하는 것이 유일한 경로다(이번 세션이 택한 길 — `m4afix3`). 즉 J 는 "우회 가능"하되 그 우회가 거버넌스 불변과 충돌한다. **폐기된 `m4afix2` 원장은 이 증거로 보존한다.**
+  - **부수 예방 조치(별건 수행)**: `DEFAULT_TIMEOUT` 900→2400 상향(커밋 `96c07f6`). 원장 실측 5건 근거(cheongryong-bubble `impl-s14-15-ui-sound` 3회 연속·`impl-s16-18-final`·`impl-s04-08-core`·yt-stt `m4afix2`). 이는 위 ③(타임아웃 산정)의 부분 완화이며 J 본체(해소 채널)는 미해소다.
 - **Dependency**: `orchestration/framework/orchestrator/gates.py`·런처 stop-signal 기록부·resolve_gate.py·05 §3.3.
-- **Suggested Future Track**: 「Escalation Rework Path」 소형 트랙. 우선순위 미배정(사용자 결정).
+- **Suggested Future Track**: 「Escalation Rework Path」 소형 트랙. 우선순위 미배정(사용자 결정). **2026-07-25 재발로 우선순위 상향 후보** — 소비 프로젝트 2곳에서 발현했고 회피책이 거버넌스 불변과 충돌한다.
 
 ---
 

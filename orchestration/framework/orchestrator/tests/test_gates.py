@@ -700,5 +700,50 @@ class GatePolicyNoneIsS2Behavior(unittest.TestCase):
         self.assertEqual(result.pending_gates, [])
 
 
+class LatestEligibleResolutionAndResponse(unittest.TestCase):
+    """latest_eligible_resolution(원자료 판독)·해소 응답 동봉(가법)의 순수 단위 테스트."""
+
+    def _log(self):
+        from stephost_bridge import EventLog
+        store = InMemoryEventStore()
+        return EventLog(store), store
+
+    def test_returns_none_without_eligible_resolution(self):
+        log, store = self._log()
+        policy = GatePolicy()
+        append_gate_requirement(log, "g1", GATE_ESCALATION_REQUIRED)
+        # 부적격 actor 해소만 존재 → None.
+        append_gate_resolution(log, "g1", GATE_ESCALATION_REQUIRED, actor="Worker")
+        self.assertIsNone(gates.latest_eligible_resolution(
+            store.read_all(), "g1", GATE_ESCALATION_REQUIRED, policy))
+
+    def test_returns_latest_eligible_regardless_of_requirement_order(self):
+        log, store = self._log()
+        policy = GatePolicy()
+        # 요구 이전 해소도 **원자료로는** 반환된다(선후 판정은 호출부 몫 — is_resolved 와 대비).
+        append_gate_resolution(log, "g2", GATE_ESCALATION_REQUIRED, actor="Advisor",
+                               response="첫 응답")
+        append_gate_requirement(log, "g2", GATE_ESCALATION_REQUIRED)
+        found = gates.latest_eligible_resolution(
+            store.read_all(), "g2", GATE_ESCALATION_REQUIRED, policy)
+        self.assertIsNotNone(found)
+        self.assertEqual(gates.resolution_response(found), "첫 응답")
+        # is_resolved 는 요구 이후 해소만 인정하므로 여전히 미해소다(역할 분리 확인).
+        self.assertFalse(is_resolved(store.read_all(), "g2", GATE_ESCALATION_REQUIRED, policy))
+        # 요구 이후 적격 해소가 추가되면 그것이 최신으로 반환된다.
+        append_gate_resolution(log, "g2", GATE_ESCALATION_REQUIRED, actor="human",
+                               response="둘째 응답")
+        found2 = gates.latest_eligible_resolution(
+            store.read_all(), "g2", GATE_ESCALATION_REQUIRED, policy)
+        self.assertEqual(gates.resolution_response(found2), "둘째 응답")
+        self.assertTrue(is_resolved(store.read_all(), "g2", GATE_ESCALATION_REQUIRED, policy))
+
+    def test_response_absent_keeps_ref_byte_shape(self):
+        log, _store = self._log()
+        event = append_gate_resolution(log, "g3", GATE_ESCALATION_REQUIRED, actor="Advisor")
+        self.assertEqual(sorted(event["ref"].keys()), ["gateKind", "gate_id", "kind"])
+        self.assertIsNone(gates.resolution_response(event))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

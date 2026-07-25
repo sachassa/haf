@@ -53,7 +53,29 @@ python orchestration/adapters/claude/orchestrate_project.py <project_root> --pha
   python orchestration/adapters/claude/resolve_gate.py <run_dir> --gate-kind {user_decision|escalation|approval-escalation} --actor {human|Advisor} [--response "<원문>"]
   ```
   `user_decision_required`는 **사용자(human)만** 해소한다(확정 권위·UAF-INV ⑤). 구조 게이트 해소 시 산출(impl-plan.json)을 먼저 검증하고, 통과 시에만 해소 이벤트 append + 구현 task 승격(task_added revision).
-- **재개:** `python orchestration/adapters/claude/orchestrate_project.py <project_root> --resume` — 엔진이 원장을 fold해 결정적으로 재개한다(이미 Passed 단위는 재실행 안 함). completed(exit 0)까지 정지→제시→해소→재개를 반복한다.
+- **재개:**
+  ```
+  python orchestration/adapters/claude/orchestrate_project.py <project_root> --resume --run-id <run_id> [--retry-limit N]
+  ```
+  엔진이 원장을 fold해 결정적으로 재개한다(이미 Passed 단위는 재실행 안 함). completed(exit 0)까지 정지→제시→해소→재개를 반복한다.
+  - **함정(반드시 `--run-id`를 준다):** `--resume`은 기존 run_dir을 쓰는 명령인데도 런처는 `--run-id`가 없으면 슬러그를 `--phase`에서 **재파생**한다(`_resolve_slug(args.run_id, args.phase, root.name)`). 즉 구동 시 `--run-id`를 준 run을 `--run-id` 없이 재개하면 존재하지 않는 경로(`orch-<폴더명>-Phase-1`)를 보고 실패한다. run_id는 `logs/stop-signal.json`이 있는 run 디렉터리 이름이며, 부재 시 런처가 RUNS_DIR 실존 후보 목록을 오류 메시지에 함께 제시한다.
+
+### 종료 코드 규약 (`orchestrate_project.py` — 정본 = 런처 exit 매핑·binding §5.3)
+
+| 코드 | 의미 | 후속 |
+|---|---|---|
+| `exit 0` | 완료(completed) — 모든 단위 Passed | 없음 |
+| `exit 2` | **정상 정지** — 게이트 미해소 또는 실행 에스컬레이션. `logs/stop-signal.json`에 `stop_reason`·`pending_gates` 기록 | 제시 → `resolve_gate.py` 해소 → `--resume` |
+| `exit 3` | halted — 완료도 정지도 아님(진행 불가) | 원장·로그 조사 |
+| `exit 1` | **런처 실패** — project_root 부재·`--resume` 대상 run_dir 부재 등. 미처리 예외도 비영 종료이며 `logs/failure.json`에 기록 | 메시지·`failure.json` 조사 후 재구동 |
+
+`exit 2`를 실패로 읽지 않는다 — 정지 게이트는 설계상 정상 경로다(05 §3.3 불가침).
+
+### run 관측 파일 (백로그 §L)
+
+- `logs/heartbeat.json` — invoke 시작 전·종료 후 갱신(`ts`·`stage`·`invokes`·`request_hint`·`pid`). 프로세스가 매달려(hang) 종료 이벤트가 오지 않을 때 **정체 판정의 유일한 근거**(마지막 `ts`)다.
+- `logs/failure.json` — 미처리 예외의 구조화 기록(`ts`·`run_id`·`argv`·`error_type`·`error`·`traceback`). 스택트레이스는 stderr에도 그대로 나온다(은폐 0).
+- 두 기록은 실패해도 run을 중단시키지 않는다(관측 장치가 관측 대상을 죽이지 않는다).
 
 ### 형태 A 폴백 (런처 미가용 시)
 

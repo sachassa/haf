@@ -32,8 +32,11 @@
          proposingStepRef=<graph.json proposal 노드 id 파생>, gateEventRef=gate_id) 로 승격
          (accept_revision 이 gate-pass 이벤트 실재를 재검증). proposingStepRef 는 하드코딩이
          아니라 run_dir/graph.json 의 proposal 노드에서 파생한다(F4↔F5 교차 계약).
-  - escalation 게이트(CP3 non-Pass escalation 포함): actor ∈ escalationResolvers 자격 확인 후
-    append_gate_resolution(actor) append. revision 승격 없음(escalation 은 분해 제안 아님).
+  - escalation 게이트(CP3 non-Pass escalation·실행 에스컬레이션 포함): actor ∈ escalationResolvers
+    자격 확인 후 append_gate_resolution(actor, response=...) append. revision 승격 없음
+    (escalation 은 분해 제안 아님). --response 원문은 해소 이벤트 ref 에 동봉되어 엔진이 재작업
+    되돌림 ref 로 전파하고, 마지막에 재개 명령(`--resume`)을 안내한다 — 해소 이벤트 자체는
+    아무 것도 실행하지 않고 재기동이 그것을 소비해 대상 단위를 1회 추가 디스패치한다.
 
 정직 규율(resolve_w L-07 동형): simulated=false·실제 actor 기록. 검증 실패·부적격은
 열거 + 비영 종료, 자동 수정 0.
@@ -472,7 +475,12 @@ def resolve_escalation(run_dir: Path, gate_id, actor: str, response: str, policy
 
     log = EventLog(JsonlEventStore(str(run_dir / "events.jsonl")))
     _append_provenance(log, gate_id, gate_kind, actor, response, phase="escalation")
-    append_gate_resolution(log, gate_id, gate_kind, actor=actor)
+    # 해소 응답 원문을 해소 이벤트 ref 에 **동봉**한다(가법·response 미지정 시 종전과 동일).
+    # 엔진이 이 응답을 재작업 되돌림 이벤트 ref 로 복사하고, Host 가 그 마지막 실패 ref 를
+    # 재디스패치 번들 feedback 으로 싣는다 → 상위의 재작업 지시가 실행 단위까지 도달한다.
+    append_gate_resolution(
+        log, gate_id, gate_kind, actor=actor, response=(response or None)
+    )
 
     resolved = is_resolved(log.all_events(), gate_id, gate_kind, policy)
     _write_record(run_dir, gate_id, gate_kind, actor, response, resolved)
@@ -483,7 +491,32 @@ def resolve_escalation(run_dir: Path, gate_id, actor: str, response: str, policy
 
     print("[RESOLVE] gate_id=%s resolved by actor=%s (escalation·simulated=false)." % (gate_id, actor))
     print("[NOTE] escalation 해소는 분해 제안이 아니므로 revision 승격 없음.")
+    _print_resume_hint(run_dir)
     return 0
+
+
+def _print_resume_hint(run_dir: Path) -> None:
+    """해소 후 재개 명령을 표면화한다(해소 → 재디스패치 경로의 마지막 한 칸).
+
+    해소 이벤트만으로는 아무 것도 실행되지 않는다 — 엔진 재기동(`--resume`)이 그 해소를
+    소비해 대상 단위를 재작업 되돌림하고 **정확히 1회** 추가 디스패치한다. 명령 인자는
+    config.json 에서 파생하며(추측 0), 읽지 못하면 일반형만 출력한다.
+    """
+    launcher = "orchestration/adapters/claude/orchestrate_project.py"
+    project_root = None
+    run_id = None
+    try:
+        cfg = load_json(run_dir / "config.json")
+        project_root = cfg.get("workspace_dir")
+        run_id = cfg.get("run_id")
+    except Exception:  # noqa: BLE001  (안내는 부가 표면 — 해소 결과 불변)
+        pass
+    print("[NEXT] 해소는 원장 append 일 뿐이다 — 재개해야 재디스패치된다"
+          "(해소 1건 = 추가 시도 1회).")
+    if project_root and run_id:
+        print("       python %s %s --resume --run-id %s" % (launcher, project_root, run_id))
+    else:
+        print("       python %s <project_root> --resume [--run-id <run_id>]" % launcher)
 
 
 def main(argv=None) -> int:

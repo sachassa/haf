@@ -31,6 +31,7 @@ proposal step)이 담당한다(05 §3.1 "고정 파이프라인 하드코딩 금
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 import re
 from typing import Any
@@ -68,14 +69,41 @@ _MAX_TASKS = 6
 # ==========================================================================
 # 순수 파생 헬퍼 — seed id·슬러그(내용 파싱 0·부작용 0·소비 프로젝트 중립)
 # ==========================================================================
+# 슬러그 길이 상한(백로그 §P·§L Desired 4-b — 공통 규칙). seed 단위 id 가 그대로
+# `steps/<unitId>.json`·`logs/invoke-NN-<Role>-<unitId>.json` 파일명이 되므로 상한이 없으면
+# (a) Windows 경로 한계 `OSError: [Errno 22]` 크래시(§P 실측)·(b) git `Filename too long` 로
+# **run 원장을 커밋할 수 없다**(§L 4-b 실측 · 파일명 239자·경로 367자). 접는 규칙은
+# 결정적이며 48자 이하 입력에는 **바이트 동일**(기존 run 디렉터리·id 하위호환).
+SLUG_MAX_LEN = 48
+SLUG_HASH_LEN = 8
+
+
+def fold_slug(normalized: str, raw: Any) -> str:
+    """정규화된 슬러그가 상한을 넘으면 `앞 48자 + "-" + sha256(원문)[:8]` 로 접는다.
+
+    - `normalized` = 각 호출자의 정규화 규칙을 이미 통과한 문자열(규칙은 호출자 소유).
+    - `raw` = **정규화 전 원 입력**. 해시를 원문에서 뽑아야 정규화가 같은 값으로 뭉갠
+      서로 다른 입력(예: 대소문자·구분자만 다른 phase)이 구분된다.
+    - 결정적(같은 입력 → 같은 값)·순수(부작용 0). 결과 길이 상한 = 48+1+8 = 57.
+    - 48자 이하는 **그대로 반환**(바이트 동일) — 기존 run_id·unit id 하위호환.
+    """
+    if len(normalized) <= SLUG_MAX_LEN:
+        return normalized
+    digest = hashlib.sha256(str(raw).encode("utf-8")).hexdigest()[:SLUG_HASH_LEN]
+    return normalized[:SLUG_MAX_LEN] + "-" + digest
+
+
 def _slug(text: str) -> str:
     """자유 텍스트를 안전 슬러그로 정규화한다(소문자·비영숫자→'-'·연속 축약·양끝 제거).
 
     빈 결과는 "run" 으로 폴백한다. 순수 함수(부작용 0). 예: "Phase 1"→"phase-1",
     "정산 코어"→"run"(비ASCII 영숫자는 '-' 로 흡수되어 폴백).
+
+    길이 상한(`fold_slug`·48자)을 적용한다 — 긴 ASCII phase 에서 파일명·경로 한계로
+    크래시하거나 원장 커밋이 막히는 결함(백로그 §P·§L 4-b)의 해소다.
     """
     s = re.sub(r"[^a-z0-9]+", "-", str(text).lower()).strip("-")
-    return s or "run"
+    return fold_slug(s or "run", text)
 
 
 def seed_task_id(phase_scope: str) -> str:

@@ -83,6 +83,51 @@
 - **부적격 해소의 물리 무효.** 부적격 actor 로 append 된 해소 이벤트도 로그에 남지만(append-only·은폐 0), `is_resolved` 가 적격성 판정에서 배제하므로 게이트는 여전히 pending 이다. 이는 코드가 소유하는 강제이며 제시 채널이 우회할 수 없다.
 - **해소 어휘의 현행 형태(인용).** orchestration 해소 어휘는 재시도 예산 비계수를 이미 충족한다 — `append_gate_resolution`(03 10필드 재사용·`ref.kind=gate-resolved`·outcome=pass·retry_count=0)은 step 재시도 예산(`outcome=fail` 계수)을 소모하지 않는다(§7 OQ-PO-B2 해소). UAHF step-host 층의 해소=fail 계수 결합(OQ-SH-5·step-hosting-binding §7)은 무수정 경계상 별도 트랙 소관이며, 해소 취소(revoke) 어휘는 OQ-PO-B6 저순위 이월이다.
 
+### §3.4 실행 에스컬레이션(Escalated 정지)의 해소 채널 (백로그 §J 본체 해소·2026-07-26)
+
+§3.3 은 `_process_gates` 가 발화한 정지 게이트(단위 경계)의 해소를 다룬다. 이 절은 그 앞단 —
+**Step Host 가 실행 중 낸 Escalated 정지**(재시도 한도 초과·차단 선언·SH-INV-4)의 해소를
+같은 채널로 물리화한다. 이전 판에서 이 정지는 gate_id 가 없어 해소 이벤트를 append 할
+대상 자체가 없었고, 그래서 `--resume` 이 대상 단위를 재디스패치하지 못했다(백로그 §J ①②).
+
+- **좌표 발급(엔진).** `orchestrator.run()` 이 Host 의 `stopped/escalated` 를 받으면,
+  `gate_policy` 가 있을 때 각 정지 단위에 대해 `escalation_required` **게이트 요구**를
+  append 한다(`append_gate_requirement` 재사용·새 어휘 0). gate_id =
+  `gate-unit-<단위 id>::exec-escalation` — 단위 경계 게이트(`gate-unit-<id>`)와 비충돌하는
+  결정적 파생이며 재개 간 안정하다. `scoped_question` = `{unitId, gateKind, cause:
+  "execution_escalated"}`. `gate_policy` 미지정(레거시 조립)이면 append 0 = 종전 거동.
+- **멱등·재에스컬레이션.** 요구가 이미 실재하고 그것이 마지막 escalated 이벤트보다 뒤면
+  재append 하지 않는다(같은 두 원장 재생 → 같은 로그). 되돌림 후 **다시 실패**하면 새
+  escalated 이벤트가 그 요구보다 뒤서므로 **새 요구**를 append 한다 — `is_resolved` 의
+  since 규칙(최신 요구 이후 해소만 인정)이 이전 해소를 소진시킨다. 즉 **해소 1건 = 추가
+  시도 1회**이며, 한 번의 해소가 무한 재시도로 번지지 않는다.
+- **정지 신호(런처).** `orchestrate_project.run_and_map` 은 escalated 정지에서도
+  `logs/stop-signal.json` 을 **게이트 분기와 같은 계약 형태**
+  `{stop_reason, stopped_tasks, pending_gates, note}` 로 기록하고 `[PENDING-GATES]` 출력과
+  게이트 큐 렌더를 덧붙인다. 기존 `[STOP] escalated -> exit code 2` 라인과 exit 2 매핑,
+  그리고 gate 분기의 출력·기록은 그대로다(가법). `pending_gates` 가 비면(게이트 정책 없는
+  레거시 run) 빈 배열 + note 에 그 사실을 명시한다 — 침묵으로 넘기지 않는다.
+- **해소(주 세션).** `resolve_gate.py <run_dir> --gate-kind escalation --actor <Advisor|human>
+  --response "<재작업 지시>"`. 적격성 판정은 §3.3 표 그대로이며(`escalationResolvers`) 이
+  스크립트가 우회하지 않는다. `--response` 원문은 해소 이벤트 `ref.response` 에 **동봉**된다
+  (미지정 시 ref 형태는 종전과 동일 — 가법).
+- **재디스패치(재개).** `orchestrate_project.py <project_root> --resume` 재기동 시 엔진이
+  적격 해소(해소 at > 마지막 escalated at)를 소비해 그 단위 사이클에 **되돌림 이벤트**를
+  1건 append 한다(`outcome=fail`·`trigger=재작업 되돌림(에스컬레이션 해소)`·
+  `ref={kind:"gate-rework", gate_id, response}`·03 §3.2-A 10필드 무수정). 상태 파생이
+  Escalated → Failed 로 바뀌어 `ready_set` 이 그 단위를 다시 포함하고, Host 는 한도를
+  **실패 시점에만** 판정하므로 정확히 1회의 추가 디스패치가 일어난다. 해소 응답은 그 되돌림
+  ref 를 거쳐 재디스패치 번들의 `feedback` 으로 실행 단위에 도달한다(테스트로 실측).
+- **레거시 run 의 회복 경로.** 좌표 없이 Escalated 로 멈춰 있던 기존 run 도 `--resume` 1회면
+  요구 이벤트가 생성되어(정지 유지·재실행 0) 그 다음부터 위 해소 절차를 쓸 수 있다.
+- **`--retry-limit` 의 위치.** `--resume` 에서도 이 override 가 `config.json` 에 반영되고
+  이전→새 값이 출력된다. 되돌림은 한도와 무관하게 추가 시도 1회를 부여하므로 이 플래그는
+  편의이지 해소의 전제가 아니다.
+- **다중 escalation 의 순차 해소.** 여러 단위가 동시에 Escalated 이면 그중 하나의 해소는 그
+  단위에 되돌림 이벤트를 append 하되, 다른 단위가 Escalated 로 남아 Host 가 정지하므로
+  **추가 디스패치는 나머지 해소 이후에 실행된다**(SH-INV-4 보존의 귀결·정보 손실 없음 —
+  되돌림은 원장에 이미 기록돼 있어 다음 재개가 소비한다).
+
 ---
 
 ## §4. Model Selection 실값 매핑 관례·OQ-SH-4 해소 (05 §3.5·§5 모델 정책 실값 행 — 본 판 확정)
@@ -182,6 +227,47 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 - 게이트 해소: `resolve_gate.py` 가 impl-plan 어댑터 검증 통과 후 **실 사용자(actor=`human`·simulated=false)** 해소 이벤트 append → 6 `task_added` revision(basis.proposingStepRef=impl-plan-phase1·gateEventRef=해소 게이트) 승격. events.jsonl 5(dispatch·cp2-pass·gate-required·resolution-provenance·gate-resolved)·revisions.jsonl 6·artifacts.jsonl 1·active_graph 7노드(fold)·ready_set=선행 impl 단위(결정적 재개 준비).
 - **정직 대조(L-07).** 이 run 은 §5.6 픽스처를 넘어선 **실 LLM 제안 step + 실 사용자 게이트 해소**다(OQ-PO-B4). milestone 단위(→`approval_required`·CP3)의 물리 CP3 정지·해소는 구현 단위 resume 시 발화하며, 본 run 에서는 gate_policy 파생 평가로 도달성만 실증했다(라이브 CP3 발화·실 코드 산출 = 후속 resume 소관·사용자 선택 defer). e2e 드라이버(§5.3)는 여전히 비프로덕션이며, 이 프로덕션 런처가 그 상위 발화 경로다.
 
+### §5.8 Run 관측 계약 — heartbeat · failure record · 종료 코드 (백로그 §L·§P·2026-07-26)
+
+§5.3 run 데이터 레이아웃의 `logs/`에 **런처 소유 관측 산출 2종**을 가법한다. 기존 `logs/` 항목(`invoke-*.json`·`stop-signal.json`·`gate-resolution-record.json`·`host.pid`)과 §2 종료 코드 매핑은 무변경이며, 아래는 그 위에 얹는 절이다(재정의 0). 생산자는 `orchestration/adapters/claude/orchestrate_project.py` 하나뿐이고 중립 코드(`orchestration/framework/**`)·`uahf/**`는 무촉이다.
+
+**왜 필요한가.** 실패 모드 3종의 관측 난이도가 다르다 — F1(죽음)은 프로세스가 끝나므로 종료로 드러나고, F3(오해석)은 종료 코드 규약으로 해소되지만, **F2(hang·무한대기)는 종료 이벤트가 원리적으로 발생하지 않는다.** 엔진 stdout은 버퍼링돼 실행 중에는 비어 있으므로 로그 tail도 대체가 되지 않는다(실측 2026-07-24). 따라서 정체 판정에는 **진행의 능동적 증거**가 필요하다.
+
+**(a) `logs/heartbeat.json` — 계약 필드 5종·덮어쓰기**
+
+| 필드 | 의미 |
+|---|---|
+| `ts` | 물리 시각 ISO 문자열(어댑터 경계이므로 실시각 허용) |
+| `stage` | `invoke-start` \| `invoke-end` |
+| `invokes` | 래퍼가 센 invoke 누계(1부터) |
+| `request_hint` | 요청에서 파생한 단위 식별 최선값(`<role>/<unitId>`) 또는 `null` |
+| `pid` | 러너 프로세스 id(`host.pid`와 대조 가능) |
+
+- 갱신 시점 = invoke **시작 전**과 **종료 후** 각 1회. 파일은 append가 아니라 **덮어쓰기**다 — 소비자가 알아야 하는 값은 "마지막 진행 시각" 하나이며, 누적 계측은 백로그 H(Continuous Telemetry) 소관이다(경계 구분).
+- 소비 방법 = 외부 감시자가 `ts`의 경과를 본다. `stage=invoke-start`로 오래 머물면 그 `request_hint` 단위에서 정체 중이다.
+- 물리 형태 = 런처 소유 invoker 데코레이터(`HeartbeatInvoker`). `invoke`만 위임 가로채고 나머지 속성은 투과하므로 `invoke_count` 등 기존 관측 수치가 왜곡되지 않는다.
+
+**(b) `logs/failure.json` — 계약 필드 6종**
+
+`{ts, run_id, argv, error_type, error, traceback}`. 런처 구동 경로의 **미처리 예외**에서만 기록되며, 기록 후 예외를 **재raise**하므로 스택트레이스는 stderr에도 그대로 올라간다(은폐 0). 기존 정직 실패 경로(`[ERR]` 출력 + `return 1`)는 예외가 아니므로 이 파일을 만들지 않는다 — 거동 보존.
+
+**(c) 관측 장치의 불변 — failure isolation.** 두 기록은 모두 실패해도 run을 실패시키지 않는다(`[HEARTBEAT-SKIP]`·`[FAILURE-SKIP]` stderr 경고 후 진행). 관측 장치가 관측 대상을 죽이면 안 된다(render_gates 부가 표면 방어와 동형). 다만 실패를 조용히 삼키지도 않는다(침묵 0).
+
+**(d) 종료 코드 표(§2·`run_and_map` 매핑의 사용자 표면 인용 — 값 재정의 0)**
+
+| 코드 | 의미 | 후속 |
+|---|---|---|
+| `0` | completed | 없음 |
+| `2` | **정상 정지** — 게이트 미해소(`stop_reason=gate`) 또는 실행 에스컬레이션(`escalated`). 양쪽 모두 같은 계약 형태로 `stop-signal.json` 기록(§3.4) | 제시 → `resolve_gate.py` → `--resume` |
+| `3` | halted | 원장 조사 |
+| `1` | 런처 실패(정직 실패 또는 미처리 예외 — 후자는 `failure.json` 동반) | 메시지 조사 |
+
+**(e) 슬러그 길이 상한(백로그 §P·§L 4-b 해소).** 컴파일러 `_slug`(seed unit id)와 런처 `slugify_run_id`(run_id)가 **공통 규칙**(`contract_to_graph.fold_slug`)을 쓴다 — 정규화 결과가 48자를 넘으면 `앞 48자 + "-" + sha256(원문)[:8]`(최대 57자)로 접는다. 48자 이하는 바이트 동일이라 기존 run 디렉터리·unit id는 하위호환된다. 근거 = unit id가 `steps/<unitId>.json`·`logs/invoke-NN-<Role>-<unitId>.json` 파일명이 되므로 상한이 없으면 (i) 긴 ASCII `--phase`에서 Windows 경로 한계 크래시(§P 실측)·(ii) git `Filename too long`으로 **run 원장을 커밋할 수 없다**(§L 4-b 실측 — 파일명 239자·경로 367자). 두 함수가 서로 다른 상한을 쓰면 `--resume`의 슬러그 재파생이 실물 run_dir과 어긋나므로 규칙을 하나로 둔다.
+
+**(f) 문서 접합부.** `.claude/commands/uaf-implement.md` §2의 재개 예시를 `--resume --run-id <run_id>` 형태로 정정하고 위 종료 코드 표를 실었다 — 종전 예시(`--resume`만 표기)는 런처의 슬러그 재파생 계약과 어긋나 `--run-id`를 준 run에서 반드시 실패했다(백로그 §L 5 재발 실측).
+
+**미해소 이월(정직 구분).** 백로그 §L Desired 4(per-unit timeout — 전역 `timeout` 대비 단위 규모 산정)는 본 판에서 다루지 않았다. 백로그 §L 1의 `current_unit`·`elapsed_s` 필드는 `request_hint` 하나로 축약했다(런처가 단위 경계를 소유하지 않으므로 요청에서 파생 가능한 값만 싣는다).
+
 ---
 
 ## §6. 실측 대조 (L-07)
@@ -207,6 +293,8 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 
 ## §8. 개정 이력
 
+- **2026-07-26 (백로그 §L 핵심 + §P 해소 — Run 관측 계약).** 런처(`orchestrate_project.py`)에 관측 계약 물리화: `HeartbeatInvoker` 데코레이터(invoke 시작 전·종료 후 `logs/heartbeat.json` 덮어쓰기·계약 필드 5종·인터페이스 투과로 `invoke_count` 보존) · 구동 경로 top-level 예외 포착 → `logs/failure.json`(계약 필드 6종) 기록 후 **재raise**(스택트레이스 stderr 보존·은폐 0·기존 `[ERR]` return 1 경로 무변) · `--resume` 대상 부재 시 RUNS_DIR 실존 후보 목록(수정시각 최신순·최대 10) 제시(기존 `[ERR]` 라인 바이트 보존 후 가법). 슬러그 길이 상한 공통 규칙 `contract_to_graph.fold_slug`(48자 초과 시 앞 48자 + `-<sha8>`·48자 이하 바이트 동일) 신설 후 `_slug`·`slugify_run_id` 양쪽 적용(§P 크래시·§L 4-b 원장 커밋 불가 해소). 두 기록 모두 failure-isolated(`[HEARTBEAT-SKIP]`·`[FAILURE-SKIP]`). `.claude/commands/uaf-implement.md` §2 재개 예시 `--resume --run-id` 정정 + 종료 코드 표 + 관측 파일 소개. §5.8 신설(§ 번호 불이동·§5 하위 append). 신규 테스트: `test_orchestrate_project.py` 14케이스(하트비트 3·failure 2·슬러그 4·resume 힌트 2·문서 왕복 3) · `test_contract_to_graph.py` 3케이스 = 17건(어댑터 트리 97→114 실측). **05 spec 계약 본문·게이트 어휘·`orchestration/framework/**`(gates.py·orchestrator.py)·PO-INV·Frozen·`uahf/**` 무접촉(재정의 0).** 미해소 이월 = 백로그 §L Desired 4(per-unit timeout).
+- **2026-07-26 (백로그 §J 본체 해소 — 실행 에스컬레이션 해소 채널).** Host 의 Escalated 정지에 원장 좌표를 부여하고 해소→재디스패치 경로를 물리화. 엔진(`orchestrator.py`): escalated 정지 시 `escalation_required` 요구 append(gate_id = `gate-unit-<id>::exec-escalation`·cause `execution_escalated`)+`pending_gates` 탑재·멱등·재에스컬레이션 시 새 요구 append·적격 해소 소비 시 되돌림 이벤트(`ref.kind=gate-rework`) 1건 append → 추가 디스패치 1회. `gates.py`: `latest_eligible_resolution`/`resolution_response` 신설(순수 판독)·`append_gate_resolution(response=...)` 가법(미지정 시 ref 형태 종전과 동일). 런처: escalated 정지도 gate 분기와 같은 계약 형태로 `stop-signal.json` 기록+`[PENDING-GATES]`+렌더(기존 라인·gate 분기 출력·exit 매핑 무변), `--resume` 의 `--retry-limit` override 를 config 에 반영. `resolve_gate.py`: 해소 응답 동봉 + 재개 명령 안내 출력. §3.4 신설. 신규 테스트: `test_orchestrator.py` 7케이스(좌표 발급·멱등·레거시 보존·되돌림/응답 전파·부적격/선행 해소 무효·재에스컬레이션)·`test_gates.py` 3케이스·`test_orchestrate_project.py` 4케이스(정지 신호 계약·레거시 note·접합부 왕복·resume override)·`test_resolve_gate.py` 3케이스. **05 spec 계약 본문·게이트 어휘·해소 적격성·03 10필드·PO-INV·Frozen·`uahf/**` 무접촉(재정의 0).**
 - **2026-07-19 (OQ-PO-B2 해소 — 해소 어휘 성숙·문서·설계 수준 종결).** OQ-PO-B2 를 2축 분리로 종결(사용자 결정 A·엔진 코드 무변경). (1) 재시도 예산 비계수 = orchestration 엔진이 전용 어휘(`gate-resolved`/`outcome=pass`/`retry_count=0`)로 이미 충족함을 명문화(OQ-SH-5 fail-계수 결합은 `outcome=fail` 재사용 UAHF step-host 층 국한·무수정 경계상 별도 트랙). (2) 해소 취소(revoke) = OQ-PO-B6 으로 정밀 재스코프·저순위 이월(신규 OQ 등재). stale 포인터 "05 §9 OQ 3"(05 spec §9 = 순수 이력표·OQ 절 부재·전수 실측) 정정 — §6·§7 인용 2곳. **§6 해소 어휘 인용·§7 OQ-PO-B2 해소·OQ-PO-B6 신설만 갱신 — 05 계약 본문·gates.py·PO-INV·§3 게이트 어휘·Frozen·`orchestration/framework/**`·`uahf/**` 무접촉(재정의 0).**
 - **2026-07-19 (seed 컴파일러 일반화 — §DC-1 뿌리·백로그 해소).** `contract_to_graph.py`(F4)의 tms 도메인 하드코딩(프로젝트 표기·`pc-tms-001 v2`·정산 최소폐포 SD-D 앵커 블록·milestone 문면·`orch-tms-` run_id·seed id·워크스페이스 경계 문구)을 제거하고 소비 프로젝트에서 파생하도록 일반화: 프로젝트 표기=워크스페이스 루트 폴더명·Contract 버전=파일명 파생(`contract_version`·내용 파싱 0 불변)·seed id=`seed_task_id(phase_scope)`·run_id=`orch-<root.name>-<phase>`. 설계 앵커 하드코딩 블록 → 일반 지시(런타임 LLM 이 입력 문서에서 phase 범위·설계 결정 식별자 자가 식별·계층 편향 없이 전 영역 커버·05 §3.1 정합). F4↔F5 proposing step 파생(최중요 교차 계약): `resolve_gate.py`의 `PROPOSING_STEP_REF` 하드코딩 제거 → `derive_proposing_step_ref(run_dir)`가 물리 `graph.json`의 proposal 노드 id 파생(0건/2건 시 원장 무변경 비영 종료). compile→물리화→resolve_gate 관통 통합 테스트로 proposingStepRef=파생 id 실증. `orchestrate_project._resolve_slug`도 root.name 파생으로 동조. **11키 스키마·3~6 배합·milestone 종단·오프라인 AC·`gate_policy` 3엔트리·resolve/compile 순수성·stdlib only·`orchestration/framework/**`·`uahf/**`·spec/Frozen 무접촉(재정의 0).**
 - **2026-07-19 (§DC-9 05 wiring 후속 — OQ-PO-B5·OQ-PO-B1 해소).** OQ-PO-B5 해소: 엔진 `orchestrator._gate_event_exists`(→ `_event_grounds_gate`) 강화 — 정지 게이트 해소 선언(`ref.kind==gate-resolved`·`gateKind∈STOPPING_GATES`)+`gate_policy` 존재 시 `is_eligible_resolver` actor 자격까지 요구(수용+fold 양시점). 거동 보존 3면(레거시 `ref.kind="gate"`·비정지 gateKind·`gate_policy None`) = 실재-만 검증 유지. OQ-PO-B1 해소: `render_gates.py` 신설(형태 B·결정적·LLM 0·읽기 전용 게이트 큐 렌더러·라벨 표 = 어댑터 소유 데이터) + `orchestrate_project.py run_and_map` 배선(기존 `[STOP]`/`[PENDING-GATES]`·`stop-signal.json` 바이트 보존 후 렌더 가법·방어). §3.2 확정 갱신·§7 OQ-PO-B1·B5 해소 갱신(B2~B4 무변경). 신규 테스트: `test_render_gates.py`·`test_orchestrator.py` OQ-PO-B5 6케이스·`test_orchestrate_project.py` 렌더 회귀 1건. **05 계약 본문·gates.py 어휘·§3 게이트 어휘·PO-INV·Frozen 무접촉(재정의 0)·`orchestration/framework/**` provider 토큰 0.**

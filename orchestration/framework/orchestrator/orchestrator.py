@@ -54,8 +54,11 @@ from gates import (
     has_requirement,
     has_settlement,
     is_resolved,
+    latest_eligible_resolution,
     latest_marker_verdict,
+    latest_requirement,
     pending_gates,
+    resolution_response,
 )
 from revision import RevisionLedger, RevisionRejected, fold
 from stephost_bridge import (
@@ -78,6 +81,24 @@ REASON_UNGROUNDED_REVISION = "UngroundedRevision"
 
 # 진행 보장 안전판 — epoch 무한 성장 방지(설계상 revision 은 유한·append-only).
 DEFAULT_MAX_EPOCHS = 1000
+
+# Host 정지 사유 중 "Escalated 잔존"(host.py STOP_ESCALATED). 이 값과의 동등 비교만 한다.
+STOP_REASON_ESCALATED = "escalated"
+
+# 실행 에스컬레이션 게이트의 gate_id 접미사 — 단위 경계 게이트(_gate_id_for)와 **비충돌**
+# 하도록 같은 단위 id 위에 구분자를 덧붙인다(결정적·재개 간 안정). 단위 경계 게이트
+# "gate-unit-<id>" 는 그대로 두고 실행 에스컬레이션은 "gate-unit-<id>::exec-escalation".
+ESCALATION_GATE_SUFFIX = "::exec-escalation"
+
+# 실행 에스컬레이션 게이트 요구의 원인 표기(scoped_question.cause — 자유 형식 데이터).
+CAUSE_EXECUTION_ESCALATED = "execution_escalated"
+
+# 게이트 해소로 단위를 재작업 되돌림할 때 step 사이클에 남기는 이벤트의 ref.kind.
+# 03 §3.2-A 10필드 무수정 — 자유 형식 ref 안에서만 구분한다(새 필드 창설 0).
+REF_KIND_GATE_REWORK = "gate-rework"
+
+# 위 되돌림 이벤트의 trigger(03 전이 사유 어휘 "재작업 되돌림"의 사유 표기).
+TRIGGER_GATE_REWORK = "재작업 되돌림(에스컬레이션 해소)"
 
 # verdict 어휘(06 §3.2-C — Pass 판정). provider·모델 토큰이 아니라 검증 판정 어휘다.
 # host.py 의 verdict_pass 가 소비하는 것과 동일 어휘이며, orchestrator 의 CP3 status
@@ -645,6 +666,125 @@ class ProjectOrchestrator:
         return None
 
     # ------------------------------------------------------------------
+    # 실행 에스컬레이션 해소 채널 — Escalated 정지에 게이트 좌표 부여 + 적격 해소 후 재작업
+    # (05 §3.3 정지 게이트 어휘 재사용·PO-INV 1 판단 0·PO-INV 2 append-only)
+    #
+    # Step Host 는 재시도 한도 초과/차단 선언을 Escalated 로 종단시키고 정지한다(SH-INV-4).
+    # 그 정지는 "상위 위임"이라는 의미는 맞지만, 지금까지 **원장 좌표(gate_id)가 없어서**
+    # 상위가 해소 이벤트를 append 할 대상이 없었다. 여기서 그 정지를 05 §3.3 의
+    # escalation_required 게이트 요구로 좌표화하고, 적격 해소가 등장하면 단위를 Failed 로
+    # 되돌려(재작업 되돌림 이벤트) Host 가 정확히 1회 추가 디스패치하게 한다.
+    #
+    # 판단 0: 해소 적격성은 gates.py(is_eligible_resolver)가 소유하고, 여기서는 그 결과와
+    # 이벤트 at 선후만 비교한다. 해소 응답 내용은 해석하지 않고 ref 로 전달만 한다.
+    # ------------------------------------------------------------------
+    @staticmethod
+    def _escalation_gate_id(task_id: Any) -> str:
+        """실행 에스컬레이션 게이트의 결정적 식별자(같은 단위 → 같은 gate_id·비충돌)."""
+        return ProjectOrchestrator._gate_id_for(task_id) + ESCALATION_GATE_SUFFIX
+
+    @staticmethod
+    def _latest_escalated_event(
+        events: list[dict[str, Any]], task_id: Any
+    ) -> dict[str, Any] | None:
+        """이 단위 사이클의 마지막 escalated 이벤트(없으면 None). 순수 판독."""
+        latest: dict[str, Any] | None = None
+        for e in events:
+            if e.get("cycle_id") != task_id or e.get("outcome") != "escalated":
+                continue
+            if latest is None or e.get("at", 0) >= latest.get("at", 0):
+                latest = e
+        return latest
+
+    def _apply_gate_rework(
+        self, task_id: Any, gate_id: str, resolution: dict[str, Any], escalated: dict[str, Any] | None
+    ) -> dict[str, Any]:
+        """적격 해소를 받아 단위를 재작업 되돌림한다 — 이벤트 1건 append(append-only).
+
+        outcome="fail" 이므로 events.py 상태 파생이 Escalated → Failed 로 바뀌고(마지막
+        이벤트가 상태를 결정), Host 의 ready_set 이 이 단위를 다시 포함한다. Host 는 한도를
+        **실패 시점에만** 판정하므로(host.py `_record_failure`) 이 되돌림은 정확히 1회의 추가
+        디스패치를 부여하고, 그 시도가 또 실패하면 정직하게 재에스컬레이션된다.
+
+        actor 는 해소 주체를 그대로 기록하고(provenance), 해소 응답 원문은 ref 에 전달만 한다
+        (내용 판단 0). retry_count 는 현재까지의 실패 계수(prior_failures)를 그대로 싣는다.
+        """
+        return self.log.append(
+            cycle_id=task_id,
+            # from_stage 는 되돌림 직전 단계 = 에스컬레이션 이벤트의 to_stage(파생·추측 0).
+            from_stage=(escalated or {}).get("to_stage"),
+            to_stage="Execute",
+            trigger=TRIGGER_GATE_REWORK,
+            outcome="fail",
+            actor=resolution.get("actor"),
+            retry_count=self.log.prior_failures(task_id),
+            ref={
+                "kind": REF_KIND_GATE_REWORK,
+                "gate_id": gate_id,
+                "response": resolution_response(resolution),
+            },
+        )
+
+    def _process_escalations(
+        self, result: Any, epoch: int, before_ids: list[Any]
+    ) -> "OrchestrationResult | None":
+        """Host escalated 정지를 게이트 좌표화하고 적격 해소를 재작업으로 적용한다.
+
+        단위별 판정(E_at = 마지막 escalated 이벤트 at, R_at = 최신 적격 해소 at):
+          - R_at > E_at            → 재작업 되돌림 적용(정지하지 않음).
+          - 요구 부재 또는 요구가 E_at 보다 앞섬 → 새 요구 append + 정지.
+          - 그 외(요구 실재·미해소) → 재append 0(멱등) + 정지.
+
+        재에스컬레이션 시 **새 요구**를 append 하므로 이전 해소는 소진된다(is_resolved 의
+        since 규칙 = latest_requirement.at 이후 해소만 인정). 반환 None = 재작업 적용됨
+        (호출부가 루프를 계속). gate_policy 부재(레거시)는 호출부가 진입 전에 걸러낸다.
+        """
+        graph = self.active_graph()
+        tasks_by_id = {t.get("id"): t for t in graph["tasks"]}
+        must_stop = False
+        reworked: list[Any] = []
+        for tid in result.stopped_tasks:
+            events = self.event_store.read_all()
+            escalated = self._latest_escalated_event(events, tid)
+            e_at = escalated.get("at", 0) if escalated is not None else None
+            gate_id = self._escalation_gate_id(tid)
+            resolution = latest_eligible_resolution(
+                events, gate_id, GATE_ESCALATION_REQUIRED, self.gate_policy
+            )
+            r_at = resolution.get("at", 0) if resolution is not None else None
+            if r_at is not None and e_at is not None and r_at > e_at:
+                self._apply_gate_rework(tid, gate_id, resolution, escalated)
+                reworked.append(tid)
+                continue
+            req = latest_requirement(events, gate_id)
+            if req is None or (e_at is not None and req.get("at", 0) < e_at):
+                append_gate_requirement(
+                    self.log, gate_id, GATE_ESCALATION_REQUIRED,
+                    target=self._descriptor_for(tasks_by_id.get(tid) or {"id": tid}),
+                    scoped_question={
+                        "unitId": tid,
+                        "gateKind": GATE_ESCALATION_REQUIRED,
+                        "cause": CAUSE_EXECUTION_ESCALATED,
+                    },
+                    actor=self.gate_policy.gate_raiser,
+                )
+            must_stop = True
+
+        if reworked and not must_stop:
+            return None  # 전건 되돌림 완료 → 재fold 후 계속(추가 디스패치 1회).
+
+        pending = pending_gates(self.event_store.read_all(), self.gate_policy)
+        return OrchestrationResult(
+            status="stopped",
+            graph_task_ids=before_ids,
+            states=result.states,
+            stop_reason=result.stop_reason,
+            stopped_tasks=result.stopped_tasks,
+            epochs=epoch,
+            pending_gates=pending,
+        )
+
+    # ------------------------------------------------------------------
     # 실행 루프 — fold → 직렬화 → Step Host 구동 → 성장 확인 (05 §3.2·04 loop ①~⑤)
     # ------------------------------------------------------------------
     def run(self, max_epochs: int = DEFAULT_MAX_EPOCHS) -> OrchestrationResult:
@@ -670,7 +810,18 @@ class ProjectOrchestrator:
             result = host.run()
 
             if result.status == "stopped":
-                # Escalated 잔존 → 즉시 정지. 게이트 등급 분리는 Host 가 소유(SH-INV-4).
+                # Escalated 잔존 → 정지. 게이트 등급 분리는 Host 가 소유(SH-INV-4).
+                # gate_policy 가 있으면 이 정지에 게이트 좌표(gate_id)를 부여하고, 적격 해소가
+                # 이미 있으면 재작업 되돌림 후 계속한다(해소 채널). gate_policy 부재(레거시)
+                # 또는 escalated 이외 정지 사유면 종전 거동 그대로 즉시 정지한다.
+                if (
+                    self.gate_policy is not None
+                    and result.stop_reason == STOP_REASON_ESCALATED
+                ):
+                    esc_stop = self._process_escalations(result, epochs, before_ids)
+                    if esc_stop is not None:
+                        return esc_stop
+                    continue  # 재작업 되돌림 적용 → 재fold 후 계속(추가 디스패치 1회).
                 return OrchestrationResult(
                     status="stopped",
                     graph_task_ids=before_ids,

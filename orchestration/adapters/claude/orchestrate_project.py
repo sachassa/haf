@@ -16,8 +16,18 @@
 
 exit-code 매핑(orchestration-data/e2e/run_k.py 와 동일·바인딩 §5.3):
   - status=="stopped" & stop_reason=="gate"(정지 게이트) → logs/stop-signal.json 기록 + exit 2.
-  - status=="stopped"(그 외·Escalated) → exit 2.
+  - status=="stopped"(그 외·Escalated) → **같은 계약 형태로** logs/stop-signal.json 기록 + exit 2.
+    (백로그 §J ① — 정지 사유와 무관하게 stop-signal 을 일관 갱신한다. 엔진이 실행
+     에스컬레이션에 게이트 좌표를 부여하므로 resolve_gate 가 추측 없이 해소 대상을 복원한다.)
   - completed → 0.  halted → 3.
+  - 런처 자체 실패(project_root 부재·resume 대상 부재 등 정직 실패) → 1.
+    미처리 예외도 비영 종료이며 `logs/failure.json` 에 사후 진단 사본이 남는다.
+
+관측 계약(백로그 §L·§P — 이 런처 소유·중립 코드 무촉):
+  - `logs/heartbeat.json` — invoke 시작 전·종료 후 덮어쓰기. hang(F2)은 종료 이벤트가
+    원리적으로 없으므로 "마지막 진행 시각"이 유일한 정체 탐지 수단이다.
+  - `logs/failure.json` — 미처리 예외의 구조화 기록(재raise 병행·은폐 0).
+  - 두 기록 모두 **failure-isolated** — 기록 실패가 run 을 실패시키지 않는다.
 
 이 모듈은 stdlib + 기존 저장소 모듈 import 만 쓴다(외부 패키지 0·오프라인 안전).
 """
@@ -25,11 +35,13 @@ exit-code 매핑(orchestration-data/e2e/run_k.py 와 동일·바인딩 §5.3):
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import os
 import re
 import shutil
 import sys
+import traceback
 from pathlib import Path
 from typing import Any
 
@@ -79,9 +91,13 @@ def slugify_run_id(raw: Any) -> str:
 
     영숫자·`.`·`_`·`-` 외 문자(공백·특수문자)를 `-` 로 치환하고 앞뒤 구분자를 제거한다.
     예: "orch-myproj-Phase 1" → "orch-myproj-Phase-1"(공백 제거). 빈 결과는 "run" 으로 폴백한다.
+
+    길이 상한은 `contract_to_graph.fold_slug`(48자 + `-<sha8>`) **공통 규칙**을 재사용한다 —
+    컴파일러 `_slug`(unit id)와 런처(run_id)가 서로 다른 상한을 쓰면 접합부가 어긋난다.
+    48자 이하 입력은 바이트 동일(기존 run 디렉터리 하위호환·백로그 §P·§L 4-b).
     """
     s = _SLUG_UNSAFE.sub("-", str(raw)).strip("-._")
-    return s or "run"
+    return contract_to_graph.fold_slug(s or "run", raw)
 
 
 # --------------------------------------------------------------------------
@@ -232,7 +248,41 @@ def run_and_map(orch: Any, invoker: Any, run_dir: Any) -> int:
         return 2
 
     if result.status == "stopped":
+        # 기존 라인 **바이트 보존**(계약·기존 테스트) 후, 게이트 분기와 **같은 계약 형태**로
+        # stop-signal.json 을 기록한다(백로그 §J ① — 모든 정지 사유에서 일관 갱신). 엔진이
+        # escalated 정지에 게이트 좌표를 부여하므로(gate_id) resolve_gate 가 해소 대상을
+        # 추측 없이 복원할 수 있다. pending_gates 가 비면(게이트 정책 부재 레거시 run 등)
+        # 빈 배열 + note 에 그 사실을 명시한다(침묵 0).
         print("[STOP] escalated -> exit code 2")
+        pending = list(getattr(result, "pending_gates", None) or [])
+        note = (
+            "실행 에스컬레이션 물리 정지 — 상위(Advisor/사람) 해소 대기(exit 2). "
+            "해소: resolve_gate.py --gate-kind escalation --actor <Advisor|human> "
+            "→ 재개: orchestrate_project.py <project_root> --resume (해소 1건 = 추가 시도 1회)."
+        )
+        if not pending:
+            note += (
+                " pending_gates 가 비어 있다 — 이 run 은 게이트 정책 없이 조립됐거나(레거시) "
+                "게이트 좌표가 아직 없다. --resume 1회로 요구 이벤트가 생성되면 해소 가능해진다."
+            )
+        marker = {
+            "stop_reason": result.stop_reason,
+            "stopped_tasks": result.stopped_tasks,
+            "pending_gates": pending,
+            "note": note,
+        }
+        (run_dir / "logs").mkdir(parents=True, exist_ok=True)
+        with open(run_dir / "logs" / "stop-signal.json", "w", encoding="utf-8") as fh:
+            json.dump(marker, fh, ensure_ascii=False, indent=2)
+        print("[PENDING-GATES] %s" % json.dumps(pending, ensure_ascii=False))
+        try:
+            import render_gates  # noqa: E402  (같은 어댑터 경계·form-B 순수 렌더)
+
+            _pending, policy = render_gates.load_pending(run_dir)
+            print(render_gates.render_pending(pending, policy))
+        except Exception as exc:  # noqa: BLE001  (렌더는 부가 표면 — 정지 신호 불변)
+            print("[RENDER-SKIP] 게이트 큐 렌더 생략(정지 신호는 유효): %s" % exc,
+                  file=sys.stderr)
         return 2
 
     if result.completed:
@@ -244,8 +294,150 @@ def run_and_map(orch: Any, invoker: Any, run_dir: Any) -> int:
 
 
 # --------------------------------------------------------------------------
+# 관측 계약 — heartbeat(F2 정체 탐지) · failure.json(F1 사후 진단)  [백로그 §L 1·2]
+# --------------------------------------------------------------------------
+# 왜 필요한가(백로그 §L Problem): 실패 모드 3종 중 **F2(hang·무한대기)** 는 프로세스가 끝나지
+# 않으므로 종료 이벤트가 **원리적으로 오지 않는다**. 침묵이 "진행 중"인지 "멈춤"인지 구분하는
+# 유일한 수단이 **진행의 능동적 증거 = 마지막 진행 시각**이다. 엔진 stdout 은 버퍼링돼 실행
+# 중에는 비어 있으므로 로그 tail 로는 대체되지 않는다.
+#
+# 불변(둘 다 failure-isolated): 기록 실패는 **절대 run 을 실패시키지 않는다**. 관측 장치가
+# 관측 대상을 죽이면 안 된다(render_gates 부가 표면·`_orch_common` 섀도 장치 동형). 기록 실패는
+# stderr 경고로 표면화한다 — 조용히 삼키지 않는다(침묵 0).
+HEARTBEAT_FILE = "heartbeat.json"
+FAILURE_FILE = "failure.json"
+
+
+def _now_iso() -> str:
+    """물리 시각 ISO 문자열. 어댑터 코드이므로 실시각 사용이 허용된다(중립 코드 무촉)."""
+    return datetime.datetime.now().astimezone().isoformat()
+
+
+def _request_hint(request: Any) -> Any:
+    """요청에서 파생 가능한 **단위 식별 최선값**(없으면 None). 파생 실패도 None(관측 격리).
+
+    step 번들 계약상 단위 id 는 `bundle["step_contract"]["id"]` 에 있다(`_orch_common`
+    로그 파일명 파생과 동일 좌표). 계약이 달라지거나 부재해도 하트비트는 계속 뛰어야
+    하므로 어떤 예외도 None 으로 흡수한다.
+    """
+    try:
+        bundle = getattr(request, "bundle", None) or {}
+        sc = bundle.get("step_contract") or {}
+        unit_id = sc.get("id")
+        role = getattr(request, "role", None)
+        if unit_id and role:
+            return "%s/%s" % (role, unit_id)
+        return unit_id or role or None
+    except Exception:  # noqa: BLE001  (관측 파생은 run 을 깨지 않는다)
+        return None
+
+
+class HeartbeatInvoker:
+    """invoker 데코레이터 — invoke **시작 전·종료 후** `logs/heartbeat.json` 을 덮어쓴다.
+
+    런처 소유 래퍼다: 중립 코드(`orchestration/framework/**`)·e2e 조립부(`make_invoker`)를
+    수정하지 않고 어댑터 경계에서만 관측을 얹는다(무수정 재사용 원칙 보존).
+
+    인터페이스 보존: `invoke(request)` 를 원 invoker 에 위임하고, 그 밖의 속성은
+    `__getattr__` 로 **투과**한다 — 특히 `run_and_map` 이 읽는 `invoke_count` 가 원
+    invoker 값 그대로 보이도록(관측 수치 왜곡 0).
+
+    파일은 append 가 아니라 **덮어쓰기**다 — 소비자가 알아야 하는 것은 "마지막 진행 시각"
+    하나이며, 누적 계측은 백로그 H(Continuous Telemetry) 소관이다(경계 구분).
+    """
+
+    def __init__(self, inner: Any, run_dir: Any) -> None:
+        self._inner = inner
+        self._run_dir = Path(run_dir)
+        self._invokes = 0
+
+    def __getattr__(self, name: str) -> Any:
+        # 래퍼 자체 속성(_inner/_run_dir/_invokes/invoke)은 정상 조회로 해결되므로 여기 오지
+        # 않는다. object.__getattribute__ 로 꺼내 __init__ 이전 접근 시 무한재귀를 막는다.
+        return getattr(object.__getattribute__(self, "_inner"), name)
+
+    def invoke(self, request: Any):
+        self._invokes += 1
+        hint = _request_hint(request)
+        self._beat("invoke-start", hint)
+        try:
+            return self._inner.invoke(request)
+        finally:
+            self._beat("invoke-end", hint)
+
+    def _beat(self, stage: str, request_hint: Any) -> None:
+        """하트비트 1회 기록. **어떤 실패도 run 에 전파하지 않는다**(failure isolation)."""
+        try:
+            logs = self._run_dir / "logs"
+            logs.mkdir(parents=True, exist_ok=True)
+            payload = {
+                "ts": _now_iso(),
+                "stage": stage,
+                "invokes": self._invokes,
+                "request_hint": request_hint,
+                "pid": os.getpid(),
+            }
+            with open(logs / HEARTBEAT_FILE, "w", encoding="utf-8") as fh:
+                json.dump(payload, fh, ensure_ascii=False, indent=2, sort_keys=True)
+        except Exception as exc:  # noqa: BLE001  (관측 장치가 run 을 죽이지 않는다)
+            print("[HEARTBEAT-SKIP] 하트비트 기록 실패(run 은 계속 진행): %s" % exc,
+                  file=sys.stderr)
+
+
+def _record_failure(run_dir: Any, run_id: Any, argv: Any, exc: BaseException) -> None:
+    """미처리 예외를 `logs/failure.json` 에 구조화 기록한다(계약 필드 6종).
+
+    `{ts, run_id, argv, error_type, error, traceback}`. 스택트레이스는 **stderr 에도 그대로**
+    올라간다(호출부가 재raise) — 이 파일은 은폐 수단이 아니라 사후 진단용 사본이다(은폐 0).
+    run_dir 을 아직 모르면(인자 파싱 직후 실패 등) 기록을 생략한다 — 임의 경로 추측 금지.
+    기록 자체도 failure-isolated: 기록 실패가 원 예외를 가리지 않는다.
+    """
+    try:
+        if run_dir is None:
+            print("[FAILURE-SKIP] run_dir 미확정 — failure.json 생략(원 예외는 그대로 전파)",
+                  file=sys.stderr)
+            return
+        logs = Path(run_dir) / "logs"
+        logs.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "ts": _now_iso(),
+            "run_id": run_id,
+            "argv": list(argv) if argv is not None else [],
+            "error_type": type(exc).__name__,
+            "error": str(exc),
+            "traceback": "".join(
+                traceback.format_exception(type(exc), exc, exc.__traceback__)
+            ),
+        }
+        with open(logs / FAILURE_FILE, "w", encoding="utf-8") as fh:
+            json.dump(payload, fh, ensure_ascii=False, indent=2, sort_keys=True)
+        print("[FAILURE] 미처리 예외 기록: %s" % (logs / FAILURE_FILE), file=sys.stderr)
+    except Exception as rec_exc:  # noqa: BLE001  (기록 실패가 원 예외를 가리지 않는다)
+        print("[FAILURE-SKIP] failure.json 기록 실패: %s" % rec_exc, file=sys.stderr)
+
+
+# --------------------------------------------------------------------------
 # CLI — 실 claude CLI 발화(make_invoker) 경로
 # --------------------------------------------------------------------------
+def _run_dir_candidates(limit: int = 10) -> list:
+    """RUNS_DIR 의 **실존** 하위 디렉터리 이름을 수정시각 최신순으로 최대 `limit` 개 반환.
+
+    `--resume` 부재 오류가 "부재"만 알리고 **실재하는 run 이 옆에 있다는 사실을 알려주지
+    않는** 결함(백로그 §L 5)의 해소다. 조회 실패는 빈 목록(부가 표면·오류 경로를 깨지 않음).
+    """
+    try:
+        entries = [p for p in RUNS_DIR.iterdir() if p.is_dir()]
+    except OSError:
+        return []
+    def _mtime(p: Path) -> float:
+        try:
+            return p.stat().st_mtime
+        except OSError:
+            return 0.0
+    entries.sort(key=_mtime, reverse=True)
+    return [p.name for p in entries[:limit]]
+
+
 def _resolve_slug(run_id: Any, phase_scope: str, project_name: str) -> str:
     """resume 시 run_dir 이름을 재현하기 위한 슬러그 산출(compile 과 동일 규칙).
 
@@ -276,16 +468,62 @@ def main(argv: list[str] | None = None) -> int:
                         help="compile/조립 건너뛰고 기존 run_dir 로 구동")
     args = parser.parse_args(argv)
 
+    # 미처리 예외 → logs/failure.json 기록 후 **재raise**(기존 규약대로 비영 종료 + 스택
+    # 트레이스가 stderr 에 그대로 — 은폐 0·백로그 §L 2). 기존 정직 실패 경로([ERR] 출력 +
+    # return 1)는 예외가 아니므로 이 래퍼를 통과하지 않는다(거동 보존).
+    state: dict = {"run_dir": None, "run_id": args.run_id}
+    try:
+        return _drive(args, state)
+    except SystemExit:
+        raise
+    except BaseException as exc:  # noqa: BLE001  (기록 후 즉시 재raise — 삼키지 않는다)
+        _record_failure(
+            state.get("run_dir"), state.get("run_id"),
+            list(argv) if argv is not None else sys.argv[1:], exc,
+        )
+        raise
+
+
+def _drive(args: Any, state: dict) -> int:
+    """파싱된 인자로 run 을 준비·구동한다(main 의 구동 경로 본체·관측 래퍼 대상).
+
+    `state` 는 관측용 출력 채널이다 — run_dir·run_id 가 확정되는 즉시 담아, 이후 미처리
+    예외가 나면 `_record_failure` 가 **어느 run 에서 터졌는지** 기록할 수 있게 한다.
+    """
     root = Path(args.project_root).resolve()
 
     if args.resume:
         slug = _resolve_slug(args.run_id, args.phase, root.name)
         run_dir = RUNS_DIR / slug
         if not run_dir.exists():
+            # 기존 라인 **바이트 보존** 후 실존 후보 목록을 덧붙인다(백로그 §L 5) — `--run-id`
+            # 를 생략하면 슬러그가 `--phase` 에서 재파생돼 **실재하지 않는 경로**를 보는데,
+            # 종전 메시지는 "부재"만 알리고 옆에 있는 실제 run 을 알려주지 않았다.
             print("[ERR] --resume 대상 run_dir 부재: %s" % run_dir, file=sys.stderr)
+            candidates = _run_dir_candidates()
+            if candidates:
+                print("[HINT] RUNS_DIR 실존 run 후보(수정시각 최신순·최대 10): %s"
+                      % ", ".join(candidates), file=sys.stderr)
+                print("[HINT] 재개는 run-id 를 명시한다: --resume --run-id <위 이름 중 하나>"
+                      " (생략 시 --phase 에서 재파생된다)", file=sys.stderr)
+            else:
+                print("[HINT] RUNS_DIR 에 실존 run 디렉터리가 없다: %s" % RUNS_DIR,
+                      file=sys.stderr)
             return 1
+        state["run_dir"] = run_dir
+        state["run_id"] = run_dir.name
         with open(run_dir / "config.json", "r", encoding="utf-8") as fh:
             config = json.load(fh)
+        # --resume 에서도 --retry-limit override 를 config 에 반영한다(비반영이면 CLI 플래그가
+        # 조용히 무시돼 관측이 어긋난다 — 침묵 금지). 재작업 되돌림은 한도와 무관하게 1회
+        # 추가 시도를 부여하므로(엔진 설계) 이 override 는 편의이지 해소의 전제가 아니다.
+        if args.retry_limit is not None:
+            before = config.get("retry_limit")
+            after = int(args.retry_limit)
+            config["retry_limit"] = after
+            _write_json(run_dir / "config.json", config)
+            print("[CONFIG] retry_limit %s -> %s (--resume override 반영·config.json 재기록)"
+                  % (before, after))
     else:
         try:
             run_dir, config = prepare_run(
@@ -296,6 +534,8 @@ def main(argv: list[str] | None = None) -> int:
         except (FileNotFoundError, RuntimeError) as exc:
             print("[ERR] %s" % exc, file=sys.stderr)
             return 1
+        state["run_dir"] = run_dir
+        state["run_id"] = config.get("run_id")
 
     # 러너 PID 기록(외부 관측용·run_k 선례).
     (run_dir / "logs").mkdir(parents=True, exist_ok=True)
@@ -305,7 +545,9 @@ def main(argv: list[str] | None = None) -> int:
     # 실 claude CLI invoker(LoggingClaudeInvoker) — e2e make_invoker 재사용.
     wire_paths()
     from _orch_common import make_invoker  # noqa: E402  (무수정 재사용)
-    invoker = make_invoker(run_dir, config)
+    # 하트비트 래퍼(백로그 §L 1) — 원 invoker 를 감싸 invoke 시작·종료마다 진행 증거를 남긴다.
+    # 인터페이스 투과이므로 엔진·중립 조립부에서 본 거동은 불변이다.
+    invoker = HeartbeatInvoker(make_invoker(run_dir, config), run_dir)
 
     orch, _cfg = build(run_dir, invoker)
     return run_and_map(orch, invoker, run_dir)

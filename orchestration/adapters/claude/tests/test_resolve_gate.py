@@ -371,6 +371,50 @@ class TestEscalationResolution(unittest.TestCase):
             # escalation 은 분해 제안이 아니므로 revision 승격 없음.
             self.assertEqual((run / "revisions.jsonl").read_text(encoding="utf-8").strip(), "")
 
+    def _resolution_ref(self, run, gate_id):
+        rows = [
+            e for e in _events(run)
+            if (e.get("ref") or {}).get("kind") == "gate-resolved"
+            and (e.get("ref") or {}).get("gate_id") == gate_id
+        ]
+        self.assertEqual(len(rows), 1, "해소 이벤트 1건")
+        return rows[0]["ref"]
+
+    def test_response_is_embedded_in_resolution_ref(self):
+        # D3 — --response 원문이 해소 이벤트 ref 에 동봉된다(엔진이 재작업 지시로 전파).
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_ESCALATION_REQUIRED, "g-esc-resp")
+            rc = rg.main([str(run), "--gate-kind", "escalation", "--actor", "Advisor",
+                          "--response", "타임아웃 상향 후 재시도하라"])
+            self.assertEqual(rc, 0)
+            ref = self._resolution_ref(run, "g-esc-resp")
+            self.assertEqual(ref["response"], "타임아웃 상향 후 재시도하라")
+
+    def test_absent_response_keeps_resolution_ref_shape(self):
+        # 가법 보장 — --response 미지정이면 ref 는 종전 3키 그대로(기존 해소 이벤트 형태 보존).
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_ESCALATION_REQUIRED, "g-esc-noresp")
+            rc = rg.main([str(run), "--gate-kind", "escalation", "--actor", "Advisor"])
+            self.assertEqual(rc, 0)
+            ref = self._resolution_ref(run, "g-esc-noresp")
+            self.assertEqual(sorted(ref.keys()), ["gateKind", "gate_id", "kind"])
+
+    def test_resume_hint_printed_after_resolution(self):
+        # 해소 이벤트만으로는 아무 것도 실행되지 않는다 — 재개 명령이 표면화되어야 한다.
+        import io
+        from contextlib import redirect_stdout
+
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_ESCALATION_REQUIRED, "g-esc-hint")
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                rc = rg.main([str(run), "--gate-kind", "escalation", "--actor", "Advisor"])
+            out = buf.getvalue()
+            self.assertEqual(rc, 0)
+            self.assertIn("[NEXT]", out)
+            self.assertIn("--resume", out)
+            self.assertIn("orchestrate_project.py", out)
+
     def test_approval_escalation_maps_to_escalation(self):
         # CP3 non-Pass → escalation_required 로 정지된 게이트도 이 경로로 해소.
         self.assertEqual(rg.GATE_KIND_MAP["approval-escalation"], GATE_ESCALATION_REQUIRED)

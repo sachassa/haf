@@ -55,9 +55,12 @@ from stephost_bridge import (  # noqa: E402
 )
 from gates import (  # noqa: E402
     GATE_APPROVAL_REQUIRED,
+    GATE_ESCALATION_REQUIRED,
     GATE_USER_DECISION_REQUIRED,
+    REF_KIND_REQUIRED,
     GatePolicy,
     append_gate_resolution,
+    pending_gates,
 )
 
 
@@ -471,6 +474,225 @@ class POINV5_B5_ResolverActorReverification(unittest.TestCase):
         append_gate_resolution(orch.log, "g-user", GATE_USER_DECISION_REQUIRED, actor="human")
         self.assertEqual(
             set(t["id"] for t in orch.active_graph()["tasks"]), {"s1", "s2", "s3"})
+
+
+# ==========================================================================
+# 백로그 §J — 실행 에스컬레이션 해소 채널 (D1 좌표 발급 · D2 rework · D3 응답 전파)
+#
+# Host 는 재시도 한도 초과를 Escalated 로 종단시키고 정지한다. 지금까지 그 정지는 원장
+# 좌표(gate_id)가 없어 해소 이벤트를 append 할 대상 자체가 없었다(§J ①). 아래 케이스는
+# ① 좌표 발급·멱등, ② 적격 해소 후 재작업 되돌림 → 정확히 1회 추가 디스패치,
+# ③ 재에스컬레이션 시 이전 해소 소진(새 요구), ④ 부적격/선행 해소 무효, ⑤ 응답 전파,
+# ⑥ gate_policy 부재(레거시) 거동 보존을 실증한다.
+# ==========================================================================
+from stephost_bridge import KIND_FAILURE  # noqa: E402
+from orchestrator import (  # noqa: E402
+    CAUSE_EXECUTION_ESCALATED,
+    REF_KIND_GATE_REWORK,
+)
+
+
+class _FailingInvoker(Invoker):
+    """지정 step 의 Worker 디스패치를 실패시킨다(fail_ids 를 비우면 다음 시도는 성공).
+
+    Verifier 는 항상 Pass — 실패 원인을 CP1 실패 하나로 고정해 재시도 한도 경로를 분리 실증한다.
+    """
+
+    def __init__(self, fail_ids=()):
+        self.fail_ids = set(fail_ids)
+        self.calls = []          # (role, step_id)
+        self.worker_bundles = []  # Worker 디스패치 번들(재작업 feedback 전달 실측용)
+
+    def invoke(self, request):
+        step_id = (request.bundle.get("step_contract") or {}).get("id")
+        self.calls.append((request.role, step_id))
+        if request.role == ROLE_VERIFIER:
+            return _verdict_pass()
+        self.worker_bundles.append(request.bundle)
+        if step_id in self.fail_ids:
+            return InvokeResult(
+                kind=KIND_FAILURE,
+                failure={"reason": "실행 실패", "repro": "동일 입력 재현"},
+                ref="fr",
+            )
+        return _completion(step_id)
+
+    def worker_calls(self, step_id=None):
+        return [c for c in self.calls
+                if c[0] == ROLE_WORKER and (step_id is None or c[1] == step_id)]
+
+
+def _escalation_policy():
+    """정지 게이트 적격성 정책(escalation 해소 = {Advisor, human})."""
+    return GatePolicy(user_actor_class="human", escalation_resolvers=("Advisor", "human"))
+
+
+def _gate_required_events(store, gate_id):
+    return [
+        e for e in store.read_all()
+        if (e.get("ref") or {}).get("kind") == REF_KIND_REQUIRED
+        and (e.get("ref") or {}).get("gate_id") == gate_id
+    ]
+
+
+def _rework_events(store, cycle_id):
+    return [
+        e for e in store.read_all()
+        if e.get("cycle_id") == cycle_id
+        and (e.get("ref") or {}).get("kind") == REF_KIND_GATE_REWORK
+    ]
+
+
+class BacklogJ_EscalationResolutionChannel(unittest.TestCase):
+    ESC_GATE = "gate-unit-s1::exec-escalation"
+
+    def _run_to_escalation(self, *, gate_policy):
+        """s1 을 재시도 한도(0) 초과로 Escalated 시켜 정지시킨다. 반환 = (store, result, inv)."""
+        store = InMemoryEventStore()
+        ledger = RevisionLedger(InMemoryRevisionStore(), initial_two_task())
+        inv = _FailingInvoker(fail_ids={"s1"})
+        orch = ProjectOrchestrator(
+            ledger, store, inv, retry_limit=0, gate_policy=gate_policy)
+        result = orch.run()
+        return store, ledger, inv, result
+
+    # --- D1 좌표 발급 ---------------------------------------------------
+    def test_d1_escalated_stop_appends_gate_requirement_and_pending(self):
+        store, _ledger, _inv, result = self._run_to_escalation(
+            gate_policy=_escalation_policy())
+
+        self.assertTrue(result.stopped, result.status)
+        self.assertEqual(result.stop_reason, "escalated")
+        self.assertIn("s1", result.stopped_tasks)
+
+        reqs = _gate_required_events(store, self.ESC_GATE)
+        self.assertEqual(len(reqs), 1, "실행 에스컬레이션 게이트 요구 1건")
+        ref = reqs[0]["ref"]
+        self.assertEqual(ref["gateKind"], GATE_ESCALATION_REQUIRED)
+        self.assertEqual(ref["scoped_question"]["unitId"], "s1")
+        self.assertEqual(ref["scoped_question"]["cause"], CAUSE_EXECUTION_ESCALATED)
+        # 결과에 게이트 큐가 탑재된다(런처 stop-signal 계약의 입력).
+        self.assertEqual([g["gate_id"] for g in result.pending_gates], [self.ESC_GATE])
+        self.assertEqual(result.pending_gates[0]["gateKind"], GATE_ESCALATION_REQUIRED)
+        # 단위 경계 게이트 id 와 비충돌(같은 단위의 다른 게이트를 덮지 않는다).
+        self.assertNotEqual(self.ESC_GATE, ProjectOrchestrator._gate_id_for("s1"))
+
+    def test_d1_idempotent_no_duplicate_requirement_on_rerun(self):
+        store, ledger, _inv, _result = self._run_to_escalation(
+            gate_policy=_escalation_policy())
+        before = len(store.read_all())
+
+        # 같은 두 원장으로 재기동(해소 없음) → 요구 재append 0·재실행 0.
+        inv2 = _FailingInvoker(fail_ids={"s1"})
+        orch2 = ProjectOrchestrator(
+            RevisionLedger(ledger.store, initial_two_task()), store, inv2,
+            retry_limit=0, gate_policy=_escalation_policy())
+        again = orch2.run()
+
+        self.assertTrue(again.stopped)
+        self.assertEqual(len(_gate_required_events(store, self.ESC_GATE)), 1, "중복 append 0")
+        self.assertEqual(len(store.read_all()), before, "이벤트 로그 무증가(멱등)")
+        self.assertEqual(len(inv2.worker_calls()), 0, "재실행 0")
+
+    def test_d1_no_gate_policy_preserves_legacy_behavior(self):
+        store, _ledger, _inv, result = self._run_to_escalation(gate_policy=None)
+        self.assertTrue(result.stopped)
+        self.assertEqual(result.stop_reason, "escalated")
+        # 게이트 이벤트 0(gate:: 네임스페이스 이벤트 자체가 없다)·pending 빈 목록.
+        self.assertEqual(
+            [e for e in store.read_all() if str(e.get("cycle_id", "")).startswith("gate::")], [])
+        self.assertEqual(result.pending_gates, [])
+
+    # --- D2 rework 적용 + D3 응답 전파 ------------------------------------
+    def _resolve(self, store, *, actor, response=None, gate_id=None):
+        from stephost_bridge import EventLog
+        append_gate_resolution(
+            EventLog(store), gate_id or self.ESC_GATE, GATE_ESCALATION_REQUIRED,
+            actor=actor, response=response)
+
+    def test_d2_eligible_resolution_reworks_and_redispatches_once(self):
+        store, ledger, _inv, _result = self._run_to_escalation(
+            gate_policy=_escalation_policy())
+        self._resolve(store, actor=ROLE_ADVISOR, response="timeout 상향 후 재시도")
+
+        inv2 = _FailingInvoker(fail_ids=set())  # 재시도는 성공.
+        orch2 = ProjectOrchestrator(
+            RevisionLedger(ledger.store, initial_two_task()), store, inv2,
+            retry_limit=0, gate_policy=_escalation_policy())
+        result = orch2.run()
+
+        # 되돌림 이벤트 1건 → 추가 디스패치 1회 → 완료.
+        rework = _rework_events(store, "s1")
+        self.assertEqual(len(rework), 1)
+        self.assertEqual(rework[0]["outcome"], "fail")
+        self.assertEqual(rework[0]["ref"]["gate_id"], self.ESC_GATE)
+        self.assertEqual(rework[0]["actor"], ROLE_ADVISOR, "해소 주체를 provenance 로 기록")
+        self.assertEqual(len(inv2.worker_calls("s1")), 1, "정확히 1회 추가 디스패치")
+        self.assertTrue(result.completed, result.status)
+        self.assertEqual(result.states["s1"], PASSED)
+
+        # D3 — 해소 응답이 되돌림 ref 로 복사되고 재디스패치 번들 feedback 까지 도달한다.
+        self.assertEqual(rework[0]["ref"]["response"], "timeout 상향 후 재시도")
+        s1_bundles = [b for b in inv2.worker_bundles
+                      if (b.get("step_contract") or {}).get("id") == "s1"]
+        self.assertEqual(len(s1_bundles), 1)
+        self.assertEqual(s1_bundles[0]["feedback"], rework[0]["ref"],
+                         "last_failure_ref → 번들 feedback 전달(실측)")
+
+    def test_d2_ineligible_actor_resolution_does_not_rework(self):
+        store, ledger, _inv, _result = self._run_to_escalation(
+            gate_policy=_escalation_policy())
+        self._resolve(store, actor=ROLE_WORKER, response="부적격 해소 시도")  # 정책 밖 actor.
+
+        inv2 = _FailingInvoker(fail_ids=set())
+        orch2 = ProjectOrchestrator(
+            RevisionLedger(ledger.store, initial_two_task()), store, inv2,
+            retry_limit=0, gate_policy=_escalation_policy())
+        result = orch2.run()
+
+        self.assertEqual(_rework_events(store, "s1"), [], "부적격 해소 → 되돌림 0")
+        self.assertEqual(len(inv2.worker_calls()), 0, "재디스패치 0")
+        self.assertTrue(result.stopped)
+        self.assertEqual([g["gate_id"] for g in result.pending_gates], [self.ESC_GATE])
+
+    def test_d2_resolution_before_escalation_does_not_rework(self):
+        """R_at ≤ E_at — 에스컬레이션보다 앞선 해소는 그 에스컬레이션을 해소하지 않는다."""
+        store = InMemoryEventStore()
+        ledger = RevisionLedger(InMemoryRevisionStore(), initial_two_task())
+        # 아직 아무 일도 없는 시점에 (적격 actor) 해소를 먼저 append 한다.
+        self._resolve(store, actor=ROLE_ADVISOR, response="선행 해소")
+
+        inv = _FailingInvoker(fail_ids={"s1"})
+        orch = ProjectOrchestrator(
+            ledger, store, inv, retry_limit=0, gate_policy=_escalation_policy())
+        result = orch.run()
+
+        self.assertEqual(_rework_events(store, "s1"), [], "선행 해소 → 되돌림 0")
+        self.assertTrue(result.stopped)
+        self.assertEqual(len(_gate_required_events(store, self.ESC_GATE)), 1)
+        self.assertEqual([g["gate_id"] for g in result.pending_gates], [self.ESC_GATE])
+
+    # --- 재에스컬레이션(해소 1건 = 시도 1회) --------------------------------
+    def test_reescalation_appends_new_requirement_and_consumes_prior_resolution(self):
+        store, ledger, _inv, _result = self._run_to_escalation(
+            gate_policy=_escalation_policy())
+        self._resolve(store, actor=ROLE_ADVISOR, response="한 번 더 시도")
+
+        inv2 = _FailingInvoker(fail_ids={"s1"})  # 되돌림 후에도 실패.
+        orch2 = ProjectOrchestrator(
+            RevisionLedger(ledger.store, initial_two_task()), store, inv2,
+            retry_limit=0, gate_policy=_escalation_policy())
+        result = orch2.run()
+
+        self.assertEqual(len(_rework_events(store, "s1")), 1, "되돌림 1회")
+        self.assertEqual(len(inv2.worker_calls("s1")), 1, "추가 시도 정확히 1회")
+        self.assertTrue(result.stopped, "재실패 → 정직하게 재에스컬레이션")
+        # 이전 해소가 새 요구를 해소하지 못한다 — 새 요구 append 로 소진된다.
+        self.assertEqual(len(_gate_required_events(store, self.ESC_GATE)), 2, "새 요구 append")
+        self.assertEqual([g["gate_id"] for g in result.pending_gates], [self.ESC_GATE])
+        self.assertEqual(
+            [g["gate_id"] for g in pending_gates(store.read_all(), _escalation_policy())],
+            [self.ESC_GATE], "파생 뷰도 여전히 pending")
 
 
 if __name__ == "__main__":

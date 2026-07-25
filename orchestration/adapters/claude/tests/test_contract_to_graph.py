@@ -14,6 +14,7 @@ step.py 는 uahf/framework/loop/step-host/, gates.py 는 orchestration/framework
 from __future__ import annotations
 
 import os
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -276,6 +277,37 @@ class SlugAndSeedIdTests(unittest.TestCase):
         self.assertEqual(c2g._slug("a/b:c*d"), "a-b-c-d")
         self.assertEqual(c2g._slug("---"), "run")          # 빈 결과 폴백.
         self.assertEqual(c2g._slug("정산 코어"), "run")     # 비ASCII → 폴백.
+
+    # ---- 백로그 §P·§L 4-b — 슬러그 길이 상한(크래시·원장 커밋 불가 해소) ----
+    def test_slug_caps_long_ascii_input(self) -> None:
+        """300자 ASCII 입력 → 결과 ≤57자·결정적·크래시 0(§P 재현 케이스)."""
+        raw = "m1-defect-fix-" + ("abcdefghij" * 29)  # 304자 ASCII.
+        self.assertGreater(len(raw), 300)
+        out = c2g._slug(raw)
+        self.assertLessEqual(len(out), c2g.SLUG_MAX_LEN + 1 + c2g.SLUG_HASH_LEN)
+        self.assertLessEqual(len(out), 57)
+        self.assertEqual(out, c2g._slug(raw), "결정적(같은 입력 → 같은 값)")
+        # 접미는 원문 sha256 앞 8자 — 접힘 지점 이후가 달라도 서로 다른 값이 된다.
+        self.assertNotEqual(c2g._slug(raw), c2g._slug(raw + "-x"))
+        # seed unit id 도 함께 유한해진다(파일명이 되는 지점).
+        self.assertLessEqual(len(c2g.seed_task_id(raw)), len("impl-plan-") + 57)
+
+    def test_slug_short_input_byte_identical(self) -> None:
+        """48자 이하 입력은 접지 않는다 — 기존 run 디렉터리·unit id 하위호환(바이트 동일)."""
+        for raw in ("Phase 1", "phase1", "a/b:c*d", "정산 코어",
+                    "m2-1 M2 brief md", "x" * 48):
+            plain = re.sub(r"[^a-z0-9]+", "-", str(raw).lower()).strip("-") or "run"
+            if len(plain) <= c2g.SLUG_MAX_LEN:
+                self.assertEqual(c2g._slug(raw), plain, raw)
+
+    def test_fold_slug_boundary(self) -> None:
+        """경계: 48자 = 무접힘 / 49자 = 접힘(48 + '-' + sha8)."""
+        self.assertEqual(c2g.fold_slug("a" * 48, "raw"), "a" * 48)
+        folded = c2g.fold_slug("a" * 49, "raw")
+        self.assertEqual(len(folded), 57)
+        self.assertTrue(folded.startswith("a" * 48 + "-"))
+        # 해시는 **원문**(정규화 전)에서 뽑는다 — 정규화가 뭉갠 입력을 구분한다.
+        self.assertNotEqual(c2g.fold_slug("a" * 49, "raw1"), c2g.fold_slug("a" * 49, "raw2"))
 
     def test_seed_task_id_derives(self) -> None:
         # phase1 은 하드코딩 전신 값과 파생적으로 일치.

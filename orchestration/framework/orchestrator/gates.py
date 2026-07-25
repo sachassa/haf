@@ -403,6 +403,40 @@ def is_resolved(
     return False
 
 
+def latest_eligible_resolution(
+    events: Iterable[dict[str, Any]],
+    gate_id: Any,
+    gate_kind: str,
+    policy: GatePolicy,
+) -> dict[str, Any] | None:
+    """이 gate_id 의 **적격 actor** 해소 이벤트 중 가장 나중 것(없으면 None). 순수 함수.
+
+    is_resolved 와 달리 요구 이벤트와의 선후(since)를 판정하지 않고 **원자료**(해소 이벤트
+    자체)를 돌려준다 — 호출부가 요구가 아닌 다른 기준 시점(예: 단위의 마지막 escalated
+    이벤트 at)과 비교해야 할 때 쓴다. 적격성 판정은 여기서도 policy.is_eligible_resolver
+    가 소유한다(게이트 불가침 — 이 함수가 자격 규칙을 재정의하지 않는다).
+    """
+    latest: dict[str, Any] | None = None
+    for e in gate_events_for(events, gate_id):  # at 오름차순 정렬됨.
+        ref = e.get("ref") or {}
+        if ref.get("kind") != REF_KIND_RESOLVED:
+            continue
+        if not policy.is_eligible_resolver(gate_kind, e.get("actor")):
+            continue
+        latest = e
+    return latest
+
+
+def resolution_response(event: dict[str, Any] | None) -> Any:
+    """해소 이벤트 ref 에 동봉된 해소 응답 원문(부재 시 None). 자유 형식 ref 판독만."""
+    if not isinstance(event, dict):
+        return None
+    ref = event.get("ref")
+    if isinstance(ref, dict):
+        return ref.get("response")
+    return None
+
+
 def pending_gates(
     events: Iterable[dict[str, Any]],
     policy: GatePolicy,
@@ -476,8 +510,17 @@ def append_gate_resolution(
     gate_kind: str,
     *,
     actor: str,
+    response: Any = None,
 ) -> dict[str, Any]:
-    """정지 게이트 해소 이벤트 append. 적격성은 소비 측(is_resolved)이 판정한다."""
+    """정지 게이트 해소 이벤트 append. 적격성은 소비 측(is_resolved)이 판정한다.
+
+    ref 확장은 **가법**이다: response(해소 응답 원문)는 지정될 때만 실린다. 미지정(기본)이면
+    ref 는 종전과 byte-identical({kind,gate_id,gateKind}) 이라 기존 해소 이벤트·재생 결정성이
+    보존된다. 동봉된 응답은 소비 측이 재작업 지시로 전파할 수 있다(판독만·판단 0).
+    """
+    ref: dict[str, Any] = {"kind": REF_KIND_RESOLVED, "gate_id": gate_id, "gateKind": gate_kind}
+    if response is not None:
+        ref["response"] = response
     return log.append(
         cycle_id=gate_cycle_id(gate_id),
         from_stage="Consult",
@@ -486,7 +529,7 @@ def append_gate_resolution(
         outcome="pass",
         actor=actor,
         retry_count=0,
-        ref={"kind": REF_KIND_RESOLVED, "gate_id": gate_id, "gateKind": gate_kind},
+        ref=ref,
     )
 
 

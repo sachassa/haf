@@ -508,9 +508,19 @@
 > - **미해소 이월**: per-unit timeout(L §4) · `recover_gate` 다중 pending 특정 지목(`--gate-id`) · Q·R의 기계 강제(현재 절차 층만) · 위임 규율 B-1·B-3·B-4 · 커버리지 강제·SD manifest 배선·스킵 브리지(메모리 하네스 결함 3종) · UAF 스크립트 인코딩 스윕 · 백로그 K·M·N·O.
 > - **다음 실 run 관측 좌표**: 실 CLI invoker 래핑(`[INVOKES] total=` 정상 표시)·heartbeat 실기 갱신.
 >
-> ## ⑥ 다음 착수 후보
+> ## ⑥ 다음 착수 — ★ 사용자 확정 2026-07-26: **UAF 하네스 개선을 우선 수행**
 >
-> - (가) yt-stt **M4-b 판단**(제품 트랙 1순위 유지) — escalated가 나도 이제 엔진 채널로 해소·재개 가능. (나) 백로그 **K**(Projection 포인터 정합 체커 — RC-2 계열 잔여 중 최저비용·design_completeness 자리에 추가) (다) 위임 규율 **B-1/B-3/B-4**(RC-1 잔여 최대 덩어리).
+> **다음 세션 1순위 = UAF 개선(사용자 지시 원문: "uaf 관련 개선을 우선 수행으로 진행"). 제품 트랙(yt-stt M4-b)은 그 다음이다.** 개선 대상의 선택·순서 확정 권위는 착수 세션의 사용자다 — 아래는 Advisor 권고 순서(①→②→③)다.
+>
+> 1. **백로그 K** — Projection 정본 포인터 정합 체커(RC-2 계열 잔여 중 최저비용·design_completeness 체커 자리에 추가·append-only라 파일이 실재해 **조용히 틀리는** 결함).
+> 2. **위임 규율 B-1·B-3·B-4** — RC-1 잔여 최대 덩어리(위임·보고 층 강제 0). 착수 유의: B-1은 PreToolUse로 안 잡힌다(위임은 도구 호출이 아니다) → 수임 Agent 정의(`.claude/agents/*.md`)에 착수 전 점검을 박는 쪽이 현실적. B-3은 불변 신설이 Advisor 직접 병렬 위임 방식 자체를 금지하게 되는 거버넌스 무게 — 사용자 결정 필수. 상세 = 메모리 `uaf-delegation-enforcement-gap`.
+> 3. **이번 트랙 잔여** — per-unit timeout(백로그 L §4) · `recover_gate --gate-id`(다중 pending 특정 지목) · Q·R 기계 강제(현재 절차 층만).
+>
+> 그 외 열린 하네스 결함(순위 미배정): 커버리지 강제(θ≠커버리지 역설·메모리 `uaf-coverage-enforcement-gap`) · SD manifest 배선 3건(`uaf-design-manifest-path-defect`) · SD 스킵 브리지(`uaf-solution-design-skip-gap`) · 백로그 M·N·O · §DC-8(a)·02 개정 · UAF 스크립트 인코딩 스윕 · 상류 바인딩 2차(디커플링).
+>
+> **착수 시 최소 read-set** = 본 갱신 블록(15) + `docs/rca-prescriptions-ledger.md` + `docs/post-tuning-improvement-backlog.md` 해당 § + 메모리 `uaf-rca-prescriptions-track`. 신설 규율 준수 사항: 새 규율·백로그 등재엔 「강제 지점」 행(훅이 차단한다) · 새 배선엔 접합부 왕복(§5.7) · 검증 축은 정본 열거 도출(§5.8).
+>
+> (후순위·제품 트랙) yt-stt **M4-b 판단** — escalated가 나도 이제 엔진 채널로 해소·재개 가능. 메모리 `uaf-product-yt-stt`.
 
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 

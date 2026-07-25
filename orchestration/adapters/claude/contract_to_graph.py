@@ -48,7 +48,15 @@ DEFAULT_ALLOWED_TOOLS = [
     "Bash(node:*)", "Bash(python:*)",
 ]
 
-DEFAULT_TIMEOUT = 900  # 초. seed 는 설계 소비·계획 방출만 하지만 여유 확보.
+# 초. seed 는 설계 소비·계획 방출만 하지만 여유 확보.
+# 900 → 2400 상향(2026-07-25 · 사용자 확정). `uaf-verified:` 근거 = 원장 실측으로
+# 900 초 초과가 반복 확인됐다 — cheongryong-bubble `impl-s14-15-ui-sound` 가 같은
+# 단위에서 3회 연속(retry 0·1·2 소진 → Escalated) · `impl-s16-18-final` 1회 ·
+# `impl-s04-08-core` 1회 · yt-stt `impl-yt-stt-m4afix2` 1회. **검색 범위** =
+# 이 저장소의 `DEFAULT_TIMEOUT`·`timeout=900` ripgrep 스윕 + 적중 run 의
+# events.jsonl 판독. Escalated 는 해소 채널이 없어(백로그 J — `escalated` 이벤트에
+# gate_id 부재 · stop-signal 미생성) 상한 초과가 곧 run 폐기이므로 상한 자체를 올린다.
+DEFAULT_TIMEOUT = 2400
 
 IMPL_PLAN_FILE = "impl-plan.json"
 

@@ -76,7 +76,7 @@ Verify 연산의 입력을 받는다.
 | `criteria_basis` | 대조 기준 출처 — 위임 완료 조건 / 규격 / 경계 규칙 / 시연 기준. | 예 |
 | `items` | 항목별 판정 목록. 최소 1건. | 예 |
 | `final_verdict` | 최종 판정 — 통과(Pass) / 실패(Fail) / 조건부(Conditional). | 예 |
-| `verifier_scope` | 실제로 검사한 범위. 검사하지 못했거나 제외한 범위를 함께 명시한다. | 예 |
+| `verifier_scope` | 실제로 검사한 범위. 검사하지 못했거나 제외한 범위를 함께 명시한다. **정본 열거 대비 미검증 축**(criteria의 정본 출처에는 있으나 이번 판정에서 대조하지 않은 축) 목록을 포함한다 — 없으면 "없음" 명시 (docs/verification-checklist.md §5.8). | 예 |
 | `rework` | 재작업 지시. `final_verdict`가 Fail 또는 Conditional이면 필수, Pass면 "없음". | 조건부 |
 
 ### 항목별 판정 — 판정 값
@@ -113,6 +113,8 @@ Verify 연산의 입력을 받는다.
 | `expected_state` | 각 항목의 기대 상태 — 무엇이 충족되어야 하는가. |
 | `revalidation_criteria` | 재검증 기준 — 재작업 후 무엇을 다시 검사하면 통과인가. |
 | `evidence_gap` | (판정 불가 항목 한함) 판정을 막은 근거 부족·검사 범위 한계. |
+
+재작업 지시의 `violated_items` 각 항목에는 **귀속 후보**(위임 / 산출 / 도구)를 병기한다 — 귀속을 비워 두면 기본 귀속(수임 Agent)이 관성 적용된다 (AGENT.md §Invariants 결함 귀속 단정 금지). 별도 스키마 필드를 신설하지 않고 항목 서술에 병기한다(재정의 0).
 
 Verifier는 재작업 지시의 포맷만 소유하며, 전달·라우팅 채널은 정의하지 않는다.
 
@@ -185,3 +187,4 @@ Verify 연산의 완료 조건이다.
 - 기준 없는 판정 금지 — criteria 없이 판정하지 않는다. 판정 불가로 반환한다.
 - 시퀀싱 정의 금지 — Verify 단계의 시점·전이를 정의하지 않는다.
 - 추측 금지 — 불확실은 판정 불가로 남기고 근거 부족(`evidence_gap`)을 명시한다. 추측으로 충족을 판정하지 않는다 (AGENT.md §Invariants / Prohibitions 추측 금지).
+- 축 발명 금지 — 판정 축은 위임 criteria와 그 정본 열거에서 도출한다. 정본 열거에 있는 축을 대조하지 않았으면 **미검증 축**으로 `verifier_scope`에 명시한다. 검증기 자신이 만든 축으로 정본 축을 대체하지 않는다 (docs/verification-checklist.md §5.8).

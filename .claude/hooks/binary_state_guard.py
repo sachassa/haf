@@ -75,6 +75,25 @@ _EVIDENCE_MARKERS = ("uaf-verified:", "uaf-assumed:", "스윕 범위", "검색 �
 
 _MD_SUFFIXES = (".md", ".markdown")
 
+# ---------------------------------------------------------------------------
+# 백로그 등재 형식 검사 — `.claude/AGENT.md` §Invariants "강제 없는 규율 신설 금지
+# (강제 지점 결정)" 의 물리 강제. 규율 정본 문면은 백로그 파일 머리
+# 「등재 형식 규율 (2026-07-26 신설)」 이며 이 훅은 재정의하지 않는다(재정의 0).
+#
+# 대상은 백로그 파일 **한 개**로 한정한다 — .md 전반으로 넓히면 오탐이 나고,
+# 기존 설계 철학("닿는 것만")과도 어긋난다.
+# ---------------------------------------------------------------------------
+_BACKLOG_BASENAME = "post-tuning-improvement-backlog.md"
+
+# 백로그 항목 헤딩 — `## A. ...` ~ `## R. ...` 형식.
+_BACKLOG_ITEM_HEADING = re.compile(r"^##\s+[A-Z]{1,3}\.\s", re.MULTILINE)
+
+# 세그먼트 경계 — 다음 `#`/`##` 헤딩까지가 한 항목이다.
+_ANY_HEADING = re.compile(r"^##?\s", re.MULTILINE)
+
+# 항목이 반드시 담아야 하는 것 — 기계 강제 지점(도입) 또는 미도입 사유.
+_ENFORCEMENT_TOKEN = "강제 지점"
+
 
 def _fail_open(message: str) -> int:
     """훅 자신의 결함으로 세션을 막지 않는다 — 경고만 남기고 허용."""
@@ -124,6 +143,68 @@ def find_violations(text: str):
     return hits
 
 
+def is_backlog_path(file_path: str) -> bool:
+    """대상 파일이 백로그 원장인지 판정한다(대소문자 무시). 순수 함수."""
+    if not isinstance(file_path, str):
+        return False
+    basename = file_path.replace("\\", "/").rsplit("/", 1)[-1]
+    return basename.lower() == _BACKLOG_BASENAME
+
+
+def find_backlog_format_violations(text: str):
+    """「강제 지점」 이 없는 백로그 항목의 헤딩 목록을 반환한다. 순수 함수.
+
+    **세그먼트 단위로 판정한다** — 전체 파일 Write 에서 파일 머리(또는 이웃 항목)의
+    "강제 지점" 문구가 다른 항목의 누락을 가리지 못하게 하기 위한 것이며, 이 검사
+    설계의 핵심이다. 텍스트 전체에 대한 단순 포함 검사로 바꾸면 검사가 무력화된다.
+    """
+    violations = []
+    for match in _BACKLOG_ITEM_HEADING.finditer(text):
+        start = match.start()
+        nxt = _ANY_HEADING.search(text, match.end())
+        end = nxt.start() if nxt else len(text)
+        segment = text[start:end]
+        if _ENFORCEMENT_TOKEN in segment:
+            continue
+        line_end = text.find("\n", start)
+        heading = (text[start:] if line_end == -1 else text[start:line_end]).strip()
+        violations.append(heading)
+    return violations
+
+
+def _check_backlog_format(file_path: str, joined: str):
+    """백로그 등재 형식 검사 배선 — 차단이면 종료 코드를, 아니면 None 을 반환한다.
+
+    fail-open 불변: 이 검사의 내부 예외는 절대 차단을 내지 않는다.
+    """
+    try:
+        if not is_backlog_path(file_path):
+            return None
+        headings = find_backlog_format_violations(joined)
+        if not headings:
+            return None
+    except Exception as exc:  # noqa: BLE001
+        # 허용(exit 0)을 즉시 확정한다 — 이 검사의 결함으로 쓰기를 막지 않는다.
+        return _fail_open("백로그 등재 형식 검사 내부 예외: %s" % exc)
+
+    lines = ["백로그 등재 형식 위반 — 항목에 「%s」 행이 없습니다" % _ENFORCEMENT_TOKEN,
+             "(.claude/AGENT.md §Invariants '강제 없는 규율 신설 금지' · "
+             "docs/post-tuning-improvement-backlog.md 머리 '등재 형식 규율').", ""]
+    for heading in headings:
+        lines.append("  · %s" % heading)
+    lines += [
+        "",
+        "고치는 법:",
+        "  - 항목 안에 「%s」 행을 넣어라 — 도입이면 지점 명시(게이트·훅·체커 경로),"
+        % _ENFORCEMENT_TOKEN,
+        "    미도입이면 사유 기록(사유는 면제가 아니라 재심 좌표다).",
+        "  - 강제 지점의 결정도 이진이다 — 도입 아니면 미도입이며, 미루는 표기는 결정이 아니다.",
+        "",
+        "이력 인용 등 정당한 용법이면 쓰는 내용에 '%s <사유>' 를 함께 두면 통과합니다." % MARKER,
+    ]
+    return _deny("\n".join(lines))
+
+
 def run(raw_stdin: str) -> int:
     try:
         payload = json.loads(raw_stdin)
@@ -148,6 +229,11 @@ def run(raw_stdin: str) -> int:
     joined = "\n".join(texts)
     if MARKER in joined:
         return 0  # 사유 기록된 이탈 — 허용
+
+    # 백로그 등재 형식 검사(추가 검사) — 기존 어휘 검사와 독립이다.
+    backlog_decision = _check_backlog_format(file_path, joined)
+    if backlog_decision is not None:
+        return backlog_decision
 
     violations = find_violations(joined)
 

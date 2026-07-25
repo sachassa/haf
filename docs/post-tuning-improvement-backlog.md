@@ -4,6 +4,8 @@
 지위: `docs/performance-tuning-plan.md@cd9247b`(Core Performance Tuning · 산출물 수명 정책에 따라 아카이브 — 열람: `git show cd9247b:docs/performance-tuning-plan.md`)와 **명확히 분리**된 사용자/프레임워크 개선 백로그. 성능 튜닝 트랙에 혼입 금지 — 각 항목은 튜닝 완료·Baseline 재측정 후 독립 트랙으로 상정한다.
 중복 방지: 기존 이월 인벤토리(`docs/next-session-prompt.md@ad451ee` v1.7 마감본 — 현행 핸드오프 = `docs/session-handoff.md`·uahf-control-plane README 이월 절)와 겹치는 항목은 본 문서가 상위 프레이밍을 소유하고 개별 결함(not-found 404·GateEvent.state 정리 등)은 기존 이월 목록에 남긴다.
 
+**등재 형식 규율 (2026-07-26 신설 — AGENT.md §Invariants 「강제 없는 규율 신설 금지」 운용)**: 신규 항목(`## X.` 헤딩)은 **「강제 지점」 행**을 포함한다 — 기계 강제 지점(게이트·훅·체커)을 명시하거나, 미도입이면 그 사유를 항목 안에 기록한다. 등재는 본 파일이 원장이다 — 핸드오프 갱신 블록에만 기록된 "신설"은 등재가 아니다(P·Q·R 전입 경위 참조). 물리 강제 = `.claude/hooks/binary_state_guard.py`(본 파일에 「강제 지점」 행 없는 신규 항목 헤딩을 추가하는 쓰기를 차단).
+
 ---
 
 ## A. User-facing Gate / Explanation UX
@@ -103,6 +105,7 @@
   - **부수 예방 조치(별건 수행)**: `DEFAULT_TIMEOUT` 900→2400 상향(커밋 `96c07f6`). 원장 실측 5건 근거(cheongryong-bubble `impl-s14-15-ui-sound` 3회 연속·`impl-s16-18-final`·`impl-s04-08-core`·yt-stt `m4afix2`). 이는 위 ③(타임아웃 산정)의 부분 완화이며 J 본체(해소 채널)는 미해소다.
 - **Dependency**: `orchestration/framework/orchestrator/gates.py`·런처 stop-signal 기록부·resolve_gate.py·05 §3.3.
 - **Suggested Future Track**: 「Escalation Rework Path」 소형 트랙. 우선순위 미배정(사용자 결정). **2026-07-25 재발로 우선순위 상향 후보** — 소비 프로젝트 2곳에서 발현했고 회피책이 거버넌스 불변과 충돌한다.
+- **[본체 해소 2026-07-26 — RCA 처방 1]** Desired ①(모든 정지 사유에서 stop-signal 일관 갱신 — escalated 정지도 게이트 분기와 같은 계약 4필드)·②(해소→재작업 재진입 — 엔진이 escalated 정지에 gate_id `gate-unit-<id>::exec-escalation` 요구를 발급하고, 적격 해소 소비 시 되돌림 이벤트 append로 **해소 1건=추가 시도 1회**·재실패 시 새 요구 발급으로 이전 해소 소진) 구현·Advisor CP2 Pass(3트리 312건 독립 재실행·접합부 왕복 실물 검증). 레거시 escalated run도 `--resume` 1회로 해소 가능 상태가 된다. 정본 = `orchestration/adapters/claude/project-orchestration-binding.md` §3.4. **잔여(미해소)**: Desired ③ per-unit timeout 산정(전역 `DEFAULT_TIMEOUT` 2400 완화는 기반영) · `recover_gate` 다중 pending 동시 존재 시 특정 지목(`--gate-id` 옵션 후보). 강제 지점: 코드(엔진·런처·테스트).
 
 ---
 
@@ -134,6 +137,7 @@
 - **Dependency**: `orchestration/adapters/claude/orchestrate_project.py`(런처 stop-signal 기록부) · `orchestration/framework/orchestrator/` 실행 루프 · 05 §3.3.
 - **관련 — J 와의 상하류 구분(우선순위 판단용)**: **J = 타임아웃이 걸린 *뒤*의 복구 경로**(Escalated 후 재작업 지시 채널 부재). **L = 타임아웃조차 안 걸리고 매달리는 *앞* 구간**(정체 자체를 아무도 모름). L 이 상류이며, L 없이는 J 가 발동할 기회조차 관측되지 않는다. H(Continuous Telemetry)와도 구분된다 — H = 누적 계측·분석, L = **장애 탐지**.
 - **Suggested Future Track**: 「Run Observability」 소형 트랙. 우선순위 미배정(사용자 결정) — 단 J 착수 시 L 을 선행으로 묶는 것을 권고.
+- **[핵심 해소 2026-07-26 — RCA 처방 1·J와 동일 트랙]** Desired 1(heartbeat — 계약 필드는 `{ts, stage, invokes, request_hint, pid}`로 확정: 런처는 단위 경계·경과시간을 소유하지 않으며 F2 탐지의 실사용은 "마지막 ts와 현재 시각의 차"이므로 `elapsed_s`·`current_unit`은 관측자 파생값이다 — 원 문면과의 차이 사유는 `docs/rca-prescriptions-ledger.md` W-L) · 2(failure.json 계약 6필드·재raise 은폐 0) · 3(종료코드 규약 명문화 — `uaf-implement.md` §2 표 + binding §5.8) · 4-b(슬러그 상한 `fold_slug` 48+sha8 — §P와 공통 해소·원장 커밋 불가 경로 차단) · 5(`--resume` 부재 오류에 실존 후보 목록 + `uaf-implement.md` §2 예시 `--run-id` 정정) 구현·Advisor CP2 Pass. 정본 = binding §5.8. **미해소 잔존**: Desired 4(per-unit timeout). 강제 지점: 코드(런처·컴파일러·테스트 17건).
 
 ---
 
@@ -183,6 +187,35 @@
 - **Why Not Now**: 브리프 생성부·게이트 판정 변경이며, 등재 시점에 해당 run 이 막 종결됐다.
 - **Dependency**: `contract_to_graph.py`(task/AC 브리프 조립) · `orchestration/framework/orchestrator/gates.py`(CP2 판정 축) · 05 §3.3.
 - **관련**: **M(횡단 결함 검지)과 인접하나 별건**이다 — M 은 "같은 결함이 여러 단위에 퍼졌을 때 먼저 통과한 단위가 남는다", O 는 "**AC 의 입력이 가짜라서 단위 하나조차 제대로 검증되지 않는다**". M 을 고쳐도 O 는 남는다.
+
+---
+
+## P. 런처 입력 검증 부재 — `_slug` 길이 무제한 크래시 (실측 등재 2026-07-21 · 원장 전입 2026-07-26)
+
+- **등재 경위**: 핸드오프 갱신 2026-07-21(8) ⑤가 "백로그 P 신설"로 기록했으나 본 백로그 원장에는 항목이 없었다. `uaf-verified:` 2026-07-26 본 파일 전문 정독 + `^## [PQR]\.` 패턴 스윕(검색 범위 = 이 파일)으로 부재 확인 — 원장 이원화(핸드오프에만 존재)의 실사례이며 본 전입으로 해소.
+- **Problem / Motivation**: `orchestrate_project.py`의 seed 노드 id = `"impl-plan-" + _slug(phase_scope)`가 그대로 파일명이 되는데 `_slug`에 길이 상한이 없어, 긴 `--phase` 문자열에서 Windows 경로 한계로 `OSError: [Errno 22]` 크래시(실측 2026-07-21 · 크래시가 게이트·원장 이전 단계라 원장 오염 0). 성격 = 관측(L) 계열이 아니라 **입력 검증 부재**.
+- **부수 실측(2026-07-23)**: `_slug`가 한글을 제거하므로 긴 한글 phase는 미저촉(`impl-plan-m2-1-m2-brief-md.json` 31자로 접힘) — 긴 **ASCII** phase에서만 발현.
+- **관련**: 백로그 L §Desired 4-b(슬러그 길이 → 원장 git 커밋 불가)와 같은 뿌리(슬러그 상한 부재). 해법 공유 = 길이 상한 + 해시 접미(예: 앞 48자 + `-<sha8>`).
+- **강제 지점**: 코드 — **해소 2026-07-26**(`contract_to_graph.fold_slug` 48자+sha8 접기·`_slug`/`slugify_run_id` 양쪽 적용·48자 이하 바이트 동일 하위호환·긴 phase `prepare_run` 성공 실증 테스트). 정본 = binding §5.8.
+
+---
+
+## Q. proposal seed 제약 ↔ 브리프 실행 AC 요구의 충돌 조정 부재 (실측 등재 2026-07-24 · 원장 전입 2026-07-26)
+
+- **등재 경위**: 핸드오프 갱신 2026-07-24(12) ④가 "신설"로 기록 — 본 원장에는 부재(위 P와 같은 스윕으로 확인) → 전입.
+- **Problem / Motivation**: seed proposal의 "done = 오프라인 안전 검사만" 제약과 Advisor 브리프의 "실증형 AC — 실제 대상 실행" 요구가 정면 충돌하면, Planner가 구현 task done에 실제 장시간 실행을 넣어 실행 타임아웃 반복 → retry 소진 → Escalated(yt-stt M3 실측 — escalated-1). 무거운 실행 검증이 필요한 phase에서 브리프 작성자가 seed 제약을 모르면 구조적으로 재발한다.
+- **Desired Outcome**: seed 제약을 브리프 작성 규율에 명시하거나, 게이트에서 브리프↔seed 제약을 대조.
+- **강제 지점**: 미도입 — 사유: 대조 게이트는 브리프 렌더 구조와 결합돼 별도 설계가 필요하다. 절차 층 대응 = `docs/delegation-protocol.md` §2.1 접합부 왕복 지침(2026-07-26 신설)이 이 충돌 축(브리프↔seed)을 위임 작성 시 열거 대상으로 만든다. 기계 강제는 미해소로 남는다.
+
+---
+
+## R. 정적 CP2의 done AC 간 동적 상충 무검출 (실측 등재 2026-07-24 · 원장 전입 2026-07-26)
+
+- **등재 경위**: 핸드오프 갱신 2026-07-24(12) ④가 "신설"로 기록 — 본 원장에는 부재(위 P와 같은 스윕으로 확인) → 전입.
+- **Problem / Motivation**: done AC 간 **동적 상충**(completion gate의 realtime 임계 20x ↔ 스텁 즉시 반환 elapsed → 40x 거짓양성)을 정적 CP2(문면 검사)가 통과시켰고, Worker 실행 시점에야 드러나 Escalated(yt-stt M3 실측 — escalated-2). Worker가 sleep/clamp 위조를 거부하고 정직하게 escalate한 것은 이진 원칙의 실행층 작동 실증.
+- **Desired Outcome**: CP2에 "게이트 임계 ↔ 테스트 시나리오 정합" 점검 축 추가 또는 done AC 상호 실행 대조.
+- **관련**: M(횡단 결함)·O(AC 실출력 픽스처)와 같은 검증 구조 계열 — M=단위 간 공간 전파, O=AC 입력의 실물성, R=**AC 간 실행 시점 상충**. 셋은 서로를 대체하지 않는다.
+- **강제 지점**: 미도입 — 사유: 엔진 Verifier CP2 판정 축 확장(코드·브리프 개정)이 필요해 별도 트랙이다. 절차 층 대응 = `docs/verification-checklist.md` §5.8(검증 축 도출·2026-07-26 신설)이 축 누락을 미검증 축 목록으로 표면화. 기계 강제는 미해소로 남는다.
 
 ---
 

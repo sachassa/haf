@@ -544,7 +544,10 @@ Q-4 ─→ Wave 6 (조건부)
 4. `userActorClass` 하한 미보호 — K-1(본 초안 신규 포착).
 5. 경로 상수 중복 정의 — K-5.
 6. floor 테이블 ↔ 컴파일러 target 어휘 불일치 — K-8.
-7. SD 스킵 경로 존치 또는 폐기 — Q-4.
+7. SD 스킵 경로 존치 또는 폐기 — Q-4. **[방향 확정 2026-07-26]** 폐기 방향·실행은 실증(Wave 5) 후 04 유형 A 트랙.
+8. **(W4 완료 보고 승격 2026-07-27)** 01-entry.md §3.2-D 행 6 policy 열 리터럴 "기본" ↔ 레지스트리 데이터 `lightweight` 문면 긴장 — Advisor 판정 = 비충돌(게이트 행과 대비되는 클래스 라벨·구체 참조는 §3.2-A/B 데이터 위임). 재심 좌표 = 01 spec 차기 개정 시 policy 열 표기 명확화(유형 A 절차).
+9. **(W4 승격)** Wave 5 문서 정합 후보 3건 — entry-binding 행 B "기본 정책 참조" stale · discovery-binding §8.2 (가) θ 드리프트 · delegation-protocol §4 포인터 표 보고 파일 행(§8.11 항 10과 동일 건).
+10. **(W4 승격)** 레지스트리 ref 어휘(`lightweight`) ↔ policyId(`lightweight-policy`) 형태 이원 — ref 해소 규약(§8.3)이 봉합하나 명명 정합은 후속 판단.
 
 ---
 

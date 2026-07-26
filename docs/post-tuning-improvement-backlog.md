@@ -171,6 +171,7 @@
 - **Why Not Now**: `resolve_gate.py`·05 §3.3 게이트 어휘 변경이며, 등재 시점에 해당 run 이 진행 중이었다.
 - **Dependency**: `orchestration/adapters/claude/resolve_gate.py`(`resolve_structural`·`_append_provenance`) · `contract_to_graph.py`(delegation context 조립) · 05 §3.3.
 - **관련**: CP3 비-Pass 시의 `escalation_required` 경로(백로그 J)와 **같은 계열의 표현력 문제**다 — J 는 "거부 후 재작업 지시 채널 부재", N 은 "**승인하면서** 조건 붙일 채널 부재".
+- **[해소 2026-07-26 — Desired 1 채택]** 구조 게이트 해소의 비공백 `--response` 를 **승격되는 모든 task 의 `delegation.context` 조건 항목으로 주입**(`resolve_gate.format_condition`·`build_promotion_payloads` — 결정적 문면 `[게이트 조건 — <gate_id> 해소(actor=<actor>)] <원문>`). 원장 3면 분리 보존 = `impl-plan.json` 바이트 무변조(원 산출) + provenance 이벤트 `ref.response`(조건 원문·기성립) + revision payload(하류 소비 뷰). 타입 규칙 = list append·str 2원소 승격·부재 신설(+`[CONDITION-NOTE]` 관측 신호 — 종전 Escalated 경로를 가리지 않도록 id 열거·차단 아님)·그 외 형 = **원장 append 전 비영 종료**(조건의 침묵 탈락 금지). 하류 도달 = 번들 `memory_material`(Worker)+`step_contract.delegation`(CP2 Verifier) 실물 왕복 실측. 게이트 어휘·05 spec 무변경(어댑터 층 해소 — "Why Not Now" 의 어휘 변경 우려는 Desired 1 채택으로 회피). `uaf-verified:` 4트리 재실행 186+161+23+19 EXIT=0×4·신규 테스트 17케이스(실 argv 관통 왕복 포함)·검색 범위 = orchestration 2트리+uahf step-host·step-invoker 트리. 정본 = binding §3.3·트랙 원장 = `docs/backlog-k-delegation-b-ledger.md` §5-A. **Desired 2 미도입** — 사유: 05 §3.3 게이트 어휘 개정(거버넌스 무게)이고 Desired 1 이 조건의 물리 도달을 성립·조건 미반영 판정 축은 백로그 R 계열로 유보(재심 = 균일 주입의 조건 오귀속 실측 시). **Desired 3 미도입** — 사유: 채널 신설로 수기 편집 관행의 필요 소멸(명문화는 원장 밖 편집을 정당화하는 역효과). 강제 지점: 코드 — 주입 불가 형 fail-closed + `[CONDITION]`/`[CONDITION-NOTE]` 관측 + 테스트 17건.
 
 ---
 

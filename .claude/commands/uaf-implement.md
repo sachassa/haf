@@ -53,6 +53,7 @@ python orchestration/adapters/claude/orchestrate_project.py <project_root> --pha
   python orchestration/adapters/claude/resolve_gate.py <run_dir> --gate-kind {user_decision|escalation|approval-escalation} --actor {human|Advisor} [--gate-id <gate_id>] [--response "<원문>"]
   ```
   `user_decision_required`는 **사용자(human)만** 해소한다(확정 권위·UAF-INV ⑤). 구조 게이트 해소 시 산출(impl-plan.json)을 먼저 검증하고, 통과 시에만 해소 이벤트 append + 구현 task 승격(task_added revision).
+  `--response`는 기록만 되는 값이 아니다 — **구조 게이트에서 비공백 응답은 승격되는 모든 task의 `delegation.context`에 조건 항목(`[게이트 조건 — <gate_id> 해소(actor=<actor>)] <원문>`)으로 주입되어** 실행 단위 번들·CP2 검증 번들까지 도달한다(조건부 승인의 하류 전달·binding §3.3). 원 `impl-plan.json`은 무변조이며, 응답이 비면 주입 0으로 종전과 같다.
   `--gate-id`는 해소 대상 게이트를 지목한다. 같은 gateKind 게이트가 **2건 이상 동시에 pending**이면 지목이 필수다 — 무지목 호출은 후보를 열거하고 원장 무변경으로 비영 종료한다(binding §3.4). `render_gates.py`가 내는 게이트별 해소 명령에는 그 게이트의 `--gate-id`가 이미 채워져 있으므로 **복사해 그대로 실행**하면 된다.
 - **재개:**
   ```

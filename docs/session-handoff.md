@@ -577,6 +577,17 @@
 > - **미검증 축 이월 2건**: 실 LLM run 에서 재기입 예산 실증(`claude_invoker.py` 가 `request.timeout` 을 subprocess timeout 으로 소비함은 코드 정독 확인 — 라이브 관측은 다음 실 run 좌표) · Planner 선택 키 실 준수(대형 단위 판별 타당성).
 > - **★ 다음 착수(사용자 확정 2026-07-26 순서 유지)**: **② 백로그 N**(조건부 승인 하류 전달 — `resolve_gate --response` 가 provenance 전용이라 보강 반영에 Advisor 가 Worker 산출물을 직접 편집해야 했던 결함·갱신 2026-07-21(2) 실측) → **③ 백로그 M·O**(검증 구조 계열 — 횡단 결함 스윕·AC 실출력 픽스처). 그 외 갱신(16) ⑤ 목록은 순위 미배정 유지.
 
+> **🔴 갱신 2026-07-26(19) — 백로그 N 해소(조건부 승인 하류 전달·Desired 1 채택). 사용자 확정 순서 ② 완료 — 다음 = ③ 백로그 M·O.**
+>
+> 사용자 지시 = "확정 순서대로 백로그 N 착수". 트랙 원장 = `docs/backlog-k-delegation-b-ledger.md` §5-A 「백로그 N」 절(설계 D-N1~D-N8 + 보고 승격 2회 + open_question 판정 + CP2·CP3).
+>
+> - **착수 실측의 핵심**: 조건 원문의 **원장 보존은 이미 성립**해 있었다(`_append_provenance` 가 `ref.response` 동봉·기록 파일도 기록) — 결함의 정체는 정확히 **하류 전달 부재**뿐. 따라서 게이트 어휘·05 spec 무변경의 어댑터 층 해소가 성립했다.
+> - **채널**: 구조 게이트 해소의 비공백 `--response` → 승격 payload **사본**의 `delegation.context` 에 결정적 문면 `[게이트 조건 — <gate_id> 해소(actor=<actor>)] <원문>` 주입(`build_promotion_payloads` — 어떤 원장 append 보다 앞서 선구성·주입 불가 형은 원장 무오염 비영 종료 = 조건의 침묵 탈락 금지). `impl-plan.json` 바이트 무변조. 하류 도달 = 번들 `memory_material`(Worker) + `step_contract.delegation`(CP2 Verifier) — 실물 왕복 실측. 응답 공백 = 주입 0(종전 거동). 관측 = `[CONDITION]` 건수 + **`[CONDITION-NOTE]`**(context 부재로 조건만으로 신설된 단위 id 열거 — 종전엔 디스패치 시 Escalated 되었을 단위임을 표면화·차단 아님).
+> - **open_question 판정 2건**: ① 부재 context 주입의 은폐 위험 = **(b) 관측 신호 채택**(차단은 조건부 승인만 엄격화하는 비일관 — 어댑터 검증기가 애초 context 미요구) ② escalation 게이트 비대상 = **의도된 비대칭**(J 채널이 rework feedback 으로 기전달).
+> - **CP2(Advisor·재작업 1회 포함)**: 4트리 재실행 2회 — 최종 186+**161**+23+19 EXIT=0×4 · diff 전문 정독 · 독자 프로브(`%s`·`100%%`·CRLF 원문 보존 = 포맷 이중 해석 0·원본 무변조·None→신설) · 신규 테스트 17케이스(실 argv 관통 왕복 포함). 이탈 5건 수용(binding §3.2→§3.3 은 위임 문면 귀속 — B-5 규율 적용). **CP3 승인.** Desired 2·3 미도입 사유 기록(백로그 §N 해소 행).
+> - **미검증 축 이월 5건**: 실 LLM run(조건의 실 프롬프트 렌더 문면) · Worker 조건 실준수(백로그 R 계열 유보) · render_gates 표면(조건부 승인 가능함의 렌더 인지 경로 부재 — 저임팩트) · 조건 누적 시나리오 · 레거시 run 혼재.
+> - **★ 다음 착수(사용자 확정 순서의 잔여)**: **③ 백로그 M**(Cross-Unit Defect Sweep — CP2 단위별 한계·횡단 결함) **· 백로그 O**(AC 실출력 픽스처 규율·자기출제 구조). 그 외 갱신(16) ⑤ 목록 순위 미배정 유지.
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.

@@ -81,6 +81,14 @@
   | `escalation_required` | actor ∈ 정책 `escalationResolvers`(기본 `Advisor`·`human`) | Advisor 역할(주 세션) 또는 사용자가 해소. actor=`Advisor` 또는 `human` 해소 이벤트로 append. |
 
 - **부적격 해소의 물리 무효.** 부적격 actor 로 append 된 해소 이벤트도 로그에 남지만(append-only·은폐 0), `is_resolved` 가 적격성 판정에서 배제하므로 게이트는 여전히 pending 이다. 이는 코드가 소유하는 강제이며 제시 채널이 우회할 수 없다.
+- **조건부 승인의 하류 전달 — `--response` 는 기록 전용이 아니다(백로그 §N·2026-07-26).** 사용자가 게이트를 "조건부"로 승인하면(예: "로그 마스킹 적용 후 진행"), 그 조건은 원장에만 남고 실행 단위에는 닿지 않았다 — 조건이 승인의 일부인데 하류 계약에 반영되지 않는 **침묵 탈락**이다. 이 판부터 **구조 게이트(`user_decision_required`) 해소 시 비공백 `--response` 는 승격되는 모든 task 의 `delegation.context` 에 조건 항목으로 주입된다**(`resolve_gate.build_promotion_payloads`).
+  - **문면(결정적).** `[게이트 조건 — <gate_id> 해소(actor=<actor>)] <response>` 단일 문자열 항목. `gate_id`·`actor` 로 provenance 이벤트와 상호 추적하며, **타임스탬프를 넣지 않는다** — 시각은 이벤트가 소유하고 payload 는 결정적이어야 한다(같은 두 원장 재생 → 같은 바이트).
+  - **원장 분리 보존.** `impl-plan.json`(원 산출)은 **바이트 무변조**이고, 조건 **원문**은 provenance 이벤트(`gate-resolution-provenance`·`ref.response`)가 계속 소유하며, 주입본은 revision payload(하류 소비 뷰)에만 실린다. 세 원장이 각자의 역할을 유지한다.
+  - **적용 범위 = 승격 전 task 균일(D-N4).** task 별 조건 라우팅은 도입하지 않는다 — 응답이 단일 원문이므로 분배 근거가 없다. 하류 단위가 자기에게 해당하는 조건을 스스로 식별한다(브리프 자족 원칙).
+  - **타입 규칙·fail-closed(D-N3).** `context` 가 리스트면 사본에 append, 문자열이면 `[원문, 조건]` 으로 승격, **부재/`null`이면 `[조건]` 신설**(빈 채널). 그 외 형(객체 등)이면 조건을 담을 곳이 없으므로 **비영 종료·원장 무오염**으로 차단한다 — 채널 자신이 조건의 침묵 탈락을 재생산하지 않는다. 주입 payload 선구성은 **어떤 원장 append 보다 앞서** 수행된다(검증-먼저 패턴 동형).
+  - **context 신설의 관측 신호.** context 부재로 조건만 담아 신설한 단위는 `[CONDITION-NOTE]` 라인에 **id 로 열거**된다 — 그 단위는 종전이라면 Host 가 디스패치 직전 `missing_fields`(`delegation.context`)로 잡아 Escalated 시켰을 단위이고, 주입으로 디스패치 가능해지기 때문이다. 조건부 승인이 **별개 결함(위임 context 누락)을 가리지 않도록** 표면화하는 것이며 **차단이 아니다**(rc 무변). 차단하지 않는 근거: 어댑터 검증기가 애초에 `delegation.context` 를 요구하지 않아 부재 계획은 조건 없이도 승격 가능하므로, 조건부 승인만 더 엄격하게 만드는 것은 비일관이다.
+  - **관측(D-N7).** 주입 시 `[CONDITION]` 라인이 주입 건수와 원문 출처(provenance 이벤트)를 명시한다. 응답이 공백(기본)이면 주입 0 이고 이 라인도 없다 — 종전 거동 바이트 동일.
+  - **하류 도달 경로.** 승격 payload → fold(`_copy_task`) → `Step.from_dict` → `assemble_bundle` 의 `memory_material`(Worker fresh-context 번들) · CP2 `verify_bundle` 의 `step_contract.delegation`(Verifier). escalation 게이트의 `--response` 는 종전대로 해소 이벤트 ref 동봉·재작업 지시 전파 경로다(§3.4).
 - **해소 어휘의 현행 형태(인용).** orchestration 해소 어휘는 재시도 예산 비계수를 이미 충족한다 — `append_gate_resolution`(03 10필드 재사용·`ref.kind=gate-resolved`·outcome=pass·retry_count=0)은 step 재시도 예산(`outcome=fail` 계수)을 소모하지 않는다(§7 OQ-PO-B2 해소). UAHF step-host 층의 해소=fail 계수 결합(OQ-SH-5·step-hosting-binding §7)은 무수정 경계상 별도 트랙 소관이며, 해소 취소(revoke) 어휘는 OQ-PO-B6 저순위 이월이다.
 
 ### §3.4 실행 에스컬레이션(Escalated 정지)의 해소 채널 (백로그 §J 본체 해소·2026-07-26)
@@ -316,6 +324,27 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 ---
 
 ## §8. 개정 이력
+
+- **2026-07-26 (조건부 승인 하류 전달 — 백로그 §N 해소).** 구조 게이트 해소의 비공백
+  `--response` 를 승격 payload 의 `delegation.context` 로 주입하는 채널을 신설했다
+  (`resolve_gate.format_condition`·`build_promotion_payloads`). 조건 원문의 **원장 보존은
+  이미 성립**했으므로(`_append_provenance` 의 `ref.response`) 이번 판이 더한 것은 **하류 전달**
+  뿐이다 — 조건이 승인의 일부인데 실행 단위 브리프에 닿지 않던 침묵 탈락의 해소.
+  주입은 payload **사본**에만 이뤄져 `impl-plan.json` 은 바이트 무변조이고, 선구성이 어떤
+  원장 append 보다 앞서므로 주입 불가 형(객체 등)은 원장 무오염으로 차단된다. 문면은
+  타임스탬프 없는 결정적 형태(`[게이트 조건 — <gate_id> 해소(actor=<actor>)] <response>`).
+  응답 공백(기본)이면 주입 0·`[CONDITION]` 라인 없음 = 종전 거동 바이트 동일. context 부재로
+  신설한 단위는 `[CONDITION-NOTE]` 로 id 열거(관측 신호·차단 아님 — 조건 주입이 위임 context
+  누락이라는 별개 결함을 가리지 않게 한다). §3.3 에 계약 문면 7항 추가(§ 번호 불이동)·`--response` help 및 모듈 docstring 4)항 동기화·
+  `.claude/commands/uaf-implement.md` 사용법 1문 가법. 신규 테스트 17케이스
+  (`test_resolve_gate.py` — 승격 3건 전부에 주입·결정적 문면·gate_id/actor 동봉·미지정/공백
+  3종 주입 0·레거시 context 부재 계획 통과·리스트 사본 append·문자열 2원소 승격·불가 형
+  차단+원장 sha 무변·무응답 시 형 무검사·검증기 context 무접촉·`[CONDITION]` 건수·
+  `[CONDITION-NOTE]` 신설 id 열거/미신설 시 부재/혼재 계획 부분 신설/무응답 시 부재 4건·**실
+  argv→revision payload→fold→엔진 run→Worker `memory_material`+CP2 `step_contract` 실물
+  왕복** 1건 — 계수 근거: `def test_` 계수로 파일 63→80·어댑터 트리 144→161).
+  `uaf-verified:` 접촉 경계 = `git status` 목록 대조 — 엔진(`orchestration/framework/**`)·
+  05 spec·게이트 어휘·PO-INV·Frozen·`uahf/**`·scaffold-template 무접촉(재정의 0).
 
 - **2026-07-26 (per-unit timeout — 백로그 §L Desired 4 해소).** 단위별 실행 예산을 impl-plan
   스키마의 **선택 키** `timeout`(양의 정수·초)으로 도입하고 세 층에 배선했다: (i) 검증 —

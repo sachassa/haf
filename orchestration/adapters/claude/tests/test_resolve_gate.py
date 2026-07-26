@@ -1474,5 +1474,348 @@ class TestPerUnitTimeoutRoundTrip(unittest.TestCase):
                              "미지정 단위의 전 요청은 전역 예산: %r" % (inv.seen,))
 
 
+# --------------------------------------------------------------------------
+# 백로그 N — 조건부 승인의 하류 전달 (D-N1·D-N2·D-N3·D-N7 + 접합부 실물 왕복)
+#
+# 결함: 사용자가 "조건부 승인"으로 단 조건이 provenance 원장에만 남고 실행 단위에는 닿지
+# 않았다. 채널 = 구조 게이트 해소 시 승격 payload 의 delegation.context 주입(원 impl-plan
+# 파일은 무변조 · 원장은 원문을 계속 소유).
+# --------------------------------------------------------------------------
+_COND_RESPONSE = "로그 마스킹을 적용한 뒤 진행하라"
+
+
+def _plan_with_context(ctx):
+    """모든 task 의 delegation.context 를 ctx 로 고정한 유효 계획(그 외 필드는 기존 sentinel)."""
+    plan = _valid_plan()
+    for t in plan["tasks"]:
+        t["delegation"] = dict(_SENTINEL_DELEG, context=ctx)
+    return plan
+
+
+def _promoted_payloads(run: Path):
+    return [r.get("payload") or {} for r in _read_jsonl(run / "revisions.jsonl")
+            if r.get("kind") == "task_added"]
+
+
+def _contexts_of(run: Path):
+    return [((p.get("delegation") or {}).get("context")) for p in _promoted_payloads(run)]
+
+
+def _resolve(run: Path, *args):
+    """구조 게이트를 실 CLI 경로(main)로 해소한다 — 표준출력을 함께 포획해 반환."""
+    import io
+    from contextlib import redirect_stdout
+
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human", *args])
+    return rc, buf.getvalue()
+
+
+class TestGateConditionInjection(unittest.TestCase):
+    """D-N1·D-N2 — 비공백 응답이 승격 payload 전건의 delegation.context 에 주입된다."""
+
+    def _expected(self, gate_id="g-struct", actor="human", response=_COND_RESPONSE):
+        return "[게이트 조건 — %s 해소(actor=%s)] %s" % (gate_id, actor, response)
+
+    def test_condition_reaches_every_promoted_task(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct",
+                             plan=_plan_with_context(["docs/solution-design.md"]))
+            plan_sha = _sha(run / "workspace" / "impl-plan.json")
+
+            rc, _out = _resolve(run, "--response", _COND_RESPONSE)
+            self.assertEqual(rc, 0)
+
+            # (a) 승격 전건(3건)에 조건 항목이 실린다 — D-N4 균일 적용.
+            ctxs = _contexts_of(run)
+            self.assertEqual(len(ctxs), 3, "impl 2 + milestone 1 전건 승격")
+            for ctx in ctxs:
+                self.assertEqual(ctx, ["docs/solution-design.md", self._expected()])
+
+            # (b) 원 산출(impl-plan.json)은 바이트 무변조 — 주입은 payload 사본에만.
+            self.assertEqual(_sha(run / "workspace" / "impl-plan.json"), plan_sha)
+
+            # (c) 조건 **원문**은 provenance 이벤트가 계속 소유한다(원장 분리 보존).
+            prov = [e for e in _events(run)
+                    if (e.get("ref") or {}).get("kind") == "gate-resolution-provenance"]
+            self.assertEqual(len(prov), 1)
+            self.assertEqual(prov[0]["ref"]["response"], _COND_RESPONSE)
+
+    def test_condition_text_is_deterministic(self):
+        # D-N2 — 타임스탬프 없음(같은 입력 → 같은 문면). gate_id·actor 로 이벤트와 상호 추적.
+        self.assertEqual(rg.format_condition("g-1", "human", "조건"),
+                         "[게이트 조건 — g-1 해소(actor=human)] 조건")
+
+    def test_gate_id_and_actor_are_embedded(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "gate-xyz",
+                             plan=_plan_with_context(["docs/a.md"]))
+            rc, _out = _resolve(run, "--response", _COND_RESPONSE)
+            self.assertEqual(rc, 0)
+            for ctx in _contexts_of(run):
+                self.assertEqual(ctx[-1], self._expected(gate_id="gate-xyz"))
+
+
+class TestGateConditionBehaviorPreserved(unittest.TestCase):
+    """거동 보존 — 응답이 없거나 공백이면 주입 0(승격 payload = plan task 동일)."""
+
+    def _assert_no_injection(self, run: Path, plan):
+        payloads = _promoted_payloads(run)
+        self.assertEqual(payloads, plan["tasks"], "주입 0 — 승격 payload 가 plan task 와 동일")
+
+    def test_absent_response_injects_nothing(self):
+        with tempfile.TemporaryDirectory() as td:
+            plan = _plan_with_context(["docs/a.md"])
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=plan)
+            rc, out = _resolve(run)
+            self.assertEqual(rc, 0)
+            self._assert_no_injection(run, plan)
+            self.assertNotIn("[CONDITION]", out, "미주입 시 조건 라인 없음(D-N7)")
+
+    def test_blank_response_injects_nothing(self):
+        for blank in ("", "   ", "\t\n "):
+            with self.subTest(blank=repr(blank)), tempfile.TemporaryDirectory() as td:
+                plan = _plan_with_context(["docs/a.md"])
+                run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=plan)
+                rc, out = _resolve(run, "--response", blank)
+                self.assertEqual(rc, 0)
+                self._assert_no_injection(run, plan)
+                self.assertNotIn("[CONDITION]", out)
+
+    def test_legacy_plan_without_context_still_resolves(self):
+        # 기존 픽스처(_valid_plan — delegation.context 부재)가 조건부 승인에서도 통과한다.
+        # 부재는 "담을 수 없는 형"이 아니라 빈 채널이므로 [조건] 신설로 처리한다.
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=_valid_plan())
+            rc, _out = _resolve(run, "--response", _COND_RESPONSE)
+            self.assertEqual(rc, 0)
+            for ctx in _contexts_of(run):
+                self.assertEqual(
+                    ctx, ["[게이트 조건 — g-struct 해소(actor=human)] " + _COND_RESPONSE])
+
+
+class TestGateConditionCreatedContextNotice(unittest.TestCase):
+    """context 부재 신설의 관측 신호 — 조건 주입이 위임 결함을 가리지 않게 표면화(차단 아님).
+
+    부재 단위는 종전이라면 Host 가 디스패치 직전 missing_fields(delegation.context)로 잡아
+    Escalated 시켰을 단위다. 주입으로 디스패치 가능해지므로 그 사실을 침묵시키지 않는다.
+    """
+
+    def test_absent_context_is_reported_with_task_ids(self):
+        with tempfile.TemporaryDirectory() as td:
+            plan = _valid_plan()                       # delegation.context 부재.
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=plan)
+
+            rc, out = _resolve(run, "--response", _COND_RESPONSE)
+
+            self.assertEqual(rc, 0, "관측 신호일 뿐 차단이 아니다(rc 무변)")
+            self.assertIn("[CONDITION-NOTE]", out)
+            for t in plan["tasks"]:
+                self.assertIn(t["id"], out.split("[CONDITION-NOTE]")[1],
+                              "신설된 단위 id 가 주의 라인에 열거되어야 한다")
+            self.assertIn("delegation.context 부재", out)
+            self.assertIn("Escalated", out)
+
+    def test_present_list_context_emits_no_notice(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct",
+                             plan=_plan_with_context(["docs/a.md"]))
+            rc, out = _resolve(run, "--response", _COND_RESPONSE)
+            self.assertEqual(rc, 0)
+            self.assertIn("[CONDITION]", out, "주입 자체는 일어났다")
+            self.assertNotIn("[CONDITION-NOTE]", out, "context 실재 시 주의 라인 없음")
+
+    def test_created_list_is_reported_per_task(self):
+        # 혼재 계획 — 일부만 context 부재. 신설된 단위만 목록에 오른다(순수 함수 층 직접 판정).
+        plan = _valid_plan()
+        plan["tasks"][1]["delegation"] = dict(_SENTINEL_DELEG, context=["docs/a.md"])
+        _payloads, errors, injected, created = rg.build_promotion_payloads(
+            plan["tasks"], "g-struct", "human", _COND_RESPONSE)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(injected, 3)
+        self.assertEqual(created, [plan["tasks"][0]["id"], plan["tasks"][2]["id"]])
+
+    def test_no_response_emits_no_notice(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=_valid_plan())
+            rc, out = _resolve(run)
+            self.assertEqual(rc, 0)
+            self.assertNotIn("[CONDITION-NOTE]", out, "주입 0 이면 신설도 0")
+
+
+class TestGateConditionTypeRules(unittest.TestCase):
+    """D-N3 — list=사본 append · str=[원문, 조건] · 그 외 형=원장 무오염 비영 종료."""
+
+    def test_list_context_appends_on_a_copy(self):
+        # 원본 plan 객체는 변조되지 않는다(사본 규율) — 순수 함수 층에서 직접 판정.
+        plan = _plan_with_context(["docs/a.md", "docs/b.md"])
+        original = json.loads(json.dumps(plan))
+        payloads, errors, injected, created = rg.build_promotion_payloads(
+            plan["tasks"], "g-struct", "human", _COND_RESPONSE)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(injected, 3)
+        self.assertEqual(created, [], "기존 context 가 있으므로 신설 0")
+        self.assertEqual(plan, original, "plan 객체 무변조(사본에만 주입)")
+        for p in payloads:
+            self.assertEqual(len(p["delegation"]["context"]), 3)
+            self.assertEqual(p["delegation"]["context"][:2], ["docs/a.md", "docs/b.md"])
+
+    def test_string_context_is_promoted_to_two_element_list(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct",
+                             plan=_plan_with_context("docs/single.md"))
+            rc, _out = _resolve(run, "--response", _COND_RESPONSE)
+            self.assertEqual(rc, 0)
+            for ctx in _contexts_of(run):
+                self.assertEqual(
+                    ctx,
+                    ["docs/single.md",
+                     "[게이트 조건 — g-struct 해소(actor=human)] " + _COND_RESPONSE])
+
+    def test_unsupported_context_type_aborts_with_untouched_ledger(self):
+        # dict context + 비공백 응답 → 조건이 담길 곳이 없다. 침묵 탈락 대신 비영 종료하고
+        # 원장은 바이트 무변경이어야 한다(주입 선구성이 어떤 append 보다 앞선다).
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct",
+                             plan=_plan_with_context({"docs": "a.md"}))
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+
+            rc, _out = _resolve(run, "--response", _COND_RESPONSE)
+
+            self.assertNotEqual(rc, 0, "주입 불가 형은 비영 종료")
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before, "events.jsonl 바이트 무변경")
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before,
+                             "revisions.jsonl 바이트 무변경")
+
+    def test_unsupported_context_type_passes_when_no_condition(self):
+        # 대조 — 응답이 없으면 dict context 라도 종전대로 통과한다(가법 보장·주입 경로만 판정).
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct",
+                             plan=_plan_with_context({"docs": "a.md"}))
+            rc, _out = _resolve(run)
+            self.assertEqual(rc, 0, "주입 0 경로는 context 형을 보지 않는다")
+
+    def test_context_is_not_inspected_by_delegation_reference_check(self):
+        # 검증 축(정본 열거): 어댑터 검증기는 delegation.task/done 참조형만 본다 —
+        # context 에 항목이 늘어도 검증과 충돌하지 않는다(주입의 전제).
+        for ctx in (["docs/a.md", "조건"], "docs/a.md", {"docs": "a.md"}, None):
+            with self.subTest(ctx=ctx):
+                self.assertEqual(rg.validate_impl_plan_adapter(_plan_with_context(ctx)), [])
+
+
+class TestGateConditionOutputSurface(unittest.TestCase):
+    """D-N7 — 주입은 조용히 일어나지 않는다(건수 명시)."""
+
+    def test_condition_line_reports_count(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct",
+                             plan=_plan_with_context(["docs/a.md"]))
+            rc, out = _resolve(run, "--response", _COND_RESPONSE)
+            self.assertEqual(rc, 0)
+            self.assertIn("[CONDITION]", out)
+            self.assertIn("승격 3 건", out)
+
+
+class _BundleRecordingInvoker:
+    """수신 번들을 역할별로 기록하는 stub(실 CLI 미발화) — 조건의 물리 도달 실측용."""
+
+    def __init__(self):
+        self.exec_material = []     # (step_id, bundle.memory_material)
+        self.verify_context = []    # (step_id, verify_bundle.step_contract.delegation.context)
+
+    def invoke(self, request):
+        from invoker import InvokeResult, KIND_COMPLETION
+
+        bundle = request.bundle or {}
+        contract = bundle.get("step_contract") or {}
+        step_id = contract.get("id")
+        if request.role == "Verifier":
+            self.verify_context.append(
+                (step_id, (contract.get("delegation") or {}).get("context")))
+            return InvokeResult(kind=KIND_COMPLETION,
+                                completion={"verdict": "Pass", "rework": None}, ref="vd")
+        self.exec_material.append((step_id, bundle.get("memory_material")))
+        return InvokeResult(
+            kind=KIND_COMPLETION,
+            completion={"artifacts": [], "self_check": "done", "failures": "없음",
+                        "open_questions": "없음", "verify_basis": "self"},
+            ref="wr",
+        )
+
+    def material_for(self, step_id):
+        return [m for (sid, m) in self.exec_material if sid == step_id]
+
+    def verify_for(self, step_id):
+        return [c for (sid, c) in self.verify_context if sid == step_id]
+
+
+class TestGateConditionRoundTrip(unittest.TestCase):
+    """§5.7 접합부 실물 왕복 — 생산 실물을 소비자에게 실제로 먹인다(격리 검증 아님).
+
+    실 CLI argv → revision payload → active_graph fold → 엔진 run → Worker 실행 번들의
+    memory_material · CP2 verify 번들의 step_contract.delegation.context 양쪽에서 조건을
+    실측한다. 중간 어느 접합부(fold·Step.from_dict 화이트리스트·번들 조립)에서 탈락해도
+    마지막 단계가 깨진다.
+    """
+
+    BASE_CONTEXT = "docs/solution-design.md"
+
+    @staticmethod
+    def _fill_delegation(task):
+        # 실 엔진 run 까지 가려면 위임 8필드가 채워져 있어야 한다(미충족 시 Host 가 Consult
+        # 에서 에스컬레이션해 디스패치 0). 검증 대상은 조건 전파이므로 전용 픽스처를 둔다.
+        task["delegation"] = dict(
+            _SENTINEL_DELEG,
+            **{"from": "Advisor", "to": "Worker", "input": "설계 문서",
+               "output": task["ownedBoundary"][0],
+               "context": [TestGateConditionRoundTrip.BASE_CONTEXT],
+               "constraints": "워크스페이스 밖 파일 금지"},
+        )
+        return task
+
+    def test_condition_reaches_worker_bundle_and_cp2(self):
+        with tempfile.TemporaryDirectory() as td:
+            plan = _valid_plan()
+            for t in plan["tasks"]:
+                self._fill_delegation(t)
+            unit_id = plan["tasks"][0]["id"]        # impl-auth
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=plan,
+                             graph_tasks=[self._fill_delegation(_seed_proposal_task())])
+
+            expected = "[게이트 조건 — g-struct 해소(actor=human)] " + _COND_RESPONSE
+
+            # ① 실 resolver CLI 경로(픽스처 우회 0).
+            rc, out = _resolve(run, "--response", _COND_RESPONSE)
+            self.assertEqual(rc, 0)
+            self.assertIn("[CONDITION]", out)
+
+            # ② revision 원장 payload 에 주입 잔존.
+            for ctx in _contexts_of(run):
+                self.assertEqual(ctx, [self.BASE_CONTEXT, expected])
+
+            # ③ active_graph fold 에도 잔존한다(엔진이 읽는 파생 뷰).
+            inv = _BundleRecordingInvoker()
+            orch, _cfg = rg.build_orchestrator_k(run, inv)
+            folded = {t.get("id"): t for t in orch.active_graph().get("tasks") or []}
+            self.assertEqual(folded[unit_id]["delegation"]["context"],
+                             [self.BASE_CONTEXT, expected])
+
+            # ④ 실 엔진 run — Worker 실행 번들과 CP2 검증 번들 양쪽에서 실측.
+            orch.run()
+            self.assertTrue(inv.exec_material, "엔진이 실제로 디스패치했어야 한다")
+            material = inv.material_for(unit_id)
+            self.assertTrue(material, "대상 단위가 디스패치되지 않았다: %r" % (inv.exec_material,))
+            for m in material:
+                self.assertEqual(m, [self.BASE_CONTEXT, expected],
+                                 "Worker fresh-context 번들 memory_material 에 조건 도달")
+            verified = inv.verify_for(unit_id)
+            self.assertTrue(verified, "CP2 verify 번들이 없다: %r" % (inv.verify_context,))
+            for c in verified:
+                self.assertIn(expected, c, "CP2 verify 번들 step_contract 에도 조건 도달")
+
+
 if __name__ == "__main__":
     unittest.main()

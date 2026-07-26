@@ -34,6 +34,12 @@
          proposingStepRef=<graph.json proposal 노드 id 파생>, gateEventRef=gate_id) 로 승격
          (accept_revision 이 gate-pass 이벤트 실재를 재검증). proposingStepRef 는 하드코딩이
          아니라 run_dir/graph.json 의 proposal 노드에서 파생한다(F4↔F5 교차 계약).
+      4) **조건부 승인의 하류 전달(백로그 N·D-N1~D-N3)**: `--response` 가 비공백이면 승격
+         payload **사본**의 delegation.context 에 조건 항목을 주입한다 — 조건이 원장에만
+         남고 실행 단위에는 닿지 않던 결함의 해소다. impl-plan.json 파일은 바이트 무변조
+         (원 산출 보존)이고, 주입 payload 는 revision 원장(소비 뷰)에만 실린다. 주입 대상
+         payload 는 **어떤 원장 append 보다 먼저** 선구성한다 — 주입 불가 타입은 원장
+         무오염으로 차단해 조건이 침묵 탈락하지 않게 한다(검증-먼저 패턴 동형).
   - escalation 게이트(CP3 non-Pass escalation·실행 에스컬레이션 포함): actor ∈ escalationResolvers
     자격 확인 후 append_gate_resolution(actor, response=...) append. revision 승격 없음
     (escalation 은 분해 제안 아님). --response 원문은 해소 이벤트 ref 에 동봉되어 엔진이 재작업
@@ -411,6 +417,88 @@ def _write_record(
 
 
 # ==========================================================================
+# 조건부 승인의 하류 전달 — 승격 payload delegation.context 주입 (백로그 N·D-N1~D-N3)
+# ==========================================================================
+# 조건 원문의 **원장 보존**은 이미 성립한다(_append_provenance 가 ref.response 에 동봉·
+# _write_record 도 기록). 부재했던 것은 **하류 전달**뿐이다 — 사용자가 "조건부 승인"한 조건이
+# 원장에만 남고 실행 단위(fresh-context 번들)에는 닿지 않았다. 아래 함수가 그 채널이다:
+#   승격 payload.delegation.context → fold(_copy_task) → Step.from_dict → assemble_bundle 의
+#   memory_material(= Worker 번들) · CP2 verify_bundle 의 step_contract.delegation(= Verifier).
+def format_condition(gate_id, actor: str, response: str) -> str:
+    """D-N2 주입 문면(결정적) — gate_id·actor 로 provenance 이벤트와 상호 추적.
+
+    타임스탬프를 넣지 않는다: 시각은 이벤트가 소유하며, payload 는 결정적이어야 한다
+    (같은 입력 → 같은 원장 바이트).
+    """
+    return "[게이트 조건 — %s 해소(actor=%s)] %s" % (gate_id, actor, response)
+
+
+def build_promotion_payloads(tasks, gate_id, actor: str, response: str):
+    """승격할 payload 목록을 선구성한다 — (payloads, errors, injected, created) 반환. 순수 함수.
+
+    `created` = context **부재/None** 이어서 조건만으로 context 를 신설한 task id 목록. 이
+    경우 종전이라면 Host 가 디스패치 직전 `missing_fields` 로 `delegation.context` 누락을
+    잡아 Escalated 시켰을 단위가, 조건 주입으로 **디스패치 가능**해진다. 조건부 승인이
+    별개 결함(위임 context 누락)을 가리는 셈이므로 호출부가 이 목록을 관측 신호로
+    표면화한다(차단 아님 — 은폐 방지).
+
+    - response 가 공백(기본 "")이면 **주입 0**: plan task 객체를 그대로 통과시킨다(종전 거동
+      바이트 동일). 비공백이면 각 task 의 **사본**(dict(st) + delegation 사본 + context 사본)
+      에만 조건을 얹는다 — `plan` 객체·impl-plan.json 파일은 무변조다.
+    - D-N3 타입 규칙: context 가 list → 사본에 append · 문자열 → [원문, 조건] 2원소 리스트로
+      승격 · **그 외 형(dict 등) → 오류**(호출부가 원장 append 전에 비영 종료). 조건이 담길
+      곳이 없는데 조용히 넘어가면 N 이 고발한 결함(조건의 침묵 탈락)을 채널 자신이
+      재생산한다.
+    - context **부재/None** 은 오류가 아니라 `[조건]` 신설로 처리한다(D-N3 미명시 케이스).
+      근거: 어댑터 검증기(validate_impl_plan_adapter)는 delegation.context 를 요구하지 않아
+      부재 계획이 실재하며(기존 픽스처·기존 통과 경로), 이를 오류로 하면 조건부 승인이
+      기존 유효 계획을 거부하게 된다. 부재는 "담을 수 없는 형"이 아니라 "빈 채널"이다.
+    - errors 는 어떤 원장 append 보다 먼저 호출부에 돌아간다(원장 무오염).
+    """
+    text = response.strip() if isinstance(response, str) else ""
+    if not text:
+        # 주입 0 — 종전 거동 유지(payload 는 plan task 원본 그대로).
+        return list(tasks), [], 0, []
+
+    condition = format_condition(gate_id, actor, text)
+    payloads: list = []
+    errors: list = []
+    created: list = []
+    injected = 0
+    for i, st in enumerate(tasks):
+        where = "tasks[%d]" % i
+        payload = dict(st)                      # 얕은 사본 — 원본 task dict 무변조.
+        deleg = payload.get("delegation")
+        if not isinstance(deleg, dict):
+            errors.append(
+                "%s delegation 이 객체(dict)가 아니어서 게이트 조건을 주입할 수 없다: %s"
+                % (where, type(deleg).__name__)
+            )
+            continue
+        deleg = dict(deleg)                     # delegation 사본.
+        ctx = deleg.get("context")
+        if ctx is None:
+            new_ctx = [condition]
+            created.append(payload.get("id"))
+        elif isinstance(ctx, list):
+            new_ctx = list(ctx) + [condition]   # context 사본에 append.
+        elif isinstance(ctx, str):
+            new_ctx = [ctx, condition]
+        else:
+            errors.append(
+                "%s delegation.context 가 list·문자열·부재 중 어느 것도 아니어서 게이트 조건을 "
+                "주입할 수 없다(조건의 침묵 탈락 금지·백로그 N): %s"
+                % (where, type(ctx).__name__)
+            )
+            continue
+        deleg["context"] = new_ctx
+        payload["delegation"] = deleg
+        payloads.append(payload)
+        injected += 1
+    return payloads, errors, injected, created
+
+
+# ==========================================================================
 # 구조 게이트(user_decision) 해소 + impl-plan 검증 + 구현 task 승격
 # ==========================================================================
 def resolve_structural(run_dir: Path, gate_id, actor: str, response: str, policy: GatePolicy) -> int:
@@ -470,6 +558,20 @@ def resolve_structural(run_dir: Path, gate_id, actor: str, response: str, policy
         )
         return 3
 
+    # (2.5) 조건부 승인 하류 전달(백로그 N) — 승격 payload 를 **선구성**한다. 주입 불가 타입은
+    #       여기서 비영 종료하므로 어떤 원장 append 도 일어나지 않는다(원장 무오염 — (1)·(1.5)
+    #       검증-먼저 패턴과 동형). response 공백이면 주입 0·plan task 원본 그대로다.
+    promotion_payloads, inject_errors, injected, created_context = build_promotion_payloads(
+        plan["tasks"], gate_id, actor, response
+    )
+    if inject_errors:
+        print("[REJECT] 게이트 조건을 승격 payload 에 주입할 수 없다 — 조건의 침묵 탈락을 "
+              "허용하지 않는다(백로그 N):", file=sys.stderr)
+        for e in inject_errors:
+            print("  - %s" % e, file=sys.stderr)
+        print("      (게이트 미해소·원장 무오염 — 이벤트/revision 0 append.)", file=sys.stderr)
+        return 1
+
     # (3) 적격 → provenance + 해소 이벤트 append.
     log = EventLog(JsonlEventStore(str(run_dir / "events.jsonl")))
     _append_provenance(log, gate_id, gate_kind, actor, response, phase="structure")
@@ -487,7 +589,7 @@ def resolve_structural(run_dir: Path, gate_id, actor: str, response: str, policy
     #     (accept_revision 이 gate-pass 이벤트 실재를 재검증).
     orch, _ = build_orchestrator_k(run_dir, _NoInvoke())
     accepted = []
-    for st in plan["tasks"]:
+    for st in promotion_payloads:
         try:
             rev = orch.accept_revision(
                 KIND_TASK_ADDED, st, proposingStepRef=proposing_step_ref, gateEventRef=gate_id
@@ -507,6 +609,20 @@ def resolve_structural(run_dir: Path, gate_id, actor: str, response: str, policy
           % (len(accepted), proposing_step_ref, gate_id))
     for seq, sid, ut in accepted:
         print("  - seq=%s id=%s unitType=%s" % (seq, sid, ut))
+    if injected:
+        # D-N7 — 주입은 조용히 일어나지 않는다. 조건 원문의 출처는 provenance 이벤트다
+        # (원장이 원본을 소유·payload 는 하류 소비 뷰).
+        print("[CONDITION] 해소 응답을 승격 %d 건의 delegation.context 에 주입 "
+              "(조건 원문 출처 = events.jsonl gate-resolution-provenance·gate_id=%s). "
+              "impl-plan.json 은 무변조." % (injected, gate_id))
+    if created_context:
+        # 관측 신호(차단 아님·rc 무변) — 조건 주입이 별개 결함(위임 context 누락)을 가리는
+        # 것을 침묵시키지 않는다. 종전이라면 Host 가 디스패치 직전 missing_fields 로 잡아
+        # Escalated 시켰을 단위다.
+        print("[CONDITION-NOTE] 다음 단위는 delegation.context 부재 — 게이트 조건만으로 "
+              "신설했다: %s" % ", ".join(str(t) for t in created_context))
+        print("                 종전에는 디스패치 시 context 누락으로 Escalated 되었을 "
+              "단위다(조건 주입이 위임 결함을 가리지 않도록 표면화·차단 아님).")
     return 0
 
 
@@ -587,7 +703,11 @@ def main(argv=None) -> int:
     )
     parser.add_argument(
         "--response", default="",
-        help="해소 응답 원문(선택·기록용). 시뮬레이션 아님.",
+        help="해소 응답 원문(선택). 시뮬레이션 아님. 원장에 기록될 뿐 아니라 **하류로 전달**된다: "
+             "구조 게이트(user_decision)에서는 비공백 응답이 승격되는 모든 task 의 "
+             "delegation.context 에 조건 항목으로 주입되어(백로그 N) 실행 단위 번들·CP2 "
+             "검증 번들에 도달하고, escalation 게이트에서는 해소 이벤트 ref 에 동봉되어 "
+             "재작업 지시로 전파된다. 조건부 승인은 이 인자로 표현한다.",
     )
     parser.add_argument(
         "--gate-id", default=None,

@@ -331,5 +331,5 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 
 ## §15. 개정 이력
 
-- **2026-07-27 (정합) 절차 비례화 트랙 Wave 4** — Discovery 경량 프로파일 신설 + Entry 참조 배선 1행. `policy/lightweight-policy.yaml` 신설(`budget` total 20/soft 15/hard 20/perDimension 5·5·3·3·4(합 20)/reentryTopUpMax 5 = 사용자 확정 Q-5 + 표준의 산술 절반·비율 보존 · `thresholds` 5축 전부 존재·표준과 **동일 값**(θ 하향 0·차원 삭제 0) · `termination`·`conflictGate` 표준과 동일 문면 — 필수 코어 필드 면제 문면 0). **§8.3 신설**(무침습 append — §8.1·§8.2 문면 무변경·§10 이하 절 번호 보존): ref 해소 규약 `<ref>` → `policy/<ref>-policy.yaml`(기존 `default` 에서 귀납·창설 0) · 프로파일 2종 값 대조표 · 설계된 트레이드오프(예산 절반 × θ 동일 → hard 경계 시 T20/T15 정상 경로) · 미해소 3항(문항 수 직접 감소 아님·침묵 생략 금지 무약화·§8.2 (가) θ 드리프트 미정정). 동반 정정 = §2 D5 행·§13 표의 `policy/` 실재 상태를 프로파일 2종으로 갱신(L-07 실측 서술). 데이터 배선 = `entry/adapters/claude/entry-registry.json` 행 6(brownfield) `policy.ref` `default` → `lightweight`(값 1개 교체·행 6 외 무촉) + 그 값에 결합된 테스트 단정 1줄 동기(`test_entry_resolve.py` `test_case3`). 실측: `entry_resolve.py --entry continue` brownfield 실행 exit 0(`matchedRow` 6 · `policy.ref` `lightweight`) · `pytest entry/.../tests` 22 passed exit 0 · `entry_resolve.py`·`discovery/specs/02-discovery.md`·`discovery-interview/SKILL.md` diff hunk **0**. 02 spec 수정 0(계약 무변경·가법). 사용자 확정 Q-5(2026-07-26). | Worker (Advisor 위임)
-- **2026-07-26 (정합) md 슬림화 Wave 4** — 비계약 격리 개정: 메타 템플릿·해소 OQ·경위 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c. Advisor 위임. 동반 정정 = §2·§4·§8·§13의 `discovery-data/` 미존재 서술을 실측 상태로 갱신(§13 표).
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
+

@@ -26,14 +26,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v0.7 Draft | 최초 작성. Decompose 연산(07 §3.1-A)의 입력·출력·완료 조건 3건·실패 reason 4종을 인터페이스 인스턴스로 정본 그대로 보존(§2, 재정의·확장 0). 완료 조건 3건을 예/아니오 판정 가능한 검사 규칙 4개(C1 완료 조건 보유→`MissingCompletionCriteria` · C2 인터페이스 계약 보유→`MissingInterfaceContract` · C3 소유 경계 비중첩→`OwnershipOverlap` · C4 의존 비순환→`DependencyCycle`)로 전개하고, 각 검사 실패를 해당 reason 코드에 1:1 결합(§3, verifier-protocol §2 관례 동형 — 검사 규칙↔완료 조건·불변·reason 대응표 + 각 검사 예/아니오 절차·검사 범위). 병렬 집합 도출 문면(07 §3.2-A 말미) 보존 + 검사 가능 전개(D1 상호 비의존·D2 경계 비중첩, 새 reason 신설 0 — §4). Work Graph·Task·공통 Failure Report 포맷은 work-graph.md §2·§3·§4를 § 포인터로만 소비(필드 표 재게재·재정의 0, 이중 갱신 방지 — §5). Dispatch(07 §3.1-B)·Merge(07 §3.1-C)는 비소관(별도 인스턴스 문서 소관, 동시 작성 형제 불인용 — 07 R2), 물리 실현(분해 수행 주체 물리 채널·직렬화·물리 위치)은 Adapter Binding 소관 포인터. 07·02 계약 재정의 0, Glossary 밖 새 용어 0, 금지 토큰 0(자가 전수 스캔 — §6). | Worker (Advisor 위임, Task WF3) |
-| 2026-07-06 | v0.7 Baseline | v0.7 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·표-산문 이중·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

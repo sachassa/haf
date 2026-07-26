@@ -192,4 +192,5 @@ policy: <Discovery Policy 참조>     # Policy as Data. 충돌 조합은 사용�
 
 ## §13. 개정 이력
 
-- **2026-07-26 (정합) md 슬림화 Wave 4** — 비계약 격리 개정: 메타 템플릿·해소 OQ·경위 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c. Advisor 위임.
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
+

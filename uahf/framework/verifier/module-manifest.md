@@ -23,15 +23,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v0.5 Draft | 최초 작성. Verifier Provider Module의 01 §3.2-A 7필드 인스턴스(`id`=`verifier-provider`·`contract`=`VerifierInterface`(DP-V1)·`version`=`0.1.0`·`requires`=없음·`entrypoint`=추상 참조·`configSchema`=선언하지 않음(DP-V2)·`replaceable`=기본 true), 필드별 인스턴스 값·근거, `entrypoint` 추상 참조 + 물리 해소 Adapter Binding 소관 포인터(물리 경로·형식 하드코딩 0), 필수/선택 표기 정본 대조 보존, DP-V1·DP-V2 결정 기록. 01·06 계약 재정의·확장 0, 금지 토큰 0, Glossary 밖 새 용어 0. | Worker (Advisor 위임, Task V2) |
-| 2026-07-06 | v0.5 Draft (r2) | Advisor 확인 2건 반영. open_questions로 올렸던 인스턴스 값 `id`(=`verifier-provider`)·`requires`(=없음)가 Advisor 확인(2026-07-06)으로 승인됨에 따라, §3 `id`·`requires` 말미 주와 §6 "확인 대기" 항목의 미확정 서술을 확인 완료로 전 지점 정합화(L-06), §5에 "Advisor 확인 — 인스턴스 값" 기록 추가(DP와 구분되는 승인 기록). 7필드 값·근거·DP-V1·V2 기록 무변경. | Worker (Advisor r2 지시, Task V2 r2) |
-| 2026-07-06 | v0.5 Baseline | v0.5 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 26/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·표-산문 이중·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

@@ -17,14 +17,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v1.0 Draft | 최초 작성. `framework/adapters/generic/` 경계 신설(본 산출로 최초 생성) 및 그 첫 산출물. Generic Adapter(2nd Adapter)의 **최소 바인딩 부분집합(필수 13 BP)**을 환경 중립 바인딩 값으로 확정하는 매핑 표(§2 — BP 번호 / 무엇을 바인딩하는가(11 §3.2-A 정본 인용) / generic 환경 중립 바인딩 값 / 실재 여부(규약 확정·시연 예정 정직 구분), 13행 전건·누락 0). 선택 4 BP(BP-6·12·16·17) 생략 명문화(§3 — 11 §3.2-B 인용). Advisor 결정 기록 3건(§4 — DP-V1·DP-V5·DP-V6; Worker는 기록만, 결정 주체=Advisor·사용자 승인 2026-07-06). 상태 서술 실측 대조 표(§5 — 실재 서술 전건 파일 시스템 직접 실측 후 기입, L-07). 정본 경계·재정의 0·판정 미산출 self-note(§0·§6 — 11 §3 계약 재정의·확장 0, 새 BP·새 Report 필드·새 verdict 값·새 용어 창설 0, **Conformance verdict 미산출(선취 금지)**). 본문 특정 AI 이름·모델명·AI 벤더 제품/기능명 0건(DP-V6 정체성 제약, 자가 전수 스캔 — verify_basis). 형제 Task 산출물(docs/v1.0-dogfooding-spec.md·scaffold-binding.md 개정분) 불인용(07 R2). 이 1파일만 생성(신설 디렉터리 `framework/adapters/generic/` 포함) — 경계 밖 파일 무수정(07 R4). | Worker (Advisor 위임, Task T1) |
-| 2026-07-07 | v1.0 Baseline | v1.0 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 21/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지). 삭제 산출물 경로 참조 없음(§6 07 R2 불인용 서술은 존재 주장 아님·무변경). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·스냅샷·죽은 참조 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

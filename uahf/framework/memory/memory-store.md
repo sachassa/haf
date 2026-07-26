@@ -20,14 +20,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-05 | v0.4 Draft | 최초 작성. Memory Store 구조·포맷과 Memory 인덱스 규격을 04 §3.2-A·§3.2-C·§3.2-E·§3.2-B와 INV-3·INV-4·INV-6·INV-7의 인스턴스로 확정. Memory Item 스키마 인스턴스(§2, 6필드·필수/선택 표기 보존), Memory Index / Index Entry 규격(§3), Store 계약 구조(§4, append-only·정합 갱신·전량 로드 금지·물리 실현 포인터화), scope 해소 대응 표(§5), 경계·비의존(§6). 04 계약 재정의 0, Glossary 밖 새 용어 0, 물리 실현 서술 0(Adapter Binding 소관 포인터). | Worker (Advisor 위임, Task M3) |
-| 2026-07-06 | v0.4 Baseline | v0.4 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 재작업 1회 후 재검증, CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

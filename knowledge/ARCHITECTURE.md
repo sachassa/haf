@@ -13,13 +13,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-12 | v1.3 정합 | 스텁→완전 저술. knowledge 횡단 공용 Knowledge Base 개관 정본 신설 — 라우터 §4 아래의 knowledge 구조 **1차 정본**(하위 spec 없음). 8표면(markdown·metadata·graph·graphrag·retrieval·prompts·patterns·glossary)의 역할을 1차 정본으로 확정(개관 고도). 파일 시스템 직접 실측(2026-07-12): 8표면 전부 `.gitkeep`만의 **빈 스캐폴드**(콘텐츠 0) — 각 표면의 원천·완전 구성은 후속 트랙에 위임(정직 표기). 3메커니즘 구분(knowledge 횡단 Consult / Layer 연결 계약 파이프 / session handoff 시간축) 명시. UAHF 내부 Memory Service(`uahf/ARCHITECTURE.md` §5.1)와의 관계는 § 포인터로만 참조(재정의 0). 새 설계 결정·원천 스키마 창설 0 · UAHF 정본 무수정(UAF-INV ①) · 특정 AI/모델/제품 기능명 0(자가 전수 스캔). | Worker (Advisor 위임, T-a W2 T-knowledge) |
-| 2026-07-17 | v1.3 정합 | 루트 v1.7 UAF-INV ① 재정의(무수정 폐지·접점 원칙 존치) 정합 — 보호 문면 제거·인용 라벨 갱신, 접점·§ 포인터·계약 무변경·substrate 소비 서술 존치. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 5 — 비계약 격리 개정: 재서술·경위·완료 마일스톤 상세 압축(앵커 90ca19c), 원칙·불변·계약 문면 무변경 | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 루트 `ARCHITECTURE.md` §9·`entry/ARCHITECTURE.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. `uaf-allow-legacy: 이력 표 옛 행의 완전성 표현은 그 개정 시점의 기록이므로 문면을 보존한다.`)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

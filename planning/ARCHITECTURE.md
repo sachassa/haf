@@ -14,17 +14,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-12 | v1.3 정합 | 스텁→완전 저술. planning Layer(Project Contract 설계 계약) 개관 정본 신설(라우터 ↔ 하위 spec 사이의 **Layer 개관 고도**). 상세 계약(논리 스키마 필드 그룹 표·필수 코어 필드 목록·Dimension 매핑 표·버저닝 규칙 문면·UAHF Interface·PC-INV 문면 등)은 `planning/specs/03-project-contract.md`가 소유하고 본 문서는 § 포인터로만 위임(재정의·복제 0). Project Contract의 **이중 지위**(Discovery 산출 요소 ∧ UAF↔UAHF 공식 Stable Contract·유일 접점) 개관(루트 §2.2 정합). **C2 네임스페이스 구분** §0 명시 — `planning/` Layer(= Project Contract 설계 계약) ≠ UAHF Advisor/Planner의 구현 Planning(루트 §10 비담당②). 루트 §2.1 지도(Project Contract = `planning/`)와 정합. 새 설계 결정 창설 0 · UAHF 정본 무수정(UAF-INV ①) · 특정 AI/모델/제품 기능명 0. | Worker (Advisor 위임, T-a W2 T-planning) |
-| 2026-07-13 | v1.3 · 이중 책임 정합 | Solution Design 마일스톤(W2c) 개정 — planning Layer를 **이중 책임**(① Project Contract 설계[데이터 계약·정본 03] + ② Solution Design 성숙 활동[정본 04])으로 정합. **Δ1** §0 C2 2항→**3항** 재서술(①②③ — 04 §0 정합, ② Solution Design ≠ ③ UAHF 구현 Planning)·§6 구현 Planning 문면 3항 정합. **Δ2** §1 목적 이중 책임 선언·근거 정본에 04 등재·§6 Memory 문면 04 §5 정합(성숙 활동도 v1.3 Memory 무접근). **Δ3** §2 구조 실측 재확인(2026-07-13) — `specs/04-solution-design.md`·부록 2종(`docs/appendix/expert-role-catalog.md`·`projection-catalog.md`) 등재. **Δ4** §7 정본 포인터 표에 04 라우팅 5행·부록 2행 추가. **Δ5** 본 이력 append·상태/작성 라인 갱신. 새 계약·불변·용어 창설 0(전부 04 § 포인터)·UAHF 정본 무수정(UAF-INV ①)·특정 AI/모델/제품 기능명·방법론 고유명 0·기존 §9 행 byte 불변(L-22). | Worker (Advisor 위임, v1.3 W2c) |
-| 2026-07-13 | v1.3 · 보완 C-2 등재 | Gap Analysis(사용자 Target Architecture 대조, 옵션 2 승인) 보완 — §2 디렉터리 실측·§7 라우팅 표에 `docs/appendix/review-dimension-catalog.md`(Integrated Design Review 관점 차원 예시 **비정본 부록**) 등재. 새 계약·불변·용어 창설 0·기존 §9 행 byte 불변. | Advisor (사용자 승인) |
-| 2026-07-13 | v1.3 · v1.4 바인딩 라우팅 등재 | v1.4 W3 — §7 라우팅 표에 **Solution Design Adapter Binding** 1행 추가(정본 = 04 §4 · `uahf/framework/adapters/<adapter>/solution-design-binding.md` — v1.4 W1 신설·CP2 Pass의 등재 반영). 새 계약·불변·용어 창설 0(라우팅 1행만)·기존 §9 행 byte 불변. | Advisor (v1.4 W3) |
-| 2026-07-17 | v1.3 · 참조 정합 | 루트 v1.7 UAF-INV ① 재정의(무수정 폐지·접점 원칙 존치) 정합 — 보호 문면 제거·인용 라벨 갱신, 접점·§ 포인터·계약 무변경·substrate 소비 서술 존치. §0 접점 절·§3 폐쇄성·§5 상위 불변 정합 라벨을 접점 원칙으로 갱신하고 PC-INV 8·UAHF Interface·역참조 금지(의미 2)는 존치. 기존 §9 행 byte 불변·버전 무상승. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-19 | v1.3 · Visual Contract 부록 등재 | Visual Contract 트랙(디자인 필수 요소·원칙 Policy 데이터화 + mock 수렴 규약 §7A/§7C) 마감 등재 — §2 디렉터리·§7 라우팅 표에 `docs/appendix/visual-contract-catalog.md`(**비정본 부록** — 강제 지점은 Policy·게이트·binding) 추가. 새 계약·불변·용어 창설 0·기존 §9 행 byte 불변. | Advisor (사용자 지시 2026-07-19) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 5 — 비계약 격리 개정: 재서술·경위·완료 마일스톤 상세 압축(앵커 90ca19c), 원칙·불변·계약 문면 무변경 | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, 루트 `ARCHITECTURE.md` §9·`planning/specs/03-project-contract.md` §9·`entry/ARCHITECTURE.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

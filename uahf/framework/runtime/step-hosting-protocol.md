@@ -29,18 +29,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-13 | W1 Draft | 최초 작성. 형태 B Step Execution Hosting 프로토콜 신설 — 설계 정본(docs/form-b-step-hosting-design.md) §3·§4·§5·§8을 provider-중립 계약으로 형식화. 위상 선언(§2)·Step 직렬화 축(§3.1)·Fresh Context Assembly(§3.2)·상태 파생·결정적 재개(§4)·재시도·피드백·검증 통합(§5)·Execution Readiness Clarification·Autonomy Policy·진입 모드(§6)·불변 SH-INV 8건·Adapter 바인딩 지점·실측 대조(§7). 01/02/03/06/07 Frozen spec·루트 ARCH·04 계약 재정의 0(§ 포인터 인용만), 새 상태·필드·Component 창설 0(C-1·Glossary INV-3 무촉), 본문 provider·언어·툴체인·플래그 토큰 0(C-3). | Worker (Advisor 위임, Task W1) |
-| 2026-07-13 | W1 Draft r2 | CP2 재작업(F-1·O-1): cross-layer 앵커 3곳(§3.1 표·§3.1 주·§7.2 표) bare '04 §3.3' → '04-solution-design §3.3' 명시 정정 · 근거 정본 3건 등재(00-glossary·02-discovery §3.2·04-solution-design §3.3) | Worker (CP2 재작업 지시) |
-| 2026-07-13 | W1 확정 | CP2 재판정 Pass(점검 5 Met·0 Violated·0 Undetermined — 1차 판정의 Fail 1[F-1]은 r2로 해소) · CP3 Advisor 승인 · 상태행 동결. Baseline 승격은 W3 사용자 게이트 유보. | Advisor |
-| 2026-07-13 | W3 실증 (본문 무변경) | W2 구현·W3 dogfooding E2E 로 §7.2 소관 산출물이 전부 실재화됨 — `framework/loop/step-host/`(중립 Host·테스트 17)·`framework/adapters/claude/step-hosting-binding.md`·`step-invoker/`(테스트 19)·run 데이터 백엔드(`step-data/runs/` 8 run·E2E 7 시나리오 CP2 독립 Pass). §7.3 문면은 W1 시점 실측 스냅샷으로 보존한다(BPD-17 — 현행 실재는 본 행과 step-hosting-binding.md §6 이 기록). 본문 계약·SH-INV 무변경. | Advisor |
-| 2026-07-13 | v1.5 Baseline | 마일스톤 v1.5 「형태 B Step Execution Hosting」 사용자 승인 — 기준선 확정(Baseline 승격 게이트 통과·상태행 승격). 본문 무변경. | Advisor |
-| 2026-07-13 | v1.6 정합 (본문 무변경) | 프로젝트 레벨 소비자 실재 — orchestration Layer(마일스톤 v1.6·정본 `orchestration/specs/05-project-orchestration.md`)가 본 프로토콜의 중립 Host(`framework/loop/step-host/`)를 substrate로 **라이브러리 무수정 소비**한다(공유 EventStore·결정적 재개·SH-INV 전건 상속). 본문 계약·SH-INV 무변경. | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-XX·mi 유지)·삭제 산출물 참조 앵커 전환(@cd9247b·@004bfa9). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다 — W1 시점의 §7.3 미존재 스냅샷 문면도 위 W3 행이 이력으로 보존한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

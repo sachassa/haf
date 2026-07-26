@@ -8,14 +8,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-13 | v1.3 Draft (CP2 대기) | 최초 작성 — Solution Design 마일스톤(W2d) 신설 **비정본 부록**. Projection 유형의 **예시** 개방 레지스트리: Contract=Source of Truth·Projection=파생 원칙(04 §3.5 포인터, §1)·유형 예시 표(PRD·ARCHITECTURE·ADR·UI Guide·API Spec·DB Schema·Deployment — 각 1줄 목적·"언제 유용한가", §3)·전 유형 강제 금지·동적 선택 원칙(§3.0)·ADR "What/Why/Trade-off 보존"·UI Guide "Design Principles·Tokens·Anti-patterns" 예시 세부(§3.1·§3.2)·**사용자 어휘 대응(비정본)** Draft≈Ready vN / Final≈superseding v(N+1)(D5·04 §0, §4)·산출물 워크스페이스 귀속(SP-INV 7, §5) 포인터. 정본(04 §3.5) 재정의 0(§ 포인터만)·계약/불변/용어 확정 0·특정 AI/벤더/모델/제품 기능명 0·방법론 고유명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W2d) |
-| 2026-07-13 | v1.3 Baseline | Baseline 승격 — v1.3 마일스톤 사용자 Baseline 승인(비정본 부록). | Advisor (사용자 승인) |
-| 2026-07-18 | v1.3 (정합) | §DC-1 Wave 2 — §3.3 신설: `default-policy.yaml` `defaultRequiredSet` 10종(국내 SI 산출물명·policy id·요건 클래스)을 권장 기본 세트 설명으로 등재(정본 = Policy·부록 = 설명). 예시 톤·SP-INV 5 무촉 유지·유형명 방법론 고유명 0. 사용자 결정 2026-07-18. | Worker (Advisor 위임) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 4 — 비계약 격리 개정+값 모순 단일소스화(정본 = default-policy.yaml·binding §7.2), 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — UAF 관행 동형. 이후 개정은 이 표에 append-only로 기록한다. `uaf-allow-legacy:` 기존 행은 작성 당시 상태·종수·절 좌표 표기를 그대로 보존한다(문면 불변 = append-only 원칙·재번호 소급 수정 0) — 현행 값은 위 머리 「정책 값 정본」 포인터가 소유한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

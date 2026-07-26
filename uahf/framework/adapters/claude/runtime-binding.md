@@ -15,15 +15,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-05 | v0.3 Draft | 최초 작성. `framework/adapters/` 경계의 첫 산출물. 01 §4.1 바인딩 표 10행의 v0.3 구체 매핑(§2), Core 산출물 4종의 "추상 계약 → 물리 실현" 매핑(§3), 01 §4.2 이식 교체 지점 1~7 대응(§4), structure.md `<adapter>` = `claude` 구체화(§5), Advisor 조율 결정 2건(SchemaViolation·retry.limit) 정합(§6). | Worker (Advisor 위임, Task A5) |
-| 2026-07-05 | v0.3 Draft r2 | CP2 재작업 — 상태 서술 교정. 미존재 Config 소스 2건(`~/.claude/CLAUDE.md` Global, `.claude/settings.json` Project)을 "실재"에서 "환경 지원 선택적 소스 — 현 시점 미존재"로 구분 표기(§2 #4·#5, §3.3, §4 #2, §6-b). `retry.limit` Global 기본값 소속 소스를 실재 소스 `~/.claude/settings.json`으로 명확화. 문서 내 모든 "실재/존재" 서술을 파일 시스템과 전수 대조(불일치 0건 확인). | Worker (Advisor CP2 재작업 지시, Task A5) |
-| 2026-07-05 | v0.3 Baseline | v0.3 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass, CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 13 §3.2-B·02 §4.1 SP-3 정본 § 유지). 삭제 산출물 참조 없음. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·스냅샷·죽은 참조 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

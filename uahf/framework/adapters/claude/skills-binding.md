@@ -17,14 +17,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v0.8 Draft | 최초 작성. `framework/adapters/claude/` 경계의 다섯 번째 Adapter Binding 산출물(선행: runtime·memory·verifier·loop-binding.md). 09 §4.1 바인딩 표 **7행 전건**을 물리 실현("물리 실현(claude 환경)" 열 + "실재 여부" 열)으로 매핑, 형태 A(규약 실현)/형태 B(실행 코드 예정)/실물 미생성(`.claude/skills/` 빈 디렉터리) 정직 구분(§2). Skill Manifest 직렬화 물리 정본 확정(§3 — `.claude/skills/<skill-id>/` 자기완결 단위, 메타데이터 9필드 = front-matter·`body` = Markdown 본문·`resources` = 본문 로드 계층의 로드 계층 분리(09 §3.2-A 필수/선택·로드 계층 정본 보존, 재정의 0), `contract` 값 = `SkillInterface` — Glossary §3.2-J J-09 / 09 §3.2-A 정본, 신설 아님). 발견·선택 물리 절차(§4 — front-matter `trigger` 평가·메타데이터만 사용·결정적·`NoMatchingSkill` 빈 결과·09 §9 결정 기록 모호성 해소 순서(명시 호출 > 가장 구체적 트리거 > `AmbiguousSelection`) 운용 전개). 지연 로드·호출·Config 주입·실패 물리 판정(§5 — 선택 본문만 로드·미선택 본문 비로드 판정법, 역할 경계 INV-2·우선순위 4단 INV-3 물리 판정, Config 주입 INV-5, Skill Failure Report 8사유 코드 물리 판정 표·enum 소유 경계 보존). 09 §4.2 이식 교체 지점 SP-1~5 대응 표("교체되는 것/유지되는 것" — 유지 열이 §3.2-A 필수 필드·§3.2-B I/O 계약·INV-2·INV-3·INV-4 전건 커버, §6). 상태 서술 실측 대조(§7 — 실재 서술 전건 파일 시스템 직접 실측 후 기입, L-07; `.claude/skills/` 빈 디렉터리·레퍼런스 Skill 실물 미생성 정직 기록, 실재 불주장). 09 §3 계약 재정의·확장 0, 새 필드·새 사유 코드·새 연산 신설 0, Glossary 밖 새 용어 0. 동시 작성 형제 산출물(hooks-binding·framework/plugins/ 문서·시연 절차서) 불인용(07 R2), 조율 필요는 open_questions로(R3). 이 1파일만 생성 — `.claude/skills/` 실물·픽스처·시연 산출물·자매 Baseline 산출물·specs/·docs/ 무수정(R4). | Worker (Advisor 위임, Task EX-S1) |
-| 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지). `.claude/skills/`·loop-data/·memory-data/ 참조는 라이브/백엔드 경로로 무변경, 삭제 산출물 본문 참조 없음. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·스냅샷·죽은 참조 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

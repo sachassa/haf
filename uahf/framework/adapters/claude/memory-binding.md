@@ -16,17 +16,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-05 | v0.4 Draft | 최초 작성. `framework/adapters/claude/` 경계의 두 번째 산출물(첫 산출물: runtime-binding.md). 04 §4.1 바인딩 표 7행의 물리 실현 매핑(§2 — Provider·Item 직렬화·Store·Index·Record·Recall·백엔드 격리), 물리 store·index 경로를 `framework/adapters/claude/memory-data/` 이하로 확정·본 문서 정본 선언(§0·§2), Record/Recall 물리 절차의 memory-service.md §5.1/§5.2 1:1 단계 대응(§3), entrypoint 물리 해소·`recall.limit.max`(기본 20) 물리 반영(§4), Lessons `kind` 3종 직렬화 표기·applicability 매칭 구현·재발/승격 물리 기록 위치(§5), 04 §4.2 이식 교체 지점 1~5 대응(§6), 실측 대조 표(§7 — store·index 물리 자산은 현 시점 미존재, 시연 시 생성 예정). 04·05 계약 재정의 0, 동시 작성 시연 절차서(docs/v0.4-demo-procedure.md) 내용 불인용(07 R2). | Worker (Advisor 위임, Task M5) |
-| 2026-07-05 | v0.4 Draft (r2) | Advisor 개정 지시 반영 (OQ-M7-1 해소 — 라벨 키 물리 표기 정본 갭 보완). (1) §5.4 신설 — 라벨 키 물리 표기(정본) 표 5키(`situation`/`stable_id`/`status`/`verdict`/`matched_lesson_id`) ↔ 투영 대상 ↔ 값 형태. lessons.md §5.2가 "무엇을 투영하는가"를 소유하고 본 표는 "키 이름·표기"만 확정(계약 표면 재정의 0). 첫 실사용 = v0.4 시연(docs/v0.4-demo.md). (2) 같은 상태 서술 전 지점 전수 갱신 — §5 헤더·도입·§5.2·§5.3 포인터, §6 SP-1 행, §0·§10. (3) §7 실측 대조 전면 갱신 — memory-data/ 실재 반영(직접 실측: store 21파일 mi-0001~mi-0021.json, index.jsonl 21라인; kind lesson 16/best-practice 2/recurrence-judgment 3). 데이터 미생성 전제의 라이브 상태 서술을 실재 반영으로 전건 교체(L-07 실측 후 기록). (4) OQ-M5-1 해소 표기(lessons.md §5.2 r2 투영 규칙 확정 + §5.4). 04·05 계약 재정의 0, 물리 데이터·framework/memory/·demo 파일 무수정. | Worker (Advisor 개정 지시, Task M5 r2) |
-| 2026-07-05 | v0.4 Draft (r3) | r1 이력 행 문면 원복 — r2에서 교정했던 M5(r1) 행의 §7 참조 구문·동시 작성 절차서 불인용 문구를 r1 원문 그대로 되돌림. 이력 행은 시점 기록이며 작성 시점에 참인 서술은 stale이 아니다 — §9 append-only 문면 불변(Advisor 판정). "잔존 서술 0건" 재검증은 라이브 본문에만 적용된다. 라이브 본문·§5.4·§7 실측 서술은 무변경. | Worker (Advisor 교정 지시, Task M5 r3) |
-| 2026-07-06 | v0.4 Baseline | v0.4 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 재작업 1회 후 재검증, CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·삭제 산출물(docs/v0.4-demo*.md 시연 기록) 참조 @cd9247b 앵커 전환. memory-data/ store·index 참조는 append-only 예외(정책 §2)로 유지. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·스냅샷·죽은 참조 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-| 2026-07-26 | (정합) | 자매 memory-service.md 절 정리에 따른 인용 좌표 재지정(§8→§0) | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

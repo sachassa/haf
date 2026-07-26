@@ -16,17 +16,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v0.7 Draft | 최초 작성. `framework/adapters/claude/` 경계의 다섯 번째 산출물(선행: runtime-binding.md·memory-binding.md·verifier-binding.md·loop-binding.md). 07 §4.1 바인딩 표 **7행 전건**을 물리 실현("물리 실현(claude 환경)" 열 + "실재 여부" 열)으로 매핑, 형태 A(규약 실현)/형태 B(실행 코드 예정)/데이터 미생성(시연 소산 예정) 정직 구분(§2). Work Graph·Merge Result·공통 Failure Report 직렬화 물리 정본 확정(§3, DP-W4 — 직렬화 = **문서 형태**, `workflow-data/` 등 새 데이터 백엔드 디렉터리 **신설 없음**; 07 §4.1 행 1 정본 문면이 문서 형태를 지정하므로 그 인스턴스로 해소; 시연 소산의 docs/ 물리 위치·문서 구조를 구조 제안·근거로 확정, 미래 산출물 실재 불주장 — L-07). Workflow Provider `entrypoint`(Decompose=Planner 초안+Advisor 채택 / Dispatch=서브에이전트 동시 위임 / Merge=Advisor 수합·중재) 물리 해소(형태 A/형태 B 구분) + `requires`=`LoopInterface` 물리 해소는 loop-binding.md §4.1 실현을 **참조만**(재정의 0)(§4). 역할 실행(Advisor·Planner·Worker·Verifier)·병렬 디스패치·결과 회수·수합·중재 물리 채널(서브에이전트 동시 위임·최종 응답·주 세션 Advisor 제시, delegation-protocol.md §3) + 검증 통합(verifier-binding.md 참조) + Memory 접근(memory-binding.md 백엔드 경유 참조, 재정의 0)(§5). 07 §4.2 이식 교체 지점 SP-1~4 대응 표("교체되는 것/유지되는 것" — 유지 열이 07 §4.2 유지 목록(Work Graph 필드·Task 필수 필드·R1~R4·Invariants) 전건 커버, §6). 상태 서술 실측 대조 표(§7 — 실재 서술 전건 파일 시스템 직접 실측 후 기입, L-07; docs/v0.7 시연 소산 미생성·후속 Task 생성 예정). 07 §3·framework/workflow/ 5문서 계약 재정의·창설 0, 새 바인딩 계약 0, Glossary 밖 새 용어 0. 동시/후속 작성 시연 절차서·시연 실물 내용 불인용(07 R2), 미래 산출물(시연 소산) 실재 불주장(L-07). 이 1파일만 생성 — framework/workflow/ 5문서·자매 바인딩·loop-data/·memory-data/·docs/ 무수정. | Worker (Advisor 위임, Task WF6) |
-| 2026-07-06 | v0.7 Baseline | v0.7 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-06 | v0.8 Draft (개정 — 시연 소산 실재 반영) | v0.8 Task EX-R2 — Advisor 승인 하 격리 개정 (v0.7 CP2 §3.7-4 관찰 해소, 사용자 승인 2026-07-06 편입 범위). v0.7 시연 소산의 "미생성·생성 예정" 라이브 서술 전 지점을 파일 시스템 직접 실측 후 실재 상태로 정합화(L-06·L-07) — docs/v0.7-demo.md(§4.3 Work Graph 인스턴스·§6.2 Merge Result)·v0.7-demo-procedure.md·v0.7-demo-fixtures/ 9파일·loop-data 3파일 실재 반영, §8 OQ-WB-1 해소됨 표기(§3.2 구조 제안이 시연 실물로 채택·실현 — demo.md §0.1). 계약·바인딩 확정 내용(DP-W4·SP 대응·물리 채널) 무변경, 시점 명시 스냅샷·기존 이력 행 문면 불변(L-10·V4 §4). | Worker (Advisor 위임, Task EX-R2) |
-| 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-13 | (OQ 부분 해소 정합 — 버전 무상승) | §8 OQ-WB-2 부분 해소 표기 append — 형태 B Step Hosting 마일스톤이 §4.1 예약 로케이터("무인 병렬 오케스트레이션 실행 진입점")를 부분 실현: 중립 Step Host(`framework/loop/step-host/`)가 Work Graph(07 §3.2-A)를 데이터로 소비(ready_set=parallelSets 논리·dogfooding E2E 실증). 물리 동시 디스패치는 동시성 invoker 후속 과제로 이연(스케줄 논리 실현·물리 병렬 잔여). 본문 매핑·계약 무변경(참조 정합=버전 미상승 선례·BPD-17 append-only). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·docs/v0.7 시연 소산(demo·demo-procedure·demo-fixtures) 실재 서술을 @cd9247b 앵커로 전환(§0 커버리지 노트·§7 실측 표; DP-W4 직렬화 정본·workflow-data 미신설·loop-data/memory-data 백엔드는 계약으로 유지). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·감사 서술·죽은 참조 압축, 계약 문면 무변경. 종전 문면 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

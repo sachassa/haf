@@ -17,14 +17,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v0.9 Draft | 최초 작성. `framework/adapters/claude/` 경계의 산출물 — BP-7~11의 현행 분산 실현(02 §4.1 + `.claude/` 실물 + runtime-binding.md §2 #2 + delegation-protocol.md §3)을 한 문서로 통합·정식화(adapter-conformance.md §4 배정 이행). 02 §4.1 바인딩 표 **전 항목**(Agent 정의 파일 4종·공통 규약 바인딩 2문서·실행 모델 바인딩·위임 메커니즘·보고 회수·컨텍스트 전달)을 물리 실현("물리 실현" 열 + "실재 여부" 열, 형태 A/B 정직 구분)으로 매핑하고 BP-7~11 각각과의 대응 명시(§2, adapter-conformance.md §2 인용). 실행 모델 행 **실측 반영**(§3) — worker.md `model: opus`(02 §4.1 Worker=Opus 기저 바인딩)·planner.md/verifier.md `model: opus`(DP-E8 — 사용자 결정 2026-07-06, v1.0까지 영구 관행)·advisor.md 세션 상속(model 라인 부재). 위임·보고·컨텍스트 물리 채널(Agent Module = 서브에이전트 디스패치·최종 응답, delegation-protocol.md §3)(§4). 02 §4.2 이식 교체 지점 SP-1~SP-5 대응 표("교체되는 것/유지되는 것" — 자매 관례 동형, §5). 상태 서술 실측 대조 표(§6 — 실재 서술 전건 파일 시스템 직접 실측 후 기입, L-07). 02 §3 계약 재정의·확장 0·새 바인딩 계약 창설 0·Frozen specs 계수 15·Glossary 밖 새 용어 0. 형제 Task(PS2) 산출물 불인용(07 R2). 이 1파일만 생성(harness-binding.md와 함께 Task T3 소산) — 자매 바인딩 문서·specs/·docs/·.claude/ 무수정(07 R4). | Worker (Advisor 위임, Task T3) |
-| 2026-07-06 | v0.9 Baseline | v0.9 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 20/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지). 삭제 산출물 참조 없음(§7 "불인용" 스캔 노트의 v0.9-install-guide 언급은 시점 기록으로 유지). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·스냅샷·죽은 참조 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

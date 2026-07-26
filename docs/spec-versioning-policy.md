@@ -18,14 +18,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v0.9 Draft | 최초 작성. Spec versioning · 하위호환 정책 문서. Frozen spec 개정 절차(계약 변경 = 버전 상승 + Revision History append 필수 / 비계약 정합·격리 개정 = 이력 append + 상태 라인 갱신, 이력 행 시점 기록·문면 불변·append-only L-10 명문화, 사용자 승인 상태 승격 절차)(§3), 하위호환 규칙 4항 열거(추가 = 호환 / 삭제·의미 변경·필수화 = 비호환 / dependents 영향 대조 선행 / 인스턴스 정합 이력 기록)(§4), Glossary §3.2-G Spec Status와의 관계(상태 값 정본 = Glossary, 운용 절차 = 본 문서)(§2), 첫 적용 사례(v0.9 Glossary 개정 DP-U2 — 절차만 확정, 내용 추측 0)(§5). 정본(Glossary §3.2-G·TEMPLATE) 재정의 0, Glossary 밖 새 용어 신설 0, 본문 특정 AI 이름·모델명·제품 기능명 0(전수 자체 점검). | Worker (Advisor 위임, Task T2) |
-| 2026-07-06 | v0.9 Draft (r2) | §9 하단 주석 § 포인터 오기 교정(§3.3→§3.4) — 동종 § 포인터 전수 자가 대조 불일치 0. (L-10 명문화의 실제 위치는 §3.4 Revision History 관례이며 §3.3은 상태 승격 절차다. 교정 외 본문 무변경 — 계약·문면 취지 불변. 기존 r1 행 문면 불변 — L-10.) | Worker (Advisor 재작업 지시, Task T2 r2) |
-| 2026-07-06 | v0.9 Baseline | v0.9 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 20/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | v0.9 (정합) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §거버넌스 문장의 핸드오프 판례 인용 제거(`session-handoff-v0.2 §1.3` → 안정 근거 "docs 운용 문서 거버넌스 관행" 유지). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-
-(**이후 개정은 이 표가 아니라 git 커밋에 기록한다** — 파일 내 이력 절 폐지, §3.1·§3.4. 아래 표는 폐지 전 기록이며 물리 제거는 별도 회차 소관이다. `uaf-allow-legacy: 표 내 기존 행은 그 개정 시점의 기록이므로 문면을 보존한다.`)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

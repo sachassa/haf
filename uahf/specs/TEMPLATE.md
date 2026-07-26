@@ -123,8 +123,5 @@ Frozen
 
 # 5. Revision History
 
-**이후 개정은 이 절이 아니라 git 커밋에 기록한다** — 파일 내 이력 절 폐지(§1 사용 규칙 · 정본 `docs/spec-versioning-policy.md` §3). `uaf-allow-legacy: 아래 항목은 폐지 전 기록이며 그 시점의 기록이므로 문면을 보존한다. 물리 축약은 별도 회차 소관.`
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
-- 0.1: 최초 설계 (Advisor)
-- 0.1 채택: 사용자 승인으로 공통 Specification 표준 확정. 모든 spec 작성과 Advisor 검증의 기준 문서가 된다.
-- 0.1 Frozen (2026-07-05): v0.1 기준선 확정 (사용자 승인). specs/00~13 전체가 함께 Frozen되었다. 이후 변경은 버전 상승과 Revision History 기록이 필수다.

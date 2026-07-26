@@ -17,16 +17,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v0.8 Draft | 최초 작성. `framework/adapters/claude/` 경계의 여섯 번째 Core 트랙 바인딩. 10 §4.1 바인딩 표 **8행 전건**을 물리 실현("물리 실현(claude 환경)" 열 + "실재 여부" 열)으로 매핑, 형태 A(규약 실현)/형태 B(실행 코드 예정)/데이터 미생성(시연 소산 예정) 정직 구분(§2, done 1). Plugin bundle 물리 위치·4연산(Install/Activate/Deactivate/Remove) 물리 절차 확정 + Advisor 결정 DP-E6 결정 기록(bundle 원본=`docs/v0.8-demo-fixtures/`·설치본=`framework/plugins/<plugin-id>/`·Remove 잔여물 0=설치 이전 파일 목록 전수 대조·AI 의존 산출물=`.claude/` 격리 구조만 확정)·DP-E6이 01 §4.1 Frozen 문면 인스턴스임(충돌 0) 근거 서술(§3, done 2·5). Plugins Provider `entrypoint`(4연산 노출) 물리 해소 표(형태 A/B 구분, §4, done 4). plugin-lifecycle.md 검사(I1~I5·A1~A2·D1·R1~R2·IG) 물리 실행 지점 확정 — 검사 규칙 자체는 § 포인터 소비(재게재 0), 물리 실행 방식만 확정(§5, done 3). 10 §4.2 이식 교체 지점 5건 대응 표("교체되는 것/유지되는 것" — 유지 열이 Manifest 6필드·4연산 완료 조건·INV-1~10 전건 커버, §6, done 6). 상태 서술 실측 대조 표(§7 — 실재 서술 전건 파일 시스템 직접 실측, L-07; bundle 원본·설치본·`docs/v0.8-demo-fixtures/` 미생성, 후속 시연 Task 생성 예정, 실재 불주장, done 7). 10 §3·framework/plugins/ 3문서 계약 재정의·확장 0(새 연산·새 reason·새 필드 0), Glossary 밖 새 용어 0. 동시 작성 형제 산출물(dispatch-protocol 개정·workflow-binding 개정·시연 절차서) 불인용(07 R2). 이 1파일만 생성(07 R4). | Worker (Advisor 위임, Task EX-P2) |
-| 2026-07-06 | v0.8 Baseline | v0.8 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-06 | v0.9 Draft (개정 — §7 시연 후 상태 반영) | 비차단 관찰 1 해소 (docs/v0.8-verification-report.md §3.7 관찰 1 · 사용자 결정 DP-U3(a), 2026-07-06). §7 실측 대조 표의 시연 전 "미생성" 스냅샷 및 같은 상태를 서술하는 전 지점(§0·§2 물리 경계 트리·§2 표 "실재 여부" 열·§2 주·§7·§10 — `grep` 전수 열거, L-06)을 시연(PS-4 · EX-DP) 후 실측 실재로 전수 갱신. 착수 시 직접 재실측(L-07): bundle 원본 `docs/v0.8-demo-fixtures/report-exporter/` 3파일 실재 · 설치본 `framework/plugins/<plugin-id>/`(report-exporter/) 부재 = Remove 잔여물 0(Install→Activate→Deactivate→Remove 전 수명주기 완료 · 설치 이전 목록 전수 대조 성립, DP-E6 ⓒ). §2~§6 계약 서술·SP 표·DP-E6 결정 무변경(개정은 상태 서술·이력·상태 라인에 한정). memory-binding.md r2·loop-binding.md WF13 전수 갱신 선례 동형. 기존 이력 행 문면 불변(L-10). | Worker (Advisor 위임, Task T7) |
-| 2026-07-06 | v0.9 Baseline | v0.9 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 20/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·demo-fixtures bundle 원본(docs/v0.8-demo-fixtures) 실재 서술을 @cd9247b 앵커로 전환(§0 커버리지 노트·§7 실측 표; DP-E6 결정·규약·설치본 경로는 계약으로 유지). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·감사 서술·죽은 참조 압축, 계약 문면 무변경. 종전 문면 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

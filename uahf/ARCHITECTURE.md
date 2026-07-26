@@ -125,7 +125,5 @@ UAHF는 새로운 AI 모델·IDE·Workflow·Memory·Runtime을 Plugin 형태로 
 
 # 9. Revision History
 
-- 0.1: 최초 Draft
-- 0.2: Memory를 Layer에서 Cross-cutting Service로 재정의 (설계 검토 후 승인)
-- 0.3: 동결 폐지 후 위계 자기서술 최소 정정 — # 1 Vision 서두에 UAF 6 Layer 위계 문장 병기 (2026-07-17 · 사용자 결정 · 주체 Worker(Advisor 위임))
-- 0.3 (정합, 2026-07-26): md 슬림화 Wave 5 — 비계약 격리 개정: 재서술·경위·완료 마일스톤 상세 압축(앵커 90ca19c), 원칙·불변·계약 문면 무변경 (주체 Advisor 위임)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
+

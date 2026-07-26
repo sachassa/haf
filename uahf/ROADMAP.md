@@ -136,15 +136,5 @@ ARCHITECTURE.md의 6개 설계 원칙은 다음 버전에서 검증된다.
 
 # 8. Revision History
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 이전 | v0.1 → v1.0 | Approved Baseline (소급 기록 — 본 이력 절 신설 이전의 기준선 확정) | Advisor |
-| 2026-07-07 | v1.1 등재 Draft | v1.1(Project Discovery & Entry Layer) 트랙 등재 — 상태 라인·#3 표·#4 맵·#5 절 갱신·이력 절 신설. 사용자 승인 대기 | Worker (Advisor 위임, v1.1 W5 T8) |
-| 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass 15/0/0 · CP3 Advisor 승인). 상태 라인 승격 (Approved Baseline v0.1 → v1.1). | Advisor |
-| 2026-07-07 | v1.2 등재 Draft | v1.2(Project Discovery Implementation) 트랙 등재 — 상태 라인·#3 표·#4 맵·#5 절 갱신·이력 절 append. 사용자 승인 대기 | Worker (Advisor 위임, Task T-R) |
-| 2026-07-07 | v1.2 Baseline | v1.2 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass 16/0/0 · CP3 Advisor 승인). 상태 라인 승격 (Approved Baseline v0.1 → v1.2). | Advisor |
-| 2026-07-17 | v1.2 (유지) | 동결 폐지 후 위계 자기서술 최소 정정 — # 1 Purpose 범위 문장에 UAF 레벨 마일스톤 포함·UAF 로드맵 정본=리포 루트 ROADMAP.md 병기. 마일스톤 이력·산출물 목록 무촉(append-only). 사용자 결정. | Worker (Advisor 위임) |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — #3 표 v1.5·v1.6 행의 삭제 run 경로 evidence 앵커 부기(`step-data/runs/@cd9247b`·`orchestration-data/runs/orch-j-e2e/@cd9247b`)·표 하단 주의 v1.3 설계 정본 포인터 앵커(`docs/v1.3-context-and-design.md@cd9247b`). v1.1/v1.2 #5 산출물 목록의 `docs/…` 경로는 실 위치(uahf/docs/) 불일치로 앵커 부기 시 broken 위험 → Advisor 판정 대기(무촉). 마일스톤 이력·계약 무변경(append-only). | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 5 — 비계약 격리 개정: 재서술·경위·완료 마일스톤 상세 압축(앵커 90ca19c), 원칙·불변·계약 문면 무변경 | Advisor 위임 |
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
-(이력 절은 문서 말미에 둔다 — 루트 ARCHITECTURE.md # 9 이력 관행 동형. 이후 개정은 이 표에 append-only로 기록한다.)

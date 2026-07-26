@@ -17,17 +17,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-13 | W2 Draft | 최초 작성. `framework/adapters/claude/` 경계의 신규 산출물(형태 B Step Hosting). step-hosting-protocol.md(W1) §7.2 바인딩 지점 8건을 claude 환경 실값으로 확정: 직렬화(Step=JSON·이벤트 로그=JSONL·config=JSON)·run 데이터 백엔드 이원화(§3)·invoker 의 claude 구현 로딩·Autonomy→CLI 권한 플래그 매핑(`interactive`=기본·`auto_approve`=`--permission-mode acceptEdits`·`unrestricted`=`--dangerously-skip-permissions` — 이 플래그 문자열은 이 문서·step-invoker/ 에만 등장)·게이트 등급 분리 명기·재시도 한도 기본 2·autonomy 기본 interactive(§4)·역할 실행/CP2 독립/CP3 Advisor 디스패치 물리 형태·물리 정지 신호=종료 코드 2·win32 실행 전제·타임아웃(§5). CLI 플래그는 `claude --help` 실측(2.1.207) 확인분만 기재(§6 실측 대조). 프로토콜·spec 재정의 0, 새 계약·새 용어 0. 신설 경로 밖 파일 무수정. | Worker (Advisor 위임, Task W2) |
-| 2026-07-13 | W2 확정 | CP2 독립 판정 Pass(V1~V6 — Met 9·Violated 0·Undetermined 0; 테스트 36건 라이브 재실행 Pass·CLI 플래그 `claude --help` 실측 전건 부합·토큰 경계 2개 독립 도구 교차 스캔 0건·기존 파일 무수정 실측) · CP3 Advisor 승인 · 상태행 동결. 비차단 관찰 3건(invoker FileNotFound 분기의 blocking 라벨 불일치·CLI 실호출 미검증[W3 소관]·보고 추출 중괄호 파서 엣지)은 W3 이관. Baseline 승격은 W3 사용자 게이트 유보. | Advisor |
-| 2026-07-13 | W3 실증 정합 | dogfooding E2E 필수 7 시나리오 전건 실증(실 CLI 21 세션·`step-data/runs/` 8 run — CP2 독립 판정 Pass: 시나리오 7/7·차원 4/4 Met·Violated 0) · §3.2 run 구조 제안이 실물로 실현(구조 확정) · §7 OQ-SH-1 해소(CP3=배치 종단 Advisor 디스패치 실증)·자매 바인딩 OQ append 완료·신규 관찰 OQ-SH-4(CP2 모델 슬롯 결합)·OQ-SH-5(해소 API 부재·해소=fail 계수) 등재 · W2 이관 관찰 중 O-1(blocking 라벨)은 s6 호스팅 실행이 실제 정정(`claude_invoker.py` 1행·hosted CP2 통과). OQ-SH-2·3 은 미실증 open 유지. Baseline 승격은 사용자 게이트 유보. | Advisor |
-| 2026-07-13 | v1.5 Baseline | 마일스톤 v1.5 「형태 B Step Execution Hosting」 사용자 승인 — 기준선 확정(Baseline 승격 게이트 통과·상태행 승격). 본문 무변경. | Advisor |
-| 2026-07-13 | v1.6 정합 (본문 무변경 — §7 OQ append) | §7 OQ-SH-4(CP2 모델 슬롯 결합) 해소 표기 append — 마일스톤 v1.6 Project Orchestration 이 중립 Host `cp2_model` 선택 파라미터(기본 `None`=기존 거동 바이트 동일)로 CP2 검증 모델 독립 지정을 실현(OQ-SH-1 해소 표기 관례 동형·원 문면 보존). `project-orchestration-binding.md` §4.3 참조. OQ-SH-2/3/5 무변·본문 계약·SH-INV 무변경·상태행 무상승(v1.5 Baseline 유지). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·form-b-step-hosting-design.md 설계 정본 @cd9247b 앵커·OQ-SH-1 run 인스턴스 증거 @cd9247b 앵커. step-data/runs 백엔드 경로 구조는 계약 서술로 유지. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·스냅샷·죽은 참조 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

@@ -21,16 +21,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-05 | v0.3 Draft | 최초 작성. 01 §3.2-B Config 스코프·로딩 순서·우선순위·결정성·누락 스코프 규칙 인스턴스화, 언어 중립 추상 스키마·Load Config 시그니처(01 §3.1-B·§3.2-D), 01 §8 예2 병합 예시 재현, DP-1(재시도 한도) 자리 예약. | Worker (Advisor 위임, Task A3) |
-| 2026-07-05 | v0.3 Draft r2 | Advisor 개정 2건. (1) DP-1 해소 — §7: 재시도 한도 추상 키 `retry.limit`, 기본값 2, Global 스코프 기본 + Project/Module override (근거: v0.1·v0.2 재작업 실측). (2) §5 주 — `SchemaViolation` 대조 스키마 출처의 조율 결정(A3 완료 보고 open_question 해소). | Advisor |
-| 2026-07-05 | v0.3 Draft r3 | CP2(A8 Verifier) Fail 재작업 — r2 개정 잔여 결함 교정. (1) §1·§7 서두·§7 제목·§10의 "미결정/자리만 예약/미기입" 서술을 DP-1 해소 상태와 정합화 (§5.3 상태 서술 모순 해소). (2) §7 말미 주의 실재하지 않는 "§Open Questions" 참조 제거 — §5 조율 결정으로 해소됨을 명시 (DoD-5 준용 해소). Verifier 검출 위반 2건 전체 대응. | Advisor |
-| 2026-07-05 | v0.3 Baseline | v0.3 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass, CP3 Advisor 승인, DP-1 사용자 재가: `retry.limit` 기본값 2·Global). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-XX·mi 유지)·삭제 산출물 참조 앵커 전환(@cd9247b·@004bfa9). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

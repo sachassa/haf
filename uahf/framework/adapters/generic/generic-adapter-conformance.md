@@ -15,14 +15,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v1.0 Draft | 최초 작성. `framework/adapters/generic/` 경계의 두 번째 산출물(선행: generic-binding.md T1 확정본). Generic Adapter(2nd Adapter)에 대한 **Conformance Report(11 §3.2-D 6필드)** 산출 — adapter=**generic**·verdict=**Valid(Minimal)**·missing_bindings=**없음**(C1)·core_modifications=**없음**(C2)·loop_pass=**예**(C3)·notes=선택 4종(BP-6·12·16·17) 미제공(최소 구현). **C1~C3 검사 근거 절**(§2 — C1 필수 13 BP 커버리지 전건 대조[generic-binding.md §2]·C2 Core 무수정 직접 실측[framework/core 2·runtime 3 문서 AI 의존 토큰 0 전수 스캔·generic 경계 Core 무침범]·C3 핵심 루프 통과[docs/v1.0-generic-adapter-demo.md 사이클 기록·독립 검증 리포트 § 포인터]). **판정 성격 절**(§3.2 — 11 §3.1 Judge Conformance 출력 인스턴스·최종 승인 아님·CP2/CP3 후속). 상태 서술 실측 대조 표(§4 — L-07). 정본 경계·재정의 0·창설 0 self-note(§5) + verify_basis(DP-V6 정체성 제약 자가 전수 스캔·DP-V14 타 Adapter 경로 0건). 본문 특정 AI 이름·모델명·AI 벤더 제품/기능명 0건 + 타 Adapter 경계 경로 명명 0건(DP-V6·DP-V14). 새 BP·새 Report 필드·새 verdict 값·새 등급·새 용어 창설 0. Frozen specs/11 무변경. 형제 Task 산출물(structure.md 개정분·getting-started.md 개정분) 불인용(07 R2). 이 1파일만 생성 — 경계 밖 파일 무수정(07 R4). | Worker (Advisor 위임) |
-| 2026-07-07 | v1.0 Baseline | v1.0 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 21/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·C3 판정 근거의 정본(docs/v1.0-generic-adapter-demo.md·v1.0-generic-demo-fixtures/) @cd9247b 앵커 전환(근거 bullet·§4 실측 표; 본문 인라인 참조는 근거 bullet 스냅샷 노트로 커버). 계약·판정·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·스냅샷·죽은 참조 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 최종 판정·승인은 마일스톤 CP2·CP3 소관. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

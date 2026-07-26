@@ -7,13 +7,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-13 | v1.3 Draft (CP2 대기) | 최초 작성 — Gap Analysis(사용자 Target Architecture 대조, 옵션 2 승인) 최소 보완 **C-2**. Integrated Design Review(`Reviewing`·04 §3.4-D ④)가 무엇을 통합 검토할 수 있는가의 **관점 차원 예시** 카탈로그: 차원 예시 표 8종(아키텍처 일관성·인터페이스 호환성·데이터 흐름 일관성·보안·운영성·시험성·기술 호환성·횡단 관심사) — 채택·강제·표준화 0. 정본(04 §3.4) 재정의 0(§ 포인터만)·계약/불변/용어 확정 0·특정 AI/벤더/모델/제품 기능명 0·방법론 고유명 0. | Advisor (사용자 승인, v1.3 보완) |
-| 2026-07-13 | v1.3 Baseline | Baseline 승격 — v1.3 마일스톤 사용자 Baseline 승인(비정본 부록). | Advisor (사용자 승인) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 4 — 비계약 격리 개정+값 모순 단일소스화(정본 = default-policy.yaml·binding §7.2), 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — UAF 관행 동형. 이후 개정은 이 표에 append-only로 기록한다. `uaf-allow-legacy:` 기존 행은 작성 당시의 상태·표기를 그대로 보존한다(문면 불변 = append-only 원칙).)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

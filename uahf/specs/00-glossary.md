@@ -510,9 +510,5 @@ Advisor 결정 기록. OQ1~OQ6 전 항목이 해소되었다 (OQ5·OQ6은 Wave 3
 
 # Revision History
 
-- 0.1: v0.1 기준선 확정 — 사용자 승인(2026-07-05). ARCHITECTURE.md 0.2 근거, TEMPLATE 공통 표준에 따라 specs/00~13과 함께 Frozen. 이후 변경은 spec 버전 상승과 Revision History 기록이 필수(§3.2-G Spec Status: Frozen).
-- 0.2 Draft (2026-07-06): §3.2-G(계약 용어)에 표제어 3건 추가(Wave·Baseline·형태 A/형태 B). 이 개정은 spec versioning 정책(docs/spec-versioning-policy.md)의 첫 실적용이다(사용자 결정 DP-U2 — v0.9 계획 사용자 승인 2026-07-06; Frozen spec 개정 착수 근거). 개정 유형 = (A) 계약 변경(표제어 추가) → 버전 상승 0.1→0.2(정책 §3.1·§3.2). 하위호환 판정 = 호환(정책 §4-a: 추가는 하위호환 — 삭제·의미 변경·필수화 0). dependents 영향 대조(정책 §4-c) = Glossary의 dependents 정본은 §2 목록(specs/01~13 전 spec)이며, 표제어 추가는 이들 전 spec 및 인스턴스·운용 문서가 소비하는 기존 용어 참조를 무효화·재해석하지 않는다 — 기존 dependents 참조 변경 0(§4-b 비호환 사유 없음). 최종 확정(0.2 Frozen 승격)은 v0.9 Baseline 사용자 승인 시 Advisor가 수행 — 본 개정은 Draft(사용자 승인 대기).
-- 0.2 Frozen (2026-07-06): v0.9 Baseline 사용자 승인과 함께 v0.2 개정(표제어 3건) Frozen 확정 (Advisor 승인 반영 — 정책 §3.3 상태 승격 절차의 첫 완주). 이후 변경은 버전 상승과 Revision History 기록이 필수다.
-- 0.2 (정합) (2026-07-26): md 슬림화 — 유형(B) 격리 개정: §9 해소 OQ·stale 상태 주석 정리, 계약 무변경. 종전 = git 앵커 90ca19c. (같은 회차 자기 행 교정 — 정책 §3.4 예외: OQ4 압축문이 AGENT.md의 Planner 반영 상태를 실측과 반대로 서술했던 것을 "AGENT.md §Delegation·§Roles에 Planner 반영 확인"으로 정정했고, 본 행의 표 문법을 주변 산문형 관행에 맞춰 정합했다. `uaf-verified: .claude/AGENT.md §Delegation·§Roles & Boundaries 직접 대조`.) 주체 = Worker (Advisor 위임).
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
-(이력 章은 문서 말미에 둔다 — §9 뒤 신설. 신설은 편의 배치이며 기존 §1~§9 번호·문면은 불변이다. 이후 개정은 이 목록에 append-only로 기록한다.)

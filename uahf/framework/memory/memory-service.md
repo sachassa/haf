@@ -19,15 +19,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-05 | v0.4 Draft | 최초 작성. 04 §3.1-A(Record)·§3.1-B(Recall)·§3.1-C(회수 정책)·§3.2-A(Memory Item)·§3.2-B(Recall Request/Result)·§3.2-C(Memory Index/Index Entry)·§3.2-D(Failure Report) 인스턴스 절(필드 필수/선택 표기 정본 대조 보존), 기록·회수 프로토콜(Record = Item 기록+Index Entry 생성 함께 완료 — INV-7, Recall = index-first — INV-4·§8 예1), reason 코드 8종 소속 § 명시, 04 §3.3 INV-1~8 대조. 04 계약 재정의·확장 0, 05-lessons 내부 포맷 불인용, Glossary 밖 새 용어 0. | Worker (Advisor 위임, Task M2) |
-| 2026-07-05 | v0.4 Draft (r2) | Advisor 재작업 지시 반영. (1) 말미 요약 절 헤더의 § 번호를 머리 이력 절과 충돌하지 않게 §10으로 개칭, 05 조율 참조를 `04 §9`로 명시화. (2) §4.1(Memory Item)·§4.3(Memory Index/Index Entry) 전문 표 제거 → 04 §3.2-A/§3.2-C 정본 + framework/memory/memory-store.md §2·§3 소유 포인터로 대체(이중 갱신 방지); §4.2·§4.4는 M2 소유 유지. §1·§2 표·§2 주·§4 도입·§10에서 §4.1/§4.3 참조 전 지점 갱신. (3) Recall 시스템 상한 값 원천 = Provider Module Config `recall.limit.max`(기본 20)로 확정(Advisor 결정 DP-M1) — §3.2 주·§8 값 원천 서술을 확정형으로 갱신. | Worker (Advisor 재작업 지시, Task M2 r2) |
-| 2026-07-06 | v0.4 Baseline | v0.4 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 재작업 1회 후 재검증, CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

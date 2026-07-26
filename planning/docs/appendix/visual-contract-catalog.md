@@ -8,14 +8,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-19 | v1.0 Draft | 최초 작성 — Visual Contract 트랙 비정본 부록 신설. `designElements` screenScope 5종·projectScope 3종 + 산출물 3종(`design-tokens`·`screen-mock`·`mock-convergence-record`) 각각의 "무엇을·잘 만드는 법·예시"를 참고 카탈로그로 등재. 강제 근거 아님 명기(SP-INV 5)·정본(바인딩·Policy·게이트) § 포인터만·재정의 0·특정 AI/벤더/모델/제품 기능명 0·방법론 고유명 0(자가 전수 스캔). | Worker (Advisor 위임) |
-| 2026-07-19 | v1.1 Draft | Visual Contract Wave 2 — §5(UI 디자인 원칙 7종 해설) 추가: 각 원칙 자체 재서술 + 적용 예/반례 1쌍 + 라우팅 표(강제 지점 = Policy `designPrinciples` + 브리프/리뷰 배선·부록은 참고). 출처 앵커(Figma UI design principles). 강제 근거 아님·원문 전재 0·방법론 고유명 0. | Worker (Advisor 위임) |
-| 2026-07-19 | v1.2 Draft | Visual Contract Wave 3(UX) — §1/§2 요소 카탈로그에 UX 기본 필수 3종(`user-journey-map`·`error-recovery`·`feedback-rules`) 해설 추가·요소 경계(component-states/feedback-rules/error-recovery) 주석. §2a(인터뷰 표면화 시 편입 항목 — onboarding-flow·user-types·ux-copy·다국어·편입 절차=프로젝트 policy 사본 데이터 추가·선언-조건부 동형) 신설. §6(Nielsen 사용성 휴리스틱 10종 해설 — 자체 재서술·예/반례·출처 앵커). 범위 감량(6→3 기본 필수·오버엔지니어링 방지·사용자 결정 2026-07-19). 강제 근거 아님. | Worker (Advisor 위임) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 4 — 비계약 격리 개정+값 모순 단일소스화(정본 = default-policy.yaml·binding §7.2), 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — UAF 관행 동형. 이후 개정은 이 표에 append-only로 기록한다. `uaf-allow-legacy:` 기존 행은 작성 당시 상태·종수 표기를 그대로 보존한다(문면 불변 = append-only 원칙) — 현행 값은 위 머리 「값 정본」 포인터가 소유한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

@@ -21,15 +21,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-05 | v0.4 Draft | 최초 작성. Memory Service Provider Module의 01 §3.2-A 7필드 인스턴스(`id`·`contract`=`MemoryServiceInterface`·`version`·`requires`·`entrypoint`·`configSchema`·`replaceable`), 필드별 인스턴스 값·근거, entrypoint 추상 참조 + 물리 해소 Adapter Binding 소관 포인터(물리 경로·형식 하드코딩 0), 필수/선택 표기 정본 대조 보존. 01 §3.2-A 계약 재정의·확장 0, 금지 토큰 0, Glossary 밖 새 용어 0. | Worker (Advisor 위임, Task M2) |
-| 2026-07-05 | v0.4 Draft (r2) | Advisor 재작업 지시 반영. (1) `configSchema` 생략 → 선언: 자기 Module 네임스페이스 키 `recall.limit.max`(유한 양의 정수, 기본 20) — Recall 시스템 상한 값 원천(Advisor 결정 DP-M1). (2) `version` 서술을 확정형으로 갱신(Advisor 승인 — Framework/Spec 버전과 독립 축, 초기 0.1.0, Provider 구현 갱신 시 상승). §2 표·§3·§5·§6의 동일 서술을 전수 확정형으로 갱신(확정 대기 잔여 0). 스키마 표기는 계약 수준(추상) — 구체 직렬화는 Adapter 소관 유지. | Worker (Advisor 재작업 지시, Task M2 r2) |
-| 2026-07-06 | v0.4 Baseline | v0.4 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 재작업 1회 후 재검증, CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

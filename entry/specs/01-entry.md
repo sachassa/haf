@@ -14,14 +14,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-07 | v1.1 Draft | 최초 작성 — `uaf/specs/` 경계 최초 산출물. Entry Layer & Entry Resolution 정본 신설: Entry = 추상 연산·Entry Resolution만 담당·Discovery 비수행(P1·UAF-INV ④)·출력은 Discovery Request까지(§3.1); Entry Descriptor 등록 모델·Entry Registry·고정 Resolution 엔진(우선순위 + 결정성 검증)(D6-C1·§3.2); Workspace Evidence 2종(Contract 유무·Repository 유무)·Evidence Source 확장 스키마(Capability 선언형)(§3.2); Entry 2종 `/new`(순수 Greenfield 전용)·`/continue`(Incremental/Brownfield) 등재(§3.1·§3.2); Entry Resolution 결정 테이블 전 8조합(2종 × Contract 유무 × Repo 유무) 전수 열거·각 단일 결과(결정성 불변)(§3.2); 판별 규칙 D3 3건 문면화(§3.2); Discovery Request 정합(mode = 확장 네임스페이스·inputs = Evidence 참조 목록 — uaf/ARCHITECTURE.md §8.2 재정의 0·§ 포인터만)(§3.2·§3.3); Entry Registry 확장 포인트·가상 `/import` 등록 워크스루(변경 = Registry 행 + Policy 데이터(+ Evidence Source 선언)뿐·Layer·엔진 무변경)(§8); 상시 불변(Entry는 Discovery 비수행·Project Contract 직접 생성 안 함) 훼손 서술 0(§3.3). UAHF 정본 무수정(§ 포인터만·재정의 0)·특정 AI 실명·모델명·제품 기능명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.1 W2 T2) |
-| 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | v1.1 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. §0 경계 표제 "무수정"→"§ 포인터 참조(재정의·복제 0)" 및 파일-동결 문면(§0 본문·근거 정본 uahf glossary 항)을 "재정의·복제 없이 § 포인터 참조"(의미 2)로 재서술·① 인용에 "접점 원칙" 명기. EN-INV 1~6·결정 테이블 8조합·불변 카운트·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승·루트 v1.3(정합) 선례). | Worker (Advisor 위임) |
-| 2026-07-26 | v1.1 (정합) | md 슬림화 격리 개정(`docs/spec-versioning-policy.md` §3.2 유형 (B) 비계약). §0·§1 자기 재서술 압축(항목 보존·병합만) · §7 완료 기준을 §3 재서술 → 판정 항목 목록(근거 절 + 원 done) 포인터로 전환 · §8 예 3 산문 압축(변경 4건·불변 3건 보존) · stale 교차 참조 **전 지점 정정(L-06)** — §0·§1·§2 3곳 + **§3 내 상태 주석 1지점**(§3.2-B policy 행의 02-discovery "(예정)") → "실재 — v1.1 Baseline". 상태 주석 토큰만 교체하며 계약 문면(채움 규칙·결정 테이블·Evidence 스키마)은 무촉이다(검증기 판정 2026-07-26). **계약 요소 무촉** — §3.1·§3.2-A~E·§3.3 EN-INV 1~6·§4·§6 문면 무변경, § heading 삭제·개칭·재번호 0(`uaf-verified:` 개정 전후 해당 절 diff 대조). | Worker (Advisor 위임) |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·uahf/framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

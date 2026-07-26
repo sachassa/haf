@@ -17,18 +17,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-07 | v1.1 Draft | 최초 작성 — `uaf/specs/` 경계 Project Contract 정본 신설(설계 순서 P5의 마지막 고정 지점, W4 [Contract]). 지위 확정(UAF↔UAHF 공식 **Stable Contract·Public API**, P3·UAF-INV ①② — **논리 스키마만** 정의·직렬화/물리 포맷/저장 위치는 Adapter 소관, §3.1); 스키마 필드 그룹 **9종**(Meta·Intent·Requirements·Constraints·Risks·Architecture Direction·Assumption Ledger·Readiness·Provenance[불투명 부속], §3.2-A); **필수 코어 필드** 열거·02-discovery §3.7 Completeness 판정 대상 정합(§3.2-B); **Discovery Dimension 5 → Contract 필드 매핑**(컴파일 방향만·역방향 의존 0 — 02-discovery §3.11 위임 해소, §3.2-C); 버저닝 전략 C2(**schemaVersion/instanceVersion** 분리·SemVer 규율·**tolerant reader**·필드 제거 금지·스키마 개정 거버넌스, §3.3); 인스턴스 거버넌스(append-only 이력·supersedes 계보, §3.4); UAHF Interface(선택 입력·Consult 정독·Scaffold 배치·UAHF 무수정 근거·정식 등재는 확장 포인트, §3.5); 불변 PC-INV 11건(역참조 금지·Provenance 불투명·SemVer·tolerant reader·필드 제거 금지·Completeness 불가침·UAHF 무수정·인스턴스 이력·상시 불변 2건 반영, §3.6). 코어 필드 정의에 Discovery 내부 개념(질문·전략·예산·Strategy·Capability) 참조 0(Provenance 부속 제외·자가 전수 스캔). UAHF·UAF 상위 정본 무수정(§ 포인터만·재정의 0)·특정 AI 실명·모델명·제품 기능명·방법론 고유명 0(자가 전수 스캔). | Worker (Advisor 위임, v1.1 W4 T5) |
-| 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-13 | v1.2 Draft | v1.1 Baseline 개정 — 근거 마일스톤 v1.3 W2a(Solution Design 단계 신설·정본 `planning/specs/04-solution-design.md`). **델타 4건:** (1) §3.1-B **생산자 확장** — 두 생산 경로 명문화: (i) 최초 인스턴스 = Discovery Compiler 산출(기존 문면 유지)·(ii) superseding 성숙 인스턴스 = Solution Design의 성숙 재발행(§3.4 동일 supersedes 메커니즘·사용자 승인 게이트); 두 경로 모두 PC-INV 7(완결 산출만) 충족. (2) §3.4 인스턴스 갱신 유형에 **Contract Maturation(성숙)** 추가 — 동일 append-only·supersedes 메커니즘(새 메커니즘 창설 아님·PC-INV 9 무촉). (3) 본 v1.2 행 append + **카운트 drift 정정 주석**(표 하단). (4) 문서 머리 상태 라인 v1.1 Baseline → v1.2 Draft 갱신. **스키마 무변경(D4)** — 필드 신설·삭제·필수화 0·`schemaVersion` 1.0 유지·PC-INV 1~12 목록·문면 무변경. §9 기존 행(v1.1 Draft·v1.1 Baseline) byte 불변(append-only·L-10). 특정 AI 실명·모델명·제품 기능명·방법론 고유명 유입 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W2a) |
-| 2026-07-13 | v1.2 Baseline | **Baseline 승격** — v1.3 마일스톤 W2 CP2 교차 정합(Pass 8/8 — §9 옛 행 byte 불변·스키마 무변경·PC-INV 12 무변 실측 포함)·CP3 승인 후 **사용자 Baseline 승인(2026-07-13)**. | Advisor (사용자 승인) |
-| 2026-07-17 | v1.2 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. §0 경계 표제 "무수정"→"§ 포인터 참조(재정의·확장 0)"·§3.5-C ① 라벨 "(UAHF 정본 무수정)"→"(접점 원칙)". 의미 2(§3.5 UAHF Interface·§3.5-B "UAHF 정본 무수정으로 성립"·PC-INV 8 "UAHF 무수정" 명칭·내용·tolerant reader·역참조 금지) 존치. PC-INV 1~12 카운트·문면·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
-| 2026-07-26 | v1.2 (정합) | md 슬림화 격리 개정(`docs/spec-versioning-policy.md` §3.2 유형 (B) 비계약). §0·§1 자기 재서술 압축(경계 항목·Non-Goals 항목 보존·병합만) · §7 완료 기준을 §3 재서술 → 판정 항목 목록(근거 절 + 원 done) 포인터로 전환 · stale 상태 주석 정정(L-06) — §8 말미 주의 시나리오 워크스루 "(예정)"이 실측상 산출 후 아카이브였으므로 앵커 표기(`uahf/docs/v1.1-scenario-walkthrough.md@cd9247b`)로 전환(2026-07-17 앵커 전환 선례 동형). §2 dependents의 "(구현 버전, 예정)"은 미실현 확장 포인트(§3.5-C)이므로 존치. **계약 요소 무촉** — §3.1·§3.2-A~D(필드 그룹 9종·필수 코어 필드·Dimension 매핑·Provenance)·§3.3·§3.4·§3.5·§3.6 PC-INV 1~12·§4·§5(TEMPLATE 관례 "해당 없음" 존치)·§6·§8 문면 무변경, §9 기존 행·카운트 drift 주석 무촉, § heading 삭제·개칭·재번호 0(`uaf-verified:` 개정 전후 해당 절 diff 대조). | Worker (Advisor 위임) |
-
-> **카운트 drift 정정 (v1.2 W2a).** 위 **v1.1 Draft 행**의 "불변 PC-INV 11건" 표기는 §3.6 본문 열거 실측 **12건**(PC-INV 1~12)과 불일치한다(저술 시점 결함). **§3.6 본문이 정본**이며, 옛 v1.1 Draft 행은 append-only 원칙(L-10)에 따라 **무수정 보존**한다 — 정정은 본 주석으로만 기록한다.
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·entry/specs/01-entry.md §9·discovery/specs/02-discovery.md §9·uahf/framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

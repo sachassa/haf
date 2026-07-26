@@ -18,14 +18,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v0.5 Draft | 최초 작성. `framework/adapters/claude/` 경계의 세 번째 산출물(선행: runtime-binding.md·memory-binding.md). 06 §4.1 바인딩 표 **7행 전건**을 물리 실현("물리 실현(claude 환경)" 열 + "실재 여부" 열)으로 매핑, 형태 A(규약 실현)/형태 B(실행 코드 예정) 정직 구분(§2). V2 Manifest `entrypoint` 추상 참조의 물리 해소(형태 A = `.claude/agents/verifier.md` 진입점 + verifier-protocol.md 절차 준수 / 형태 B = 실행 코드 로케이터 defer) + `configSchema` 생략(DP-V2)으로 물리 반영 대상 부재 명시(Memory `recall.limit.max` 대응 절과의 차이 정직 기록, §3). 검증 리포트 직렬화·저장 위치 확정(docs/ 구조화 문서, `docs/v0.X-verification-report.md` 명명 관례 — v0.3·v0.4 2건 실증·실측) + 재작업 지시 rework 절 직렬화·재위임 전달(§4). VT-1~VT-5 검사 도구 바인딩(파일 조회·텍스트 검색·명령 실행) + verification-checklist.md §7 정본 소유 관계(§5). 06 §4.2 이식 교체 지점 SP-1~SP-6 대응 표("교체되는 것/유지되는 것" 열 — C-1 이식 불변 재확인, §6). 상태 서술 실측 대조 표(§7 — 실재 서술 전건 파일 시스템 실측 후 기입, L-07). 06 §3·framework/verifier/ 5문서 계약 재정의·창설 0, 새 바인딩 계약 0, Glossary 밖 새 용어 0. 동시 작성 시연 절차서(docs/v0.5-demo-procedure.md, V7) 내용 불인용(07 R2), 미래 산출물 실재 불주장(L-07). 이 1파일만 생성 — `.claude/agents/verifier.md`·framework/verifier/ 5문서·기존 Baseline 산출물·specs/ 무수정. | Worker (Advisor 위임, Task V6) |
-| 2026-07-06 | v0.5 Baseline | v0.5 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 26/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·삭제 산출물(docs/v0.3·v0.4-verification-report.md 실사용 인스턴스 2건) 참조 @cd9247b 앵커 전환(§4·§7 실측 표 아카이브 표기). `docs/v0.X-verification-report.md` 명명 관례·계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·스냅샷·죽은 참조 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

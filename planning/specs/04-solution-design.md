@@ -17,17 +17,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-13 | v1.3 Draft (CP2 대기) | 최초 작성 — planning/ Layer의 **Solution Design 단계(성숙 활동) 정본 신설**. planning/ 이중 책임 중 "성숙 활동" 측 소유(모델 P·D2·M6, W0 §2). 단계 계약(입력=Ready\|ReadyWithAssumptions 종단 인스턴스 vN·출력 2경로[성숙 경로 superseding v(N+1)+Projection / 스킵 경로 무산출+경량 확인]·§3.1); 복잡도 판정(Policy as Data·스킵 게이트 D6·§3.2); 역할 할당 계약(Expert Role=Capability 선언·**개방 네임스페이스**·고정 열거 0·최소 할당·§3.3); 협업 설계 프로토콜 골격(State Machine 비종단 5·종단 3·전이 전수·사용자 게이트 명시·단일 인스턴스 수렴·§3.4); Projection(Contract=Source of Truth·파생 산출·동적 선택·§3.5); 경계 기준(vs Discovery — 04 소유 문안·02 무수정·§3.6); 저장 스코프(워크스페이스 귀속 원칙만·§3.7); 불변 **SP-INV 1~8**(§3.8); 확장 포인트 설계 0(§3.9). 형태 A(실행 코드 0·Adapter Binding·dogfooding E2E는 v1.4 이월, D8). 03 스키마·PC-INV·UAHF 개념 재정의 0(§ 포인터만)·방법론 고유명·특정 AI/모델/제품명·고정 역할 카탈로그 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W1) |
-| 2026-07-13 | v1.3 Draft r2 | Gap Analysis(사용자 Target Architecture 대조, 옵션 2 승인) 최소 보완 **C-1** — §3.1-D에 Handoff 의미론 1항 추가(기존 메커니즘 재사용 명문화: 선택 입력 03 §3.5-A·defer=Ready 인스턴스 존속·revise=T10·중단/위임=T11·별도 상태기계 신설 없음). 상태·전이·SP-INV·스키마 무변. W1 CP2 반려 정정 2건(§3.1-B "비Ready 종단" 라벨·§1 "①②" 글리프)은 W1 커밋(3a22a28)에 반영·본 행으로 소급 기록. | Advisor (사용자 승인) |
-| 2026-07-13 | v1.3 Baseline | **Baseline 승격** — W1 CP2(Pass 7/8→경미 2건 정정→재검증 Pass)·W2 CP2 교차 정합(Pass 8/8)·CP3 승인·Gap Analysis(Target Architecture 대조) 옵션 2 보완(C-1 r2 행) 반영 후 **사용자 Baseline 승인(2026-07-13)**. 보완분(r2)은 Advisor 기계 재확인(스코프·CR 0·append-only·삭제행 0). | Advisor (사용자 승인) |
-| 2026-07-17 | v1.3 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. §0 경계 표제 "무수정"→"§ 포인터 참조(재정의·확장 0)"(본문 의미 2 "재정의·확장하지 않고 § 포인터로만 참조" 존치). 의미 2(SP-INV 6 "UAHF 무수정·역참조 금지" 명칭·내용·§1 UAHF 계약 변경 제외)·자매 spec 02 무수정 일방 참조(§0 근거정본·§3.6·§7) 존치. SP-INV 1~8 카운트·문면·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
-| 2026-07-17 | v1.3 (정합) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §0 근거정본(:8)·§부록 입력 목록(:93)의 삭제 산출물 참조 앵커 전환(`docs/v1.3-context-and-design.md@cd9247b`)·:93 물리 실재("실재") 표기 개정(아카이브). SP-INV·계약·§ 포인터 문면 무변경(참조 정합·버전 무상승). | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-18 | DC-1 Draft (CP2 대기) | 설계완성도 강제 트랙 §DC-1 — SP-INV 9(설계 커버리지 완성도) 신설·§3.3 전체 범위 커버리지 바닥·§3.4 다라운드 심의 명시·§3.5 기본 세트 default-required opt-out 전환. 구체 유형 카탈로그·정책 값·역할명은 Adapter/비정본 부록 소관(SP-INV 5 보존·유형명 0). 사용자 결정 2026-07-18. | Worker (Advisor 위임) |
-| 2026-07-26 | (정합) | md 슬림화 격리 개정(`docs/spec-versioning-policy.md` §3.2 유형 (B) 비계약). §0·§1 자기 재서술 압축(C2 3항·신규 용어 4건·Non-Goals 항목 보존) · §7 완료 기준을 §3 재서술 → 판정 항목 목록(근거 절 + 원 done) 포인터로 전환 · stale 교차 참조 정정(§2 dependents의 `planning/docs/appendix/` "(예정)" → 실재 · 03 v1.2 델타 "(예정, 후속)" → 실재 v1.2 Baseline · §0의 "planning 개관 이중 책임 정합은 후속 소관" 문구 삭제 — `planning/ARCHITECTURE.md` 상태 라인·§9 v1.3 이중 책임 정합 행으로 실현 확인) · **§3 내 상태 주석 1지점 포함 전 지점 정정(L-06)** — §3.3 개방 네임스페이스 항의 부록 "(예정)" → "실재"(상태 주석 토큰만 교체·역할 계약 문면 무촉·검증기 판정 2026-07-26). **계약 요소 무촉** — §3.1~§3.7·§3.4-A 상태표·§3.4-B 전이표 T1~T11·§3.8 SP-INV 1~9·§3.9·§4·§6·§8 문면 무변경, § heading 삭제·개칭·재번호 0(`uaf-verified:` 개정 전후 해당 절 diff 대조). | Worker (Advisor 위임) |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, `ARCHITECTURE.md` §9·`planning/specs/03-project-contract.md` §9·`discovery/specs/02-discovery.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

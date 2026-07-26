@@ -16,17 +16,7 @@
 
 ## §9. 이력 (Revision History)
 
-| 일자 | 버전 | 변경 | 주체 |
-|---|---|---|---|
-| 2026-07-06 | v0.6 Draft | 최초 작성. `framework/adapters/claude/` 경계의 네 번째 산출물(선행: runtime-binding.md·memory-binding.md·verifier-binding.md). 03 §4.1 바인딩 표 **7행 전건**을 물리 실현("물리 실현(claude 환경)" 열 + "실재 여부" 열)으로 매핑, 형태 A(규약 실현)/형태 B(실행 코드 예정)/데이터 미생성(loop-data/) 정직 구분(§2). 루프 상태 기록 물리 백엔드 정본 확정(§3, DP-L4 — 위치 `framework/adapters/claude/loop-data/`, 사이클당 파일 1개·1 line = 1 전이 이벤트 append-log 구조 제안·근거, 03 §3.2-A 10필드 직렬화·append-only·seq/at 순서·"기록만으로 사이클 재구성" 물리 보장, `at` 순서 값 물리 표현(L-09)·`ref` 회수 집합 참조(DP-L5) 물리 표현). Loop Provider `entrypoint`·`requires` 물리 해소(형태 A/B) + 재시도 한도 Config 물리 소스(runtime-binding §3.3 동형, `retry.limit` 값·스코프는 config-schema.md §7 소유 참조)(§4). 역할 실행(CP1=Worker·CP2=Verifier·CP3=Advisor)·전이 유발·사람 개입 물리 채널(서브에이전트 위임·최종 응답·에스컬레이션) + Memory 접근 물리 실현(memory-binding.md 백엔드 경유 참조, 재정의 0)(§5). 03 §4.2 이식 교체 지점 SP-1~5 대응 표("교체되는 것/유지되는 것" — C-1 이식 불변 재확인, §6). 상태 서술 실측 대조 표(§7 — 실재 서술 전건 파일 시스템 실측 후 기입, L-07; loop-data/ 미생성·시연 Task 생성 예정, L-07). 03 §3·framework/loop/ 4문서 계약 재정의·창설 0, 새 바인딩 계약 0, Glossary 밖 새 용어 0. 동시 작성 시연 절차서(후속 W4 L9)·시연(W5 L10) 내용 불인용(07 R2), 미래 산출물(loop-data/ 데이터) 실재 불주장(L-07). 이 1파일만 생성 — framework/loop/ 4문서·.claude/agents/ 4종·기존 Baseline 산출물·specs/·docs/ 무수정. | Worker (Advisor 위임, Task L8) |
-| 2026-07-06 | v0.6 Baseline | v0.6 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-06 | v0.7 Draft (개정) | 관찰 2·4 해소 (WF13). **(1) 개정 ① (관찰 2)** — §2 바인딩 표 행 2 정본 인용 셀에서 03 §4.1 원문 대비 탈락한 단어 **"지정"** 복원(specs/03-loop.md §4.1 원문과 문자 단위 대조 후 — "…(Opus 등) 지정은 02 §4 소관…"). **(2) 개정 ② (관찰 4)** — loop-data/ 상태 서술 **전수 갱신**: L8 draft 시점 "미생성/미존재/생성 예정" 서술(§0·§1·§2 표 행 4·행 4 주·§7 실측 대조 표·§8·§10 — `grep`으로 "미생성"·"미존재"·"생성 예정"·"loop-data" 전수 열거)을, 시연 Task(L10, docs/v0.6-demo.md)가 이 정본 구조대로 생성한 **실측 실재**(3파일 — `v06-demo-a.jsonl` 7 line·`v06-demo-b.jsonl` 9 line·`v06-demo-c.jsonl` 11 line, 본 개정 시 `ls`+`wc -l`+`grep -c cycle_id` 직접 재실측)로 갱신(memory-binding.md r2가 M5 draft "미생성"을 M7 시연 후 실재로 전수 갱신한 관례 동형). §3 물리 백엔드 정본·§4·§5·§6 계약 서술 무변경, 03 §3·framework/loop/ 4문서 계약 재정의 0. **비차단 관찰(Advisor 판단 대상 — 완료 보고 open_questions 에스컬레이션):** 문자 단위 대조 결과 정본 인용 열 행 1·2·3·5·7이 원문의 참조 앞 공백(" (NN §X)")을 house-style로 정규화해 byte 단위 불일치(탈자 아님) — 공백 복원은 "지정" 탈락어 복원 범위 밖이라 본 개정은 미수행. 근거: docs/v0.6-verification-report.md §3.7 관찰 2·4 해소 (v0.7 편입 개정, 사용자 승인 2026-07-06). | Worker (Advisor 위임, Task WF13) |
-| 2026-07-06 | v0.7 Baseline | v0.7 개정분(관찰 2·4 해소·상태 라인 정합·이력 라벨 일관화) 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
-| 2026-07-13 | (OQ 해소 정합 — 버전 무상승) | §8 OQ-LB-2 해소 표기 append — 형태 B Step Hosting 마일스톤이 §4.1 예약 로케이터("사이클 구동을 사람 없이 자동 트리거·반복하는 실행 코드")를 실현: 중립 엔진 = `framework/loop/step-host/`·provider 의존 = `framework/adapters/claude/step-invoker/`·물리 매핑 = `step-hosting-binding.md`·계약 = `framework/runtime/step-hosting-protocol.md`(D-2 사용자 게이트 2026-07-13·dogfooding E2E 7 시나리오 실증). 본문 매핑·계약 무변경(참조 정합=시맨틱 개정 아님 — 버전 미상승 선례·BPD-17 append-only). | Advisor |
-| 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07·L-09 유지)·loop-data/ 데모 데이터(v06-demo-*) 실재 서술을 @cd9247b 앵커로 전환(§0 커버리지 노트·§7 실측 표; 백엔드 위치·구조 정본 DP-L4는 계약 서술로 유지). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
-| 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·감사 서술·죽은 참조 압축, 계약 문면 무변경. 종전 문면 = git 앵커 90ca19c | Advisor 위임 |
-
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+이력 기록 = git(이 파일 경로의 git log·제거 전 전문 앵커 64b6570). UAF 자체 개정 시에만 참조한다 — 규범 = docs/spec-versioning-policy.md §3.
 
 ---
 

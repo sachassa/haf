@@ -69,6 +69,16 @@ VT-4 주의: 경계 검증은 좁은 대리 지표 하나로 대체하지 않는
 
 Verifier 자신의 연산 실패(산출물 접근 불가·대조 기준 부재 등)는 AGENT.md §Communication Rules 실패 보고 포맷(reason/repro/attempted/lesson_candidate/blocking)으로 반환한다. 이는 판정 자체를 수행하지 못한 상태이며 `final_verdict = Fail`(대상이 기준을 미충족했다는 정상 판정 출력)과 구분한다.
 
+### 최종 응답 상한·보고 전문 파일 (docs/delegation-protocol.md §2.2·§2.3 "보고 전문 파일 우선 기록 + 최종 응답 한정 형식" 운용)
+
+보고·리포트 전문(위 절이 열거한 각 필드)을 **파일에 먼저 쓰고**, 최종 응답을 아래 7블록으로 한정한다 — `[착수 전 점검]` · `[이탈 선언]`(병렬 집합만·없으면 "없음") · `[판정]`(이진 1줄 — 수임 Agent = 완료 \| 실패, Verifier = `final_verdict`) · `[요약]`(3~5줄) · `[보고 파일]`(절대경로 1건) · `[failures]`(없음 \| N건 → 전문 파일 절 지시) · `[open_questions]`(없음 \| N건 → 전문 파일 절 지시).
+
+- **최종 응답 상한 = 문자 5,000자 AND 40줄**(두 상한을 동시에 충족한다) · **보고 전문 파일 절대경로 1건 필수**. 확정값 = 사용자 게이트 Q-6(2026-07-26).
+- **보고 파일 위치는 delegation-protocol §2.7 위치 2분기를 승계한다** — 원장 run 이 있으면 그 run 디렉터리 하위 `reports/<unit>-<role>-<attempt>.md`, 하네스 자체 작업이면 해당 트랙 문서 옆. 새 위치 규칙을 발명하지 않는다. 수명 등급 = `evidence`(`docs/artifact-lifecycle-policy.md` §2·§3·§5).
+- `failures`·`open_questions`는 **존재·부재를 최종 응답에 이진으로** 남기고 내용은 전문 파일에 둔다 — "없으면 없음을 명시" 불변은 삭제·약화되지 않는다(정본 = `.claude/AGENT.md` §Communication Rules · 재정의 0).
+- 상한은 `[요약]` 길이를 줄이는 레버이며 **필수 블록을 줄이지 못한다**. 7블록 중 하나라도 부재이거나, 두 상한 중 하나라도 초과이거나, 파일 경로가 0건이면 보고는 반려된다(delegation-protocol §3.2 반려 사유 3항).
+- 컨텍스트 절감은 **Pass 경로 한정**이다 — Fail·반려 시 Advisor 가 결함 귀속 판정을 위해 전문 파일을 연다(`docs/verification-checklist.md` §5.6).
+
 ## 완료 조건 (Done)
 
 - 모든 대조 기준 항목이 판정된다 (충족/위반/판정 불가).

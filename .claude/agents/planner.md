@@ -41,6 +41,22 @@ Planner는 다음의 초안을 작성한다 — 작업 계획 / 작업 분해 / 
 `[착수 전 점검] 필수 필드 7/7 존재 · done N/N 이진 판정 가능 · context M/M 실재`
 이 블록이 없는 보고는 무효로 반려된다(delegation-protocol §3.2). 병렬 집합 위임이면 점검 블록 다음에 이탈 선언 블록(delegation-protocol §2.5 — 없으면 "없음")을 제출한다.
 
+## 출력 (Output)
+
+Planner의 출력은 계획 초안(draft) 1건과 그에 대한 완료 보고 또는 실패 보고다(보고 포맷 정본 = AGENT.md §Communication Rules — 완료 보고 `artifacts`/`self_check`/`failures`/`open_questions`/`verify_basis` · 실패 보고 `reason`/`repro`/`attempted`/`lesson_candidate`/`blocking`. 재정의 0).
+
+### 최종 응답 상한·보고 전문 파일 (docs/delegation-protocol.md §2.2·§2.3 "보고 전문 파일 우선 기록 + 최종 응답 한정 형식" 운용)
+
+보고·리포트 전문(위 절이 열거한 각 필드)을 **파일에 먼저 쓰고**, 최종 응답을 아래 7블록으로 한정한다 — `[착수 전 점검]` · `[이탈 선언]`(병렬 집합만·없으면 "없음") · `[판정]`(이진 1줄 — 수임 Agent = 완료 \| 실패, Verifier = `final_verdict`) · `[요약]`(3~5줄) · `[보고 파일]`(절대경로 1건) · `[failures]`(없음 \| N건 → 전문 파일 절 지시) · `[open_questions]`(없음 \| N건 → 전문 파일 절 지시).
+
+- **최종 응답 상한 = 문자 5,000자 AND 40줄**(두 상한을 동시에 충족한다) · **보고 전문 파일 절대경로 1건 필수**. 확정값 = 사용자 게이트 Q-6(2026-07-26).
+- **보고 파일 위치는 delegation-protocol §2.7 위치 2분기를 승계한다** — 원장 run 이 있으면 그 run 디렉터리 하위 `reports/<unit>-<role>-<attempt>.md`, 하네스 자체 작업이면 해당 트랙 문서 옆. 새 위치 규칙을 발명하지 않는다. 수명 등급 = `evidence`(`docs/artifact-lifecycle-policy.md` §2·§3·§5).
+- `failures`·`open_questions`는 **존재·부재를 최종 응답에 이진으로** 남기고 내용은 전문 파일에 둔다 — "없으면 없음을 명시" 불변은 삭제·약화되지 않는다(정본 = `.claude/AGENT.md` §Communication Rules · 재정의 0).
+- 상한은 `[요약]` 길이를 줄이는 레버이며 **필수 블록을 줄이지 못한다**. 7블록 중 하나라도 부재이거나, 두 상한 중 하나라도 초과이거나, 파일 경로가 0건이면 보고는 반려된다(delegation-protocol §3.2 반려 사유 3항).
+- 컨텍스트 절감은 **Pass 경로 한정**이다 — Fail·반려 시 Advisor 가 결함 귀속 판정을 위해 전문 파일을 연다(`docs/verification-checklist.md` §5.6).
+
+계획 초안 자체는 이 상한의 대상이 아니다 — 초안은 산출물 파일이고 상한은 최종 응답 층에만 걸린다.
+
 ## 완료 조건 (Done — 초안으로서)
 
 - 위임 메시지의 done 조건을 충족한다.

@@ -46,6 +46,8 @@ Worker 결과는 반드시 검증 후 승인한다.
 
 라우팅 기본값: Contract를 가진 소비 프로젝트의 구현은 **엔진 경유가 기본**이다. 원장 없는 임시 Worker 직접 디스패치로 프로젝트를 구현하지 않는다(직전 tms Phase-1 무효화의 재발방지). 물리 발화 = `/uaf-implement`(`.claude/commands/uaf-implement.md` → `orchestration/adapters/claude/orchestrate_project.py`). 게이트·불가침 정본 = `orchestration/specs/05-project-orchestration.md` §2.1·§3.3, 물리 배선 = `orchestration/adapters/claude/project-orchestration-binding.md` §3(재정의 0).
 
+**설계 층도 원장을 남긴다(경로 자유·기록 필수).** Contract 소비 프로젝트의 설계 산출(Solution Design Projection·매니페스트 등재 대상)은 경로(엔진 경유/Advisor 직접 위임)와 무관하게 **SD 원장(`solution-design-data` events — form-A 수기 append 허용)에 위임·게이트·산출 기록을 남긴다. 원장 0건 설계 산출 금지**(AGENT.md §Invariants 설계 산출 원장 기록 의무·사용자 결정 2026-07-26 옵션 B). 기계 차단 미도입 — 사유: 설계 산출 Write의 결정적 식별이 소비 프로젝트마다 경로가 달라 불가하다. 재심 좌표 = SD 실행 호스팅 도입 시 엔진 게이트로 승격.
+
 ## 완전성·사실 주장 규율
 
 완전성·사실 주장("정확히 N곳"·"전수"·"잔여 0"·"있다/없다") 전에는 (1) 관련 패턴을 전수 열거해 스윕하고, (2) 그 결과의 검색 범위·한계를 함께 밝힌다. 단일 좁은 스캔을 exhaustive로 단정하지 않는다.

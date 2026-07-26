@@ -1,7 +1,7 @@
 # orchestration — Architecture (프로젝트 오케스트레이션 Layer)
 
 작성일: 2026-07-13
-상태: v1.6 Baseline (CP2 5단계 첫 판정 Pass · CP3 승인 · 사용자 승인 2026-07-13 — 단계별 판정 수치는 §9 이력)
+상태: v1.6 Baseline (CP2 5단계 첫 판정 Pass · CP3 승인 · 사용자 승인 2026-07-13 — 단계별 판정 수치는 git 이력)
 상위 규약: 루트 `ARCHITECTURE.md` (라우터) · `AGENT.md`
 근거 정본 (각 § 포인터로만 참조 — 재정의·복제 0):
 

@@ -10,7 +10,7 @@
 - `01-runtime.md` ~ `13-harness.md` — 13개 Core Component 규격.
 - `TEMPLATE.md` — spec 공통 템플릿과 DoD.
 
-기준선은 Frozen 상태이며, 변경은 spec 버전 상승과 Revision History 기록이 필수다 (Glossary §3.2-G Spec Status).
+기준선은 Frozen 상태이며, 변경은 spec 버전 상승과 **개정 기록**이 필수다 (Glossary §3.2-G Spec Status). **기록 locus = git 커밋**이다 — spec 파일에는 상태 라인(Version·Status)만 두고 개정의 취지·범위는 커밋 메시지가 보존하며, 파일 안에 이력 절을 두지 않는다 (TEMPLATE.md §1 사용 규칙).
 
 ## 배치 우선순위
 

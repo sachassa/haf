@@ -12,7 +12,7 @@
 - framework/core/structure.md §2·§5·§7 — 소속 경계(4경계 배치 표)·금지 토큰 규칙(C-3)·Core Contract 불변(C-1).
 - ROADMAP.md v0.3 — 산출물 "Runtime 프로토콜 구현물"(일부).
 
-거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 본문은 AI·언어·툴체인 비의존을 유지한다(structure.md §5 C-3). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 본문은 AI·언어·툴체인 비의존을 유지한다(structure.md §5 C-3). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

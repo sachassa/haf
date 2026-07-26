@@ -10,7 +10,7 @@
 - 자매 Adapter Binding — memory-binding.md(관례 정본 + **Memory 백엔드 `framework/adapters/claude/memory-data/`의 물리 실현 정본** — 본 문서 §5.3은 그 백엔드 경유를 참조만 하고 재정의하지 않는다)·runtime-binding.md(§2 #10 세션/턴 수명주기 컨테이너·§3.3 Config 스코프 물리 소스·§3.4 Bootstrap~Serve~Shutdown 매핑)·verifier-binding.md(§3.1 Agent Module = 서브에이전트 디스패치·§7 실측 대조 관례).
 - framework/core/config-schema.md §7(`retry.limit` 기본값 2·Global 스코프 — 값·스코프 소유 소재이며, 본 문서는 값을 재선언하지 않고 소유 포인터 + 물리 소스만 바인딩한다)·framework/core/structure.md §2·§4·§5·§7·§8(4경계 배치·형태 A/B 서술 라벨·금지 토큰 C-3·Core Contract 불변 C-1·트리)·specs/01-runtime.md §3.1-A·§3.1-C·§3.2-B·§4·specs/00-glossary.md(용어 정본)·docs/delegation-protocol.md §3(위임·보고·에스컬레이션 물리 채널 관행)·.claude/agents/ 4종(역할 실행 물리 실체 — 참조만 하고 수정하지 않는다)·Active Lesson L-07·L-09(§3.3·§7 근거)·ROADMAP.md v0.6(Loop Engine).
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계·격리(구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용되는 지점 = C-3 비적용)·Bootstrap 전제·용어 사용(glossary 정본만·새 용어 신설 없음)·개정 절차(Advisor 승인 + 본 문서 §9 이력 append)의 근거는 `framework/core/structure.md` §5·§2·§4이며(03 §3.3 INV-9·01 §3.2-E 규칙 3 정합), 자매 바인딩 문서(runtime/memory/verifier-binding.md §0)와 동형이다. 이 문서는 Core Contract(03 §3)와 그 인스턴스 문서(framework/loop/ 4문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다.
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다. 이 경계·격리(구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용되는 지점 = C-3 비적용)·Bootstrap 전제·용어 사용(glossary 정본만·새 용어 신설 없음)·개정 절차(Advisor 승인 + git 커밋 기록 — 규범 = `docs/spec-versioning-policy.md` §3)의 근거는 `framework/core/structure.md` §5·§2·§4이며(03 §3.3 INV-9·01 §3.2-E 규칙 3 정합), 자매 바인딩 문서(runtime/memory/verifier-binding.md §0)와 동형이다. 이 문서는 Core Contract(03 §3)와 그 인스턴스 문서(framework/loop/ 4문서)를 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다.
 
 ---
 

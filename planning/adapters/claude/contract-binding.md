@@ -135,7 +135,7 @@ provenance: <불투명 컨테이너 — UAHF must-ignore; 내부 형식은 disco
 
 ### §5.3 스키마 개정 거버넌스의 물리 반영
 
-논리 스키마 개정은 정본 03의 spec 버전 상승 + §9 Revision History append로만 이뤄지고(03 §3.3-E), **본 바인딩 문서(직렬화·경로·표기)의 개정**은 Advisor 승인으로 이뤄진다(거버넌스 문단). 인스턴스 갱신(§5.1 `instanceVersion`)은 또 별개의 append-only 인스턴스 거버넌스다(03 §3.4). 세 거버넌스는 구분된다.
+논리 스키마 개정은 정본 03의 spec 버전 상승 + git 커밋 기록으로만 이뤄지고(03 §3.3-E · 기록 locus 정본 = `docs/spec-versioning-policy.md` §3), **본 바인딩 문서(직렬화·경로·표기)의 개정**은 Advisor 승인으로 이뤄진다(거버넌스 문단). 인스턴스 갱신(§5.1 `instanceVersion`)은 또 별개의 append-only 인스턴스 거버넌스다(03 §3.4). 세 거버넌스는 구분된다.
 
 ---
 

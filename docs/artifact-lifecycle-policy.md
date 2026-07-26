@@ -5,12 +5,12 @@
 상위 규약: AGENT.md
 근거 정본:
 
-- `docs/spec-versioning-policy.md` — docs 운용 정책 문서 관례(§9 이력 머리 배치·§0 정본 경계)의 선례. 본 문서는 같은 관례를 따른다.
+- `docs/spec-versioning-policy.md` — docs 운용 정책 문서 관례(머리 상태 라인·§0 정본 경계)의 선례이자 **개정 기록 locus 정본**(§3 — 기록 = git 커밋·파일 내 이력 절 폐지). 본 문서는 같은 관례를 따른다.
 - 루트 `ARCHITECTURE.md` §8 UAF-INV ① (접점 원칙 — 커밋 `5c80284` 재정의) — 무수정(동결) 원칙 폐지로 본 정책의 기존 산출물 정리가 거버넌스상 가능해졌다.
 - `uahf/framework/adapters/claude/memory-binding.md` §5.3 (INV-6 기록 불변) — Memory store append-only 계약. 본 정책이 §2에서 유일한 삭제 금지 예외로 인용한다(재정의 0).
 - Active Lesson L-07(상태 서술은 실측 후 기록) · L-10(이력 행 문면 불변·append-only) — 본 정책의 앵커 인용 규칙·ARCHIVE 원장 운용이 이 관행과 정합한다.
 
-거버넌스: 이 문서는 `docs/` 소속 **UAF 레벨 운용 정책 문서**다. 계약(spec)의 정본이 아니며, 산출물의 수명·삭제·인용·배치의 **운용 규칙**만 소유한다. 개정은 Advisor 승인 + §9 이력 절 기록으로만 이뤄진다. 환경 무관 거버넌스 문서이므로 본문에 특정 AI 이름·모델명·제품 기능명을 두지 않는다.
+거버넌스: 이 문서는 `docs/` 소속 **UAF 레벨 운용 정책 문서**다. 계약(spec)의 정본이 아니며, 산출물의 수명·삭제·인용·배치의 **운용 규칙**만 소유한다. 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3). 환경 무관 거버넌스 문서이므로 본문에 특정 AI 이름·모델명·제품 기능명을 두지 않는다.
 
 ---
 

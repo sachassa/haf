@@ -1,7 +1,7 @@
 # framework/adapters/claude/adapter-conformance — Claude Code Adapter 적합성(Conformance) 판정
 
 작성일: 2026-07-06
-상태: v1.2 Baseline (r4) — 개정 이력·직전 기준선·CP2/CP3 승인 기록은 §9 이력 표가 정본이다.
+상태: v1.2 Baseline (r4) — 개정 이력·직전 기준선·CP2/CP3 승인 기록의 정본은 **git 커밋(커밋 메시지·앵커)**이다(규범 = `docs/spec-versioning-policy.md` §3).
 상위 규약: AGENT.md
 근거 정본:
 
@@ -16,7 +16,7 @@
 - 판정 근거로 인용하던 삭제 산출물(검증 리포트·docs/ 시연 소산·loop-data 데모 데이터)은 산출물 수명 정책(docs/artifact-lifecycle-policy.md §7)으로 아카이브 — 앵커 `cd9247b` 열람. 해당 인용은 그 시점 스냅샷 기준이며 C1~C3 판정 논리·verdict는 불변이다.
 - ROADMAP.md v0.9(Adapter Layer 정식화)·v1.0(Adapter Interface 최종 규격) — 완전 Adapter 판정 시연(11 §7)의 마일스톤 근거.
 
-경계·거버넌스 전제(공통 4종 통합): 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서** = 격리 지점이므로 구체 AI·환경·직렬화 형식·물리 경로 토큰이 허용되고 C-3 금지 토큰 규칙이 비적용이다 · 하네스는 Bootstrap 상태이므로 실현을 형태 A(문서·규약)/형태 B(실행 코드)로 구분한다 · 용어는 specs/00-glossary.md 정본만 쓴다 · 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다. 이 허용은 Frozen specs/11 §3 문면을 바꿀 권한이 아니다(인용만). 근거 = `uahf/framework/core/structure.md` §5(C-3)·§2(4경계 배치·소유 계약)·§4(계약·문서 전용 경계·형태 A/B 라벨).
+경계·거버넌스 전제(공통 4종 통합): 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서** = 격리 지점이므로 구체 AI·환경·직렬화 형식·물리 경로 토큰이 허용되고 C-3 금지 토큰 규칙이 비적용이다 · 하네스는 Bootstrap 상태이므로 실현을 형태 A(문서·규약)/형태 B(실행 코드)로 구분한다 · 용어는 specs/00-glossary.md 정본만 쓴다 · 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3). 이 허용은 Frozen specs/11 §3 문면을 바꿀 권한이 아니다(인용만). 근거 = `uahf/framework/core/structure.md` §5(C-3)·§2(4경계 배치·소유 계약)·§4(계약·문서 전용 경계·형태 A/B 라벨).
 
 ---
 

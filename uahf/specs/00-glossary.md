@@ -1,7 +1,7 @@
 # specs/00-glossary — Glossary Specification
 
-Version: 0.2
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · v0.2 개정 — 사용자 승인, 2026-07-06 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
+Version: 0.3
+Status: Frozen (v0.3 개정 — §3.2-G Frozen 정의의 개정 기록 locus 를 git 으로 이전. 사용자 결정 2026-07-27)
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -282,7 +282,7 @@ Core Contract를 특정 AI 실행 환경에 구현하는 환경 의존 바인딩
 spec의 성숙 단계. 세 값을 가진다.
 - Draft — Worker 작성 중.
 - Review — 검증 및 Advisor 검토 중.
-- Frozen — v0.1 기준선 확정. 이후 변경은 spec 버전 상승과 Revision History 기록이 필수다.
+- Frozen — v0.1 기준선 확정. 이후 변경은 spec 버전 상승과 **개정 기록**이 필수다(기록 locus = git 커밋 — 운용 절차 정본 = `docs/spec-versioning-policy.md` §3).
 근거: TEMPLATE.md §4.
 
 **Definition of Done (DoD, 완료 기준)**

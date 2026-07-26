@@ -62,7 +62,7 @@ LLM 환경으로 이식할 때 Adapter만 교체하면 되도록 계층을 유�
 | v1.5 | Form B Step Execution Hosting | 형태 B 실행 코드 첫 도입 — `framework/runtime/step-hosting-protocol.md`(provider-중립·SH-INV 8)·중립 Step Host·claude step-invoker + dogfooding E2E 7 시나리오 | 중간 |
 | v1.6 | Project Orchestration / Dynamic Agent System | UAF 레벨 신규 최상위 Layer `orchestration/` 신설(루트 §2.3 slot 실현) — 정본 `orchestration/specs/05-project-orchestration.md`·중립 Orchestrator 6 모듈·Gate Policy 5종·claude 바인딩. UAHF 6-Layer 무촉 | 중간 |
 
-> 각 버전의 완료일·산출물 목록·Δ·검증 판정 수치·run evidence 경로는 이 표에 옮기지 않는다 — 근거 = git 앵커 90ca19c(및 # 8 이력 표).
+> 각 버전의 완료일·산출물 목록·Δ·검증 판정 수치·run evidence 경로는 이 표에 옮기지 않는다 — 근거 = git 앵커 90ca19c.
 
 > 버전 네임스페이스 주의 — 표의 v1.3은 **마일스톤 버전**이다. 루트 `ARCHITECTURE.md`의 **문서 버전 v1.3**(2026-07-09 라우터 재저술)과는 별개 네임스페이스이며, 마일스톤 v1.3에서 루트 문서 버전은 v1.4로 상승했다(설계 정본 = `docs/v1.3-context-and-design.md@cd9247b`).
 
@@ -90,7 +90,7 @@ v0.1 → v0.2 → v0.3 → { v0.4 ∥ v0.5 ∥ v0.8(착수) } → v0.6 → { v0.
 
 완료 마일스톤(v0.1~v1.2)의 버전별 상세 블록(목표·선행 조건·완료 조건·산출물·병렬 작업
 가능 여부)은 이 문서에 두지 않는다 — # 3 개요표가 버전당 1행을 담고, 상세·산출물 경로는
-**git 앵커 90ca19c** 및 # 8 이력 표가 근거다.
+**git 앵커 90ca19c**가 근거다.
 
 이 절을 비운 부수 효과로, # 8 이력 2026-07-17 행이 자인한 broken 경로 위험(v1.1/v1.2
 산출물 목록의 `docs/…` 경로가 실 위치 `uahf/docs/`와 불일치)은 소멸한다.

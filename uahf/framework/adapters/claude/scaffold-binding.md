@@ -11,7 +11,7 @@
 - 자매 Adapter Binding(관례 정본) — runtime-binding.md §3.3·§3.4(Config 물리 소스·세션/턴 수명주기) · memory-binding.md §3(정본 프로토콜 1:1 단계 대응 관례) · verifier-binding.md §5(VT 검사 도구 바인딩 관례) · loop-binding.md §2(핵심 루프 구동 — CK-5 대응).
 - framework/core/structure.md §2·§5·§8(Adapter 경계 = 격리 지점·금지 토큰 규칙) · Active Lesson L-07(상태 서술은 실측 후 기록 — §8 근거) · ROADMAP.md v0.9(Adapter Layer & Scaffold) · `.claude/AGENT.md`·`.claude/CLAUDE.md`·`.claude/agents/` 4종(템플릿 초기본의 라이브 원형 — 참조만, 무수정).
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 12 §3.3 INV-6, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용된다(C-3 비적용 — 자매 바인딩 8문서 §0 동형). 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 12 §3.3 INV-6, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용된다(C-3 비적용 — 자매 바인딩 8문서 §0 동형). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -250,7 +250,7 @@ Active Lesson L-07(상태 서술은 실측 후 기록)에 따라 본 문서의 "
 
 - **재정의 0·창설 0·격리 선언은 §0이 1벌로 소유한다.** 이 절은 그 선언을 반복하지 않고 계약 소유 지도만 둔다.
 - **계약 소유 지도.** 3연산 완료 조건·사유 코드 = 12 §3.1·§3.2-D · Project Template 추상 구성(필수 6요소) = 12 §3.2-A · Install Manifest 6필드·INV-7 = 12 §3.2-B · 설치 검증 체크리스트 CK-1~CK-8 = 12 §3.2-C · Invariants = 12 §3.3 · Bootstrap 상태(Ready/Degraded)·Config 스코프 = 01 §3.1-C·§3.2-B · Loop 구동 = 03 소관 · Layer 귀속·표제어 = Glossary §3.2-D·§3.2-J J-12. 본 문서가 소유하는 정본은 **scaffold-template/의 구조·내용 목록·`dot-claude/`→`.claude/` 매핑(§6)** 과 물리 실현 매핑(§2~§5·§7)뿐이다.
-- **작성 경계 이력(포인터).** 초판(2026-07-06, Task T4)의 형제 Task(PS2) 불인용(07 R2)·3산출물 생성 범위·라이브 표면 무수정(07 R4)·Advisor 결정(DP-U1·DP-A3) 준수 감사 흔적은 §9 이력 행에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 §9 이력 표에 보존, 본문은 포인터 1줄`
+- **작성 경계 이력(포인터).** 초판(2026-07-06, Task T4)의 형제 Task(PS2) 불인용(07 R2)·3산출물 생성 범위·라이브 표면 무수정(07 R4)·Advisor 결정(DP-U1·DP-A3) 준수 감사 흔적은 git 이력(초판·개정 커밋)에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 git 이력에 보존, 본문은 포인터 1줄`
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 

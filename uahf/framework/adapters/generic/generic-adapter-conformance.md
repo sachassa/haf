@@ -9,7 +9,7 @@
 - framework/adapters/generic/generic-binding.md(T1 확정본) §2(필수 13 BP 환경 중립 값 표)·§3(선택 4 BP 생략)·§4(DP-V1·DP-V5·DP-V6) — C1 커버리지 대조의 근거.
 - `uahf/docs/v1.0-generic-adapter-demo.md@cd9247b` + `uahf/docs/v1.0-generic-demo-fixtures/@cd9247b` — 핵심 루프 1사이클 실수행 기록(4전이 append-only·독립 Verifier final_verdict=Pass·필수 13 BP↔실증 지점 매핑). **C3 판정 근거의 정본**(evidence 등급 아카이브; 열람 = `git show cd9247b:uahf/docs/v1.0-generic-adapter-demo.md`). 본문의 시연 문서·픽스처 참조는 전부 이 앵커 시점 스냅샷이다.
 - framework/core/structure.md §2·§5(C2 판정 근거) · specs/00-glossary.md §3.2(용어 정본·`형태 A/B` 라벨, 신설 0) · AGENT.md · docs/delegation-protocol.md §2 · ROADMAP.md v1.0.
-거버넌스: 이 문서는 `framework/adapters/generic/` 소속 **Adapter Binding 문서(Conformance 판정)**다. Adapter 경계는 격리 지점이나(structure.md §2·§5, 11 §3.3 INV-3), 본 문서는 **Generic Adapter** 이므로 DP-V6 정체성 제약(특정 AI 이름·모델명·AI 벤더 제품/기능명 **0건**)과 DP-V14(타 Adapter 경계 문서·경로 불명명 — 역할 기반 중립 참조만)를 받는다(§0). 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/adapters/generic/` 소속 **Adapter Binding 문서(Conformance 판정)**다. Adapter 경계는 격리 지점이나(structure.md §2·§5, 11 §3.3 INV-3), 본 문서는 **Generic Adapter** 이므로 DP-V6 정체성 제약(특정 AI 이름·모델명·AI 벤더 제품/기능명 **0건**)과 DP-V14(타 Adapter 경계 문서·경로 불명명 — 역할 기반 중립 참조만)를 받는다(§0). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -143,7 +143,7 @@ Active Lesson L-07(상태 서술은 실측 후 기록)에 따라 "실재/존재/
 - **자기 점검 요지(선언 정본은 §0).** 재정의·확장 0 · 새 BP·새 Report 필드·새 verdict·새 등급·새 용어 창설 0 · Frozen specs/11 문면 무변경 · 판정 성격(최종 승인 아님 — 규칙은 §3.2). 판정 기준의 정본은 11 §3 이다.
 - **DP-V6 준수 + verify_basis.** 본문에 특정 AI 이름·모델명·AI 벤더 제품/기능명 **0건**. 자가 스캔은 후보 집합 전체를 대상으로 했고 카테고리 정의는 §2.2 (a)가 1벌로 소유한다. `uaf-verified: 본문 전문에 대한 §2.2 (a) 카테고리 다중 토큰 스캔 — true 위반 0(중립 메커니즘 표기·Glossary 계약 용어는 허용 범위)`
 - **DP-V14 준수.** 타 Adapter 경계 문서·경로 명명 0건 — 본문 경계 경로는 본 Adapter 자신의 경계·Core 경계·docs/ 시연 기록·spec 경로뿐이다.
-- **작성 경계 이력(포인터).** 초판의 소유 경계 준수(이 1파일, 07 R4)·형제 Task 불인용(07 R2)·읽기 전용 소비 목록 감사 흔적은 §9 초판 행에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 §9 이력 표에 보존, 본문은 포인터 1줄`
+- **작성 경계 이력(포인터).** 초판의 소유 경계 준수(이 1파일, 07 R4)·형제 Task 불인용(07 R2)·읽기 전용 소비 목록 감사 흔적은 git 이력(초판 커밋)에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 git 이력에 보존, 본문은 포인터 1줄`
 
 ---
 

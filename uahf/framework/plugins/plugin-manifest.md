@@ -13,10 +13,10 @@
 - specs/01-runtime.md §3.2-D — Runtime 공통 Failure Report. `ContractMismatch`/`UnresolvedContract`/`DuplicateId`가 이 정본의 사유 코드를 그대로 재사용함의 원천(10 §3.2-B 주석). 본 문서 §3이 § 포인터로 참조.
 - specs/00-glossary.md §3.2-J(J-10) — Plugin·Plugin Manifest 용어 정본. §3.2-D — Plugins (Component). 본 문서는 새 용어를 신설하지 않는다.
 - framework/core/structure.md §2 — 본 파일의 소속 경계(Module 구현 디렉터리 `framework/plugins/`). §5 — 금지 토큰 규칙(확정 조건 C-3 확장). §7 — Core Contract 불변 조건(C-1). 본 문서 본문 준수 대상.
-- framework/workflow/work-graph.md — 포맷 인스턴스 **소유 문서 관례 표본**(정본 셀 보존·필수 표기 보존·Failure Report 포맷 인스턴스 소유 선언·reason↔연산 결합은 연산 규칙 인스턴스 문서로 이연·비소관 경계 서술·§0 정본 경계·§9 이력 절 머리 배치·말미 요약 절·자가 전수 스캔 기록 형식).
+- framework/workflow/work-graph.md — 포맷 인스턴스 **소유 문서 관례 표본**(정본 셀 보존·필수 표기 보존·Failure Report 포맷 인스턴스 소유 선언·reason↔연산 결합은 연산 규칙 인스턴스 문서로 이연·비소관 경계 서술·§0 정본 경계·머리 상태 라인(개정 기록 = git 커밋 — 규범 `docs/spec-versioning-policy.md` §3)·말미 요약 절·자가 전수 스캔 기록 형식).
 - AGENT.md — 상위 규약.
 
-거버넌스: 이 문서는 `framework/plugins/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 10 §3.3 INV-10). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/plugins/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 10 §3.3 INV-10). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

@@ -14,12 +14,12 @@
 - specs/02-agent.md §3.2-B — 위임 메시지(Delegation Message)의 정본. 입력·완료 조건의 위임 메시지 필드는 이 §를 § 포인터로만 인용한다(07 INV-3). §3.2-A — 역할 경계(에스컬레이션·중재의 귀속 = Advisor). INV-6 — 필수 필드 누락 위임의 착수 전 반환·질의.
 - framework/workflow/work-graph.md — **WF1 확정본**. Work Graph(§2)·Task(§3)·공통 Failure Report(§4) 포맷의 확정 인터페이스이자 그 포맷 인스턴스 소유 문서. 본 문서는 세 포맷을 § 포인터로만 소비하며(필드 표 재게재 0), Failure Report 포맷의 `reason` 열거를 work-graph.md §4가 소유함을 대조한다.
 - docs/delegation-protocol.md §2.5 — 같은 R1~R4의 **프로젝트 운용 지침(운용 문서)**. 본 문서와의 소유 구분 대상(§0 — 이중 정의 방지).
-- framework/verifier/verifier-protocol.md·framework/loop/loop-protocol.md — 연산 인스턴스 문서 관례 표본(문서 머리 구조·§9 이력 절 머리 배치·§0 정본 경계·연산을 운용 절차로 전개하되 진위 판정 기준은 정본 §에 두는 형식·§ 포인터 표기·말미 요약 절·자가 전수 스캔 기록).
+- framework/verifier/verifier-protocol.md·framework/loop/loop-protocol.md — 연산 인스턴스 문서 관례 표본(문서 머리 구조·머리 상태 라인(개정 기록 = git 커밋 — 규범 `docs/spec-versioning-policy.md` §3)·§0 정본 경계·연산을 운용 절차로 전개하되 진위 판정 기준은 정본 §에 두는 형식·§ 포인터 표기·말미 요약 절·자가 전수 스캔 기록).
 - framework/core/structure.md §2(Module 구현 디렉터리 경계 — 자기완결, C-3 확장)·§5(금지 토큰 규칙 C-3 확장). §0 정본 경계 관례.
 - specs/00-glossary.md §3.2-J(J-07: Work Graph·Task·병렬 집합·소유 경계·인터페이스 계약) — 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - AGENT.md — 상위 규약(위임·검증·추측 금지·Memory 원칙).
 
-거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 07 §3.3 INV-9). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 07 §3.3 INV-9). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

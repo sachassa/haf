@@ -17,7 +17,7 @@
 - framework/core/structure.md §2·§5 — 소속 경계(`framework/loop/`)·금지 토큰 규칙(C-3 확장).
 - specs/00-glossary.md §3.2-J(J-03) — 용어 정본.
 
-거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다. 본문은 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5 C-3). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다. 본문은 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5 C-3). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

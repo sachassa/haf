@@ -1,7 +1,7 @@
 # planning/specs/04-solution-design — Solution Design Specification
 
 작성일: 2026-07-13
-상태: v1.3 Baseline → DC-1 Draft (Wave 1 [04]: CP2 Pass·Advisor CP3 승인 2026-07-18 — 트랙 진행 중) (기준선 = v1.3 Baseline[CP2 Pass — W1 재검증·W2 교차 8/8 · CP3 승인 · 사용자 Baseline 승인 2026-07-13]; 설계완성도 강제 트랙 §DC-1 개정 진행 중 — 버전 라벨/Baseline 승격은 트랙 완료·사용자 승인 소관) · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c)
+상태: v1.3 Baseline → DC-1 Draft (Wave 1 [04]: CP2 Pass·Advisor CP3 승인 2026-07-18 — 트랙 진행 중) (기준선 = v1.3 Baseline[CP2 Pass — W1 재검증·W2 교차 8/8 · CP3 승인 · 사용자 Baseline 승인 2026-07-13]; 설계완성도 강제 트랙 §DC-1 개정 진행 중 — 버전 라벨/Baseline 승격은 트랙 완료·사용자 승인 소관) · v1.4 개정(done 12 관행 규격의 개정 기록 locus 를 git 으로 이전 — 사용자 결정 2026-07-27)
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -339,7 +339,7 @@ Solution Design은 어떤 구현·복잡도에서도 다음 9건을 유지한다
 8. 저장 스코프 — 귀속 원칙만 선언·물리 배치 Adapter 위임 — §3.7 (done 9)
 9. Adapter 바인딩 지점 열거(설계 0) — §4.1 (done 10)
 10. 확장 포인트 5건을 명칭만·설계 0으로 표기 — §3.9 (done 11)
-11. 관행 규격(상태 라인·§9 이력 머리 배치·append-only·§ 포인터 재정의 0 · 방법론 고유명·특정 AI/모델/제품 기능명·고정 역할 카탈로그 0건 스캔) (done 12)
+11. 관행 규격(상태 라인·개정 기록 = git 커밋[규범 `docs/spec-versioning-policy.md` §3]·§ 포인터 재정의 0 · 방법론 고유명·특정 AI/모델/제품 기능명·고정 역할 카탈로그 0건 스캔) (done 12)
 12. 설계 커버리지 완성도 — SP-INV 9(선언 범위의 기본 필수 세트 커버 또는 정당화 제외)·§3.3 커버리지 바닥·§3.4-C 다라운드 심의·§3.5 default-required opt-out, 넷 모두 구체 유형명·역할명 0(Policy·비정본 부록 포인터만) (done 13)
 
 ### 검증 방법 (Verifier)

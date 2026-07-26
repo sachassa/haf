@@ -10,7 +10,7 @@
 - framework/memory/ 4문서(인스턴스 계약 — 본 문서가 물리 실현만 확정) — memory-service.md §3.2·§4.2·§5.1·§5.2·§5.3·§7(프로토콜 단계·Recall 상한 소비 지점·reason 소속·Port) · module-manifest.md(`entrypoint` 추상 참조·`configSchema` `recall.limit.max` 기본 20) · memory-store.md §2·§3·§4·§5 · lessons.md §5.1·§5.2(`kind` 3종·투영 규칙).
 - specs/01-runtime.md §3.2-B·§4(Config 병합 Module > Project > Global·Provider 등록·물리 진입점 해소) · specs/00-glossary.md(용어 정본 — 신설 0) · framework/core/structure.md §2·§5·§6(Adapter 경계 = 격리 지점) · framework/adapters/claude/runtime-binding.md §3.2·§3.3(Register/Resolve·Config 물리 소스의 선행 관례) · Active Lesson L-07(상태 서술은 실측 후 기록 — §7 근거) · ROADMAP.md v0.4.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 04 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용된다(C-3 비적용 — runtime-binding.md §0 동형). 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 04 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용된다(C-3 비적용 — runtime-binding.md §0 동형). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -240,7 +240,7 @@ Active Lesson L-07(상태 서술은 실측 후 기록)에 따라 본 문서의 "
 
 - **재정의 0·창설 0·격리 선언은 §0이 1벌로 소유한다.** 이 절은 그 선언을 반복하지 않고 계약 소유 지도만 둔다.
 - **계약 소유 지도.** Record/Recall 완료 조건·reason = 04 §3.1 / memory-service.md §5.3 · Memory Item·Index Entry·저장 구조 = 04 §3.2-A/C/E · 불변 규칙 = 04 §3.3 · Config 병합 = 01 §3.2-B · Provider 등록·해소 = 01 §3.1-A·§4 · Lesson·Best Practice·재발 판정 스키마·`kind` 값 정체성·매칭 계약 표면·labels 투영 규칙·status 생애주기·supersede·승격 권한 = 05 / lessons.md. 본 문서가 소유하는 정본은 **물리 경로·파일 구조·직렬화 형식·I/O 절차(§2·§3)·물리 해소·값 반영(§4)·직렬화 표기·매칭 구현·라벨 키 물리 표기(§5)** 뿐이다.
-- **작성 경계 이력(포인터).** 초판(Task M5)의 동시 작성 산출물 불인용(07 R2)·1파일 생성 범위(07 R4)·r2/r3 개정 경위 감사 흔적은 §9 이력 행에 보존되어 있다. `uaf-allow-legacy: 초판·r2·r3 감사 흔적은 §9 이력 표에 보존, 본문은 포인터 1줄`
+- **작성 경계 이력(포인터).** 초판(Task M5)의 동시 작성 산출물 불인용(07 R2)·1파일 생성 범위(07 R4)·r2/r3 개정 경위 감사 흔적은 git 이력(초판·개정 커밋)에 보존되어 있다. `uaf-allow-legacy: 초판·r2·r3 감사 흔적은 git 이력에 보존, 본문은 포인터 1줄`
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 

@@ -19,7 +19,7 @@
 - framework/core/structure.md §2·§5·§7 — 소속 경계·금지 토큰 규칙·Core Contract 불변 C-1.
 - specs/00-glossary.md §3.2-I — Module / Module Manifest / 모듈 시스템 / Runtime Context 용어 정본.
 
-거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다(structure.md §2). 본문은 AI·언어·툴체인·직렬화 형식 비의존을 유지한다(structure.md §5 C-3). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/loop/` 소속 Module 구현 디렉터리 문서다(structure.md §2). 본문은 AI·언어·툴체인·직렬화 형식 비의존을 유지한다(structure.md §5 C-3). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

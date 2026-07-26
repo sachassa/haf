@@ -11,7 +11,7 @@
 - 실물 실측 대상(참조·실측만, 무수정) — `.claude/AGENT.md` · `.claude/CLAUDE.md` · `.claude/agents/{advisor,planner,worker,verifier}.md`.
 - framework/core/structure.md §2·§5(4경계 배치·Adapter 경계 = 격리 지점) · specs/00-glossary.md(§3.2-E 역할·§3.2-A Layer 스택, 용어 신설 0) · ROADMAP.md v0.2·v0.9.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식·실행 모델에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 02 INV-7, 01 §3.2-E 규칙 3), 그 구체 토큰의 사용이 허용된다(C-3 비적용 — 자매 바인딩 §0 동형). 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식·실행 모델에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 02 INV-7, 01 §3.2-E 규칙 3), 그 구체 토큰의 사용이 허용된다(C-3 비적용 — 자매 바인딩 §0 동형). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -149,7 +149,7 @@ Active Lesson L-07(상태 서술은 실측 후 기록)에 따라 "실재/존재/
 
 - **계약 소유 지도(포인터).** 공통 의무·역할 경계·메시지 필드·Invariants = 02 §3 · 바인딩 지점 = 02 §4.1 · 이식 교체 지점 = 02 §4.2 · 위임/보고 운용 채널 = docs/delegation-protocol.md §3. 본 문서 소유는 그 물리 실현뿐이며(재정의 0 선언 = §0 1곳), BP-7~11 통합·정식화는 분산 실현을 한 문서로 모은 것이지 새 BP·새 계약의 창설이 아니다. Frozen specs(02·01·06·13)를 수정하지 않았고, DP-E8(§3)은 02 §4.1 영역 안의 결정 기록으로 02 §3 문면을 바꾸지 않는다. 환경 토큰의 격리 허용 지점도 이 문서다(structure.md §5 C-3, 02 INV-7).
 - **판정 성격.** 물리 실현 매핑이며 독립 판정(CP2 — Verifier)·최종 승인(CP3 — Advisor)이 뒤따른다(02 §3.2-A). 자기 점검(CP1)을 최종 승인으로 삼지 않는다.
-- **작성 경계 이력(포인터).** 초판(2026-07-06, Task T3)의 형제 Task(PS2) 불인용(07 R2)·인용 정본 목록·2파일 생성 범위(07 R4) 감사 흔적은 §9 초판 행에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 §9 이력 표에 보존, 본문은 포인터 1줄`
+- **작성 경계 이력(포인터).** 초판(2026-07-06, Task T3)의 형제 Task(PS2) 불인용(07 R2)·인용 정본 목록·2파일 생성 범위(07 R4) 감사 흔적은 git 이력(초판 커밋)에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 git 이력에 보존, 본문은 포인터 1줄`
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 

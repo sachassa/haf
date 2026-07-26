@@ -17,10 +17,10 @@
 - specs/00-glossary.md §3.2-J(J-07) — Work Graph·Task·병렬 집합·소유 경계·인터페이스 계약 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - framework/core/structure.md §2·§5 — 본 파일의 소속 경계(Module 구현 디렉터리 `framework/workflow/`), 금지 토큰 규칙(확정 조건 C-3 확장 — 문서 본문 비의존). §0 정본 경계 관례.
 - framework/verifier/verifier-protocol.md §2 — 연산을 운용 절차(예/아니오 판정 규칙)로 전개하고 절차↔정본 § 1:1 대응표를 두되 진위 판정 기준은 정본 §에 두는 관례 표본.
-- framework/loop/loop-protocol.md — 문서 머리 구조·§0 정본 경계·§9 이력 절 머리 배치·§ 포인터 표기·말미 요약 절 관례 표본.
+- framework/loop/loop-protocol.md — 문서 머리 구조·§0 정본 경계·머리 상태 라인(개정 기록 = git 커밋 — 규범 `docs/spec-versioning-policy.md` §3)·§ 포인터 표기·말미 요약 절 관례 표본.
 - AGENT.md — 상위 규약.
 
-거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 07 §3.3 INV-9). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/workflow/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 07 §3.3 INV-9). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

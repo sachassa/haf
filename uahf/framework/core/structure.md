@@ -10,7 +10,7 @@
 - specs/01-runtime.md §3.3 INV-4 — Core 디렉터리 AI 비의존 불변 규칙.
 - ROADMAP.md v0.3 (Runtime & Core Kernel) — 산출물 목록: Core 모듈 디렉터리 구조(규격) / Runtime 프로토콜 구현물 / config 스키마 / 모듈 등록·교체 규칙 문서.
 
-거버넌스: 이 문서는 `framework/core/` 소속 Core 문서다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/core/` 소속 Core 문서다. 개정은 Advisor 승인 + **git 커밋 기록**(취지·범위를 커밋 메시지에)으로만 이뤄진다 — 기록 locus 정본 = `docs/spec-versioning-policy.md` §3.
 
 ---
 
@@ -39,7 +39,7 @@
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 | 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
+(**이후 개정은 이 표가 아니라 git 커밋에 기록한다** — 파일 내 이력 절 폐지, 정본 = `docs/spec-versioning-policy.md` §3. `uaf-allow-legacy: 아래 표는 폐지 전 기록이며 각 행은 그 개정 시점의 기록이므로 문면을 보존한다. 물리 제거는 별도 회차 소관.`)
 
 ---
 
@@ -154,7 +154,7 @@
 1. 본 구조 규격과 Core·Runtime·Module 구현 경계의 계약 문서들(§8 트리)은 전부 01 §3 Core Contract의 **인스턴스**다. 어느 것도 01 §3의 계약 요소(연산·데이터 포맷·불변 규칙)를 재정의·확장하지 않는다.
 2. 향후 실행 코드 확장(형태 A → 형태 B)은 그 계약 문서가 지정한 01 §3 계약을 **구현**할 뿐, 계약 자체를 수정하지 않는다.
 3. 따라서 **Core Contract 변경 0**이 형태 A→B 전환의 불변 조건이다. 교체·확장 시에도 계약 소비자의 참조·규격 변경은 0이다 (01 §3.3 INV-1 교체 가능성과 정합).
-4. 이 불변 조건 위반(형태 B가 01 §3 계약을 바꾸어야만 성립하는 경우)이 발견되면, 구현을 진행하지 않고 Advisor에게 보고한다 (상위 규약의 Architecture-Spec 충돌 보고 관행 — 충돌 시 구현하지 않고 상위에 보고). 계약 변경은 01의 버전 상승과 Revision History 기록이 필수다 (Glossary §3.2-G Spec Status: Frozen).
+4. 이 불변 조건 위반(형태 B가 01 §3 계약을 바꾸어야만 성립하는 경우)이 발견되면, 구현을 진행하지 않고 Advisor에게 보고한다 (상위 규약의 Architecture-Spec 충돌 보고 관행 — 충돌 시 구현하지 않고 상위에 보고). 계약 변경은 01의 버전 상승과 개정 기록(git 커밋 — 규범 `docs/spec-versioning-policy.md` §3)이 필수다 (Glossary §3.2-G Spec Status: Frozen).
 
 ---
 

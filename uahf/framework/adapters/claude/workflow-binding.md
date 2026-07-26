@@ -10,7 +10,7 @@
 - 자매 Adapter Binding — `loop-binding.md`(**`LoopInterface` 물리 해소 정본** §4.1 · 표·서술 관례 정본)·`memory-binding.md`(**Memory 백엔드 정본**)·`verifier-binding.md`(**개별 검증 판정 표면 정본**, 06 §4)·`runtime-binding.md`(세션/턴·형태 A/B 서술 선행 표본). 본 문서 §4.2·§5.4·§5.5는 이들을 참조만 한다. · `framework/loop/module-manifest.md`(`contract`=`LoopInterface` 확정 지점)·`framework/loop/loop-protocol.md` §3(각 Task의 사이클 계약).
 - `docs/delegation-protocol.md` §3 — 물리 채널 관행(위임 §3.1 · 보고 회수 §3.2 · **병렬 Wave 동시 위임·수합·중재 §3.3** · 반환·에스컬레이션 §3.4). · `.claude/agents/` 4종·`.claude/CLAUDE.md`(Advisor 진입점 = 07 §4.1 행 6·SP-4) — 역할 실행의 물리 실체이며 참조만 하고 수정하지 않는다. · `specs/00-glossary.md`(용어 정본) · `ROADMAP.md`(Work Graph 실사용 인스턴스) · Active Lesson L-07.
 
-**경계 전제(통합).** 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서 = 격리 지점**이다 — 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용되고(C-3 비적용), 하네스는 Bootstrap 상태이며(형태 A = 규약 실현 / 형태 B = 실행 코드), 용어는 Glossary 정본만 사용하고(신설 0), Core Contract(07 §3)와 그 인스턴스 문서를 재정의하지 않으며, 개정은 Advisor 승인 + §9 이력 append로만 이뤄진다. 근거 = `framework/core/structure.md` §5(금지 토큰 C-3)·§2(4경계 배치·역할·소유 계약)·§4(계약·문서 전용 경계와 실행 코드 배치).
+**경계 전제(통합).** 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서 = 격리 지점**이다 — 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용되고(C-3 비적용), 하네스는 Bootstrap 상태이며(형태 A = 규약 실현 / 형태 B = 실행 코드), 용어는 Glossary 정본만 사용하고(신설 0), Core Contract(07 §3)와 그 인스턴스 문서를 재정의하지 않으며, 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3). 근거 = `framework/core/structure.md` §5(금지 토큰 C-3)·§2(4경계 배치·역할·소유 계약)·§4(계약·문서 전용 경계와 실행 코드 배치).
 
 ---
 

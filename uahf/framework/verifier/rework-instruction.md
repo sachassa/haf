@@ -15,10 +15,10 @@
 - framework/core/structure.md §2 — 본 파일의 소속 경계(Module 구현 디렉터리 `framework/{loop,memory,verifier,workflow,plugins}/` 중 `framework/verifier/`).
 - framework/core/structure.md §5 — 금지 토큰 규칙(확정 조건 C-3 확장). 본 문서 본문 준수 대상.
 - specs/00-glossary.md §3.2-J — 재작업 지시·검증 리포트·검증 유형·거짓 완료 보고 용어 정본(06 §9 결정 기록 승격 4건 반영). 본 문서는 새 용어를 신설하지 않는다.
-- `uahf/docs/session-handoff-v0.4.md@004bfa9` §1.3·§1.5 — 재검증 기준의 적용 범위 규칙(§4)의 실사례 근거(이력 행 시점 기록 원칙 Advisor 판정 + 이월 Lesson 후보 2; 안정 근거 = Active Lesson L-10 이력 행 문면 불변·append-only).
+- `uahf/docs/session-handoff-v0.4.md@004bfa9` §1.3·§1.5 — 재검증 기준의 적용 범위 규칙(§4)의 실사례 근거(이력 행 시점 기록 원칙 Advisor 판정 + 이월 Lesson 후보 2; 안정 근거 = Active Lesson L-10 시점 기록의 사후 왜곡 금지 · 현행 실현 수단 정본 = `docs/spec-versioning-policy.md` §3.4).
 - uahf/docs/v0.3-verification-report.md@cd9247b §6 · uahf/docs/v0.4-verification-report.md@cd9247b §6 — 재작업 지시 4필드의 확정 실사용 인스턴스 2건(각 발행→이행→재검증 사이클 실증). 본 문서 §6 대응표의 실증 근거.
 
-거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5, C-3 확장). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -100,15 +100,15 @@
 **규칙:**
 
 - **라이브 본문 적용.** "잔존 서술 0건" 류 재검증 기준과 그에 대응하는 `expected_state`는 산출물의 **라이브 본문** — 현재형 상태·주장을 담는 서술 — 에 적용된다. 재작업 후 라이브 본문에 위반 서술이 0건이면 해당 기준은 충족이다.
-- **시점-스코프 기록 제외.** **시점-스코프 기록** — 이력 행(§9 Revision History), 이전 개정·초판 결함의 **인용**, **교정 경위** 서술 — 은 위 전칭 기준의 적용 대상에서 제외된다. 이들은 현재형 상태 주장이 아니라 특정 시점의 기록·인용이므로, 라이브 본문의 "잔존 0건" 판정에 계상되지 않는다.
-- **이력 행 append-only 불변.** 이력 행 문면은 append-only 불변이다 — 재작업이 이력 행의 기존 문면을 소급 수정하지 않는다. 재작업은 새 이력 행을 append하고 라이브 본문을 교정한다. 따라서 재검증의 이력 관련 기준은 "이력 행 문면 보존 + 개정 행 append"이지 "이력 행의 과거 서술 교정"이 아니다.
+- **시점-스코프 기록 제외.** **시점-스코프 기록** — 이전 개정·초판 결함의 **인용**, **교정 경위** 서술, git 커밋 메시지·앵커가 보존하는 개정 기록 — 은 위 전칭 기준의 적용 대상에서 제외된다. 이들은 현재형 상태 주장이 아니라 특정 시점의 기록·인용이므로, 라이브 본문의 "잔존 0건" 판정에 계상되지 않는다.
+- **시점 기록의 사후 왜곡 금지.** 시점 기록은 재작업이 소급 수정하지 않는다. 개정 기록의 locus는 **git 이력(커밋 메시지·앵커)**이며 커밋은 불변이므로, 이 보호는 파일 규율이 아니라 버전 관리 시스템이 보장한다(정본 = `docs/spec-versioning-policy.md` §3.4 — 파일 내 이력 절은 폐지됨). 따라서 재검증의 기록 관련 기준은 "라이브 본문 교정 + 개정 취지를 커밋에 기록"이지 "과거 기록의 서술 교정"이 아니다.
 
-**실사례 근거:** `uahf/docs/session-handoff-v0.4.md@004bfa9` §1.3(Advisor 판정 "이력 행 시점 기록 원칙" — v0.4에서 실제 발생한 재작업 운용 실패[재검증 기준을 이력 행에 과잉 적용 → 원복]에서 도출·확정)·§1.5(이월 Lesson 후보 2). 실사용 = git 앵커 90ca19c(v0.3·v0.4 리포트 §6 `revalidation_criteria`가 라이브/시점-스코프 판별을 실행). 안정 근거 = Active Lesson L-10(이력 행 문면 불변·append-only).
+**실사례 근거:** `uahf/docs/session-handoff-v0.4.md@004bfa9` §1.3(Advisor 판정 "이력 행 시점 기록 원칙" — v0.4에서 실제 발생한 재작업 운용 실패[재검증 기준을 이력 행에 과잉 적용 → 원복]에서 도출·확정)·§1.5(이월 Lesson 후보 2). 실사용 = git 앵커 90ca19c(v0.3·v0.4 리포트 §6 `revalidation_criteria`가 라이브/시점-스코프 판별을 실행). 안정 근거 = Active Lesson L-10(시점 기록의 사후 왜곡 금지) — 그 실현 수단의 현행 정본은 `docs/spec-versioning-policy.md` §3.4(기록 locus = git)다.
 
 **경계:**
 
 - 이 규칙은 06 §3.2-D `revalidation_criteria`·`expected_state`의 **적용 대상**을 명확화할 뿐, 두 필드의 의미(06 §3.2-D 정본)를 바꾸지 않는다. 새 필드·새 판정 값을 도입하지 않으며, 06 §3.2-D 재정의는 0이다.
-- 근거의 지위: `uahf/docs/session-handoff-v0.4.md@004bfa9` §1.3은 확정된 **Advisor 판정**이고, §1.5 해당 항목은 **이월 Lesson 후보**다. 후보의 정식 등록·승격은 Advisor 심사·Memory Update 소관이다(승격 권한 Advisor 전속 — 05 INV-4 취지). 본 문서는 §1.3 Advisor 판정과 두 실사용 리포트의 실제 관행에 근거해 재작업 지시 포맷의 적용 범위만 인스턴스화하며, Lesson 후보의 승격 여부를 스스로 판정하지 않는다(§9 이력·open_questions 경로).
+- 근거의 지위: `uahf/docs/session-handoff-v0.4.md@004bfa9` §1.3은 확정된 **Advisor 판정**이고, §1.5 해당 항목은 **이월 Lesson 후보**다. 후보의 정식 등록·승격은 Advisor 심사·Memory Update 소관이다(승격 권한 Advisor 전속 — 05 INV-4 취지). 본 문서는 §1.3 Advisor 판정과 두 실사용 리포트의 실제 관행에 근거해 재작업 지시 포맷의 적용 범위만 인스턴스화하며, Lesson 후보의 승격 여부를 스스로 판정하지 않는다(개정 기록[git 커밋]·open_questions 경로).
 
 ---
 

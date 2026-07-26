@@ -23,7 +23,7 @@
 - framework/adapters/<adapter>/loop-binding.md §4·workflow-binding.md §4 — 형태 B 예약 로케이터 2자리.
 - `docs/form-b-step-hosting-design.md@cd9247b` — 본 프로토콜의 **설계 정본**(아카이브). 계약 정본은 위 spec·프로토콜·바인딩이 소유한다.
 
-거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 본문은 AI·언어·툴체인 비의존을 유지한다(structure.md §5 C-3). Step Host의 구체 실현(직렬화 형식·물리 실행 표면·정지 신호 값·정책 값 매핑)은 Module 구현 경계(`framework/loop/step-host/`)·Adapter Binding 문서 소관이며 본 문서는 소관 포인터만 둔다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 본문은 AI·언어·툴체인 비의존을 유지한다(structure.md §5 C-3). Step Host의 구체 실현(직렬화 형식·물리 실행 표면·정지 신호 값·정책 값 매핑)은 Module 구현 경계(`framework/loop/step-host/`)·Adapter Binding 문서 소관이며 본 문서는 소관 포인터만 둔다. 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

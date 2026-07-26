@@ -11,7 +11,7 @@
 - framework/adapters/claude/runtime-binding.md §3.2 — **Register/Resolve/Deregister 수행 방식의 정본**. 본 문서 §4·§5는 참조만 하고 재정의하지 않는다. 자매 {workflow,memory,verifier,loop}-binding.md — 표·형태 A/B·SP 대응 관례, DP-W4/DP-L4 대비 대상(§3.4).
 - specs/00-glossary.md §3.2-J(J-10)·§3.2-D — 새 용어 신설 0. docs/delegation-protocol.md §3 — 역할 실행 물리 채널. ROADMAP.md v0.8 — "본체 수정 없는 확장"의 환경 실현 근거.
 
-경계·전제·거버넌스(공통): 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**이므로 구체 AI·환경·직렬화 형식·물리 경로 토큰이 허용되는 **격리 지점**이고(structure.md §5 금지 토큰 C-3 비적용·§2 4경계 배치·§4 계약/실행 코드 배치), 이 하네스는 **Bootstrap 상태**이며(Glossary J-13), 용어는 specs/00-glossary.md 정본만 쓰고, 개정은 Advisor 승인 + §9 이력 append-only로만 이뤄진다. Core Contract(10 §3)와 framework/plugins/ 3문서를 재정의하지 않는다.
+경계·전제·거버넌스(공통): 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**이므로 구체 AI·환경·직렬화 형식·물리 경로 토큰이 허용되는 **격리 지점**이고(structure.md §5 금지 토큰 C-3 비적용·§2 4경계 배치·§4 계약/실행 코드 배치), 이 하네스는 **Bootstrap 상태**이며(Glossary J-13), 용어는 specs/00-glossary.md 정본만 쓰고, 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3). Core Contract(10 §3)와 framework/plugins/ 3문서를 재정의하지 않는다.
 
 ---
 

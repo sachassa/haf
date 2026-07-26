@@ -12,7 +12,7 @@
 - `uahf/docs/v0.3-verification-report.md@cd9247b` · `uahf/docs/v0.4-verification-report.md@cd9247b` — 검증 리포트 물리 직렬화·저장의 확정 실사용 인스턴스 2건(각 CP2 독립 판정 산출물, 산출물 수명 정책으로 작업 트리에서 제거·아카이브). 명명 관례·6필드 절 구조·rework 절 직렬화·검사 도구 실사용의 실증 근거(§4·§5·§7).
 - specs/01-runtime.md §3.2-A/B·§4(Module Manifest·Config 병합·Provider 등록·물리 진입점 해소) · specs/00-glossary.md(용어 정본 — 신설 0) · framework/core/structure.md §2·§5·§6(Adapter 경계 = 격리 지점) · 자매 Adapter Binding runtime-binding.md·memory-binding.md(관례 정본) · ROADMAP.md v0.5.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 06 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로·검사 도구 토큰의 사용이 허용된다(C-3 비적용 — 자매 2문서 §0 동형). 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 06 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로·검사 도구 토큰의 사용이 허용된다(C-3 비적용 — 자매 2문서 §0 동형). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -105,7 +105,7 @@ module-manifest.md는 Advisor 결정 DP-V2로 `configSchema`를 **선언하지 �
 ### §4.1 검증 리포트 직렬화·저장 위치 (정본 — 06 §4.1 검증 리포트 직렬화 행)
 
 - **직렬화 형식.** 검증 리포트는 **구조화 Markdown 문서**로 직렬화되며, 06 §3.2-A의 6필드(`target`/`criteria_basis`/`items`/`final_verdict`/`verifier_scope`/`rework`)를 문서 절 구조로 담는다 — `§1 target` / `§2 criteria_basis` / `§3 items`(항목별 판정 표: `criterion`/`verdict`/`evidence`/`scope`/`verification_type` 열, 06 §3.2-B) / `§4 final_verdict` / `§5 verifier_scope` / `§6 rework`. 이 절 ↔ 필드 대응은 verification-report.md §6(V1 확정본 실사용 대응표)이 실증했고, 스키마 정본은 06 §3.2-A/B/C·verification-report.md다.
-- **명명 관례·저장 위치.** 저장 위치 = `docs/`, 명명 관례 = `docs/v0.X-verification-report.md`(X = 대상 마일스톤 버전). 검증 산출물은 스캔·실측 결과 보고에 필요한 구체 토큰·물리 경로 인용을 정당하게 보유하는 **구조화 검증 산출물 문서**이며 은닉 백엔드가 아니다. 문서 머리에는 작성일·수행 주체·근거 정본·§9 이력 절을 둔다(docs 거버넌스 관례 동형).
+- **명명 관례·저장 위치.** 저장 위치 = `docs/`, 명명 관례 = `docs/v0.X-verification-report.md`(X = 대상 마일스톤 버전). 검증 산출물은 스캔·실측 결과 보고에 필요한 구체 토큰·물리 경로 인용을 정당하게 보유하는 **구조화 검증 산출물 문서**이며 은닉 백엔드가 아니다. 문서 머리에는 작성일·수행 주체·근거 정본·상태 라인을 둔다(docs 거버넌스 관례 동형). **산출물 파일 안에 이력 절을 두지 않는다** — 리포트의 개정 기록은 git 커밋이다(규범 = `docs/spec-versioning-policy.md` §3).
 - **실증·미래 인스턴스.** 이 형식·명명·위치는 확정 실사용 인스턴스 2건(`uahf/docs/v0.3-verification-report.md@cd9247b`·`uahf/docs/v0.4-verification-report.md@cd9247b` — 각 CP2 독립 판정 산출물, 6필드 절 구조·Fail→재검증 Pass 사이클·rework 절 직렬화를 실사용)으로 실증된다. v0.5 개별 인스턴스는 미존재이며(§7) 판정·시연 시 이 관례대로 생성될 예정이다 — 본 문서는 미래 산출물의 실재를 주장하지 않고 시연 절차·픽스처 상세를 서술하지 않는다.
 
 ### §4.2 재작업 지시 직렬화·전달 (정본 — 06 §4.1 재작업 지시 전달 행)
@@ -174,7 +174,7 @@ Active Lesson L-07(상태 서술은 실측 후 기록)에 따라 본 문서의 "
 
 - **재정의 0·창설 0·격리 선언은 §0이 1벌로 소유한다.** 이 절은 그 선언을 반복하지 않고 계약 소유 지도만 둔다.
 - **계약 소유 지도.** 검증 리포트 스키마 = verification-report.md / 06 §3.2-A/B/C · Manifest 필드·`entrypoint`·`configSchema` 결정(DP-V2) = module-manifest.md / 01 §3.2-A · Verify 연산 절차 = verifier-protocol.md / 06 §3.1 · 재작업 지시 포맷 = rework-instruction.md / 06 §3.2-D · 검증 유형·기준 부류 = criteria-catalog.md / 06 §3.2-E·§3.2-A · 전달·전이 채널 = 03-loop·02 §4 · 실행 모델 = 02 §4. 본 문서가 소유하는 정본은 **직렬화 형식·명명·저장 위치(§4)·진입점 물리 해소(§3)·검사 도구 배선(§5)·회수/전달 물리 채널(§2)** 뿐이며, docs/verification-checklist.md §7은 게이트 운용 지침으로 §5와 정합한다.
-- **작성 경계 이력(포인터).** 초판(2026-07-06, Task V6)의 동시 작성 시연 절차서 불인용(07 R2)·1파일 생성 범위(07 R4)·미래 산출물 실재 불주장(L-07) 감사 흔적은 §9 이력 행에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 §9 이력 표에 보존, 본문은 포인터 1줄`
+- **작성 경계 이력(포인터).** 초판(2026-07-06, Task V6)의 동시 작성 시연 절차서 불인용(07 R2)·1파일 생성 범위(07 R4)·미래 산출물 실재 불주장(L-07) 감사 흔적은 git 이력(초판·개정 커밋)에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 git 이력에 보존, 본문은 포인터 1줄`
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 

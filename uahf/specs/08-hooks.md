@@ -1,7 +1,7 @@
 # specs/08-hooks — Hooks Specification
 
-Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
+Version: 0.2
+Status: Frozen (v0.2 개정 — Event ID 안정성 항의 개정 기록 locus 를 git 으로 이전. 사용자 결정 2026-07-27)
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -182,7 +182,7 @@ lifecycle 도메인의 "전이" 이벤트는 단계 진입(before)·종료(after
 ### B. 명명 규칙과 확장 (Naming & Extensibility)
 
 - Event ID = `<domain>.<name>`. domain ∈ {lifecycle, agent, runtime, memory} (현재 4개). name은 원천 연산·전이·메시지 이름에서 도출한다.
-- Event ID는 안정적(stable)이다. 한 번 공개된 Event ID의 변경·삭제는 spec 버전 상승과 Revision History 기록을 요구한다.
+- Event ID는 안정적(stable)이다. 한 번 공개된 Event ID의 변경·삭제는 spec 버전 상승과 **개정 기록**을 요구한다(기록 locus = git 커밋 — 운용 절차 정본 = `docs/spec-versioning-policy.md` §3).
 - phase는 Event ID의 일부가 아니다. Hook이 바인딩 시점에 선택한다.
 
 새 Event 추가 규칙 (카탈로그는 확장 가능하다):

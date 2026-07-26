@@ -11,7 +11,7 @@
 - 자매 Adapter Binding(관례 정본) — runtime-binding.md(§2 #3이 Skill 표면 상세를 09로 미룸 · §3.2 Register/Resolve · §3.3 Config 물리 소스) · memory-binding.md · verifier-binding.md · loop-binding.md.
 - ROADMAP.md v0.8 (Extension System) — Skills 완료 조건·산출물의 환경 실현 근거.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 09 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용된다(C-3 비적용 — 자매 4문서 §0과 동형). 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 09 §3.3 INV-8, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식·물리 경로 토큰의 사용이 허용된다(C-3 비적용 — 자매 4문서 §0과 동형). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -243,7 +243,7 @@ Active Lesson L-07(상태 서술은 실측 후 기록)에 따라 본 문서의 "
 ## §8. 정본 경계·격리·계약 소유 (self-note)
 
 - **계약 소유 지도.** Manifest 필드·로드 계층 = 09 §3.2-A / Glossary J-09 · I/O 계약 = 09 §3.2-B · Failure Report 구조·사유 코드 = 09 §3.2-C(구조 01 §3.2-D 재사용, 소유 경계 09 §9) · 4연산 완료 조건 = 09 §3.1-A/B/C/D · 불변 규칙 = 09 §3.3 · 모호성 해소 순서 = 09 §9 · 역할 경계 = 02 §3.2-A · Config 병합 = 01 §3.2-B. 본 문서는 이들의 **물리 실현**만 확정한다.
-- **작성 경계 이력(포인터).** 초판(2026-07-06, Task EX-S1)의 동시 작성 형제 불인용(07 R2)·조율 에스컬레이션(R3)·1파일 생성 범위(R4) 감사 흔적은 §9 초판 행에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 §9 이력 표에 보존, 본문은 포인터 1줄`
+- **작성 경계 이력(포인터).** 초판(2026-07-06, Task EX-S1)의 동시 작성 형제 불인용(07 R2)·조율 에스컬레이션(R3)·1파일 생성 범위(R4) 감사 흔적은 git 이력(초판 커밋)에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 git 이력에 보존, 본문은 포인터 1줄`
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 

@@ -14,7 +14,7 @@
 - specs/00-glossary.md §3.2-J — 검증 리포트·검증 유형·재작업 지시·거짓 완료 보고 용어 정본(06 §9 결정 기록 승격 4건 반영). 본 문서는 새 용어를 신설하지 않는다.
 - uahf/docs/v0.3-verification-report.md@cd9247b · uahf/docs/v0.4-verification-report.md@cd9247b — 이 프로토콜의 **확정 실사용 인스턴스 2건**(각 Verify 연산 산출물, Baseline 확정). §2 단계 ↔ 실사용 절의 실증 근거로 참조하며, 두 리포트의 판정 내용을 재정의·평가하지 않는다.
 
-거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 06 §3.3 INV-8). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 06 §3.3 INV-8). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

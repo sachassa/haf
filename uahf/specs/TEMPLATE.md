@@ -1,8 +1,8 @@
 # UAHF Specification Template
 
-Version: 0.1
+Version: 0.2
 
-Status: Frozen (v0.1 기준선 — 공통 Specification 표준, 사용자 승인, 2026-07-05)
+Status: Frozen (v0.2 개정 — §4 Frozen 요건·§5 구조 요건의 개정 기록 locus 를 git 으로 이전. 사용자 결정 2026-07-27)
 
 적용 대상: specs/00-glossary.md ~ specs/13-harness.md 전체
 
@@ -19,6 +19,7 @@ Status: Frozen (v0.1 기준선 — 공통 Specification 표준, 사용자 승인
 - 용어는 specs/00-glossary.md에 정의된 것만 사용한다. 새 용어가 필요하면 Glossary에 먼저 추가를 요청한다.
 - 추측하지 않는다. 미확정 사항은 §9 Open Questions에 기록하고 Advisor에게 에스컬레이션한다.
 - 문체는 ARCHITECTURE.md를 따른다. 짧은 선언문, 한국어 본문, 영어 기술 용어.
+- **개정 이력을 파일 안에 절로 두지 않는다.** 파일이 담는 것은 §0 Header의 **상태 라인(Version·Status)**뿐이며, 개정의 취지·범위는 **git 커밋 메시지**가 보존한다. 이력 절 헤딩을 남기는 경우 그 아래는 **git 포인터 1줄 스텁**(해당 파일의 git log와 제거 전 전문 앵커를 지목하고 규범 § 포인터를 병기하는 형태)만 허용한다. 정본 = `docs/spec-versioning-policy.md` §3, 원칙 근거 = 루트 `ARCHITECTURE.md` §6 원칙 12(자기 문서 경량). 사용자 결정 2026-07-27.
 
 ---
 
@@ -116,11 +117,13 @@ Frozen
 
 - Draft: Worker 작성 중
 - Review: 검증 및 Advisor 검토 중
-- Frozen: v0.1 기준선 확정 — 이후 변경은 spec 버전 상승과 Revision History 기록이 필수다.
+- Frozen: v0.1 기준선 확정 — 이후 변경은 spec 버전 상승과 **개정 기록**이 필수다(기록 locus = git 커밋 — 운용 절차 정본 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
 # 5. Revision History
+
+**이후 개정은 이 절이 아니라 git 커밋에 기록한다** — 파일 내 이력 절 폐지(§1 사용 규칙 · 정본 `docs/spec-versioning-policy.md` §3). `uaf-allow-legacy: 아래 항목은 폐지 전 기록이며 그 시점의 기록이므로 문면을 보존한다. 물리 축약은 별도 회차 소관.`
 
 - 0.1: 최초 설계 (Advisor)
 - 0.1 채택: 사용자 승인으로 공통 Specification 표준 확정. 모든 spec 작성과 Advisor 검증의 기준 문서가 된다.

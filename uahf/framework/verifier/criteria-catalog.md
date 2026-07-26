@@ -18,7 +18,7 @@
 - uahf/docs/v0.3-verification-report.md@cd9247b · uahf/docs/v0.4-verification-report.md@cd9247b — 이 카탈로그의 확정 실사용 인스턴스 2건(각 CP2 독립 판정 산출물, Baseline 확정 — v0.3 items 18건·v0.4 items 31건). 본 문서 §2·§4의 유형·부류별 실사용 근거.
 - docs/verification-checklist.md — 게이트 운용 정본(§5.1 VT 적용·§5.2 DoD 준용·§5.3 전수 스캔·상태 서술 대조·§5.4 거짓 완료 검출). 재정의 없이 운용 실증으로 참조.
 
-거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5 C-3 확장, 06 §3.3 INV-8). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/verifier/` 소속 Module 구현 디렉터리 문서다. 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다(structure.md §5 C-3 확장, 06 §3.3 INV-8). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

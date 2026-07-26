@@ -15,12 +15,12 @@
 - specs/01-runtime.md §4 — Adapter Binding(구체 직렬화·bundle 배치·배포 채널·물리 실행 소관). 본 문서 §3·§6이 § 포인터로만 참조.
 - framework/plugins/plugin-manifest.md §2·§3 — **함께 확정되는 포맷 인스턴스 소유 문서**. Plugin Manifest 6필드(§2)·공통 Failure Report 4필드+`reason` 11종(§3) 포맷의 인스턴스 소유 문서다. 본 문서가 검사 규칙에서 참조하는 필드·reason 열거의 **소비 인터페이스**이며, 필드 표는 § 포인터로만 소비한다(정본은 10 §3.2-A/B가 유지, 재게재 0 — 이중 갱신 방지).
 - framework/plugins/module-manifest.md — Plugins Provider Module의 등록 서술자. 네 연산을 노출하는 Provider의 `entrypoint`(추상 참조)·`contract`(`PluginsInterface`) 소유 문서. 본 문서는 그 연산을 규칙으로 전개하되 Provider Manifest를 재정의하지 않는다.
-- framework/workflow/decompose-rules.md §2·§3 — 연산 규칙 인스턴스 관례 표본(연산 인터페이스 인스턴스 표·완료 조건→예/아니오 검사→reason 1:1 결합표·검사 범위 정직·포맷은 § 포인터로만 소비·물리 실행 경계 서술·§0 정본 경계·§9 이력 절 머리 배치·말미 요약 절).
+- framework/workflow/decompose-rules.md §2·§3 — 연산 규칙 인스턴스 관례 표본(연산 인터페이스 인스턴스 표·완료 조건→예/아니오 검사→reason 1:1 결합표·검사 범위 정직·포맷은 § 포인터로만 소비·물리 실행 경계 서술·§0 정본 경계·머리 상태 라인(개정 기록 = git 커밋 — 규범 `docs/spec-versioning-policy.md` §3)·말미 요약 절).
 - framework/core/structure.md §2·§5·§7 — 본 파일의 소속 경계(Module 구현 디렉터리 `framework/plugins/`), 금지 토큰 규칙(C-3 확장), Core Contract 불변 조건(C-1).
 - specs/00-glossary.md §3.2-J(J-10)·§3.2-D — Plugin·Plugin Manifest·Plugins 용어 정본. 본 문서는 새 용어를 신설하지 않는다.
 - AGENT.md — 상위 규약.
 
-거버넌스: 이 문서는 `framework/plugins/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 10 §3.3 INV-10). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/plugins/` 소속 Module 구현 디렉터리 문서다 (framework/core/structure.md §2). 문서 본문은 특정 AI·언어·툴체인·직렬화 형식·물리 경로 비의존을 유지한다 (framework/core/structure.md §5 C-3 확장, 10 §3.3 INV-10). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

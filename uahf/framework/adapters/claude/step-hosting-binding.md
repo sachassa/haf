@@ -11,7 +11,7 @@
 - 자매 Adapter Binding — loop-binding.md §4.1·workflow-binding.md §4.1(형태 B 예약 로케이터 = 본 문서가 실현하는 두 자리) · verifier·runtime·memory-binding.md(형태 A/B 정직 구분·실측 대조 관례). Active Lesson L-07(상태 서술은 실측 후 기록 — §6 근거).
 - `docs/form-b-step-hosting-design.md@cd9247b` §3.8·§4 — Autonomy 매핑·경계 3분리 설계 정본(아카이브; 열람 = `git show cd9247b:docs/form-b-step-hosting-design.md`). 계약 정본은 프로토콜·spec 소유(설계 §0.6).
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 AI·환경·직렬화 형식·물리 경로·실행 옵션 토큰의 사용이 허용된다(C-3 비적용 — 자매 바인딩 §0 동형). 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 AI·환경·직렬화 형식·물리 경로·실행 옵션 토큰의 사용이 허용된다(C-3 비적용 — 자매 바인딩 §0 동형). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 

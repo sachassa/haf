@@ -1,7 +1,7 @@
 # orchestration/specs/05-project-orchestration — Project Orchestration Specification
 
 작성일: 2026-07-13
-상태: v1.6 Baseline (CP2 5단계 전건 첫 판정 Pass — S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0 · CP3 승인 · 사용자 승인 2026-07-13) · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c)
+상태: v1.7 Baseline (개정 — 트랙 종단 결정 목록의 개정 기록 지시를 git locus 로 이전. 사용자 결정 2026-07-27) · 직전 기준선 = v1.6 (CP3 승인 · 사용자 승인 2026-07-13) `uaf-allow-legacy: v1.6 CP2 판정 수치(S1~S5)는 그 시점의 기록이므로 git 이력이 보존한다.`
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -17,7 +17,7 @@
 - `uahf/framework/core/structure.md` §4(실행 코드 배치 규칙 C-2·규칙 4 "형태 B 설계 시 확정")·§5(금지 토큰 규칙 C-3)·§7(Core Contract 불변 C-1). 본 Layer의 중립 코드가 **동형 준수**하는 조건.
 - `uahf/specs/00-glossary.md` §3.3 INV-3(Layer 6·Cross-cutting 1·Core Component 13). 본 문서 §0이 준수하는 UAHF 계수 경계 — 본 Layer는 **UAF 레벨 물리 Layer**이며 UAHF 6-Layer 무촉(entry/discovery/planning 동형).
 
-거버넌스: 이 문서는 `orchestration/` Layer 소속 UAF spec 정본이다(자매 = `entry/specs/01-entry.md`·`discovery/specs/02-discovery.md`·`planning/specs/03-project-contract.md`·`planning/specs/04-solution-design.md`). 본문은 특정 AI·언어·툴체인 비의존을 유지한다(`uahf/framework/core/structure.md` §5 C-3 동형·루트 §0 관행). Orchestrator의 구체 실현(직렬화 형식·물리 배치·게이트 큐 제시 채널·capability→물리 호출 매핑·모델/도구 정책 실값)은 **중립 모듈 경계·Adapter Binding 문서 소관**이며, 본 문서는 소관 포인터만 둔다(§5). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `orchestration/` Layer 소속 UAF spec 정본이다(자매 = `entry/specs/01-entry.md`·`discovery/specs/02-discovery.md`·`planning/specs/03-project-contract.md`·`planning/specs/04-solution-design.md`). 본문은 특정 AI·언어·툴체인 비의존을 유지한다(`uahf/framework/core/structure.md` §5 C-3 동형·루트 §0 관행). Orchestrator의 구체 실현(직렬화 형식·물리 배치·게이트 큐 제시 채널·capability→물리 호출 매핑·모델/도구 정책 실값)은 **중립 모듈 경계·Adapter Binding 문서 소관**이며, 본 문서는 소관 포인터만 둔다(§5). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -255,7 +255,7 @@ non-core 실행 경계 사이의 정확한 분할은 `uahf/framework/core/struct
 - **미존재를 실재로 쓰지 않는다(L-07).** 저술 시점(S1 r2)에는 §5 산출물이 미존재였고, **2026-07-26 실측 상태 = 실재**다 — 중립 Orchestrator 모듈(`orchestration/framework/orchestrator/` — 모듈 + 레코드 스키마 + tests)·Adapter 바인딩·run 데이터 백엔드·CP2 모델 독립 지정(Step Host `cp2_model`)이 S2~S5 구현으로 생성되었다. provider·언어 토큰 0은 그 산출물의 CP2 검증 대상이다(설계 §5). 검색 범위 = `orchestration/framework/orchestrator/`·`orchestration/adapters/claude/`·`uahf/framework/adapters/claude/orchestration-data/`·`uahf/framework/loop/step-host/` 4경로 조회.
 - **무수정 경계.** 본 문서는 다음을 무수정으로 둔다 — `uahf/specs` 00~13 Frozen(07/02/03/06 포함)·`04-solution-design`·`03-project-contract`·루트 `ARCHITECTURE.md`·step-hosting-protocol 본문·`uahf/framework/loop/step-host/`(OQ-SH-4 1개소 제외)·기존 Adapter 바인딩 본문·append-only 데이터. 전부 § 포인터 인용·라이브러리 무수정 import만이다.
 - **`uahf/` 트리 접촉은 정확히 2건.** (i) `uahf/framework/adapters/<adapter>/project-orchestration-binding.md` + `orchestration-data/` 신설(Adapter 물리 경계 동거 — UAF 레벨 바인딩 선례 4건 동형). (ii) Step Host 코드 1개소(CP2 검증 단위 모델 상속 지점) — CP2 Verifier 모델 독립 지정(OQ-SH-4 해소·S4·테스트 갱신 동반). 그 외 정본·중립 코드는 전부 `orchestration/` 신규 Layer 소유다. substrate 라이브러리 무수정 import는 UAF-INV ①(접점 원칙)과 병존하며(루트 §8 병존 주), 이 2건은 모두 비Frozen 경계의 신설·명시 변경이다.
-- **트랙 종단 별도 결정(선전제 금지).** 루트 라우터 등재(`orchestration/` 1행 — 루트 문서버전 상승·사용자 게이트)·step-hosting-protocol §9 이력 append·Contract 성숙 재발행은 트랙 종단 별도 결정이다. 배치·프레이밍 자체는 2026-07-13 사용자 결정으로 해소되었다.
+- **트랙 종단 별도 결정(선전제 금지).** 루트 라우터 등재(`orchestration/` 1행 — 루트 문서버전 상승·사용자 게이트)·step-hosting-protocol 개정 기록(git 커밋 — 규범 `docs/spec-versioning-policy.md` §3)·Contract 성숙 재발행은 트랙 종단 별도 결정이다. 배치·프레이밍 자체는 2026-07-13 사용자 결정으로 해소되었다.
 - **자기 무촉 확인.** 본 문서(및 자매 `orchestration/ARCHITECTURE.md`·`orchestration/ROADMAP.md`)의 신설이 기존 정본을 변경하지 않음은 형상 관리 상태 조회로 확인한다(CP1 자체 점검·CP2 독립 판정 대상).
 
 ---

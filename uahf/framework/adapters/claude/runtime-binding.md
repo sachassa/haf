@@ -9,7 +9,7 @@
 - Core 산출물 4종(확정) — framework/runtime/module-manifest.md · module-registry.md · lifecycle.md · framework/core/config-schema.md. "추상 계약 → 물리 실현" 매핑의 대상.
 - framework/core/structure.md §2·§6(3경계 배치·일반형 `<adapter>` — 본 문서가 `claude`로 구체화, §5) · specs/02-agent.md §4.1(진입점 내부 계약·실행 모델 = 02 소관, 포인터만) · docs/delegation-protocol.md §3 · specs/00-glossary.md(용어 신설 0) · ROADMAP.md v0.3.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식 토큰의 사용이 허용된다. 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2, 01 §3.2-E 규칙 3), 구체 AI·환경·직렬화 형식 토큰의 사용이 허용된다. 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -78,7 +78,7 @@ Core 산출물 4종 각각의 "**추상 계약 → 이 환경의 물리 실현 �
 | Manifest 직렬화 형식 (01 §4.1, module-manifest.md §0) | Markdown 본문 + YAML front-matter 파일. | 실재(형식) |
 | `id`(식별자, 필수) | 정의 파일의 안정 식별자. 예: `.claude/agents/*.md` front-matter `name`(교체 전후 안정 — INV-7). | 실재(예: `name`) |
 | `contract`(식별자, 필수) | Module이 구현하는 역할/Port 식별자. Agent Module의 경우 역할명(Advisor/Planner/Worker/Verifier)이 계약 식별자로 소비된다(02 §3.2-A 역할 경계). | 규약 실현 |
-| `version`(버전 문자열, 필수) | 정의 파일의 버전 표기(front-matter 또는 문서 이력). | 형태 B(전용 필드), 현재 이력 절로 대용 |
+| `version`(버전 문자열, 필수) | 정의 파일의 버전 표기(front-matter 또는 문서 머리 상태 라인). | 형태 B(전용 필드), 현재 상태 라인으로 대용 |
 | `requires`(식별자 목록, 선택) | 의존 contract id 목록의 물리 표기. | 형태 B |
 | `entrypoint`(추상 참조, 필수) | 정의 파일 자체(활성화 진입). 서브에이전트 위임 시 로딩되는 파일 경로. | 실재(정의 파일) |
 | `configSchema`(추상 참조, 선택) | 정의 파일이 참조하는 설정 스키마(Module 네임스페이스). SchemaViolation 대조 출처와 연결(§6-a). | 형태 B(실행 검증기) |
@@ -156,7 +156,7 @@ Bootstrap~Serve~Shutdown의 **실행 컨테이너(세션/턴)** 매핑. 연산·
 ## §5. 구조 규격 연결 — `<adapter>` = `claude` 구체화 (done 4)
 
 - **일반형 → 구체화.** structure.md §2·§6·§8은 Adapter 경계를 일반형 `framework/adapters/<adapter>/`로 표기하고 **구체 어댑터명은 해당 Adapter Binding 문서가 소유한다**고 둔다. **이 문서가 그 소유자이며 `<adapter>` = `claude`로 구체화한다** — 물리 경로 `framework/adapters/claude/runtime-binding.md`(= 본 파일).
-- **토큰 격리의 단일 자리 · 비중첩.** 구체 어댑터명 `claude`와 환경 토큰(Markdown·front-matter·`.claude/…`·`~/.claude/settings.json`·세션/턴·Opus·서브에이전트)은 이 경계에만 존재하고, Core 4종은 "구체 인스턴스는 Adapter Binding 문서 소관" 포인터만 둔다(structure.md §5 C-3, 01 §3.3 INV-4). Core 경계와 Adapter 경계는 물리적으로 비중첩이므로(structure.md §3 규칙 3·§8, 01 §3.2-E 규칙 3) 이 문서가 구체 토큰을 담아도 Core 디렉터리 AI 비의존 불변(INV-4)을 침해하지 않고 그 격리를 완성한다. 초판의 1파일 생성 소유 경계(07 R4) 감사 흔적은 §9 초판 행에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 §9 이력 표에 보존, 본문은 포인터 1줄`
+- **토큰 격리의 단일 자리 · 비중첩.** 구체 어댑터명 `claude`와 환경 토큰(Markdown·front-matter·`.claude/…`·`~/.claude/settings.json`·세션/턴·Opus·서브에이전트)은 이 경계에만 존재하고, Core 4종은 "구체 인스턴스는 Adapter Binding 문서 소관" 포인터만 둔다(structure.md §5 C-3, 01 §3.3 INV-4). Core 경계와 Adapter 경계는 물리적으로 비중첩이므로(structure.md §3 규칙 3·§8, 01 §3.2-E 규칙 3) 이 문서가 구체 토큰을 담아도 Core 디렉터리 AI 비의존 불변(INV-4)을 침해하지 않고 그 격리를 완성한다. 초판의 1파일 생성 소유 경계(07 R4) 감사 흔적은 git 이력(초판 커밋)에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 git 이력에 보존, 본문은 포인터 1줄`
 
 ---
 

@@ -1,7 +1,7 @@
 # ARCHITECTURE — Universal Agentic Framework 상위 구조 정본 (라우터)
 
-작성일: 2026-07-07 · 상태: v1.7
-개정 이력·경위·버전별 Δ = §9 이력 표(append-only). 본 머리는 판(edition) 표기만 둔다.
+작성일: 2026-07-07 · 상태: v1.7 (개정 — §6 설계 원칙 12 신설)
+개정 이력·경위·버전별 Δ = **git 이력(커밋 메시지·앵커)**. 본 문서 본문은 제품 생성에 필요한 실행 규범만 담고, 이력·경위는 파일에 두지 않는다 — 운용 정본 = `docs/spec-versioning-policy.md` §3, 원칙 근거 = §6 설계 원칙 12(자기 문서 경량). 본 머리는 판(edition) 표기만 둔다.
 상위 규약: AGENT.md (INV-1)
 
 근거 정본:
@@ -32,7 +32,7 @@
 | 2026-07-19 | v1.7 (Draft) | §6 설계 원칙 11(책임 있는 자율) 신설 — 비정본 거버넌스: 필수는 Core/Policy 강제·자율은 기본값+사유기록·이탈은 게이트 표면화. §6·§1 카운트 10→11 정합. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
 | 2026-07-26 | (정합) | md 슬림화 Wave 5 — 비계약 격리 개정: 재서술·경위·완료 마일스톤 상세 압축(앵커 90ca19c), 원칙·불변·계약 문면 무변경 | Advisor 위임 |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, uahf/framework/core/structure.md §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. `uaf-allow-legacy: 표 내 옛 행의 uaf/ARCHITECTURE.md·§3·9종·완전성 표현 등은 그 개정 시점의 정확한 이력 기록이므로 문면을 보존한다.`)
+(**이후 개정은 이 표가 아니라 git 커밋에 기록한다** — 파일 내 이력 절 폐지, §6 설계 원칙 12 · 운용 정본 `docs/spec-versioning-policy.md` §3. `uaf-allow-legacy: 아래 표는 폐지 전 기록이며, 표 내 옛 행의 uaf/ARCHITECTURE.md·§3·9종·완전성 표현 등은 그 개정 시점의 정확한 기록이므로 문면을 보존한다. 물리 제거는 별도 회차 소관.`)
 
 ---
 
@@ -181,9 +181,9 @@ knowledge ◀──Consult── 모든 Layer   (횡단 — 파이프라인 파�
 
 ---
 
-## §6. 설계 원칙 (Design Principles — 11종)
+## §6. 설계 원칙 (Design Principles — 12종)
 
-UAF는 다음 11종 원칙을 따른다. UAHF와 동형인 원칙은 UAHF 정본을 § 포인터로 참조하며 재정의하지 않는다.
+UAF는 다음 12종 원칙을 따른다. UAHF와 동형인 원칙은 UAHF 정본을 § 포인터로 참조하며 재정의하지 않는다.
 
 1. **AI-Agnostic** — UAF는 특정 AI 모델·실행 환경에 종속되지 않는다. Entry·Discovery의 물리 실현은 Adapter 소관이다 (`uahf/ARCHITECTURE.md` §3.1 동형 원칙을 UAF 레벨에 적용).
 2. **Stable Contract** — Project Contract는 장기 호환을 유지하는 공식 계약(Public API)이다. Discovery 내부 변경과 독립적으로 안정을 유지한다 (P3, §7).
@@ -196,6 +196,7 @@ UAF는 다음 11종 원칙을 따른다. UAHF와 동형인 원칙은 UAHF 정본
 9. **Future Extensibility** — 신규 Entry·Strategy·Runtime은 Layer·엔진 변경 없이 **Registry 행·Policy 데이터 추가만으로** 확장된다. Framework 전체를 다시 쓰지 않는다 (`uahf/ARCHITECTURE.md` §8 동형 지향을 UAF 레벨에 적용).
 10. **Knowledge Consult (횡단)** — `knowledge/`는 파이프라인 단계가 아니라 **모든 Layer가 Consult하는 횡단 공용 Knowledge Base**다. 어느 Layer든 knowledge를 회수해 결정을 뒷받침하되, knowledge는 파이프라인 payload를 흘려보내지 않는다 (§4, context-and-design §3·§4, `knowledge/ARCHITECTURE.md`).
 11. **책임 있는 자율 (Accountable Autonomy).** 자율을 주되 **침묵 이탈**을 금한다. (a) 빠지면 안 되는 것(필수 산출·전 영역 커버·불가침 절차)은 비정본 부록이 아니라 **Core·Policy·게이트로 강제**한다 — 비정본 부록은 참고 문서일 뿐 강제 근거가 아니다. (b) 남은 자율은 **Policy 기본값 + 이탈 시 사유 기록**이다(silentOmission 금지). (c) 이탈·제외는 **사용자 게이트에서 일괄 표면화·확인**한다(고임팩트는 즉시). "비정본=선택=조용히 skip"을 폐기한다(운영 정본: `.claude/CLAUDE.md` §비정본 거버넌스).
+12. **자기 문서 경량 (Self-Documentation Frugality).** UAF는 **다른 제품을 만드는 도구**다. 따라서 UAF 문서 파일의 본문은 **제품 생성에 필요한 실행 규범만** 담는다. 이력·경위·근거 전문은 파일 안에 두지 않고 **git(커밋 메시지·앵커)으로 보존**하며, **UAF 자체를 개정할 때만** 그 앵커를 참조한다. 파일에서의 삭제는 정보 손실이 아니다 — git 이력이 전문을 보존하기 때문이다. 자기 서술이 실행 규범을 밀어내면 도구로서의 UAF가 무거워진다는 판단이며, 이 원칙의 운용 절차(개정 유형별 요건·기록 locus)는 `docs/spec-versioning-policy.md` §3이 소유한다(사용자 결정 2026-07-27).
 
 ---
 

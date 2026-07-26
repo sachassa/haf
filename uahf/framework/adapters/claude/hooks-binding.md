@@ -12,7 +12,7 @@
 - framework/core/structure.md §2·§4·§5 — 4경계 배치·소유 계약 / 계약·문서 전용 경계와 실행 코드 배치 규칙(형태 A/B 라벨) / C-3 금지 토큰 규칙. 본 문서 경계의 근거.
 - ROADMAP.md v0.8 (Extension System) — Hooks 완료 조건과 산출물(본체 수정 0 확장·비차단·순서 결정성·카탈로그 도출·경계·AI 비의존)의 환경 실현 근거.
 
-거버넌스·경계(공통): 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Adapter 경계는 구체 AI·환경·직렬화 형식·물리 경로 토큰이 **허용**되는 격리 지점이고(structure.md §5 C-3 비적용·§2 4경계·§4 형태 A/B 라벨, 08 INV-8, 01 §3.2-E 규칙 3), 이 하네스는 Bootstrap 상태이므로 계약 실현을 형태 A(문서·규약)/형태 B(실행 코드)로 정직 구분하며, 용어는 specs/00-glossary.md 정본만 쓰고 Core Contract(08 §3)를 재정의하지 않는다. 개정은 Advisor 승인 + §9 이력 append로만 이뤄진다.
+거버넌스·경계(공통): 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Adapter 경계는 구체 AI·환경·직렬화 형식·물리 경로 토큰이 **허용**되는 격리 지점이고(structure.md §5 C-3 비적용·§2 4경계·§4 형태 A/B 라벨, 08 INV-8, 01 §3.2-E 규칙 3), 이 하네스는 Bootstrap 상태이므로 계약 실현을 형태 A(문서·규약)/형태 B(실행 코드)로 정직 구분하며, 용어는 specs/00-glossary.md 정본만 쓰고 Core Contract(08 §3)를 재정의하지 않는다. 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -277,7 +277,7 @@ L-07(상태 서술은 실측 후 기록 — A5 재발 방지)에 따라 본 문�
 ## §8. 정본 경계·격리·계약 소유 (self-note)
 
 - **소유 경계 (재정의·확장 0).** 계약 소유 = 08 §3(§3.1-B 정의·능력·경계 · §3.1-C 등록 완료 조건·reason · §3.1-D Dispatch·순서 · §3.1-E 실패 처리·격리 · §3.2-A/B 카탈로그·명명·확장 규칙 · §3.2-C Event Record · §3.2-D Hook Binding · §3.2-E Failure Report · §3.3 INV-1~8)와 01 §3.2-A·§3.1-A(Module Manifest·Register); 계측 지점 물리 실현 소유 = loop-binding.md(lifecycle)·delegation-protocol.md(agent)·memory-binding.md(memory)·runtime-binding.md(runtime). 본 문서는 그 **물리 실현**만 확정하며 새 Event·domain·phase·필드·reason·불변 규칙 신설 0이다 — 판정 기준은 정본 §(08 §3·§4)다.
-- **격리 토큰의 단일 자리.** 구체 직렬화 형식·물리 경로·파일 확장자·세션/턴·서브에이전트 등 환경 토큰은 이 Adapter 경계 문서에만 둔다(08 §3은 AI 비의존 — INV-8). 작성 시점 감사 서술(동시 작성 형제 불인용·금지 토큰 자가 스캔·생성 파일 범위)은 §9 이력과 git 앵커 90ca19c에 남는다.
+- **격리 토큰의 단일 자리.** 구체 직렬화 형식·물리 경로·파일 확장자·세션/턴·서브에이전트 등 환경 토큰은 이 Adapter 경계 문서에만 둔다(08 §3은 AI 비의존 — INV-8). 작성 시점 감사 서술(동시 작성 형제 불인용·금지 토큰 자가 스캔·생성 파일 범위)은 git 이력·앵커 90ca19c에 남는다.
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 

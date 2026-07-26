@@ -9,7 +9,7 @@
 - 조합 대상 요소의 상세 계약 정본 — 02 §3·§4.1(역할 경계·위임/완료/실패 보고) · 01 §4.1(호스트 프로세스 = 세션/턴) · 06 §4.1(검증 게이트·CP2). 상세 **물리** 실현 소유처 = 자매 Adapter Binding(agent-binding.md · runtime-binding.md §2 #10·§3.4 · verifier-binding.md · loop-binding.md §3) — 본 문서는 조합 참조만 한다.
 - 배정·운용·용어 — adapter-conformance.md §2·§4(13 §4.1 조합을 harness-binding.md(T3)에 배정; 본 문서가 그 이행) · docs/delegation-protocol.md §2~§3 · `.claude/AGENT.md`·`.claude/CLAUDE.md`·`.claude/agents/` 4종(실측 대상 — 무수정) · framework/core/structure.md §2·§5 · specs/00-glossary.md(§3.2-D·§3.2-E·J-11·J-13, 용어 신설 0) · ROADMAP.md v0.2·v0.9.
 
-거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식·실행 모델에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 13 H-INV-8, 01 §3.2-E 규칙 3), 그 구체 토큰의 사용이 허용된다(C-3 비적용 — 자매 바인딩 §0 동형). 개정은 Advisor 승인 + §9 이력 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/adapters/claude/` 소속 **Adapter Binding 문서**다 — Core 계약을 특정 실행 환경·AI·직렬화 형식·실행 모델에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5, 13 H-INV-8, 01 §3.2-E 규칙 3), 그 구체 토큰의 사용이 허용된다(C-3 비적용 — 자매 바인딩 §0 동형). 개정은 Advisor 승인 + git 커밋 기록으로만 이뤄진다(규범 = `docs/spec-versioning-policy.md` §3).
 
 ---
 
@@ -124,7 +124,7 @@ Active Lesson L-07(상태 서술은 실측 후 기록)에 따라 "실재/존재/
 
 - **계약 소유 지도(포인터).** 조합·무결성 = 13 §3 · 역할 경계·메시지 = 02 §3 · 호스팅 = 01 §3 · 검증 판정 기준 = 06 §3 · 개별 요소 상세 물리 실현 = §2 표 두 열이 지목하는 자매 바인딩. 본 문서 소유는 조합 지점의 물리 실현뿐이며(재정의 0 선언 = §0 1곳), Frozen specs를 수정하지 않았다. 환경 토큰의 격리 허용 지점도 이 문서다(structure.md §5 C-3, 13 H-INV-8).
 - **판정 성격.** 조합 지점의 물리 실현 매핑이며 독립 판정(CP2 — Verifier)·최종 승인(CP3 — Advisor)이 뒤따른다(02 §3.2-A). 자기 점검(CP1)을 최종 승인으로 삼지 않는다.
-- **작성 경계 이력(포인터).** 초판(2026-07-06, Task T3)의 형제 Task(PS2) 불인용(07 R2)·인용 정본 목록·2파일 생성 범위(07 R4)·금지 토큰 자가 스캔 감사 흔적은 §9 초판 행에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 §9 이력 표에 보존, 본문은 포인터 1줄`
+- **작성 경계 이력(포인터).** 초판(2026-07-06, Task T3)의 형제 Task(PS2) 불인용(07 R2)·인용 정본 목록·2파일 생성 범위(07 R4)·금지 토큰 자가 스캔 감사 흔적은 git 이력(초판 커밋)에 보존되어 있다. `uaf-allow-legacy: 초판 감사 흔적은 git 이력에 보존, 본문은 포인터 1줄`
 
 ### open_questions (Advisor 에스컬레이션 — 비차단)
 

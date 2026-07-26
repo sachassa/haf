@@ -11,7 +11,7 @@
 - framework/core/structure.md §2·§5·§7 — 소속 경계(`framework/memory/`)·금지 토큰 규칙(C-3 확장)·Core Contract 불변 C-1.
 - ROADMAP.md v0.4 (Memory & Lessons) — 학습 사이클 완료 조건과 산출물.
 
-거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다. 본문은 AI·언어·툴체인 비의존을 유지한다(structure.md §5 C-3). 이 문서는 05 Core Contract의 인스턴스이며 05·04·02 계약을 재정의·확장하지 않는다(structure.md §7 C-1). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
+거버넌스: 이 문서는 `framework/memory/` 소속 Module 구현 디렉터리 문서다. 본문은 AI·언어·툴체인 비의존을 유지한다(structure.md §5 C-3). 이 문서는 05 Core Contract의 인스턴스이며 05·04·02 계약을 재정의·확장하지 않는다(structure.md §7 C-1). 개정은 Advisor 승인 + **git 커밋 기록**(취지·범위를 커밋 메시지에)으로만 이뤄진다 — 기록 locus 정본 = `docs/spec-versioning-policy.md` §3.
 
 ---
 
@@ -32,7 +32,7 @@
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-XX·mi 유지)·삭제 산출물 참조 앵커 전환(@cd9247b·@004bfa9). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 | 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
+(**이후 개정은 이 표가 아니라 git 커밋에 기록한다** — 파일 내 이력 절 폐지, 정본 = `docs/spec-versioning-policy.md` §3. `uaf-allow-legacy: 아래 표는 폐지 전 기록이며 각 행은 그 개정 시점의 기록이므로 문면을 보존한다. 물리 제거는 별도 회차 소관.`)
 
 ---
 

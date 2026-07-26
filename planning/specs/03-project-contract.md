@@ -1,7 +1,7 @@
 # planning/specs/03-project-contract — Project Contract Specification
 
 작성일: 2026-07-07
-상태: v1.2 Baseline (CP2 교차 정합 Pass 8/8 · CP3 승인 · 사용자 Baseline 승인 2026-07-13) · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c)
+상태: v1.3 Baseline (개정 — §3.3-E 스키마 개정 요건의 기록 locus 를 git 으로 이전 · 계보 append-only 와의 경계 명시. 사용자 결정 2026-07-27)
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -201,7 +201,8 @@ UAHF는 Contract를 **tolerant reader**로 소비한다.
 
 #### 3.3-E 스키마 개정 거버넌스
 
-- **스키마 개정 = spec 버전 상승 + Revision History.** 본 스키마(코어 필드·버저닝 규칙)의 개정은 **본 문서(spec)의 버전 상승 + §9 Revision History append**로만 이뤄진다. 이는 UAHF spec 개정 관행과 동형이다(uahf/specs/00-glossary.md §3.2-G Spec Status: Frozen — "이후 변경은 spec 버전 상승과 Revision History 기록이 필수"; uahf/specs/TEMPLATE.md §5 Revision History).
+- **스키마 개정 = spec 버전 상승 + 개정 기록.** 본 스키마(코어 필드·버저닝 규칙)의 개정은 **본 문서(spec)의 버전 상승 + git 커밋 기록**(취지·범위를 커밋 메시지에)으로만 이뤄진다. 이는 UAHF spec 개정 관행과 동형이다(uahf/specs/00-glossary.md §3.2-G Spec Status: Frozen; 기록 locus 정본 = `docs/spec-versioning-policy.md` §3 — 파일 내 이력 절은 폐지됨).
+  - **주의 — 이 항은 *문서의 개정 기록*이다.** 아래 §3.4 인스턴스 거버넌스의 append-only(인스턴스 파일 버전 체인·`supersedes` 계보·PC-INV 9)와 혼동하지 않는다. 계보는 제품 생성 동작의 부품이므로 **유지**된다(`docs/spec-versioning-policy.md` §3.4 경계 ②).
 - **거버넌스 게이트.** 스키마 개정은 Advisor 승인·사용자 승인 게이트를 거친다(ARCHITECTURE.md §8 UAF-INV ⑤ Preserve Human Authority). MAJOR 개정은 여기에 마이그레이션 경로를 더한다(§3.3-B).
 
 ### 3.4 인스턴스 거버넌스 (Instance Governance)
@@ -317,7 +318,7 @@ Project Contract는 어떤 구현·버전에서도 다음을 유지한다. PC-IN
 8. UAHF Interface(선택 입력·두 소비 지점·UAHF 무수정 근거·정식 등재 확장 포인트) — §3.5 (done 8)
 9. 상시 불변 2건 반영·위반 서술 0건 — PC-INV 10·11 (done 9)
 10. P3·D6-C2 정본 문면 적재 — §1 (done 10)
-11. 관행 규격(상태 라인·§9 이력 머리 배치·append-only·§ 포인터 재정의 0 · 특정 AI 실명·모델명·제품 기능명·방법론 고유명 0건 스캔) (done 11)
+11. 관행 규격(상태 라인·개정 기록 = git 커밋[규범 `docs/spec-versioning-policy.md` §3]·§ 포인터 재정의 0 · 특정 AI 실명·모델명·제품 기능명·방법론 고유명 0건 스캔) (done 11)
 
 ### 검증 방법 (Verifier)
 
@@ -355,7 +356,7 @@ Project Contract는 어떤 구현·버전에서도 다음을 유지한다. PC-IN
 
 - 필수 코어 필드는 불변이다.
 - 기존 UAHF tolerant reader는 추가된 선택 필드를 **must-ignore**하므로 소비 거동이 변하지 않는다(§3.3-C, PC-INV 5).
-- 파괴 변경이 아니므로 MAJOR가 아니다. 스키마 개정으로서 본 spec 버전 상승 + §9 Revision History append를 거친다(§3.3-E).
+- 파괴 변경이 아니므로 MAJOR가 아니다. 스키마 개정으로서 본 spec 버전 상승 + git 커밋 기록을 거친다(§3.3-E).
 
 ### 예 3 — 인스턴스 갱신 (append-only + supersedes)
 

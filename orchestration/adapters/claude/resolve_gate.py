@@ -145,6 +145,9 @@ class _NoInvoke:
 _ADAPTER_MIN_TASKS = 3
 _ADAPTER_MAX_TASKS = 6
 _ADAPTER_UNIT_TYPES = ("implementation", "milestone")
+# 선택 12번째 키 — 단위별 실행 예산(초). REQUIRED_TASK_KEYS 11키는 무변(필수 승격 아님·
+# 기존 run·플랜 하위호환). 엔진 소비 지점 = orchestrator.UnitTimeoutInvoker.
+_TASK_TIMEOUT_KEY = "timeout"
 
 
 def validate_impl_plan_adapter(plan) -> list:
@@ -186,6 +189,17 @@ def validate_impl_plan_adapter(plan) -> list:
         for k in REQUIRED_TASK_KEYS:
             if k not in t:
                 errors.append("%s 필수 키 누락: %r" % (where, k))
+
+        # 선택 12번째 키 timeout(실행 예산 초) — **존재할 때만** 검사한다(부재 = 전역 fallback).
+        # 양의 정수만 수용한다: bool·0·음수·실수·문자열은 거부(판정 불가 ≠ 통과·이진 원칙).
+        # 여기서 차단하므로 불량값이 원장(task_added revision)에 승격되지 않는다(fail-closed).
+        if _TASK_TIMEOUT_KEY in t:
+            tv = t.get(_TASK_TIMEOUT_KEY)
+            if isinstance(tv, bool) or not isinstance(tv, int) or tv <= 0:
+                errors.append(
+                    "%s timeout 이 양의 정수(초)가 아니다(선택 키·부재 시 전역 기본): %r"
+                    % (where, tv)
+                )
 
         # unitType 집합 소속(F4).
         ut = t.get("unitType")

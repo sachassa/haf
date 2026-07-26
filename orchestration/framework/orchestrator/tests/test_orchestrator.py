@@ -695,5 +695,215 @@ class BacklogJ_EscalationResolutionChannel(unittest.TestCase):
             [self.ESC_GATE], "파생 뷰도 여전히 pending")
 
 
+# ==========================================================================
+# 백로그 §L Desired 4 — per-unit timeout (D-T3~D-T5)
+#
+# 전역 timeout 하나가 규모가 다른 단위를 같은 예산에 묶는 문제를 단위별 재기입으로 푼다.
+# 검증 축: ① 래퍼 순수성(원본 request 무변조)·비매칭 통과·속성 투과 ② 맵 파생(유효값만)
+# ③ 3 디스패치 경로(exec·CP2·게이트) 균일 적용 ④ timeout 부재 그래프 거동 보존(래핑 0).
+# ==========================================================================
+from orchestrator import (  # noqa: E402
+    TASK_TIMEOUT_KEY,
+    UnitTimeoutInvoker,
+)
+from stephost_bridge import InvokeRequest  # noqa: E402
+
+
+GLOBAL_TIMEOUT = 999
+UNIT_TIMEOUT = 1200
+
+
+def timeout_task(tid, timeout=None, depends_on=None):
+    """task_payload 에 선택 timeout 키를 얹은 07 Task(개방 데이터·11키 무변)."""
+    task = task_payload(tid, depends_on=depends_on)
+    if timeout is not None:
+        task[TASK_TIMEOUT_KEY] = timeout
+    return task
+
+
+class _RecordingInvoker(Invoker):
+    """수신 request 의 (role, step_id, timeout) 을 그대로 기록하는 중립 stub.
+
+    Verifier(CP2)·Advisor(게이트 승인) 반환은 Pass verdict — 게이트 경로가 escalation 으로
+    빠지지 않게 해 3 경로를 한 run 에서 전부 관측한다.
+    """
+
+    def __init__(self):
+        self.seen = []  # (role, step_id, timeout)
+        self.requests = []
+
+    def invoke(self, request):
+        step_id = (request.bundle.get("step_contract") or {}).get("id")
+        self.seen.append((request.role, step_id, request.timeout))
+        self.requests.append(request)
+        if request.role in (ROLE_VERIFIER, ROLE_ADVISOR):
+            return _verdict_pass()
+        return _completion(step_id)
+
+    def timeouts_for(self, role, step_id):
+        return [t for (r, sid, t) in self.seen if r == role and sid == step_id]
+
+
+def _approval_everywhere_policy():
+    """전역 기본(tier 0) approval_required — 모든 Passed 단위가 게이트 디스패치를 탄다."""
+    from gates import GatePolicyEntry
+
+    return GatePolicy(
+        entries=[GatePolicyEntry(target={}, gate=GATE_APPROVAL_REQUIRED)],
+        user_actor_class="human",
+        escalation_resolvers=("Advisor", "human"),
+    )
+
+
+class PerUnitTimeout_Wrapper(unittest.TestCase):
+    """UnitTimeoutInvoker 단위 계약(순수 재기입·비매칭 통과·속성 투과)."""
+
+    def _request(self, step_id, timeout=GLOBAL_TIMEOUT):
+        return InvokeRequest(
+            bundle={"step_contract": {"id": step_id}}, role=ROLE_WORKER, timeout=timeout)
+
+    def test_matching_unit_is_rewritten_and_original_untouched(self):
+        inv = _RecordingInvoker()
+        wrapped = UnitTimeoutInvoker(inv, {"s1": UNIT_TIMEOUT})
+        req = self._request("s1")
+        wrapped.invoke(req)
+
+        self.assertEqual(inv.seen[0][2], UNIT_TIMEOUT, "매칭 단위는 단위 예산으로 재기입")
+        self.assertEqual(req.timeout, GLOBAL_TIMEOUT, "원본 request 객체는 무변조(순수)")
+        self.assertIsNot(inv.requests[0], req, "재기입은 새 객체(dataclasses.replace)")
+
+    def test_non_matching_unit_passes_original_request_object(self):
+        inv = _RecordingInvoker()
+        wrapped = UnitTimeoutInvoker(inv, {"s1": UNIT_TIMEOUT})
+        req = self._request("s2")
+        wrapped.invoke(req)
+
+        self.assertEqual(inv.seen[0][2], GLOBAL_TIMEOUT, "비매칭은 전역값 그대로")
+        self.assertIs(inv.requests[0], req, "비매칭은 원 request 객체 그대로 통과")
+
+    def test_absent_step_contract_passes_through(self):
+        inv = _RecordingInvoker()
+        wrapped = UnitTimeoutInvoker(inv, {"s1": UNIT_TIMEOUT})
+        req = InvokeRequest(bundle={}, role=ROLE_WORKER, timeout=GLOBAL_TIMEOUT)
+        wrapped.invoke(req)
+        self.assertIs(inv.requests[0], req, "step_contract 부재는 원 request 그대로")
+
+    def test_attribute_passthrough(self):
+        inv = _RecordingInvoker()
+        inv.invoke_count = 7  # 런처·관측이 읽는 속성(HeartbeatInvoker 선례 동형).
+        wrapped = UnitTimeoutInvoker(inv, {"s1": UNIT_TIMEOUT})
+        self.assertEqual(wrapped.invoke_count, 7, "래퍼는 inner 속성을 투과해야 한다")
+        self.assertEqual(wrapped.timeouts_for(ROLE_WORKER, "s1"), [], "메서드도 투과")
+
+
+class PerUnitTimeout_MapDerivation(unittest.TestCase):
+    """맵 원천 = active_graph 파생. 유효값(양의 정수·bool 제외)만 편입한다(D-T4)."""
+
+    def _orch(self, tasks):
+        graph = {"goal": "goal", "tasks": tasks, "completion": "all-passed"}
+        return ProjectOrchestrator(
+            RevisionLedger(InMemoryRevisionStore(), graph),
+            InMemoryEventStore(), _RecordingInvoker(), timeout=GLOBAL_TIMEOUT)
+
+    def test_only_positive_ints_enter_the_map(self):
+        orch = self._orch([
+            timeout_task("ok", UNIT_TIMEOUT),
+            timeout_task("absent"),
+            timeout_task("zero", 0),
+            timeout_task("negative", -5),
+            timeout_task("boolean", True),
+            timeout_task("string", "1200"),
+            timeout_task("float", 1200.5),
+        ])
+        self.assertEqual(orch._unit_timeouts(), {"ok": UNIT_TIMEOUT})
+
+    def test_empty_map_means_zero_wrapping(self):
+        orch = self._orch([timeout_task("a"), timeout_task("b")])
+        self.assertEqual(orch._unit_timeouts(), {})
+        self.assertIs(orch._effective_invoker(), orch.invoker,
+                      "맵 공집합이면 래핑 0 — 기존 반환 그대로(거동 보존)")
+
+    def test_non_empty_map_wraps_outermost(self):
+        orch = self._orch([timeout_task("a", UNIT_TIMEOUT)])
+        eff = orch._effective_invoker()
+        self.assertIsInstance(eff, UnitTimeoutInvoker, "비공집합이면 최외곽 래핑")
+        self.assertIs(eff._inner, orch.invoker)
+
+    def test_artifact_capturing_wrapper_stays_inside(self):
+        # 포집 래퍼가 있는 조립에서도 timeout 래퍼가 최외곽이고 포집 배선은 무변이다.
+        from artifacts import ArtifactCapturingInvoker, InMemoryArtifactDeclarationStore
+
+        graph = {"goal": "goal", "tasks": [timeout_task("a", UNIT_TIMEOUT)],
+                 "completion": "all-passed"}
+        orch = ProjectOrchestrator(
+            RevisionLedger(InMemoryRevisionStore(), graph),
+            InMemoryEventStore(), _RecordingInvoker(), timeout=GLOBAL_TIMEOUT,
+            artifact_store=InMemoryArtifactDeclarationStore())
+        eff = orch._effective_invoker()
+        self.assertIsInstance(eff, UnitTimeoutInvoker)
+        self.assertIsInstance(eff._inner, ArtifactCapturingInvoker)
+        self.assertIs(eff._inner.inner, orch.invoker)
+
+
+class PerUnitTimeout_DispatchPaths(unittest.TestCase):
+    """exec·CP2·게이트 디스패치 3경로에 같은 단위 예산이 균일 적용된다(D-T5)."""
+
+    def _run(self, tasks, *, gate_policy):
+        store = InMemoryEventStore()
+        ledger = RevisionLedger(
+            InMemoryRevisionStore(),
+            {"goal": "goal", "tasks": tasks, "completion": "all-passed"})
+        inv = _RecordingInvoker()
+        orch = ProjectOrchestrator(
+            ledger, store, inv, timeout=GLOBAL_TIMEOUT, gate_policy=gate_policy)
+        result = orch.run()
+        return inv, result
+
+    def test_three_paths_receive_unit_timeout(self):
+        inv, result = self._run(
+            [timeout_task("s1", UNIT_TIMEOUT), timeout_task("s2", depends_on=["s1"])],
+            gate_policy=_approval_everywhere_policy())
+        self.assertTrue(result.completed, "게이트 Pass 승인으로 완주해야 한다: %r" % (result,))
+
+        # 지정 단위(s1) — exec(Worker)·CP2(Verifier)·게이트(Advisor) 셋 다 단위 예산.
+        self.assertEqual(inv.timeouts_for(ROLE_WORKER, "s1"), [UNIT_TIMEOUT], "exec 경로")
+        self.assertEqual(inv.timeouts_for(ROLE_VERIFIER, "s1"), [UNIT_TIMEOUT], "CP2 경로")
+        self.assertEqual(inv.timeouts_for(ROLE_ADVISOR, "s1"), [UNIT_TIMEOUT], "게이트 경로")
+
+        # 미지정 단위(s2) — 3경로 전부 전역값(전역 fallback 보존·D-T7).
+        for role in (ROLE_WORKER, ROLE_VERIFIER, ROLE_ADVISOR):
+            self.assertEqual(inv.timeouts_for(role, "s2"), [GLOBAL_TIMEOUT],
+                             "미지정 단위는 전역 예산: role=%r" % (role,))
+
+    def test_graph_without_timeout_preserves_global_everywhere(self):
+        # 거동 보존 — timeout 필드가 없는 그래프는 래핑 0 경로이며 전 요청이 전역값이다.
+        inv, result = self._run(
+            [timeout_task("s1"), timeout_task("s2", depends_on=["s1"])],
+            gate_policy=_approval_everywhere_policy())
+        self.assertTrue(result.completed)
+        self.assertTrue(inv.seen, "요청이 실제로 발생했어야 한다")
+        self.assertEqual({t for (_r, _s, t) in inv.seen}, {GLOBAL_TIMEOUT})
+
+    def test_promoted_task_timeout_applies_after_revision(self):
+        # revision 승격(task_added)으로 들어온 단위의 timeout 도 같은 맵 파생을 탄다
+        # (맵 원천 = active_graph 이므로 fold 반영 즉시 유효 — 제2 진리원천 0).
+        store = InMemoryEventStore()
+        ledger = RevisionLedger(InMemoryRevisionStore(), initial_two_task())
+        inv = _RecordingInvoker()
+        orch = ProjectOrchestrator(ledger, store, inv, timeout=GLOBAL_TIMEOUT)
+
+        # 게이트 근거 append 후 승격 — 그래프 fold 에 timeout 을 실은 단위가 편입된다.
+        _append_gate_event(orch, "g-s3-timeout")
+        orch.accept_revision(
+            KIND_TASK_ADDED, timeout_task("s3", UNIT_TIMEOUT, depends_on=["s2"]),
+            proposingStepRef="s2#1", gateEventRef="g-s3-timeout",
+        )
+
+        result = orch.run()
+        self.assertTrue(result.completed)
+        self.assertEqual(inv.timeouts_for(ROLE_WORKER, "s3"), [UNIT_TIMEOUT])
+        self.assertEqual(inv.timeouts_for(ROLE_WORKER, "s1"), [GLOBAL_TIMEOUT])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any
 
 from allocation import Allocation, _present
@@ -104,6 +104,54 @@ TRIGGER_GATE_REWORK = "재작업 되돌림(에스컬레이션 해소)"
 # host.py 의 verdict_pass 가 소비하는 것과 동일 어휘이며, orchestrator 의 CP3 status
 # 소비도 이 값과의 동등 비교만 한다(내용 판정 0·PO-INV 1).
 VERDICT_PASS = "Pass"
+
+# 단위(Task)의 선택 실행 예산 키(초·양의 정수). 07 Task 는 개방 데이터이므로 필수 키가 아니며,
+# 부재 시 전역 timeout(Orchestrator.timeout) 이 그대로 쓰인다(하위호환·D-T7).
+TASK_TIMEOUT_KEY = "timeout"
+
+
+class UnitTimeoutInvoker:
+    """Invoker 래퍼 — 단위별 실행 예산(timeout)을 InvokeRequest 에 재기입한다(D-T3).
+
+    전역 timeout 하나로는 규모가 크게 다른 단위를 같은 예산에 묶는다. 이 데코레이터는
+    `{단위 id: timeout}` 맵을 들고 요청 번들의 `step_contract.id` 가 맵에 있으면 그 값으로
+    요청을 재기입한다 — 매칭이 없으면 **원 요청 객체 그대로** 통과시킨다(래핑 무해).
+
+    순수 재기입: 원본 request 를 변조하지 않고 `dataclasses.replace` 로 새 요청을 만든다
+    (호출부가 들고 있는 객체의 timeout 은 불변). 판단 0(PO-INV 1) — 값의 타당성은 상류
+    검증 게이트가 소유하고 여기서는 기계 재기입만 한다.
+
+    인터페이스 보존: `invoke` 만 가로채고 그 밖의 속성은 `__getattr__` 로 **투과**한다
+    (HeartbeatInvoker·ArtifactCapturingInvoker 선례 동형 — `invoke_count` 등 관측 수치 왜곡 0).
+    """
+
+    def __init__(self, inner: Any, timeouts: dict[Any, Any]) -> None:
+        self._inner = inner
+        self._timeouts = dict(timeouts)
+
+    def __getattr__(self, name: str) -> Any:
+        # 래퍼 자체 속성(_inner/_timeouts/invoke)은 정상 조회로 해결되므로 여기 오지 않는다.
+        # object.__getattribute__ 로 꺼내 __init__ 이전 접근 시 무한재귀를 막는다.
+        return getattr(object.__getattribute__(self, "_inner"), name)
+
+    def invoke(self, request: Any) -> Any:
+        return self._inner.invoke(self._retarget(request))
+
+    def _retarget(self, request: Any) -> Any:
+        """단위 timeout 이 있으면 그 값으로 재기입한 새 요청을, 없으면 원 요청을 반환한다."""
+        bundle = getattr(request, "bundle", None)
+        if not isinstance(bundle, dict):
+            return request
+        contract = bundle.get("step_contract")
+        if not isinstance(contract, dict):
+            return request
+        step_id = contract.get("id")
+        if not isinstance(step_id, str):
+            return request
+        value = self._timeouts.get(step_id)
+        if value is None:
+            return request
+        return replace(request, timeout=value)
 
 
 @dataclass
@@ -361,10 +409,44 @@ class ProjectOrchestrator:
         inner.invoke 반환을 변경하지 않고 투명 통과시키며 Worker 완료 보고의 artifacts 만
         선언 원장에 포집한다(부작용·판단 0). read_only 파생 경로에서는 invoke 가 호출되지
         않으므로 래핑이 무해하다(포집 없음).
+
+        그 위에 단위별 timeout 재기입 래퍼를 **최외곽**으로 얹는다(맵 공집합이면 래핑 0 —
+        기존 반환 그대로·거동 보존). 포집 래퍼의 위치·거동은 무변이다(D-T5 ①).
         """
         if self.artifact_store is None:
-            return self.invoker
-        return ArtifactCapturingInvoker(self.invoker, self.artifact_store, run_id=self.run_id)
+            return self._wrap_unit_timeout(self.invoker)
+        return self._wrap_unit_timeout(
+            ArtifactCapturingInvoker(self.invoker, self.artifact_store, run_id=self.run_id)
+        )
+
+    def _unit_timeouts(self) -> dict[str, Any]:
+        """현재 그래프에서 파생한 {단위 id: 실행 예산(초)} 맵(순수 파생·PO-INV 3·D-T4).
+
+        원천은 `active_graph()` 하나뿐이다 — 제2 진리원천을 두지 않는다. 맵에는 **유효값만**
+        편입한다(양의 정수·bool 제외). 불량값은 편입하지 않고 조용히 전역 fallback 으로
+        남긴다: 차단은 상류 검증 게이트(impl-plan 어댑터 검증)가 소유하며 래퍼는 기계
+        재기입만 한다(판단 0). 검증 경로를 지난 값은 이미 유효하므로 이 필터는 비검증
+        경로(seed 그래프·레거시 원장)의 불량값이 실행을 죽이지 않게 하는 안전망이다.
+        """
+        result: dict[str, Any] = {}
+        for task in self.active_graph().get("tasks") or []:
+            if not isinstance(task, dict):
+                continue
+            tid = task.get("id")
+            value = task.get(TASK_TIMEOUT_KEY)
+            if not isinstance(tid, str) or not tid.strip():
+                continue
+            if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+                continue
+            result[tid] = value
+        return result
+
+    def _wrap_unit_timeout(self, invoker: Any) -> Any:
+        """단위 timeout 맵이 비어 있지 않을 때만 재기입 래퍼로 감싼다(공집합 = 래핑 0)."""
+        timeouts = self._unit_timeouts()
+        if not timeouts:
+            return invoker
+        return UnitTimeoutInvoker(invoker, timeouts)
 
     def _cp2_model_for(self, step: Step) -> Any:
         """descriptor-aware CP2 슬롯 resolver — step.capability → CP2 모델 슬롯(전달만·해석 0).
@@ -509,6 +591,10 @@ class ProjectOrchestrator:
         Host 의 CP2 디스패치와 동형으로 산출물(artifacts) 계약을 번들에 싣고 role 만
         바꿔 별도 실행 단위를 기동한다. Orchestrator 는 판정을 내리지 않고 반환을 소비만
         한다(PO-INV 1). model 슬롯은 대상 단위 슬롯을 전달한다(전달만·02 §4 소관).
+
+        timeout 은 전역값으로 조립한 뒤 `_wrap_unit_timeout` 경유로만 단위값이 재기입된다
+        (D-T5 ② — 같은 맵·같은 규칙). 산출물 포집 래퍼는 이 경로에 새로 끼우지 않는다
+        (게이트 반환은 verdict 이며 산출물 선언이 아니다 — 기존 포집 배선 무변).
         """
         step = Step.from_dict(task)
         bundle = {
@@ -526,7 +612,7 @@ class ProjectOrchestrator:
             timeout=self.timeout,
             criteria=step.done,
         )
-        return self.invoker.invoke(request)
+        return self._wrap_unit_timeout(self.invoker).invoke(request)
 
     def _settle_review_gate(
         self,

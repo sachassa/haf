@@ -1320,5 +1320,159 @@ class TestMultiPendingGateSelection(unittest.TestCase):
             self.assertEqual(rg.recover_gate(run, GATE_USER_DECISION_REQUIRED)[0], None)
 
 
+# --------------------------------------------------------------------------
+# 백로그 §L Desired 4 — per-unit timeout (D-T1·D-T2 검증 + 접합부 실물 왕복)
+#
+# 스키마: impl-plan task 의 **선택 12번째 키** timeout(실행 예산 초·양의 정수).
+# 부재 = 전역 fallback(무검사 통과). REQUIRED_TASK_KEYS 11키는 무변.
+# --------------------------------------------------------------------------
+def _plan_with_timeout(value, *, sentinel=object()):
+    """첫 implementation 단위에만 timeout 을 얹은 유효 계획(그 외 단위는 미지정)."""
+    plan = _valid_plan()
+    if value is not sentinel:
+        plan["tasks"][0]["timeout"] = value
+    return plan
+
+
+class TestPerUnitTimeoutValidation(unittest.TestCase):
+    """D-T1·D-T2 — 키 존재 시 양의 정수만 수용(판정 불가 ≠ 통과·fail-closed)."""
+
+    def _errors(self, value):
+        return [e for e in rg.validate_impl_plan_adapter(_plan_with_timeout(value))
+                if "timeout" in e]
+
+    def test_absent_key_passes(self):
+        # 부재 = 무검사(하위호환) — 기존 계획이 그대로 통과해야 한다.
+        self.assertEqual(rg.validate_impl_plan_adapter(_valid_plan()), [])
+
+    def test_positive_int_passes(self):
+        self.assertEqual(rg.validate_impl_plan_adapter(_plan_with_timeout(1200)), [])
+
+    def test_invalid_values_rejected(self):
+        # bool·0·음수·실수·문자열 — 전부 오류 목록에 오른다(각각 독립 판정).
+        for bad in (0, -5, True, "1200", 1200.5, None):
+            with self.subTest(bad=bad):
+                errs = self._errors(bad)
+                self.assertEqual(len(errs), 1, "%r 는 정확히 1건의 timeout 오류: %r" % (bad, errs))
+                self.assertIn("tasks[0]", errs[0])
+
+    def test_required_task_keys_unchanged(self):
+        # 필수 키 승격이 아니다 — 11키 집합에 timeout 이 들어가면 기존 계획이 전부 깨진다.
+        self.assertNotIn("timeout", set(rg.REQUIRED_TASK_KEYS))
+        self.assertEqual(len(rg.REQUIRED_TASK_KEYS), 11)
+
+    def test_invalid_timeout_blocks_via_resolve_gate_ledger_untouched(self):
+        # 검증-먼저 — 불량 timeout 은 승격 전에 차단되고 원장은 바이트 무변경이다.
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct",
+                             plan=_plan_with_timeout(-1))
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertNotEqual(rc, 0, "불량 timeout 계획은 비영 종료")
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before)
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before)
+
+
+class _TimeoutRecordingInvoker:
+    """수신 request 의 (role, step_id, timeout) 을 기록하는 stub(실 CLI 미발화).
+
+    Verifier(CP2) 는 Pass verdict 를 돌려 run 이 실제로 진행되게 한다.
+    """
+
+    def __init__(self):
+        self.seen = []
+
+    def invoke(self, request):
+        from invoker import InvokeResult, KIND_COMPLETION
+
+        step_id = (request.bundle.get("step_contract") or {}).get("id")
+        self.seen.append((request.role, step_id, request.timeout))
+        if request.role == "Verifier":
+            return InvokeResult(kind=KIND_COMPLETION,
+                                completion={"verdict": "Pass", "rework": None}, ref="vd")
+        return InvokeResult(
+            kind=KIND_COMPLETION,
+            completion={"artifacts": [], "self_check": "done", "failures": "없음",
+                        "open_questions": "없음", "verify_basis": "self"},
+            ref="wr",
+        )
+
+    def timeouts_for(self, step_id):
+        return [t for (_r, sid, t) in self.seen if sid == step_id]
+
+
+class TestPerUnitTimeoutRoundTrip(unittest.TestCase):
+    """§5.7 접합부 실물 왕복 — 생산 실물을 소비자에게 실제로 먹인다(격리 검증 아님).
+
+    impl-plan.json(timeout 포함) → validate_impl_plan_adapter 실통과 → accept_revision
+    (task_added) 실승격 → active_graph fold 에 timeout 잔존 → 엔진 run → stub invoker 가
+    수신한 request.timeout 실측. 중간 어느 접합부에서 필드가 탈락해도 마지막 단계가 깨진다.
+    """
+
+    GLOBAL_TIMEOUT = 777
+    UNIT_TIMEOUT = 1200
+
+    # 실 엔진 run 까지 가려면 delegation 8필드가 채워져 있어야 한다 — 기존 픽스처의 sentinel
+    # 2필드만으로는 Host 가 Consult 에서 scoped-query 로 에스컬레이션한다(디스패치 0). 검증
+    # 대상은 timeout 전파이므로 이 클래스 전용으로 위임 필드를 채운 픽스처를 별도로 둔다.
+    @staticmethod
+    def _fill_delegation(task):
+        task["delegation"] = dict(
+            _SENTINEL_DELEG,
+            **{"from": "Advisor", "to": "Worker", "input": "설계 문서",
+               "output": task["ownedBoundary"][0], "context": ["docs/solution-design.md"],
+               "constraints": "워크스페이스 밖 파일 금지"},
+        )
+        return task
+
+    def _plan(self):
+        plan = _plan_with_timeout(self.UNIT_TIMEOUT)
+        for t in plan["tasks"]:
+            self._fill_delegation(t)
+        return plan
+
+    def _proposal_node(self):
+        return self._fill_delegation(_seed_proposal_task())
+
+    def test_impl_plan_timeout_reaches_invoke_request(self):
+        with tempfile.TemporaryDirectory() as td:
+            plan = self._plan()
+            timed_id = plan["tasks"][0]["id"]          # impl-auth — 지정 단위.
+            plain_id = plan["tasks"][1]["id"]          # impl-api  — 미지정 단위(대조).
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=plan,
+                             graph_tasks=[self._proposal_node()])
+
+            # 전역 예산을 config 에 실어 per-unit 값과 구분 가능하게 한다(k_common 소비 키).
+            cfg = json.loads((run / "config.json").read_text(encoding="utf-8"))
+            cfg["timeout"] = self.GLOBAL_TIMEOUT
+            (run / "config.json").write_text(json.dumps(cfg), encoding="utf-8")
+
+            # ① 실 resolver 경로로 검증·해소·승격(픽스처 우회 0).
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertEqual(rc, 0, "timeout 포함 유효 계획은 정상 해소·승격")
+
+            # ② 승격된 revision payload 에 timeout 이 잔존한다(fold._copy_task 얕은 복제).
+            added = [r for r in _read_jsonl(run / "revisions.jsonl")
+                     if r.get("kind") == "task_added"]
+            timed_rev = next(r for r in added if (r.get("payload") or {}).get("id") == timed_id)
+            self.assertEqual((timed_rev["payload"]).get("timeout"), self.UNIT_TIMEOUT)
+
+            # ③ active_graph fold 에도 잔존한다(엔진이 읽는 파생 뷰).
+            inv = _TimeoutRecordingInvoker()
+            orch, _cfg = rg.build_orchestrator_k(run, inv)
+            graph_tasks = {t.get("id"): t for t in orch.active_graph().get("tasks") or []}
+            self.assertEqual(graph_tasks[timed_id].get("timeout"), self.UNIT_TIMEOUT)
+            self.assertNotIn("timeout", graph_tasks[plain_id])
+            self.assertEqual(orch._unit_timeouts(), {timed_id: self.UNIT_TIMEOUT})
+
+            # ④ 실 엔진 run — stub invoker 가 수신한 request.timeout 실측.
+            orch.run()
+            self.assertTrue(inv.seen, "엔진이 실제로 디스패치했어야 한다")
+            self.assertEqual(set(inv.timeouts_for(timed_id)), {self.UNIT_TIMEOUT},
+                             "지정 단위의 전 요청이 단위 예산: %r" % (inv.seen,))
+            self.assertEqual(set(inv.timeouts_for(plain_id)), {self.GLOBAL_TIMEOUT},
+                             "미지정 단위의 전 요청은 전역 예산: %r" % (inv.seen,))
+
+
 if __name__ == "__main__":
     unittest.main()

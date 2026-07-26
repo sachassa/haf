@@ -116,6 +116,31 @@ Advisor 권고 = **B**(원장 의무만). 근거: B-3의 실측 피해는 "우�
 - **이월 사유(이진)**: StepHost 는 uahf 무수정 경계(orchestrator 주석 "무수정 import·재정의 0")이며 host 전역 timeout 만 받는다. per-unit 화의 무접촉 경로 = **orchestration 층 래퍼 invoker**(`_effective_invoker()` 훅 실재)가 step 계약의 단위별 timeout 으로 request.timeout 을 재기입 — 단 `Step.from_dict` 가 임의 필드(timeout)를 보존하는지 미확인(`uaf-assumed:` Step 클래스 본문 미열람) + impl-plan 스키마 필드 신설·검증 규칙이 필요해 **별도 설계 사이클 대상**이다. 오늘 세션 잔여 시간에 밀어넣지 않는다(엔진 변경 품질 규율).
 - Q·R 기계 강제 = 백로그 원장의 기존 미도입 사유 행 유지(각각 브리프 렌더 결합·Verifier 판정 축 확장 — 별도 트랙). 이 세션에서 변경 0.
 
+### per-unit timeout — 설계 확정 (2026-07-26 새 세션 · Advisor · 사용자 확정 1순위)
+
+`uaf-verified:` 착수 전 접합부 전건 실측 재확인 — 검색 범위 = orchestration 2트리 + uahf step-host 트리 + step-invoker 어댑터 + scaffold-template 의 해당 지점 정독·glob. 근거 좌표:
+- `Step.from_dict`(step.py:64) 화이트리스트 → timeout 은 Step 에서 탈락(직전 세션 실측 유지).
+- `InvokeRequest.timeout` per-request 필드 실재(invoker.py:52) + **실 CLI invoker 가 `request.timeout` 을 subprocess timeout 으로 직접 소비**(claude_invoker.py:217) — 재기입 값이 실제 프로세스 타임아웃에 닿는다.
+- exec 번들(bundle.py:31)·CP2 verify_bundle(host.py:316)·게이트 디스패치 번들(orchestrator.py:514) **셋 다 `step_contract`(id 포함)를 싣는다** — id 매칭이 세 경로 전부에서 성립.
+- task_added 승격은 plan task dict 원문 전달(resolve_gate.py:478)·`fold._copy_task` 는 `dict(task)` 얕은 복제(revision.py:174)·`validate_revision` 에 미지 키 거부 없음(revision.py:321~373) — **timeout 필드는 승격·fold 를 무변경으로 통과**한다.
+- config.timeout → `Orchestrator(timeout=cfg.get("timeout"))`(k_common.py:67) → StepHost·게이트 디스패치 전역 적용(현행) — 전역 fallback 경로.
+- scaffold-template 파이썬 벤더링 = 훅 2종(design-guard)뿐 — 이번 접촉 파일의 미러 의무 없음.
+
+**설계 결정 D-T1~D-T8 (Advisor 확정 — 사용자는 사이클 착수를 확정했고 세부 결정은 본 원장에 기록):**
+- **D-T1 스키마**: impl-plan task 의 **선택 12번째 키 `timeout`** = 실행 예산 초·**양의 정수만**(bool 제외·0/음수/실수/문자열 거부). 부재 = 전역 fallback. REQUIRED_TASK_KEYS 11키는 무변(필수 승격 아님 — 기존 run·플랜 하위호환).
+- **D-T2 강제 지점**: `validate_impl_plan_adapter`(resolve_gate.py) — 키 존재 시 불량값이면 오류 목록에 추가(fail-closed·원장 무오염). 판정 불가≠통과(이진 원칙·K 트랙 Lesson 동형).
+- **D-T3 래퍼**: 중립층(orchestrator.py) `UnitTimeoutInvoker` 데코레이터 — `{step_id: timeout}` 맵 보유, `request.bundle["step_contract"]["id"]` 매칭 시 `dataclasses.replace(request, timeout=값)` 로 재기입(원본 request 무변조·순수), 비매칭 = 원 request 그대로. inner 반환 투명 통과 + `__getattr__` 속성 투과(HeartbeatInvoker 선례 동형). 판단 0(PO-INV 1).
+- **D-T4 맵 원천**: `self.active_graph()["tasks"]` 파생(순수·PO-INV 3 — 제2 진리원천 0). 맵 편입은 유효값(양의 정수·bool 제외)만 — 불량값은 편입하지 않는다. 사유: 차단은 D-T2 검증 게이트가 소유하고 래퍼는 기계 재기입만 한다. 비검증 경로(seed 그래프·레거시 원장)의 불량값이 실행을 죽이지 않게 하는 안전망이며, 검증 경로에서는 불량값이 게이트에서 이미 차단되므로 래퍼에 도달하지 않는다.
+- **D-T5 배선(균일 적용)**: ① `_effective_invoker()` — 기존 반환(self.invoker 또는 ArtifactCapturingInvoker)을 맵 비어 있지 않을 때만 최외곽 래핑(맵 공집합 = 래핑 0·기존 거동 보존 — allocation=None 패턴 동형) ② `_dispatch_gate_step` — 같은 맵으로 timeout 래핑만 경유(ArtifactCapturingInvoker 를 게이트 경로에 새로 끼우지 않음 — 기존 포집 배선 무변). 결과: **한 단위의 exec·CP2·review/approval 디스패치가 전부 그 단위의 timeout 을 받는다**(균일 규칙 — 문면 검증 가능성 우선).
+- **D-T6 seed proposal 노드**: timeout 미부여(전역 fallback 2400 적용). 사유: 컴파일 시점엔 단위 규모 정보가 없고 값 발명 금지. 원 사고(proposal 900s×3)의 완화는 DEFAULT_TIMEOUT 2400 상향으로 기반영.
+- **D-T7 전역 fallback 유지**: config.timeout → Orchestrator.timeout → StepHost/게이트 디스패치 경로 무변. per-unit 값 부재 단위는 기존 거동 그대로.
+- **D-T8 Planner 지시**: `_seed_prompt` 구현 task 구성 규칙에 선택 키 안내 1항 추가(대형 단위에만 지정·미지정 = 전역 기본). `_done_ac` 는 필수 11키만 검사하므로 무변.
+- 문서 = binding §5.8(미해소 이월 문단의 Desired 4 항 해소 + per-unit timeout 계약 서술 + §8 이력 1행 관례) · 백로그 L §4 해소 행(강제 지점 행 포함). uahf/** ·05 spec·Frozen 무접촉.
+
+**위임 보고 승격(회수 직후 — 주장 인용·판정은 아래 CP2)**: `uaf-allow-legacy: 수치·완전성 문구는 수임 보고 인용이다 — 판정은 아래 CP2.` `[착수 전 점검]` 블록 제출(브리프 좌표 4파일 실물 대조·불일치 0 주장). 산출 6파일(orchestrator.py `UnitTimeoutInvoker`·`_unit_timeouts`·`_wrap_unit_timeout`·`TASK_TIMEOUT_KEY` / resolve_gate 선택 키 검사 / _seed_prompt 1항 / binding §5.8 (g)+이월 문단+§8 1행 / 신규 테스트 11+6). done 6/6 자기 판정 1 · 3트리 186+144+23 EXIT=0×3 + step-invoker 19 주장. **음성 대조 1건 수행 주장**(`_wrap_unit_timeout` 항등 치환 → 왕복 테스트 실패 확인 → 복원 재통과 — 인과 격리). 기존 테스트 문면 삭제 0 주장. **이탈 신고 2건**: ① 왕복 테스트 전용 delegation 8필드 픽스처 로컬 헬퍼(기존 픽스처 무수정 — sentinel 2필드만으론 Host Consult 에스컬레이션으로 디스패치 0 실측) ② binding §8 이력 1행(관례·직전 2트랙 동형). `[동료 영향]` 해당 없음(단일 위임). **미검증 축 신고 3건**: 실 LLM run · Planner 실 준수 · render_gates/런처 표면(브리프 범위 밖). **open_question 1건**: D-T4 불량값 침묵 fallback 의 관측 신호 유무 — Advisor 결정 요청.
+
+**Advisor CP2 — per-unit timeout + CP3 (2026-07-26)**: `uaf-verified:` ① 4트리 직접 재실행 186+144+23+19 전건 pass·EXIT=0×4(검색 범위 = orchestration 2트리 + uahf step-host·step-invoker 트리 — 수임 보고 출력 불신·별도 로그에 종료코드 보존) ② 접촉 7파일 diff 전문 정독 — D-T1~D-T8 문면 일치·numstat 기준 테스트 파일 삭제 0행·`uahf/**`·specs·scaffold-template 무접촉(git status 목록 기준) ③ **Advisor 독립 음성 대조**(수임 것과 별개·스크래치 스크립트·저장소 파일 무수정) — 원본 배선 A={지정 단위: 4321, 미지정: 777} vs `_retarget` 런타임 항등 패치 B={전부 777} — 재기입 인과 격리 성립 ④ 적대 프로브 3종 — 거대 정수(10^12) 통과(상한 미발명·설계 문면)·milestone 단위 timeout 허용(균일 규칙)·1200.0(정수값 실수형) 거부(엄격 int·오류 문면 명시). **검출 결함 1건(경미·문서)**: binding §8 이력 행 "test_orchestrator.py 10케이스" ↔ 실측 11(트리 175→186·`def test_` 계수) — Advisor 직접 정정·귀속 = Worker(자기 산출 계수 오기·코드 무영향). **open_question 판정 = 신호 미도입 유지**: 강제 지점은 검증 게이트가 소유(검증 경로에선 불량값이 래퍼에 도달 불가)·래퍼는 중립 엔진 층이라 사용자 표면 출력은 층 위반·비검증 경로(수기 원장)는 원장 자체가 관측 좌표다. 재심 좌표 = 실 run 에서 불량값 실측 발생 시. 이탈 신고 2건(왕복 전용 픽스처 로컬 헬퍼·§8 이력 행) = 수용(전자는 실측 근거 타당·후자는 관례 동형). **판정 = Pass·CP3 승인.** 미검증 축 이월 2건 = 실 LLM run 재기입 예산 실증(다음 실 run 관측 좌표에 추가)·Planner 선택 키 실 준수(실 run 관측 대상).
+
 ## §5. 본 세션 검증·이탈 기록 (정직 기록)
 
 - B-1·B-4 배선은 Advisor 직접 산출(거버넌스 문서 층 — 선례: B-0·B-2·B-5·RCA 처방 3 전부 Advisor 직접). 문서 저술이므로 CP2 독립 판정 대신 아래 자가 검증 + 커밋 전 재검으로 갈음하되, 이 갈음 자체를 이탈로 기록한다(자가 검증은 독립 판정이 아니다).

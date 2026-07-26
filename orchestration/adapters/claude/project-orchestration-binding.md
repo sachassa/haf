@@ -274,7 +274,23 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 
 **(f) 문서 접합부.** `.claude/commands/uaf-implement.md` §2의 재개 예시를 `--resume --run-id <run_id>` 형태로 정정하고 위 종료 코드 표를 실었다 — 종전 예시(`--resume`만 표기)는 런처의 슬러그 재파생 계약과 어긋나 `--run-id`를 준 run에서 반드시 실패했다(백로그 §L 5 재발 실측).
 
-**미해소 이월(정직 구분).** 백로그 §L Desired 4(per-unit timeout — 전역 `timeout` 대비 단위 규모 산정)는 본 판에서 다루지 않았다. 백로그 §L 1의 `current_unit`·`elapsed_s` 필드는 `request_hint` 하나로 축약했다(런처가 단위 경계를 소유하지 않으므로 요청에서 파생 가능한 값만 싣는다).
+**(g) per-unit timeout — 단위별 실행 예산(백로그 §L Desired 4 해소·2026-07-26)**
+
+전역 `timeout` 하나(§4 config `timeout` → `Orchestrator.timeout`)는 규모가 크게 다른 단위를 같은 예산에 묶는다. 이를 **단위 단위의 선택 값**으로 세분한다. 관측 계약(a·b)이 정체를 *보이게* 하는 장치라면 이 항은 정체의 한 원인(예산 부적합)을 *줄이는* 장치이며, 종료 코드 표(d)·기존 로그 산출은 무변경이다.
+
+| 층 | 계약 |
+|---|---|
+| 스키마 | impl-plan task 의 **선택 키** `timeout`(11키 밖·12번째) = 실행 예산 **초 단위 양의 정수**. 부재 = 전역 fallback. `REQUIRED_TASK_KEYS` 11키는 무변(필수 승격 아님 — 기존 run·플랜 하위호환) |
+| 검증 | `resolve_gate.validate_impl_plan_adapter` — 키가 있으면 양의 정수만 수용하고 그 외(bool·0·음수·실수·문자열)는 오류 목록에 올린다. 판정 불가는 통과가 아니다(fail-closed·원장 무오염 — 불량값이 `task_added` 로 승격되지 않는다) |
+| 재기입 | 중립 엔진(`orchestrator.UnitTimeoutInvoker`) — `{단위 id: timeout}` 맵을 들고 `request.bundle["step_contract"]["id"]` 매칭 시 `dataclasses.replace` 로 `request.timeout` 을 재기입한다. 원본 request 무변조(순수)·비매칭은 원 객체 그대로·`__getattr__` 속성 투과(`HeartbeatInvoker` 선례 동형) |
+| 맵 원천 | `active_graph()` 파생 하나뿐(PO-INV 3 — 제2 진리원천 0). 유효값만 편입하고 불량값은 편입하지 않는다(차단은 검증 게이트 소유·래퍼는 기계 재기입만·판단 0) |
+| 적용 범위 | 한 단위의 **exec·CP2·게이트 디스패치 3경로 전부**가 그 단위의 예산을 받는다(균일 규칙). `_effective_invoker()` 는 맵이 비어 있지 않을 때만 최외곽 래핑하고, `_dispatch_gate_step` 은 같은 맵으로 timeout 래핑만 경유한다(산출물 포집 래퍼를 게이트 경로에 새로 끼우지 않는다) |
+| 거동 보존 | 맵 공집합(= `timeout` 을 쓴 단위 0)이면 **래핑 자체가 없다** — 기존 반환·기존 요청 객체 그대로다(`allocation=None`·`artifact_store=None` 패턴 동형). seed proposal 노드는 timeout 미부여(컴파일 시점에 단위 규모 정보가 없고 값을 발명하지 않는다) |
+| Planner 지시 | `contract_to_graph._seed_prompt` 구현 task 구성 규칙에 선택 키 안내 1항(양의 정수·초·명백히 대형인 단위에만·미지정 = 전역 기본). `_done_ac` 는 11키만 검사하므로 무변 |
+
+`uaf-verified:` 값이 실제 프로세스 예산에 닿는 경로 = `request.timeout` → 실 CLI invoker 의 subprocess timeout(`step-invoker/claude_invoker.py`). 검색 범위 = orchestration 2트리 + uahf step-host/step-invoker 트리의 해당 지점 정독이며, 실 LLM run 관측은 아직 없다(오프라인 stub 통합·접합부 왕복 테스트까지가 현 근거).
+
+**미해소 이월(정직 구분).** 백로그 §L 1의 `current_unit`·`elapsed_s` 필드는 `request_hint` 하나로 축약했다(런처가 단위 경계를 소유하지 않으므로 요청에서 파생 가능한 값만 싣는다).
 
 ---
 
@@ -300,6 +316,23 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 ---
 
 ## §8. 개정 이력
+
+- **2026-07-26 (per-unit timeout — 백로그 §L Desired 4 해소).** 단위별 실행 예산을 impl-plan
+  스키마의 **선택 키** `timeout`(양의 정수·초)으로 도입하고 세 층에 배선했다: (i) 검증 —
+  `resolve_gate.validate_impl_plan_adapter` 가 키 존재 시 양의 정수만 수용(bool·0·음수·실수·
+  문자열 거부·fail-closed·원장 무오염), `REQUIRED_TASK_KEYS` 11키 무변 (ii) 재기입 — 중립
+  엔진에 `UnitTimeoutInvoker` 신설(맵 매칭 시 `dataclasses.replace` 로 `request.timeout` 재기입·
+  원본 무변조·비매칭 원 객체 통과·`__getattr__` 투과), 맵 원천은 `active_graph()` 파생 하나
+  (유효값만 편입) (iii) 배선 — `_effective_invoker()` 최외곽 래핑 + `_dispatch_gate_step` 동일
+  맵 경유로 exec·CP2·게이트 3경로 균일 적용. 맵 공집합이면 래핑 0(기존 거동 보존).
+  `contract_to_graph._seed_prompt` 에 Planner 선택 키 안내 1항 추가(`_done_ac` 무변). §5.8 (g)
+  신설(§ 번호 불이동·기존 (a)~(f) 무변). 신규 테스트: `test_orchestrator.py` 11케이스(래퍼 재기입·원본 무변조
+  ·비매칭 원 객체 통과·step_contract 부재 통과·속성 투과·맵 유효값 필터·공집합 래핑 0·비공집합
+  최외곽 래핑·포집 래퍼 내측 순서·3경로 균일+미지정 전역 fallback·timeout 부재 그래프 거동
+  보존·승격 단위 적용 — 계수 근거: 트리 175→186) · `test_resolve_gate.py` 6케이스(부재/양의 정수 통과·불량
+  5종 거부·11키 불변·resolver 경로 차단·**impl-plan→검증→승격→fold→엔진 run→`request.timeout`
+  실물 왕복** 1건). `revision.py`(fold 는 `dict(task)` 얕은 복제라 무변경 통과)·05 spec 계약 본문
+  ·게이트 어휘·PO-INV·Frozen·`uahf/**`·scaffold-template 무접촉(재정의 0).
 
 - **2026-07-26 (해소 대상 특정 지목 `--gate-id` — 백로그 §J 잔여 해소).** `resolve_gate.py` 의
   `recover_gate(run_dir, wanted_kind, gate_id=None)` 가 다중 pending 동일 gateKind 에서 첫

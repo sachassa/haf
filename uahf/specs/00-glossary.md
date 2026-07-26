@@ -1,7 +1,7 @@
 # specs/00-glossary — Glossary Specification
 
 Version: 0.2
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · v0.2 개정 — 사용자 승인, 2026-07-06)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · v0.2 개정 — 사용자 승인, 2026-07-06 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -494,23 +494,17 @@ specs/07-workflow.md가 "회수 정책"을 참조한다.
 
 Advisor 결정 기록. OQ1~OQ6 전 항목이 해소되었다 (OQ5·OQ6은 Wave 3~4에서 이행 완료).
 
-- **OQ1 (결정 완료) — Core Layer와 Runtime Layer의 책임 분담.**
-  결정(Advisor): 제안대로 확정한다. Runtime Layer = 실행·수명주기·config를 관장하는 실행 환경. Core Layer = AI 비의존 계약과 모듈 시스템의 근간. 정밀 경계는 specs/01-runtime.md §2·§3에서 상세화하되 이 정의와 모순될 수 없다.
+- **OQ1: Core Layer와 Runtime Layer의 책임 분담** — 해소(결정(Advisor): Runtime Layer = 실행·수명주기·config를 관장하는 실행 환경 / Core Layer = AI 비의존 계약과 모듈 시스템의 근간. 정밀 경계는 specs/01-runtime.md §2·§3이 상세화하되 이 정의와 모순될 수 없다 · 상세 = git 앵커 90ca19c).
 
-- **OQ2 (결정 완료) — Loop Engine의 계층 귀속.**
-  결정(Advisor): Loop는 Runtime Layer에서 구동된다. Lifecycle의 실행·반복은 실행 환경의 책임이기 때문이다. 상세는 specs/03-loop.md가 정의한다.
+- **OQ2: Loop Engine의 계층 귀속** — 해소(결정(Advisor): Loop는 Runtime Layer에서 구동된다 — Lifecycle의 실행·반복은 실행 환경의 책임. 상세는 specs/03-loop.md가 정의한다).
 
-- **OQ3 (결정 완료) — Layer 책임 정의의 근거.**
-  결정(Advisor): ROADMAP v0.1의 승인된 산출물 정의("용어집, Layer 및 Cross-cutting Service 책임 정의")에 따라 본 Glossary가 Layer 책임 정의의 정본이다. ARCHITECTURE.md에의 반영은 별도 제안으로 사용자 승인 대기 중이며, 반영 전까지 두 문서는 모순 없이 공존한다 (ARCHITECTURE = 스택 순서, Glossary = 책임 정의).
+- **OQ3: Layer 책임 정의의 근거** — 해소(결정(Advisor): ROADMAP v0.1의 승인된 산출물 정의에 따라 본 Glossary가 Layer 책임 정의의 정본이다. ARCHITECTURE.md 반영은 별도 제안으로 사용자 승인 대기 중이며, 반영 전까지 두 문서는 모순 없이 공존한다(ARCHITECTURE = 스택 순서, Glossary = 책임 정의)).
 
-- **OQ4 (결정 완료) — Planner 역할 경계.**
-  결정(Advisor): Planner는 Advisor로부터 위임받아 구현 계획과 작업 분해의 초안을 작성하는 보조 역할이다. 계획의 채택·승인과 Architecture 결정은 Advisor 소관이다. AGENT.md Delegation에 Planner 항목을 추가하는 것은 상위 규약 변경이므로 사용자 승인 대상 제안으로 이관한다.
+- **OQ4: Planner 역할 경계** — 해소(결정(Advisor): Planner는 Advisor로부터 위임받아 구현 계획·작업 분해의 초안을 작성하는 보조 역할이며, 계획의 채택·승인과 Architecture 결정은 Advisor 소관이다. AGENT.md Delegation에 Planner 항목 추가는 상위 규약 변경이므로 사용자 승인 대상 제안으로 이관되었고 — AGENT.md §Delegation·§Roles에 Planner 반영 확인(2026-07-26 실측 · `uaf-verified: .claude/AGENT.md §Delegation·§Roles & Boundaries 직접 대조`)).
 
-- **OQ5 (해소 완료) — specs/12-scaffold.md, specs/13-harness.md 미작성.**
-  두 파일은 ROADMAP v0.1 Wave 3에서 작성된다. 작성 후 §2의 dependents 목록 상태를 갱신한다. specs/12, 13이 작성·검증 완료(Review)되어 §2 dependents가 실재와 일치한다.
+- **OQ5: specs/12-scaffold.md·specs/13-harness.md 미작성** — 해소(두 파일이 작성·검증 완료되어 §2 dependents가 실재와 일치한다. 두 spec은 현재 Frozen 확정 상태다).
 
-- **OQ6 (결정 완료) — 전체 Component→Layer 매핑 정본화.**
-  결정(Advisor): 정본 매핑표는 필요하며 Glossary가 소유한다. 단, 매핑 내용은 지금 확정하지 않는다. 각 spec이 TEMPLATE §2 Position에서 자신의 귀속을 선언하면, Wave 3 최종 검증 시 Advisor가 모순을 검증한 후 Glossary에 매핑표로 통합한다. 이행 완료(Advisor): 각 spec §2 선언을 대조 검증한 매핑표가 §3.2-D에 추가되었다.
+- **OQ6: 전체 Component→Layer 매핑 정본화** — 해소(결정(Advisor): 정본 매핑표는 Glossary가 소유한다. 각 spec §2 Position 선언을 대조 검증한 매핑표가 §3.2-D에 추가되어 이행 완료).
 
 ---
 
@@ -519,5 +513,6 @@ Advisor 결정 기록. OQ1~OQ6 전 항목이 해소되었다 (OQ5·OQ6은 Wave 3
 - 0.1: v0.1 기준선 확정 — 사용자 승인(2026-07-05). ARCHITECTURE.md 0.2 근거, TEMPLATE 공통 표준에 따라 specs/00~13과 함께 Frozen. 이후 변경은 spec 버전 상승과 Revision History 기록이 필수(§3.2-G Spec Status: Frozen).
 - 0.2 Draft (2026-07-06): §3.2-G(계약 용어)에 표제어 3건 추가(Wave·Baseline·형태 A/형태 B). 이 개정은 spec versioning 정책(docs/spec-versioning-policy.md)의 첫 실적용이다(사용자 결정 DP-U2 — v0.9 계획 사용자 승인 2026-07-06; Frozen spec 개정 착수 근거). 개정 유형 = (A) 계약 변경(표제어 추가) → 버전 상승 0.1→0.2(정책 §3.1·§3.2). 하위호환 판정 = 호환(정책 §4-a: 추가는 하위호환 — 삭제·의미 변경·필수화 0). dependents 영향 대조(정책 §4-c) = Glossary의 dependents 정본은 §2 목록(specs/01~13 전 spec)이며, 표제어 추가는 이들 전 spec 및 인스턴스·운용 문서가 소비하는 기존 용어 참조를 무효화·재해석하지 않는다 — 기존 dependents 참조 변경 0(§4-b 비호환 사유 없음). 최종 확정(0.2 Frozen 승격)은 v0.9 Baseline 사용자 승인 시 Advisor가 수행 — 본 개정은 Draft(사용자 승인 대기).
 - 0.2 Frozen (2026-07-06): v0.9 Baseline 사용자 승인과 함께 v0.2 개정(표제어 3건) Frozen 확정 (Advisor 승인 반영 — 정책 §3.3 상태 승격 절차의 첫 완주). 이후 변경은 버전 상승과 Revision History 기록이 필수다.
+- 0.2 (정합) (2026-07-26): md 슬림화 — 유형(B) 격리 개정: §9 해소 OQ·stale 상태 주석 정리, 계약 무변경. 종전 = git 앵커 90ca19c. (같은 회차 자기 행 교정 — 정책 §3.4 예외: OQ4 압축문이 AGENT.md의 Planner 반영 상태를 실측과 반대로 서술했던 것을 "AGENT.md §Delegation·§Roles에 Planner 반영 확인"으로 정정했고, 본 행의 표 문법을 주변 산문형 관행에 맞춰 정합했다. `uaf-verified: .claude/AGENT.md §Delegation·§Roles & Boundaries 직접 대조`.) 주체 = Worker (Advisor 위임).
 
 (이력 章은 문서 말미에 둔다 — §9 뒤 신설. 신설은 편의 배치이며 기존 §1~§9 번호·문면은 불변이다. 이후 개정은 이 목록에 append-only로 기록한다.)

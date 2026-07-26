@@ -1,7 +1,7 @@
 # specs/07-workflow — Workflow Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -42,11 +42,13 @@ Workflow는 분해·디스패치·병합의 계약만 정의하고, 개별 Agent
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 5 스택, 5.1 Memory Service, 3.4 Verify Everything.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본.
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본.
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
 - .claude/AGENT.md (실재) — Agent 공통 규약. 위임·검증·Memory 원칙.
-- specs/02-agent.md (실재, Review) — 역할 경계(§3.2-A)와 위임 메시지(§3.2-B)·완료 보고(§3.2-C)·실패 보고(§3.2-D)의 소유 spec. Workflow는 이 계약을 인용한다.
+- specs/02-agent.md (실재, Frozen) — 역할 경계(§3.2-A)와 위임 메시지(§3.2-B)·완료 보고(§3.2-C)·실패 보고(§3.2-D)의 소유 spec. Workflow는 이 계약을 인용한다.
 - ROADMAP.md v0.7 (실재) — Workflow & Parallel Orchestration 완료 조건과 산출물.
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·02·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted" 표기는 작성 시점 기록이었다.)
 
 ## 이 spec에 의존하는 spec (dependents)
 
@@ -311,19 +313,13 @@ ROADMAP v0.7 완료 조건과 정렬한다.
 
 Advisor 에스컬레이션 대상.
 
-**Glossary 추가 요청** (본 spec이 정의·형식화하지만 Glossary §3.2에 정본 항목이 없는 용어. Glossary §9-OQ6 흐름에 따라 정본화 요청. Glossary §3.2-D "Workflow (Component)" 정의의 분해·병렬 디스패치·병합·검증 책임을 데이터 포맷으로 구체화한 것이다):
+**Glossary 추가 요청** — 용어 5종(Work Graph 작업 그래프 · Task 하위 작업 · 병렬 집합 Parallel Set · 소유 경계 Ownership Boundary · 인터페이스 계약 Interface Contract)은 00-glossary §3.2-J-07 정본 등재 완료(요청 5건 전부 Advisor 승인). 상세 필드의 정본은 이 spec §3.2-A/B가 유지한다.
 
-- Glossary 추가 요청: **Work Graph (작업 그래프)** — 큰 작업의 분해 결과를 담는 Workflow 정의 포맷. 작업 목록·의존 관계·병렬 집합·완료 조건을 가진다. 필드는 specs/07-workflow.md §3.2-A.
-- Glossary 추가 요청: **Task (하위 작업)** — 분해의 최소 단위. 완료 조건과 인터페이스 계약과 소유 경계를 반드시 가진다. 필드는 specs/07-workflow.md §3.2-B.
-- Glossary 추가 요청: **병렬 집합 (Parallel Set)** — 동시에 디스패치 가능한 Task 그룹. 서로 의존하지 않고 소유 경계가 겹치지 않는다.
-- Glossary 추가 요청: **소유 경계 (Ownership Boundary)** — 한 Task가 배타적으로 소유하는 파일·계약 집합. 병렬 작업 간섭 금지의 기준이다.
-- Glossary 추가 요청: **인터페이스 계약 (Interface Contract)** — 한 Task가 제공·소비하는 확정된 계약. 병렬 Task는 서로의 미완성 산출물이 아니라 이 계약만 참조한다. (ROADMAP 2.2·2.3·v0.7에서 참조되나 Glossary 정본 정의가 없음.)
+**타 spec 조율:**
 
-**타 spec 조율 (동시 작성 중 — 추측·인용하지 않음):**
-
-- **03-loop 조율 필요.** Workflow의 Decompose·Dispatch·Merge가 Agent Lifecycle 7단계 중 어느 시점에 위치하는지, 그리고 병렬 Task 각각의 Lifecycle을 Loop Engine이 어떻게 구동하는지는 specs/03-loop.md와 정합 확인이 필요하다. 이 spec은 오케스트레이션 계약만 정의하고 단계 전이는 침범하지 않았다 (INV-8). 03의 내용을 추측·인용하지 않았다.
-- **06-verifier 조율 필요.** INV-5의 "개별 검증을 통과했다"의 판정 기준(무엇이 통과인가)은 specs/06-verifier.md 소관이다. 이 spec은 "검증 통과 결과만 병합한다"는 의무만 정의했다. 검증 리포트 포맷과 병합 선행 조건의 정합은 06과 확인이 필요하다. 06의 내용을 추측·인용하지 않았다.
-- **04-memory 조율 필요.** §5의 분해 결정·작업 이력·충돌 해소 결과의 기록 포맷은 specs/04-memory.md 소관이다. 이 spec은 Memory Service Interface(단일 Port) 경유의 접근 경로만 정의했다. 04의 내용을 추측·인용하지 않았다.
+- **03-loop 조율** — 해소(Decompose·Dispatch·Merge는 다중 사이클 오케스트레이션으로 03의 단일 사이클 밖에 위치한다(03 §9 동일 기록). 이 spec은 오케스트레이션 계약만 정의하고 단계 전이는 침범하지 않았다(INV-8) · 상세 = 결정 기록 소절·git 앵커 90ca19c).
+- **06-verifier 조율** — 해소(INV-5의 "개별 검증을 통과했다"의 판정 기준은 06 §3.2-C 최종 판정을 사용한다. 이 spec은 "검증 통과 결과만 병합한다"는 의무만 정의 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
+- **04-memory 조율** — 해소(§5의 분해 결정·작업 이력·충돌 해소 결과 기록은 04 Port 계약을 준수한다. 이 spec은 Memory Service Interface(단일 Port) 경유의 접근 경로만 정의 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
 **경계 인용 확인 (02-agent — 인용 가능, 재정의 안 함):**
 
@@ -335,3 +331,5 @@ Advisor 에스컬레이션 대상.
 
 - Glossary 추가 요청 5건 승인 — Glossary §3.2-J 반영.
 - 03/06/04 조율: 각 spec 완성 후 대조 — Decompose·Dispatch·Merge는 다중 사이클 오케스트레이션으로 03의 단일 사이클 밖에 위치(03 §9 동일 기록), INV-5의 판정 기준은 06 §3.2-C 최종 판정 사용, §5 기록은 04 Port 계약 준수. 모순 없음.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 항목(03·06·04 조율)의 원문+답 이중 잔존 1줄화, Glossary 추가 요청 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen) 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체·§6·§7·§8 규범-예시(병렬 Wave 실증·3-Task 시연) 무촉, dependents(§2 = 선언된 dependent 0) 참조 영향 0(정책 §4-a·§4-c). §3·§8의 "동시 작성 중" 서술은 당시 Wave의 사실 기록이므로 보존한다(`uaf-allow-legacy: §8 예1은 v0.1 병렬 작성 Wave의 실증 이력 인용 — 시점 기록 보존`). 종전 문면 = git 앵커 90ca19c.

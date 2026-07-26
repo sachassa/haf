@@ -1,7 +1,7 @@
 # specs/11-adapters — Adapters Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -46,17 +46,19 @@ UAHF는 AI Agnostic Architecture다 (ARCHITECTURE.md 3.1). 그러나 "AI에 종�
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 3.1 AI Agnostic, 5.1 Memory Service(단일 Port·영속성 백엔드), 7 Non Goals, 8 Future Direction.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본. 특히 Adapter Layer, Adapter Binding, 이식 교체 지점(Portability Swap Point), Core Contract, Port.
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본. 특히 Adapter Layer, Adapter Binding, 이식 교체 지점(Portability Swap Point), Core Contract, Port.
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
 - .claude/AGENT.md (실재) — Agent 공통 규약.
-- specs/01-runtime.md (실재, Review) — §4.2 이식 교체 지점 7개의 출처.
-- specs/02-agent.md (실재, Review) — §4.2 SP-1~SP-5의 출처.
+- specs/01-runtime.md (실재, Frozen) — §4.2 이식 교체 지점 7개의 출처.
+- specs/02-agent.md (실재, Frozen) — §4.2 SP-1~SP-5의 출처.
 - ROADMAP.md v0.9·v1.0 (실재) — Adapter Layer 정식화, Adapter Interface 최종 규격, 2nd Adapter 최소 구현 판정 조건.
 
 ## 이 spec에 의존하는 spec (dependents)
 
-- 각 컴포넌트 spec(01, 02, 그리고 Wave 3의 03~10, 12, 13)의 §4는 자신의 바인딩을 소유하고, 이 spec이 그 지점들을 하나의 목록으로 통합한다. 의존 방향은 11 → (각 spec의 §4)이다.
-- 인용 가능 범위(00·01·02)에서 이 spec을 Core Contract 상 dependent로 요구하는 spec은 없다. specs/12-scaffold.md 등이 Adapter 설치를 참조하면 Wave 3에서 dependents로 등재한다 (§9-OQ-1).
+- 각 컴포넌트 spec(01, 02, 03~10, 12, 13)의 §4는 자신의 바인딩을 소유하고, 이 spec이 그 지점들을 하나의 목록으로 통합한다. 의존 방향은 11 → (각 spec의 §4)이다.
+- 이 spec을 Core Contract 상 dependent로 요구하는 spec은 없다 — 03~13은 §4.2에서 11을 "정식화 주체"로 가리키는 전방 참조만 두며 각 Core Contract(§3)가 11에 의존하지 않는다(§9-OQ-1 해소 시 재검토 완료).
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted"·"Wave 3에서 등재" 표기는 작성 시점 기록이었다.)
 
 ## 순환 의존
 
@@ -310,16 +312,9 @@ Conformance Report:
 
 Advisor 에스컬레이션 대상.
 
-- **OQ-1 (해소 완료 — Wave 4) — 03~10·12·13 §4 바인딩 지점 통합.**
-  해소 완료(Wave 4): 03~13 §4.2를 §3.2-A에 통합 반영했다. 기존 BP-1~BP-12에 대응하는 지점은 각 BP 행의 출처에 병기했고, 어느 기존 BP로도 환원되지 않는 새 바인딩 표면만 BP-13(계약 산출물·기록 직렬화 및 작업 추적), BP-14(사람 승인·개입 채널), BP-15(검사 도구), BP-16(이벤트 계측·방출 및 Hook Dispatch 실행), BP-17(적용 조건 매칭)으로 추가했다. **최소 부분집합 변경:** BP-13·BP-14·BP-15가 필수로 편입되어 최소 바인딩 부분집합이 10개(BP-1~5, BP-7~11)에서 13개(+BP-13·BP-14·BP-15)로 확대되었다 (근거: 03 INV-3 모든 전이 기록, 03 §3.1-D 사람 개입 종료, 06 검증 노드의 검사 도구, 13 §3.2-A 작업 추적 필수). BP-16·BP-17은 선택으로 남는다. dependents(§2) 재검토: 03~13은 §4.2에서 11을 "정식화 주체"로 가리키는 전방 참조만 두며 각 Core Contract(§3)가 11에 의존하지 않으므로 새 Core Contract dependent는 없다(§1 순환 의존 논거와 동일). 이 항목은 더 이상 Frozen을 막지 않는다.
+- **OQ-1: 03~10·12·13 §4 바인딩 지점 통합** — 해소(Wave 4 — 03~13 §4.2를 §3.2-A에 통합 반영. 기존 BP-1~BP-12 대응 지점은 각 BP 행 출처에 병기, 환원 불가한 새 표면만 BP-13(계약 산출물·기록 직렬화 및 작업 추적)·BP-14(사람 승인·개입 채널)·BP-15(검사 도구)·BP-16(이벤트 계측·방출 및 Hook Dispatch 실행)·BP-17(적용 조건 매칭)으로 추가. **최소 바인딩 부분집합 = 10개(BP-1~5, BP-7~11) → 13개(+BP-13·14·15) 확정**, BP-16·BP-17은 선택. dependents 재검토 결과 새 Core Contract dependent 0. 규범 정본 = §3.2-A/B · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-- **OQ-2 (Glossary 추가 요청) — 신설 개념의 정본화.**
-  이 spec이 형식화하지만 Glossary §3.2에 정본 항목이 없는 용어. Glossary §9-OQ6 흐름(각 spec 선언 → Advisor 통합)에 따라 추가를 요청한다. 확정 전까지 새 정의를 만들지 않고 아래 표현을 잠정 사용한다.
-  - Glossary 추가 요청: Adapter Interface — 하나의 Adapter가 반드시 제공해야 하는 바인딩 지점의 전체 집합. (ROADMAP v0.9·v1.0에서 사용되나 Glossary 정본 없음.)
-  - Glossary 추가 요청: 바인딩 지점 (Binding Point) — Adapter가 하나의 이식 교체 지점을 실제로 바인딩하는 단위. 정확히 하나의 Core Contract 요소를 실현한다.
-  - Glossary 추가 요청: Conformance (적합성 판정) — 어떤 구현이 유효한 Adapter인지의 판정 (필수 바인딩 완전성 + Core 불변 + 핵심 루프 통과).
-  - Glossary 추가 요청: 완전 Adapter (Full Adapter) / 최소 구현 Adapter (Minimal Adapter) — Conformance 등급 두 종. 최소 구현 Adapter의 정의는 §3.2-B가 정본이다.
-  - Glossary 추가 요청: 핵심 루프 (Core Loop) — 위임 → 구현 → 검증 → 승인 사이클. (ROADMAP v0.2·v1.0에서 사용되나 Glossary 정본 없음.)
+- **OQ-2: Glossary 추가 요청 — 신설 개념의 정본화** — 용어 5종(Adapter Interface · 바인딩 지점 Binding Point · Conformance 적합성 판정 · 완전 Adapter/최소 구현 Adapter · 핵심 루프 Core Loop)은 00-glossary §3.2-J-11 정본 등재 완료(Advisor 승인). 상세 정의의 정본은 이 spec §3.1·§3.2-A/B가 유지한다.
 
 - **OQ-3 (인용 정합성 주의 — 비차단) — "INV-4" 중복 참조.**
   "Core 디렉터리 AI 비의존" 불변을 참조할 때 이 spec은 01-runtime INV-4를 지칭하며, Glossary INV-4(모든 spec은 Glossary 용어만 사용)와 구분한다. 충돌이 아니라 동명(同名) 식별자다. 이 spec은 인용 시 소속 spec을 명시했다(예: "01-runtime INV-4"). Advisor가 다른 spec에서도 동일 표기를 유지하는지 확인할 것을 권한다.
@@ -335,3 +330,5 @@ Advisor 에스컬레이션 대상.
 - 재량 판정 1 승인: BP-13·BP-16의 복합 실현은 INV-4를 "지점당 단일 계약 표면 실현"으로 정밀화하여 해소했다. 하나의 표면은 동일 성격의 Core Contract 요소 집합을 묶을 수 있다.
 - 재량 판정 2 승인: 13 §4.2 SP-5(작업 추적·결정 기록)의 BP-13 병합 — 03 INV-3(모든 전이 기록)과 13 §3.2-A(작업 추적은 최소 구성 필수)가 동일한 기록·추적 표면을 요구하므로 타당하다.
 - 재량 판정 3 승인: Plugin 배포 채널(10 §4.2-4)의 BP-6 흡수 — 배포는 확장 표면의 한 국면이다. v0.8 구현에서 분리 필요성이 확인되면 재검토한다.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 OQ(OQ-1·OQ-2)의 원문+답 이중 잔존 1줄화(최소 바인딩 부분집합 13개 규범 문면은 보존), §2 stale 상태 표기(Review/Adopted → Frozen)·dependents 등재 예고 서술 현행 정정. 미해소·비차단 OQ-3·OQ-4는 원문 보존. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체(BP 표·Conformance 기준)·§4.1/§4.2·§6·§7 무촉, dependents(§2 = Core Contract dependent 0) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

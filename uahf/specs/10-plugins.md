@@ -1,7 +1,7 @@
 # specs/10-plugins — Plugins Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -43,12 +43,14 @@ Plugins는 설치·활성화·제거 계약을 정의하며, 활성화는 Runtim
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 8 Future Direction("Adapter 또는 Plugin만 추가"), 3.2 Modular, 5.1 Memory 단일 Port.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본. 특히 §3.2-D Plugins, §3.2-I Runtime 계약 용어.
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
-- specs/01-runtime.md (실재, Review) — Module 시스템·Manifest·Register/Resolve/Replace·Config·INV-4. Plugins가 소비하는 계약의 정본.
-- specs/02-agent.md (실재, Review) — 역할 경계(§3.2-A)와 Memory 단일 Port(INV-8). Plugins가 침범하지 못하는 경계.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본. 특히 §3.2-D Plugins, §3.2-I Runtime 계약 용어.
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
+- specs/01-runtime.md (실재, Frozen) — Module 시스템·Manifest·Register/Resolve/Replace·Config·INV-4. Plugins가 소비하는 계약의 정본.
+- specs/02-agent.md (실재, Frozen) — 역할 경계(§3.2-A)와 Memory 단일 Port(INV-8). Plugins가 침범하지 못하는 경계.
 - .claude/AGENT.md (실재) — Agent 공통 규약.
 - ROADMAP.md v0.8 (실재) — Extension System 완료 조건과 산출물.
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted" 표기는 작성 시점 기록이었다.)
 
 ## 이 spec에 의존하는 spec (dependents)
 
@@ -267,21 +269,16 @@ ROADMAP v0.8 완료 조건("본체 코드/규격 수정 없이 확장", "추가�
 
 Advisor 에스컬레이션 대상.
 
-**Glossary 추가 요청** (본 spec이 정의·참조하지만 Glossary §3.2에 정본 항목이 없는 용어. Glossary §9-OQ6 흐름에 따라 정본화 요청):
-
-- Glossary 추가 요청: Plugin (개별 배포 단위) — 하나 이상의 Module(및 확장 요소)을 묶어 배포하는 개별 자기완결 단위. Glossary §3.2-D는 Component "Plugins"만 정의하고, 개별 인스턴스를 가리키는 단수형 "Plugin"의 정본 항목이 없다. (01이 "Module"을 정본화한 흐름과 동일.)
-- Glossary 추가 요청: Plugin Manifest — Plugin의 배포 서술자. 필드는 specs/10-plugins §3.2-A. (01 "Module Manifest" 정본화와 대칭.)
-
-결정 대기: 위 2건. 확정 전까지 이 spec은 §3.2-A에서 필드를 정의하되 Glossary 정본을 신설하지 않았다.
+**Glossary 추가 요청** — 용어 2종(Plugin 개별 배포 단위 · Plugin Manifest)은 00-glossary §3.2-J-10 정본 등재 완료(요청 2건 전부 Advisor 승인). 상세 필드의 정본은 이 spec §3·§3.2-A가 유지한다.
 
 **타 spec 조율:**
 
-- 01-runtime 조율 필요 — Plugin 제거가 요구하는 개별 Module 등록 해제(Deregister) 연산. 01 §3.1-A는 Register/Resolve/Replace와 Shutdown(전체 역순 Deactivate)만 정의하고, Plugin 단위로 특정 Module만 등록 해제하는 연산을 노출하지 않는다. Plugins의 Deactivate/Remove(잔여물 0, INV-3)를 실현하려면 이 연산이 필요하다. 이 연산을 01이 소유(Runtime 연산 추가)할지, Plugins가 Register/Replace 조합으로 우회 정의할지는 01과 조율이 필요하다. 01의 내용을 추측·확장하지 않았다.
-- 08-hooks / 09-skills 조율 필요 — Plugin이 Hook·Skill을 "포함 요소"로 배포하는 시나리오의 상세 정합. 08·09는 상호 독립 확장 서브시스템으로 동시 작성 중이다. 이 spec은 `provides`의 확장 요소를 "포함 요소" 수준으로만 추상 정의했고, 확장 요소의 등록 표면·이벤트·능력 계약은 08·09 소관으로 남겼다. 세 규격의 등록·제거 계약이 정합함을 Wave 최종 검증 시 확인해야 한다. 08·09의 내용을 추측·인용하지 않았다.
+- 01-runtime 조율 — Plugin 제거가 요구하는 개별 Module 등록 해제(Deregister) 연산 — 해소(01 §3.1-A에 Deregister 연산 추가 승인·반영 — Registry 수명주기는 Runtime 소유이므로 01이 소유하고 Plugins는 우회 정의하지 않는다. Plugins의 Deactivate/Remove(잔여물 0, INV-3)는 이 연산 위에서 성립한다. 01 §9 결정 기록 동일 기재 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
+- 08-hooks / 09-skills 조율 — 해소(번들된 Hook/Skill의 등록은 각각 08 §3.1-C·09 §3.1-A 계약을 따르며 10은 배포·제거만 소유 — 모순 없음 확인. 이 spec은 `provides`의 확장 요소를 "포함 요소" 수준으로만 추상 정의했고, 등록 표면·이벤트·능력 계약은 08·09 소관이다 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
 **설계 확인 요청:**
 
-- OQ-P1 (설계 확인) — Config scope에 Plugin scope 부재. 이 spec은 Plugin이 새 Config scope를 도입하지 않고 Global/Project/Module(01 §3.2-B)을 유지하도록 확정했다 (INV-7). 포함 Module의 configSchema는 각 Module Manifest가 그대로 소유한다. 이 결정이 01의 Config 계약과 모순되지 않음을 Advisor가 확인 요청한다.
+- OQ-P1: Config scope에 Plugin scope 부재 — 해소(승인 — Plugin scope 미도입 확정. Config는 Global/Project/Module(01 §3.2-B) 유지(INV-7)이며 포함 Module의 configSchema는 각 Module Manifest가 소유한다. 01 Config 계약과 모순 없음 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
 **ARCHITECTURE 충돌:** 발견되지 않음. §3은 ARCHITECTURE 8(Adapter/Plugin 확장)·3.2(Modular)·5.1(Memory 단일 Port), 01 INV-4, 02 §3.2-A/INV-8과 정렬한다.
 
@@ -291,3 +288,5 @@ Advisor 에스컬레이션 대상.
 - OQ-P1 승인 — Plugin scope 미도입(Config는 Global/Project/Module 유지) 확정. 01 Config 계약과 모순 없음.
 - 08/09 조율: 번들된 Hook/Skill의 등록은 각각 08 §3.1-C·09 §3.1-A 계약을 따르며 10은 배포·제거만 소유 — 모순 없음 확인.
 - Glossary 추가 요청 2건 승인 — Glossary §3.2-J 반영.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 항목(01 Deregister 조율 · 08/09 조율 · OQ-P1)의 원문+답 이중 잔존 1줄화, Glossary 추가 요청 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen)·"동시 작성 중" 서술 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체·§6·§7·§8 무촉, dependents(§2 = 식별된 dependent 0 · 조율 08·09) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

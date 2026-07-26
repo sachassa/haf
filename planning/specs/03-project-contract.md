@@ -1,7 +1,7 @@
 # planning/specs/03-project-contract — Project Contract Specification
 
 작성일: 2026-07-07
-상태: v1.2 Baseline (CP2 교차 정합 Pass 8/8 · CP3 승인 · 사용자 Baseline 승인 2026-07-13)
+상태: v1.2 Baseline (CP2 교차 정합 Pass 8/8 · CP3 승인 · 사용자 Baseline 승인 2026-07-13) · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c)
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -24,6 +24,7 @@
 | 2026-07-13 | v1.2 Draft | v1.1 Baseline 개정 — 근거 마일스톤 v1.3 W2a(Solution Design 단계 신설·정본 `planning/specs/04-solution-design.md`). **델타 4건:** (1) §3.1-B **생산자 확장** — 두 생산 경로 명문화: (i) 최초 인스턴스 = Discovery Compiler 산출(기존 문면 유지)·(ii) superseding 성숙 인스턴스 = Solution Design의 성숙 재발행(§3.4 동일 supersedes 메커니즘·사용자 승인 게이트); 두 경로 모두 PC-INV 7(완결 산출만) 충족. (2) §3.4 인스턴스 갱신 유형에 **Contract Maturation(성숙)** 추가 — 동일 append-only·supersedes 메커니즘(새 메커니즘 창설 아님·PC-INV 9 무촉). (3) 본 v1.2 행 append + **카운트 drift 정정 주석**(표 하단). (4) 문서 머리 상태 라인 v1.1 Baseline → v1.2 Draft 갱신. **스키마 무변경(D4)** — 필드 신설·삭제·필수화 0·`schemaVersion` 1.0 유지·PC-INV 1~12 목록·문면 무변경. §9 기존 행(v1.1 Draft·v1.1 Baseline) byte 불변(append-only·L-10). 특정 AI 실명·모델명·제품 기능명·방법론 고유명 유입 0(자가 전수 스캔). | Worker (Advisor 위임, v1.3 W2a) |
 | 2026-07-13 | v1.2 Baseline | **Baseline 승격** — v1.3 마일스톤 W2 CP2 교차 정합(Pass 8/8 — §9 옛 행 byte 불변·스키마 무변경·PC-INV 12 무변 실측 포함)·CP3 승인 후 **사용자 Baseline 승인(2026-07-13)**. | Advisor (사용자 승인) |
 | 2026-07-17 | v1.2 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. §0 경계 표제 "무수정"→"§ 포인터 참조(재정의·확장 0)"·§3.5-C ① 라벨 "(UAHF 정본 무수정)"→"(접점 원칙)". 의미 2(§3.5 UAHF Interface·§3.5-B "UAHF 정본 무수정으로 성립"·PC-INV 8 "UAHF 무수정" 명칭·내용·tolerant reader·역참조 금지) 존치. PC-INV 1~12 카운트·문면·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
+| 2026-07-26 | v1.2 (정합) | md 슬림화 격리 개정(`docs/spec-versioning-policy.md` §3.2 유형 (B) 비계약). §0·§1 자기 재서술 압축(경계 항목·Non-Goals 항목 보존·병합만) · §7 완료 기준을 §3 재서술 → 판정 항목 목록(근거 절 + 원 done) 포인터로 전환 · stale 상태 주석 정정(L-06) — §8 말미 주의 시나리오 워크스루 "(예정)"이 실측상 산출 후 아카이브였으므로 앵커 표기(`uahf/docs/v1.1-scenario-walkthrough.md@cd9247b`)로 전환(2026-07-17 앵커 전환 선례 동형). §2 dependents의 "(구현 버전, 예정)"은 미실현 확장 포인트(§3.5-C)이므로 존치. **계약 요소 무촉** — §3.1·§3.2-A~D(필드 그룹 9종·필수 코어 필드·Dimension 매핑·Provenance)·§3.3·§3.4·§3.5·§3.6 PC-INV 1~12·§4·§5(TEMPLATE 관례 "해당 없음" 존치)·§6·§8 문면 무변경, §9 기존 행·카운트 drift 주석 무촉, § heading 삭제·개칭·재번호 0(`uaf-verified:` 개정 전후 해당 절 diff 대조). | Worker (Advisor 위임) |
 
 > **카운트 drift 정정 (v1.2 W2a).** 위 **v1.1 Draft 행**의 "불변 PC-INV 11건" 표기는 §3.6 본문 열거 실측 **12건**(PC-INV 1~12)과 불일치한다(저술 시점 결함). **§3.6 본문이 정본**이며, 옛 v1.1 Draft 행은 append-only 원칙(L-10)에 따라 **무수정 보존**한다 — 정정은 본 주석으로만 기록한다.
 
@@ -33,30 +34,19 @@
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본 배치.** 이 문서는 **UAF specs 경계**의 **Project Contract 정본**이다. UAF 파이프라인 6요소 중 **Project Contract** 요소(ARCHITECTURE.md §2.2)의 상세 계약 — **논리 스키마·버저닝·UAHF Interface** — 를 소유하며 **최종 고정**한다. Project Contract는 UAF와 UAHF의 **유일한 접점**이다(ARCHITECTURE.md §8 UAF-INV ①).
-
-- **논리 스키마만.** 본 문서는 Contract의 **논리 스키마**(필드 그룹·필드·의미·불변)만 정의한다. **직렬화 형식·물리 포맷·저장 위치**는 정의하지 않으며 전부 Adapter 소관이다(§4). 이 경계가 AI-Agnostic 원칙의 스키마 측 실현이다(ARCHITECTURE.md §6 원칙 1).
+- **정본 배치 · 논리 스키마만.** 이 문서는 **UAF specs 경계**의 **Project Contract 정본**이며, UAF 파이프라인 6요소 중 **Project Contract** 요소(ARCHITECTURE.md §2.2)의 상세 계약 — **논리 스키마·버저닝·UAHF Interface** — 를 소유·최종 고정한다. Project Contract는 UAF와 UAHF의 **유일한 접점**이다(ARCHITECTURE.md §8 UAF-INV ①). 정의 범위는 **논리 스키마**(필드 그룹·필드·의미·불변)뿐이며 **직렬화 형식·물리 포맷·저장 위치**는 Adapter 소관이다(§4) — 이 경계가 AI-Agnostic 원칙의 스키마 측 실현이다(ARCHITECTURE.md §6 원칙 1).
 
 - **UAF·UAHF 상위 정본 § 포인터 참조 (재정의·확장 0).** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. 특히 §3.5 UAHF Interface는 UAHF spec의 어떤 연산·필드·불변도 추가·변경하지 않는다(UAF-INV ① 접점 원칙).
 
-- **선행 인터페이스만 소비.** 본 문서의 상위 근거는 ARCHITECTURE.md와 discovery/specs/02-discovery.md의 **확정 계약**이다. Discovery는 이 Contract를 산출하는 상류 Compiler이며(02-discovery §3.1), 본 문서는 그 산출의 완결 기준·필수 코어 필드·Dimension 매핑을 고정하여 02-discovery §3.7·§3.11의 위임을 해소한다.
+- **선행 인터페이스만 소비.** 상위 근거는 ARCHITECTURE.md와 discovery/specs/02-discovery.md의 **확정 계약**이다. Discovery는 이 Contract를 산출하는 상류 Compiler이며(02-discovery §3.1), 본 문서는 그 산출의 완결 기준·필수 코어 필드·Dimension 매핑을 고정하여 02-discovery §3.7·§3.11의 위임을 해소한다.
 
-- **AI 비의존.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명·방법론 고유명을 두지 않는다(uahf/specs/TEMPLATE.md §3, ARCHITECTURE.md §0 Core 문서 관행 동형). 구체 실현(직렬화 형식·저장 위치·환경 경로 관례)은 Adapter Binding 소관이며(§4), 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
-
-- **네임스페이스 분리.** 본 문서가 소유하는 스키마 용어(필드 그룹명·`schemaVersion`·`instanceVersion`·tolerant reader·opaque annex·supersedes 등)는 본 문서 정의로만 확정한다. UAHF Glossary(uahf/specs/00-glossary.md)의 동명 용어는 정본을 § 포인터로 참조하고 재정의하지 않는다(ARCHITECTURE.md §12 동형). 새 UAHF 용어는 신설하지 않는다.
+- **AI 비의존 · 네임스페이스 분리.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명·방법론 고유명을 두지 않고(uahf/specs/TEMPLATE.md §3, ARCHITECTURE.md §0 동형), 구체 실현(직렬화 형식·저장 위치·환경 경로 관례)은 Adapter Binding 소관 포인터로만 가리킨다(§4). 본 문서가 소유하는 스키마 용어(필드 그룹명·`schemaVersion`·`instanceVersion`·tolerant reader·opaque annex·supersedes 등)는 본 문서 정의로만 확정하며, UAHF Glossary 동명 용어는 § 포인터로 참조하고 재정의하지 않는다(ARCHITECTURE.md §12 동형). 새 UAHF 용어는 신설하지 않는다.
 
 ---
 
 ## §1. 목적 (Purpose)
 
-이 문서는 **Project Contract가 UAF와 UAHF를 잇는 공식 Stable Contract(Public API)로서 무엇을 담고 어떻게 장기 호환을 유지하는가**를 확정한다.
-
-책임은 네 가지다.
-
-- Contract의 **지위**(Stable Contract·Public API)와 **논리 스키마 전용** 경계를 명문화한다(§3.1, P3·D5).
-- Contract의 **논리 스키마**(필드 그룹 9종·필수 코어 필드·Dimension→필드 매핑)를 확정한다(§3.2).
-- **버저닝 전략**(schemaVersion/instanceVersion 분리·SemVer·tolerant reader·필드 제거 금지)과 **인스턴스 거버넌스**를 확정한다(§3.3, §3.4, D6-C2).
-- **UAHF Interface**(선택 입력·소비 지점·UAHF 무수정 근거·확장 포인트)와 불변(PC-INV)을 확정한다(§3.5, §3.6, D2④).
+이 문서는 **Project Contract가 UAF와 UAHF를 잇는 공식 Stable Contract(Public API)로서 무엇을 담고 어떻게 장기 호환을 유지하는가**를 확정한다. 책임은 네 가지다 — (i) **지위**(Stable Contract·Public API)와 **논리 스키마 전용** 경계 명문화(§3.1, P3·D5), (ii) **논리 스키마**(필드 그룹 9종·필수 코어 필드·Dimension→필드 매핑) 확정(§3.2), (iii) **버저닝 전략**(schemaVersion/instanceVersion 분리·SemVer·tolerant reader·필드 제거 금지)과 **인스턴스 거버넌스** 확정(§3.3·§3.4, D6-C2), (iv) **UAHF Interface**(선택 입력·소비 지점·UAHF 무수정 근거·확장 포인트)와 불변(PC-INV) 확정(§3.5·§3.6, D2④).
 
 ### 본 문서가 실현하는 정본 결정
 
@@ -315,17 +305,19 @@ Project Contract는 어떤 구현·버전에서도 다음을 유지한다. PC-IN
 
 ### 완료 기준 (시연 가능 문장)
 
-- **지위 시연.** §3.1-A가 Contract를 UAF↔UAHF 공식 Stable Contract(Public API)·논리 스키마 전용으로 명문화하고, 직렬화·물리 포맷·저장 위치를 §4 Adapter 소관으로 격리함을 보인다(done 1).
-- **9 필드 그룹 시연.** §3.2-A 표가 Meta·Intent·Requirements·Constraints·Risks·Architecture Direction·Assumption Ledger·Readiness·Provenance(불투명 부속) 9종을 열거함을 센다(done 2).
-- **필수 코어 필드 시연.** §3.2-B가 필수 코어 필드를 열거하고, 이것이 discovery/specs/02-discovery.md §3.7 Contract Completeness의 판정 대상임을 § 포인터로 정합시키며 §3.7·§0의 추상 참조가 해소됨을 보인다(done 3).
-- **Dimension 매핑 시연.** §3.2-C가 5차원 → 5필드 그룹 매핑을 컴파일 방향으로만 정의하고 역방향 의존이 0임을 보인다(done 4).
-- **버저닝 시연.** §3.3이 `schemaVersion`/`instanceVersion` 분리·SemVer(MINOR 후방 호환 추가만·MAJOR 원칙 금지+마이그레이션 필수)·tolerant reader must-ignore·필드 제거 금지·스키마 개정 거버넌스(spec 버전 상승 + Revision History)를 명문화함을 보인다(done 5).
-- **인스턴스 거버넌스 시연.** §3.4가 append-only 이력·새 `instanceVersion` + `supersedes` 계보·Discovery 내부 변경의 도달 한계를 명문화함을 보인다(done 6).
-- **역참조 0 시연.** 코어 필드 정의(§3.2-A 그룹 1~8)에 Discovery 내부 개념(질문 선택·전략·예산·Strategy·Capability)이 0건임을 다중 패턴 전수 스캔으로 보인다(Provenance 부속 제외). Readiness 산출 기록은 §3.2-A 경계 문면으로 구분됨을 보인다(done 7).
-- **UAHF Interface 시연.** §3.5가 선택 입력(하위 호환)·두 소비 지점(Consult 정독·Scaffold 배치)·UAHF 무수정 근거·정식 등재 확장 포인트를 명문화함을 보인다(done 8).
-- **상시 불변 시연.** §3.6 PC-INV 10·11이 상시 불변 2건(Discovery 교체 가능성 보존·장기 호환 훼손 0)을 반영하고 위반 서술이 0건임을 보인다(done 9).
-- **정본 문면 시연.** §1이 P3·D6-C2를 정본 문면으로 싣고 있음을 보인다(done 10).
-- **관행 규격 시연.** 상태 라인 "v1.1 Draft"·§9 이력(머리 배치·append-only)·§ 포인터(정본 재정의 0)·특정 AI 실명·모델명·제품 기능명·방법론 고유명 0건을 전수 스캔으로 보인다(done 11).
+판정은 아래 항목을 지목 절 문면과 직접 대조해 내린다(여기서 §3을 재서술하지 않는다). 괄호는 원 done 번호다.
+
+1. 지위(Stable Contract·Public API·논리 스키마 전용 · 직렬화·물리 포맷·저장 위치는 §4 격리) — §3.1-A (done 1)
+2. 필드 그룹 9종 열거 — §3.2-A (done 2)
+3. 필수 코어 필드 열거 ↔ 02-discovery §3.7 축 1 Completeness 판정 대상 정합(§3.7·§0 추상 참조 해소) — §3.2-B (done 3)
+4. Dimension 매핑이 컴파일 방향뿐이고 역방향 의존 0 — §3.2-C (done 4)
+5. 버저닝(버전 2종 분리·SemVer·tolerant reader must-ignore·필드 제거 금지·스키마 개정 거버넌스) — §3.3 (done 5)
+6. 인스턴스 거버넌스(append-only 이력·`supersedes` 계보·Discovery 내부 변경의 도달 한계) — §3.4 (done 6)
+7. 역참조 0 — 코어 필드 정의(§3.2-A 그룹 1~8)에 Discovery 내부 개념 0건(Provenance 부속 제외·다중 패턴 스캔) · Readiness 산출 기록은 경계 문면으로 구분 — §3.2-A·PC-INV 2 (done 7)
+8. UAHF Interface(선택 입력·두 소비 지점·UAHF 무수정 근거·정식 등재 확장 포인트) — §3.5 (done 8)
+9. 상시 불변 2건 반영·위반 서술 0건 — PC-INV 10·11 (done 9)
+10. P3·D6-C2 정본 문면 적재 — §1 (done 10)
+11. 관행 규격(상태 라인·§9 이력 머리 배치·append-only·§ 포인터 재정의 0 · 특정 AI 실명·모델명·제품 기능명·방법론 고유명 0건 스캔) (done 11)
 
 ### 검증 방법 (Verifier)
 
@@ -373,4 +365,4 @@ Project Contract는 어떤 구현·버전에서도 다음을 유지한다. PC-IN
 - 새 `instanceVersion: 2`가 생성되고 Meta의 `supersedes`가 인스턴스 1을 가리킨다(§3.4, PC-INV 9).
 - `schemaVersion`은 **불변**이다 — 발견 과정의 변화는 `instanceVersion`·Provenance에만 반영되고 코어 스키마에 도달하지 못한다(§3.2-D, PC-INV 2·10).
 
-주: 완전한 시나리오 워크스루(Greenfield /new · Brownfield /continue 최초 도입 · 가상 /import 확장)는 별도 검증 산출물(`docs/v1.1-scenario-walkthrough.md`, 예정) 소관이다. 본 예시는 스키마·버저닝 최소 예시다.
+주: 완전한 시나리오 워크스루(Greenfield /new · Brownfield /continue 최초 도입 · 가상 /import 확장)는 별도 검증 산출물(`uahf/docs/v1.1-scenario-walkthrough.md@cd9247b` — 산출 후 산출물 수명 정책에 따라 아카이브) 소관이다. 본 예시는 스키마·버저닝 최소 예시다.

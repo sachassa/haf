@@ -1,7 +1,7 @@
 # specs/03-loop — Loop Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -42,12 +42,14 @@ Loop는 단계 전이 규칙, 재작업 루프, 루프 상태 기록, Learn 트�
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 특히 3.4 Verify Everything, 3.5 Learn from Failure, 3.6 Token Efficiency, 5.1 Memory Service.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본. 특히 §3.2-F Agent Lifecycle.
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본. 특히 §3.2-F Agent Lifecycle.
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
 - AGENT.md (실재) — Agent Lifecycle 원문 순서, Core Principles(Human Approval 포함), Memory 원칙.
 - ROADMAP.md v0.6 (실재) — Loop Engine 완료 조건과 산출물.
-- specs/01-runtime.md (실재, Review) — Serve 구간 호스팅 계약. 인용 가능.
-- specs/02-agent.md (실재, Review) — 역할 경계, 위임/완료/실패 메시지, INV-4. 인용 가능.
+- specs/01-runtime.md (실재, Frozen) — Serve 구간 호스팅 계약. 인용 가능.
+- specs/02-agent.md (실재, Frozen) — 역할 경계, 위임/완료/실패 메시지, INV-4. 인용 가능.
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted" 표기는 작성 시점 기록이었다.)
 
 ## 이 spec에 의존하는 spec (dependents)
 
@@ -402,11 +404,9 @@ Advisor 에스컬레이션 및 조율 대상.
 
 ## 정합 확인 (기존 spec 요청에 대한 응답)
 
-- **01-runtime 정합 확인 (01 §9 "03-loop 조율 필요" 응답).**
-  Loop는 Runtime의 "Serve" 구간(01 §3.1-C)에서 호스팅 계약을 소비하며 Bootstrap/Shutdown을 재정의하지 않는다. Loop가 Runtime에 요구하는 노출 표면은 세 가지다 — (a) effective config 읽기(재시도 한도 등 Config 값, 01 §3.2-B), (b) Resolve를 통한 역할·Memory Service Interface 계약 해소(01 §3.1-A), (c) Serve 구간 자원. Loop는 이들을 소비만 하며 변경하지 않는다. 01의 호스팅 계약과 모순 없음을 확인했다.
+- **01-runtime 정합 확인 (01 §9 "03-loop 조율 필요" 응답)** — 해소(Loop가 Runtime에 요구하는 노출 표면 3종 = (a) effective config 읽기(01 §3.2-B), (b) Resolve를 통한 역할·Memory Service Interface 계약 해소(01 §3.1-A), (c) Serve 구간 자원. Loop는 소비만 하고 Bootstrap/Shutdown을 재정의하지 않는다 — 모순 없음 확인 · 상세 = git 앵커 90ca19c).
 
-- **02-agent 정합 확인 (02 §9-OQ-4 응답).**
-  02 §9-OQ-4가 Verify 시퀀싱을 03/06에 위임했다. 이 spec은 검증 게이트 순서(CP1 자체 점검 → CP2 Verifier 판정 → CP3 Advisor 승인)를 정의하고 판정 내용을 06에 위임했다. 02 INV-4(완료 보고는 Verify 통과 후)와 02 §3.1(Verifier 판정 = Verify, Advisor 최종 승인 = Complete)에 정렬한다 — "Verify 통과" = CP2 PASS, "Advisor 최종 승인" = Complete 게이트(CP3). 모순 없음을 확인했다.
+- **02-agent 정합 확인 (02 §9-OQ-4 응답)** — 해소(이 spec의 게이트 순서 CP1 자체 점검 → CP2 Verifier 판정 → CP3 Advisor 승인이 02 INV-4·§3.1과 정렬. "Verify 통과" = CP2 PASS, "Advisor 최종 승인" = Complete 게이트(CP3). 판정 내용은 06 위임 — 모순 없음 확인 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
 ## 타 spec 조율 (내용 추측·인용하지 않음)
 
@@ -417,21 +417,17 @@ Advisor 에스컬레이션 및 조율 대상.
 
 ## Glossary 추가 요청 (Glossary §9-OQ6 흐름 — 01-runtime §9 선례와 동일 패턴)
 
-본 spec이 정의·형식화하지만 Glossary §3.2에 정본 항목이 없는 용어. 상세 정의의 정본은 이 spec이 유지하고 Glossary는 참조한다.
-
-- Glossary 추가 요청: **재작업 루프 (Rework Loop)** — Verify 실패 시 결함 근본 원인에 따라 이전 단계(Execute/Plan/Consult)로 되돌아가 재시도하는 루프백. 재시도 한도를 가지며 초과 시 에스컬레이션한다. 근거: ROADMAP v0.6, 이 spec §3.1-B.
-- Glossary 추가 요청: **루프 상태 기록 (Loop State Record)** — 각 단계 전이를 append-only로 남기는 순서 있는 전이 이벤트 로그. 근거: ROADMAP v0.6 산출물 "루프 상태 기록 포맷", 이 spec §3.2-A.
-- Glossary 추가 요청: **단계 전이 (Stage Transition)** — Agent Lifecycle 한 단계에서 다음 단계로의 이동. 진입 조건과 완료 조건에 의해 규율된다. 근거: ROADMAP v0.6 산출물 "단계 전이 규칙 문서", 이 spec §3.1-A.
+용어 3종(재작업 루프 Rework Loop · 루프 상태 기록 Loop State Record · 단계 전이 Stage Transition)은 00-glossary §3.2-J-03 정본 등재 완료(요청 3건 전부 Advisor 승인). 상세 정의의 정본은 이 spec(§3.1-A/B·§3.2-A)이 유지하고 Glossary는 참조한다.
 
 참고: "검증 게이트", "재시도 한도", "사람 개입 지점"은 위 용어와 ROADMAP/AGENT.md 원문에서 파생된 서술적 표현으로 사용했으며, 별도 정본 용어로 신설하지 않았다.
 
 ## 상위 규약 원칙 참조 등록 요청
 
-- Glossary 추가 요청(참조 전용): **Human Approval** — AGENT.md Core Principles의 원칙. 사람 승인은 명시된 최소 조건에서만 요구된다. Glossary §3.2-H(설계 원칙 참조 전용)는 현재 ARCHITECTURE 6원칙만 열거하며 AGENT.md의 Human Approval을 포함하지 않는다. 이 spec §3.1-D가 이 원칙을 계약화했다. AGENT.md 원칙을 Glossary 참조 목록에 추가할지 Advisor 판단을 요청한다. 이 spec은 새 정의를 만들지 않고 AGENT.md 원칙을 참조했다.
+**Human Approval**(AGENT.md Core Principles — 이 spec §3.1-D가 계약화) 참조 등록은 00-glossary §3.2-H 등재 완료(Advisor 승인). 이 spec은 새 정의를 만들지 않고 AGENT.md 원칙을 참조했다.
 
 ## 잠재 불일치 보고 (비차단 — 자동 해석하지 않고 보고)
 
-- **AGENT.md Lifecycle 다이어그램의 선형성.** AGENT.md의 Agent Lifecycle 다이어그램은 선형 happy-path만 제시한다(Consult → … → Complete). 이 spec은 그 위에 재작업 루프(§3.1-B), 에스컬레이션 분기(§3.1-C), 종료 전 Learn 보장(INV-5)을 추가했다. 이는 단계 전이 규칙의 구체화이며 성공 경로의 선형 순서를 위반하지 않는다(성공 경로는 AGENT.md와 동일 순서 유지). 상위 규약 수정은 아니다. Advisor 확인을 요청한다.
+- **AGENT.md Lifecycle 다이어그램의 선형성** — 해소(이 spec이 더한 재작업 루프(§3.1-B)·에스컬레이션 분기(§3.1-C)·종료 전 Learn 보장(INV-5)은 단계 전이 규칙의 구체화이며 성공 경로의 선형 순서를 위반하지 않는다. 상위 규약 수정 불필요 — Advisor 확인 완료 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
 ## 결정 기록 (Advisor — Wave 4 통합)
 
@@ -439,3 +435,5 @@ Advisor 에스컬레이션 및 조율 대상.
 - Glossary 추가 요청 3건 승인 — Glossary §3.2-J 반영. Human Approval 참조 등록 승인 — Glossary §3.2-H 반영.
 - AGENT.md 선형성: 재작업 루프·에스컬레이션 분기·종료 전 Learn 보장은 Lifecycle의 구체화이며 성공 경로 순서를 위반하지 않는다. 상위 규약 수정 불필요 — 확인 완료.
 - 06/04/05/07 조율: 각 spec 완성 후 대조 결과 모순 없음 (06 §9-OQ-V1, 04 §9, 05 §9, 07 §9와 상호 확인).
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 항목(01·02 정합 확인 · AGENT.md 선형성)의 원문+답 이중 잔존 1줄화, Glossary 추가 요청·Human Approval 참조 등록 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen) 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3.1-A~D·§3.2·§8 상태기계 워크스루 무촉, dependents(§2 목록 = 07) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

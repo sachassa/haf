@@ -1,7 +1,7 @@
 # specs/08-hooks — Hooks Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -42,12 +42,14 @@ Hooks Component는 Framework 이벤트에 부수 동작을 바인딩하는 공�
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 5(스택), 5.1(Memory 단일 Port), 6(Component 목록).
-- specs/00-glossary.md (실재, Review) — 용어 정본. 특히 §3.2-D(Hooks), §3.2-F(Lifecycle 7단계), §3.2-I(Runtime 계약 용어).
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
+- specs/00-glossary.md (실재, Frozen) — 용어 정본. 특히 §3.2-D(Hooks), §3.2-F(Lifecycle 7단계), §3.2-I(Runtime 계약 용어).
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
 - .claude/AGENT.md (실재) — Agent 공통 규약. Hook은 역할 경계를 침범하지 않는다.
 - ROADMAP.md v0.8 (실재) — Extension System 완료 조건과 산출물.
-- specs/01-runtime.md (실재, Review) — Module 등록/교체 계약(§3.1-A), Runtime 연산(§3.1), 결정성(§3.3-INV-5). Hook 등록과 runtime 도메인 이벤트의 원천.
-- specs/02-agent.md (실재, Review) — 위임/완료/실패 보고(§3.2-B/C/D), 역할 경계(§3.2-A). agent 도메인 이벤트의 원천이자 경계.
+- specs/01-runtime.md (실재, Frozen) — Module 등록/교체 계약(§3.1-A), Runtime 연산(§3.1), 결정성(§3.3-INV-5). Hook 등록과 runtime 도메인 이벤트의 원천.
+- specs/02-agent.md (실재, Frozen) — 위임/완료/실패 보고(§3.2-B/C/D), 역할 경계(§3.2-A). agent 도메인 이벤트의 원천이자 경계.
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted" 표기는 작성 시점 기록이었다.)
 
 ## 이 spec에 의존하는 spec (dependents)
 
@@ -349,29 +351,21 @@ ROADMAP v0.8 완료 조건과 정렬한다.
 
 # §9. Open Questions
 
-**Glossary 추가 요청** (본 spec이 정의·형식화하지만 Glossary §3.2에 정본 항목이 없는 용어. Glossary §9-OQ6 흐름 및 01-runtime §9 선례에 따라 정본화 요청):
-
-- Glossary 추가 요청: **Event (이벤트)** — Hook이 소비하는, 확정된 계약에서 도출된 관찰 가능한 지점(전이·연산·메시지·Port 접근). 원천 semantics는 각 원천 spec이 소유한다. 정본 카탈로그는 specs/08-hooks.md §3.2-A.
-- Glossary 추가 요청: **Event Catalog (이벤트 카탈로그)** — Hook이 바인딩 가능한 Event의 명명된 목록. 확장 규칙 포함. 정본은 specs/08-hooks.md §3.2-A/B.
-- Glossary 추가 요청: **Phase (before/after)** — Hook이 이벤트 원천 연산의 직전/직후 중 어느 시점에 실행되는지를 지정하는 값.
-- Glossary 추가 요청: **Hook Binding** — Hook을 (event, phase)에 연결하는 서술자. 필드 정본은 specs/08-hooks.md §3.2-D.
-- Glossary 추가 요청: **Hook Dispatch** — Event 발생 시 바인딩된 Hook을 결정적 순서로 격리 호출하는 실행 계약. 정본은 specs/08-hooks.md §3.1-D.
-
-이 용어들은 본문에서 형식 용어로 사용된다. 확정 전까지 정의는 본 spec §3이 유지하며, Glossary 반영 후 참조로 전환한다 (01-runtime §9와 동일 절차). 이 항목은 v0.1 절차상 항목이며 내용상 Frozen을 막지 않는다.
+**Glossary 추가 요청** — 용어 5종(Event 이벤트 · Event Catalog 이벤트 카탈로그 · Phase(before/after) · Hook Binding · Hook Dispatch)은 00-glossary §3.2-J-08 정본 등재 완료(요청 5건 전부 Advisor 승인). 상세 정의·카탈로그의 정본은 이 spec(§3.1-D·§3.2-A/B/D)이 유지한다.
 
 **타 spec 조율:**
 
-- **03-loop 조율 필요** — lifecycle 도메인 이벤트(§3.2-A)의 정확한 방출 경계(단계 진입/종료 시점)는 specs/03-loop.md가 단계 전이를 확정한 뒤 정합 확인이 필요하다. Hooks는 전이 "이벤트"만 소비하고 단계 정의·전이 규칙은 침범하지 않았다 (Glossary §3.2-F 이름만 사용). 03의 내용을 추측·인용하지 않았다.
-- **04-memory 조율 필요** — `memory.recall`·`memory.record` 이벤트의 Event Record contextView와 Port 관찰 지점은 specs/04-memory.md의 단일 Port 계약과 정합해야 한다. 04는 동시 작성 중이므로 추측하지 않았다. Hook은 단일 Port를 우회하지 않는다 (INV-7). 이벤트 자체는 ARCHITECTURE 5.1과 02 §5(읽기 Recall / 쓰기 Record)에서 도출했다.
-- **06-verifier 조율 필요** — Hook은 Verify 판정을 대체·무효화하지 않는다 (INV-7). `lifecycle.verify` 이벤트는 관찰만 한다. 06의 판정 계약과 경계가 정합함을 06 완성 시 확인한다. 06의 내용을 추측하지 않았다.
-- **09-skills 조율 필요** — Skills와 Hooks는 상호 독립 서브시스템이다. 겹치는 계약을 가정하지 않았다. 확정 전까지 상호 독립으로 둔다.
-- **10-plugins 조율 필요** — Plugin이 Hook을 번들해 배포하는 경우(ROADMAP: Plugins = 기능 묶음 배포 단위), 번들된 Hook의 등록도 본 spec의 Hook Binding·Runtime Module 등록 계약을 따른다. 배포 단위 소유·매니페스트 포맷은 10 소관이다. 이 겹침 영역은 09/10 조율 필요로 기록한다. 10의 내용을 추측하지 않았다.
+- **03-loop 조율** — 해소(lifecycle 도메인 이벤트(§3.2-A)의 방출 경계는 03 §3.2-A 전이 이벤트 기록 시점과 대응 — 모순 없음 확인. Hooks는 전이 "이벤트"만 소비하고 단계 정의·전이 규칙은 침범하지 않았다 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
+- **04-memory 조율** — 해소(`memory.recall`·`memory.record` 이벤트는 04 §3.1 Record/Recall 연산과 대응 — 모순 없음 확인. Hook은 단일 Port를 우회하지 않는다(INV-7) · 상세 = 결정 기록 소절·git 앵커 90ca19c).
+- **06-verifier 조율** — 해소(Hook은 Verify 판정을 대체·무효화하지 않으며(INV-7) `lifecycle.verify` 이벤트는 관찰만 한다. 06 판정 계약과 경계 정합 확인 완료).
+- **09-skills 조율** — Skills와 Hooks는 상호 독립 서브시스템이다. 겹치는 계약을 가정하지 않는다.
+- **10-plugins 조율** — 해소(Plugin이 번들해 배포하는 Hook의 등록도 본 spec의 Hook Binding·Runtime Module 등록 계약을 따른다. 배포 단위 소유·매니페스트 포맷은 10 소관 — 09 §9 동일 기록).
 
 **설계 확인 요청 (Advisor 에스컬레이션):**
 
-- **OQ-H1 (비차단 결정 확인).** v0.1은 Hook을 비차단 observer로만 정의한다 (INV-2). 차단·veto·mutation 능력은 역할 경계(02 §3.2-A)·Verify 판정(06)·Lifecycle 전이(03)와 강한 조율을 요구하므로 v0.1 범위에서 제외했다. 이 결정이 "본체 수정 없는 확장"(INV-1) 및 v0.8 완료 조건과 정렬하는지 Advisor 확인을 요청한다. 향후 버전에서 필요 시 06·03·02와 조율하여 재검토한다.
-- **OQ-H2 (이벤트 방출 주체).** 이벤트 원천이 직접 방출하는지, 공용 dispatch가 관찰하는지는 Adapter Binding(§4)로 미뤘다. Core는 관찰 가능한 표면(카탈로그·Event Record·순서·격리)만 정의한다. 계약 수준에서 방출 주체를 고정할지 Advisor 결정을 요청한다. 이 항목은 §4에서 처리되므로 Frozen을 막지 않는다.
-- **OQ-H3 (동률 순서 규칙 확정).** `order` 동률 시 "Module 등록 순서 → hookId 사전순"(§3.1-D)을 tie-breaker로 확정했다. 이 규칙의 채택을 Advisor 확인 요청한다.
+- **OQ-H1: 비차단 observer 결정** — 해소(승인 — v0.1 Hook은 비차단 observer 전용으로 확정(INV-2). 차단·veto·mutation은 역할 경계(02 §3.2-A)·Verify 판정(06)·Lifecycle 전이(03)와의 강한 조율을 요구하므로 v0.1 범위 제외. 향후 필요 시 재검토 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
+- **OQ-H2: 이벤트 방출 주체** — 해소(승인 — 방출 주체는 §4 Adapter Binding 소관으로 확정, 계약 수준 고정 불필요. Core는 관찰 가능한 표면(카탈로그·Event Record·순서·격리)만 정의).
+- **OQ-H3: 동률 순서 규칙** — 해소(승인 — `order` 동률 tie-breaker = "Module 등록 순서 → hookId 사전순" 확정. 규범 정본 = §3.1-D).
 
 **ARCHITECTURE 충돌:** 발견되지 않음. §3은 ARCHITECTURE 3.2(Modular, Module 교체)·5(스택)·5.1(Memory 단일 Port)·6(Component로서 Hooks)과 정렬한다. Cross-cutting Service는 Memory 하나라는 INV-2(Glossary §3.2-B)를 침범하지 않는다.
 
@@ -382,3 +376,5 @@ ROADMAP v0.8 완료 조건과 정렬한다.
 - OQ-H3 승인 — order 동률 tie-breaker(등록 순서 → hookId 사전순) 확정.
 - 03/04 방출 경계: lifecycle 이벤트는 03 §3.2-A 전이 이벤트 기록 시점과, memory 이벤트는 04 §3.1 Record/Recall 연산과 대응 — 모순 없음 확인.
 - Glossary 추가 요청 5건 승인 — Glossary §3.2-J 반영.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 OQ(OQ-H1~H3)·타 spec 조율(03·04·06·10)의 원문+답 이중 잔존 1줄화, Glossary 추가 요청 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen)·"동시 작성 중" 서술 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체(§3.2-A Event Catalog 포함)·§6·§7 무촉, dependents(§2 = 하드 의존 0 · 조율 09·10) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

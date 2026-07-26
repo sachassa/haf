@@ -1,7 +1,7 @@
 # specs/04-memory — Memory Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -42,19 +42,21 @@ Memory Item의 추상 스키마, Record·Recall 연산, 회수 정책, Memory In
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 5.1 Memory Service, 3.6 Token Efficiency, 6 Core Components.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본. 특히 §3.2-B(판정 기준), §3.2-C(Memory Service 용어).
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본. 특히 §3.2-B(판정 기준), §3.2-C(Memory Service 용어).
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
 - .claude/AGENT.md (실재) — Agent 공통 규약. Memory 원칙("모든 실패는 Lesson 후보", "모든 성공은 Best Practice 후보").
 - ROADMAP.md v0.4 (실재) — Memory & Lessons 산출물과 완료 조건.
-- specs/01-runtime.md (실재, Review) — §4 Adapter Binding에서만 의존. Memory Service Provider가 Runtime의 Module로 등록되는 메커니즘(01 §3.1-A Register, §3.2-A Module Manifest). contract id는 01 §8 예1의 `MemoryServiceInterface`와 정합한다.
+- specs/01-runtime.md (실재, Frozen) — §4 Adapter Binding에서만 의존. Memory Service Provider가 Runtime의 Module로 등록되는 메커니즘(01 §3.1-A Register, §3.2-A Module Manifest). contract id는 01 §8 예1의 `MemoryServiceInterface`와 정합한다.
 
 ## 이 spec에 의존하는 spec (dependents)
 
-- specs/02-agent.md (실재, Review) — Agent는 소비자다. 02 §5·INV-8이 "Agent는 Memory Service Interface(단일 Port)를 통해서만 접근"을 이미 선언하고, 상세 포맷을 이 spec에 위임한다. 방향은 02 → 04다.
+- specs/02-agent.md (실재, Frozen) — Agent는 소비자다. 02 §5·INV-8이 "Agent는 Memory Service Interface(단일 Port)를 통해서만 접근"을 이미 선언하고, 상세 포맷을 이 spec에 위임한다. 방향은 02 → 04다.
 - specs/03-loop.md — Loop는 소비자다. Memory Update·Consult 단계에서 Record·Recall을 호출한다. 단계 전이 시점은 03 소관이다 (§9 조율).
 - specs/05-lessons.md — Lessons·Best Practice는 소비자가 아니라 Memory Item의 kind로 이 Port 위에 올라타는 특화 계약이다 (§9 조율).
 - specs/06-verifier.md — Verifier는 소비자다 (§9 조율).
 - specs/07-workflow.md — Workflow는 소비자다 (§9 조율).
+
+(위 상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted" 표기는 작성 시점 기록이었다.)
 
 ## 순환 의존
 
@@ -346,33 +348,21 @@ Lesson은 Memory Item의 한 `kind`로 Record된다.
 
 Advisor 에스컬레이션 대상.
 
-**Glossary 추가 요청** (본 spec이 정의·형식화하지만 Glossary §3.2에 정본 항목이 없는 용어. Glossary §9-OQ6 흐름에 따라 정본화 요청. 상세 필드의 정본은 이 spec §3.2가 유지한다):
-
-- Glossary 추가 요청: **Memory Item (기억 항목)** — 기억의 최소 기록 단위. 필드는 specs/04-memory §3.2-A. (근거: ARCHITECTURE 5.1, ROADMAP v0.4 산출물 "Memory store 구조와 포맷".)
-- Glossary 추가 요청: **Memory Store** — Memory Item의 저장 구조. 물리 형식은 Adapter 소관. (근거: ROADMAP v0.4 산출물 "Memory store 구조와 포맷".)
-- Glossary 추가 요청: **Memory Index** — 회수 대상을 최소 Context로 찾기 위한 조회 구조. 필드는 specs/04-memory §3.2-C. (근거: ROADMAP v0.4 산출물 "Memory 인덱스 규격".)
-- Glossary 추가 요청: **Index Entry** — Memory Index의 경량 서술자. content 원문을 담지 않는다. 필드는 specs/04-memory §3.2-C.
-- Glossary 추가 요청: **Record (기록 연산)** — Memory Service Interface의 쓰기 연산. (Glossary §3.2-C는 현재 "회수 정책"만 정의하고 Record 연산의 정본이 없음. specs/02-agent §5가 "쓰기 (Record)"로 이미 사용 중.)
-- Glossary 추가 요청: **Recall (회수 연산)** — Memory Service Interface의 읽기 연산. (Glossary §3.2-C는 "회수 정책 (Recall Policy)"만 정의하고 Recall 연산 자체의 정본이 없음. specs/02-agent §5가 "읽기 (Recall)"로 이미 사용 중.)
+**Glossary 추가 요청** — 용어 6종(Memory Item · Memory Store · Memory Index · Index Entry · Record(기록 연산) · Recall(회수 연산))은 00-glossary §3.2-J-04 정본 등재 완료(요청 6건 전부 Advisor 승인). 상세 필드의 정본은 이 spec §3.1·§3.2가 유지한다.
 
 **설계 확인 요청:**
 
-- **OQ-M1 (설계 결정 — 확인 요청) — 기본 회수 세분도 `detail = index`.**
-  Recall의 기본값을 Index Entry만 반환하는 `index`로 확정했다. 근거 — 최소 Context 우선(INV-4)을 기본 동작으로 삼아 Token Efficiency(ARCHITECTURE 3.6)를 인터페이스 기본값에 내장하기 위함이다. content 로드는 명시적 opt-in(`detail = full`)으로만 발생한다. 이는 ARCHITECTURE·ROADMAP이 명시하지 않은 Memory 설계 결정이므로 확인을 요청한다.
-
-- **OQ-M2 (설계 결정 — 확인 요청) — 기록 불변(append-only).**
-  Memory Item을 불변으로 확정했다(INV-6). 근거 — `source`·`timestamp`의 의미 보존과 Index 정합(INV-7)의 단순화. 갱신·정정은 새 Item 기록으로 표현한다. ARCHITECTURE·ROADMAP이 명시하지 않은 설계 결정이므로 확인을 요청한다.
-
-- **OQ-M3 (설계 확인 요청) — scope 지정자 taxonomy.**
-  scope의 narrowing 차원을 `kind` / `labels` / `timeRange` / `source`로 정의했다. 이 4개 차원이 v0.4 회수 요구를 충분히 덮는지, 추가 차원이 필요한지는 소비자(03/06/07) 확정 시 재검토가 필요하다. 이 항목은 계약의 뼈대를 바꾸지 않으므로 Frozen을 막지 않는다.
+- **OQ-M1: 기본 회수 세분도 `detail = index`** — 해소(승인·확정. 근거 = 최소 Context 우선(INV-4)을 기본 동작으로 삼아 Token Efficiency(ARCHITECTURE 3.6)를 인터페이스 기본값에 내장. content 로드는 `detail = full` opt-in. 규범 정본 = §3.1 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
+- **OQ-M2: 기록 불변(append-only)** — 해소(승인·확정. 근거 = `source`·`timestamp` 의미 보존과 Index 정합(INV-7) 단순화. 갱신·정정은 새 Item 기록으로 표현. 규범 정본 = INV-6 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
+- **OQ-M3: scope 지정자 taxonomy** — 해소(4차원 `kind`/`labels`/`timeRange`/`source`를 v0.1로 수용. 소비자(03/06/07) 확정 결과 추가 차원 요구 없음 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
 **타 spec 조율:**
 
 - **05-lessons 조율 필요** — Lessons·Best Practice는 Memory Item의 `kind`로 이 Port 위에 올라탄다. Memory는 `kind`·`content`를 불투명하게 다루고(INV-5), kind 값·content 상세 스키마·생성 규칙은 05가 소유한다. 조율 지점: (1) Lesson/Best Practice가 사용할 `kind` 값의 명명, (2) 회수 시 scope의 `labels`/`kind`를 통한 Lesson 선택 방식. 05의 내부 포맷을 추측·인용하지 않았다.
 - **03-loop 조율 필요** — Memory Update 단계에서 Record가, Consult 단계에서 Recall이 언제 호출되는가(단계 전이 시점)는 03 소관이다. Memory는 연산 계약만 정의하고 호출 시점은 정의하지 않았다. ROADMAP v0.4의 "실패 → Lesson → 회수" 사이클 구동도 03이 오케스트레이션한다.
 - **06-verifier / 07-workflow 조율 필요** — Verifier와 Workflow는 소비자다. 두 spec이 Memory 접근을 이 §3.1 / §3.4 계약으로 선언하는지 확정 시 정합을 확인한다. 두 spec의 내용을 추측·인용하지 않았다.
-- **01-runtime 조율 (확인됨)** — Memory Service Provider가 contract `MemoryServiceInterface`의 Module로 등록된다. 01 §5 단서(Runtime은 배선만, 내용 접근 안 함)·§8 예1(contract id `MemoryServiceInterface`)과 정합함을 확인했다. 01은 Review 상태로 인용 가능하다.
-- **02-agent 조율 (확인됨)** — 02 §5·INV-8이 Agent의 단일 Port 접근을 선언하고 상세를 이 spec에 위임한다. 방향 02 → 04로 정합하며 순환은 없다(§2). 02는 Review 상태로 인용 가능하다.
+- **01-runtime 조율 (확인됨)** — Memory Service Provider가 contract `MemoryServiceInterface`의 Module로 등록된다. 01 §5 단서(Runtime은 배선만, 내용 접근 안 함)·§8 예1(contract id `MemoryServiceInterface`)과 정합함을 확인했다. 01은 Frozen 확정 상태로 인용 가능하다.
+- **02-agent 조율 (확인됨)** — 02 §5·INV-8이 Agent의 단일 Port 접근을 선언하고 상세를 이 spec에 위임한다. 방향 02 → 04로 정합하며 순환은 없다(§2). 02는 Frozen 확정 상태로 인용 가능하다.
 
 **ARCHITECTURE 충돌:** 발견되지 않음. §3은 ARCHITECTURE 5.1(단일 Port·회수 정책 내장·백엔드 Adapter 뒤·Lessons는 특화 계약)·3.6(Token Efficiency)·6(Cross-cutting Service)과 Glossary §3.2-B/C에 정렬한다.
 
@@ -384,3 +374,5 @@ Advisor 에스컬레이션 대상.
 - 05 조율 결정: applicability 매칭의 계약 표면은 05가 소유하고 구현은 Adapter 소관이다. Port는 kind/labels/timeRange/source 범위 조회만 제공하며(04 계약 변경 없음), 매칭은 Port 위에서 수행된다. applicability는 labels·kind로 투영 가능하다.
 - 회수 이력(작업별 회수 집합) 조회: 03의 루프 상태 기록 소관으로 확정. 05는 입력으로 받는다.
 - Glossary 추가 요청 6건 승인 — Glossary §3.2-J 반영.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 OQ(OQ-M1·M2·M3)의 원문+답 이중 잔존 1줄화, Glossary 추가 요청 블록의 등재 완료 1줄화, §2·§9 stale 상태 표기(Review/Adopted → Frozen) 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체·§6 표·§7 무촉, dependents(§2 목록 = 02·03·05·06·07) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

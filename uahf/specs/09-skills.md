@@ -1,7 +1,7 @@
 # specs/09-skills — Skills Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -45,12 +45,14 @@ Skills는 본체 수정 없이 능력을 추가하고, 여러 프로젝트에서
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 3.2 Modular, 3.6 Token Efficiency, 6 (Skills = Component), 8 (본체 재작성 없는 확장).
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본. Skills = 재사용 가능한 작업 능력 단위.
-- specs/01-runtime.md (실재, Review) — Module 등록/해소/교체 계약. Skill은 이 계약을 확장점으로 사용한다 (01 §2 dependents에 09 명시).
-- specs/02-agent.md (실재, Review) — Agent 역할 경계(§3.2-A), 위임/보고 메시지, Lifecycle 책임. Skill은 이 경계를 우회할 수 없다.
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본. Skills = 재사용 가능한 작업 능력 단위.
+- specs/01-runtime.md (실재, Frozen) — Module 등록/해소/교체 계약. Skill은 이 계약을 확장점으로 사용한다 (01 §2 dependents에 09 명시).
+- specs/02-agent.md (실재, Frozen) — Agent 역할 경계(§3.2-A), 위임/보고 메시지, Lifecycle 책임. Skill은 이 경계를 우회할 수 없다.
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
 - .claude/AGENT.md (실재) — Agent 공통 규약(상위 규약).
 - ROADMAP.md v0.8 (실재) — Extension System 완료 조건과 산출물.
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted" 표기는 작성 시점 기록이었다.)
 
 ## 이 spec에 의존하는 spec (dependents)
 
@@ -299,27 +301,21 @@ Skill body가 Worker에게 "이 Architecture 결정을 확정하라"고 지시�
 
 Advisor 에스컬레이션 대상.
 
-**Glossary 추가 요청** (본 spec이 정의·형식화하지만 Glossary §3.2에 정본 항목이 없는 용어. Glossary §9-OQ6 흐름에 따라 정본화 요청):
-
-- Glossary 추가 요청: Skill Manifest — Skill의 등록 서술자. 01 §3.2-A Module Manifest의 특화. 필드의 정본은 specs/09-skills §3.2-A.
-- Glossary 추가 요청: Trigger (트리거 조건) — 언제 이 Skill이 적용되는가를 선언하는 조건. 발견·선택의 평가 대상. 경량 메타데이터다.
-- Glossary 추가 요청: Skill Body (지시 본문) — Skill 수행 절차. 선택된 뒤에만 로드된다.
-- Glossary 추가 요청: Skill I/O Contract (입력/출력 계약) — Skill이 받는 입력과 내는 출력의 계약. 재사용성의 기반.
-- Glossary 추가 요청: SkillInterface — Skill이 구현하는 공통 계약 식별자. 교체는 동일 계약 내에서만 성립한다.
+**Glossary 추가 요청** — 용어 5종(Skill Manifest · Trigger 트리거 조건 · Skill Body 지시 본문 · Skill I/O Contract · SkillInterface)은 00-glossary §3.2-J-09 정본 등재 완료(요청 5건 전부 Advisor 승인). 상세 필드의 정본은 이 spec §3.2-A/B가 유지한다.
 
 **타 spec 조율:**
 
-- **08/10 조율 필요 — Plugin 배포에 포함된 Skill.** Plugin이 Skill을 배포 단위에 포함하는 경우(ROADMAP v0.8, ARCHITECTURE 8)의 경계 정합이 필요하다. Skill의 정의·등록·발견·호출 계약은 09가 소유하고, 배포·번들 계약은 10이 소유한다. 겹치는 지점(Plugin에 번들된 Skill의 등록 경로)의 정확한 형태는 specs/10-plugins.md와 조율한다. 10의 내용을 추측하지 않았다.
-- **08/10 조율 필요 — 이벤트 기반 Skill 호출.** Hooks(이벤트 기반 확장)와 Skills(능력 단위)는 상호 독립 서브시스템이다 (ROADMAP v0.8). Skill 호출이 이벤트로 트리거되는 경계가 존재한다면 specs/08-hooks.md와 조율한다. 08의 내용을 추측하지 않았다.
-- **01 조율 필요 — Failure Report enum 소유 경계.** Skill 특화 연산(Discover&Select / Load / Invoke)의 사유 코드는 09가 소유하고, 등록 실패 사유(ContractMismatch, DuplicateId)는 01 §3.2-D enum을 상속한다(§3.2-C). 01 §3.2-D enum을 Skill 사유로 확장할지, 09가 별도 enum을 소유할지 specs/01-runtime.md와 정합 확인이 필요하다. 현재 설계는 구조 재사용 + Skill 사유 코드 09 소유다.
+- **10 조율 — Plugin 배포에 포함된 Skill** — 해소(Plugin에 번들된 Skill의 등록 경로는 10 §3.1 Activate가 01 Register를 경유하므로 09 등록 계약과 동일 — 모순 없음. Skill의 정의·등록·발견·호출 계약은 09 소유, 배포·번들 계약은 10 소유 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
+- **08 조율 — 이벤트 기반 Skill 호출.** Hooks(이벤트 기반 확장)와 Skills(능력 단위)는 상호 독립 서브시스템이다(ROADMAP v0.8 · 08 §9 동일 기록).
+- **01 조율 — Failure Report enum 소유 경계** — 해소(구조는 01 §3.2-D 재사용, 연산별 사유 코드는 각 spec 소유. 01 enum은 01 연산 전용으로 유지 — Skill 특화 연산(Discover&Select / Load / Invoke)의 사유 코드는 09 소유(§3.2-C) · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
 **내부 미확정:**
 
-- **OQ-S1 (비차단) — 발견 모호성 해소 규칙.** 다수 Skill이 동일 트리거로 매칭될 때의 선택 규칙(우선순위·명시 호출 등) 상세는 미확정이다. 결정적이어야 한다는 제약(INV-7)과 실패 사유(AmbiguousSelection)만 확정했다. 상세 규칙은 Advisor 결정 대상이며, 이 항목은 Draft를 막지 않는다.
+- **OQ-S1: 발견 모호성 해소 규칙 (비차단)** — 해소(모호성 해소 순서 = 명시 호출 > 가장 구체적인 트리거 매칭 > 그래도 모호하면 `AmbiguousSelection` 실패·에스컬레이션. 결정성 제약 = INV-7. 상세 규칙은 v0.8 구현 시 정밀화 가능 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
 **Component→Layer 매핑:**
 
-- 이 spec은 §2에서 Skills를 "Runtime Layer의 Module 시스템 위 확장 서브시스템, Agent Layer가 소비"로 선언했다. 최종 Component→Layer 매핑은 Glossary §9-OQ6 흐름에 따라 Wave 3에서 Advisor가 통합·검증한다.
+- 이 spec은 §2에서 Skills를 "Runtime Layer의 Module 시스템 위 확장 서브시스템, Agent Layer가 소비"로 선언했다 — 해소(Glossary §9-OQ6 흐름에 따라 Advisor가 통합·검증한 정본 매핑표가 00-glossary §3.2-D에 등재 완료).
 
 **ARCHITECTURE 충돌:** 발견되지 않음. §3은 ARCHITECTURE 3.2(Modular), 3.6(Token Efficiency), 6(Skills = Component), 8(본체 재작성 없는 확장)과 01·02의 계약에 정렬한다.
 
@@ -329,3 +325,5 @@ Advisor 에스컬레이션 대상.
 - Failure Report enum 소유 결정: 구조는 01 §3.2-D 재사용, 연산별 사유 코드는 각 spec 소유. 01 enum은 01 연산 전용으로 유지 (01과 정합 확인).
 - 08/10 조율: Plugin에 번들된 Skill의 등록 경로는 10 §3.1 Activate가 01 Register를 경유하므로 09 등록 계약과 동일 — 모순 없음.
 - Glossary 추가 요청 5건 승인 — Glossary §3.2-J 반영.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 항목(OQ-S1 · 08/10·01 조율 · Component→Layer 매핑)의 원문+답 이중 잔존 1줄화, Glossary 추가 요청 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen)·"Wave 3에서 확정" 서술 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체·§6·§7·§8 무촉, dependents(§2 = 확정 dependent 0 · 조율 08·10) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

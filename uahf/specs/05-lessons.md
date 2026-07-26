@@ -1,7 +1,7 @@
 # specs/05-lessons — Lessons Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2 (특히 3.5 Learn from Failure, 5.1 Memory Service)
 상위 규약: AGENT.md
 
@@ -43,12 +43,14 @@ Lessons는 Memory Service 위의 특화 계약이다 (ARCHITECTURE 5.1, Glossary
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 3.5 Learn from Failure, 5.1 Memory Service, 3.6 Token Efficiency.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본. 특히 §3.2-C Lessons·Best Practice·회수 정책·Memory Service Interface.
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본. 특히 §3.2-C Lessons·Best Practice·회수 정책·Memory Service Interface.
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
 - .claude/AGENT.md (실재) — Agent 공통 규약. 특히 Memory("모든 실패는 Lesson 후보", "모든 성공은 Best Practice 후보")와 Agent Lifecycle.
-- specs/02-agent.md (실재, Review) — 실패 보고(§3.2-D)의 `lesson_candidate`, 완료 보고(§3.2-C), Memory Access(§5), 역할 경계(§3.2-A)를 입력·근거로 인용한다.
-- specs/01-runtime.md (실재, Review) — Memory Service를 교체 가능한 Module로 배선하는 방식(§5). 참조만.
+- specs/02-agent.md (실재, Frozen) — 실패 보고(§3.2-D)의 `lesson_candidate`, 완료 보고(§3.2-C), Memory Access(§5), 역할 경계(§3.2-A)를 입력·근거로 인용한다.
+- specs/01-runtime.md (실재, Frozen) — Memory Service를 교체 가능한 Module로 배선하는 방식(§5). 참조만.
 - ROADMAP.md v0.4 (실재) — Memory & Lessons 완료 조건과 산출물.
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted" 표기는 작성 시점 기록이었다.)
 
 ## 이 spec에 의존하는 spec (dependents)
 
@@ -365,9 +367,7 @@ Advisor 에스컬레이션 대상.
 
 **04 조율 필요 (Memory Service Interface에 요구하는 연산 표면):**
 
-- 04 조율 필요: Lessons는 단일 Port에 다음 연산이 노출되기를 요구한다 — (a) 타입 지정 레코드 쓰기(Lesson / Best Practice / 재발 판정), (b) 적용 조건 매칭 기반 범위 조회(회수), (c) provenance·ordering_ref 보존, (d) 재발 판정 입력용 조회. Lessons는 내부 인덱스·저장 구조·색인 방식을 규정하지 않는다. 04가 이 연산 집합을 Memory Service Interface 계약에 포함하는지 정합 확인이 필요하다.
-- 04 조율 필요: 적용 조건 매칭(상황 서술자 ↔ `applicability` 대조)의 **계약 표면**(질의 파라미터로 상황 서술자를 전달하고 관련성 매칭 집합을 반환)을 Port가 어떻게 제공하는지 확인이 필요하다. 매칭 **구현**(알고리즘)은 Adapter, **계약 표면**은 04 소관으로 본다.
-- 04 조율 필요: 재발 판정(§3.1-C)에 필요한 "작업별 회수 집합(회수 이력)" 조회를 Memory가 제공할지, Loop(03)가 제공할지 경계 확인이 필요하다. 현재 이 spec은 회수 이력을 연산 입력으로 전제하되 그 저장 주체를 확정하지 않았다.
+- 04 조율 3건 — 해소. (a) 타입 지정 레코드 쓰기(Lesson/Best Practice/재발 판정) = Memory Item `kind`로, 적용 조건 매칭 기반 범위 조회 = `scope`(kind/labels)로 충족(provenance·ordering_ref 보존 포함). (b) 적용 조건 매칭의 **계약 표면**은 05 소유·**구현**(알고리즘)은 Adapter 소관(04 §9 동일 기록). (c) "작업별 회수 집합(회수 이력)" 조회는 03 루프 상태 기록 소관이며 05는 입력으로 받는다. Lessons는 내부 인덱스·저장 구조·색인 방식을 규정하지 않는다. (상세 = 결정 기록 소절·git 앵커 90ca19c.)
 
 **03 조율 필요:**
 
@@ -375,17 +375,13 @@ Advisor 에스컬레이션 대상.
 
 **02 조율 (비차단):**
 
-- 02 조율: 완료 보고(02 §3.2-C)에는 실패 보고의 `lesson_candidate`와 대칭인 `best_practice_candidate` 명시 필드가 없다. Best Practice 후보 자격은 "모든 성공은 Best Practice 후보"(AGENT.md)에 따라 Verify를 통과한 모든 완료 보고에 보편적으로 성립하므로 명시 필드 없이도 계약은 성립한다. 대칭성을 위해 완료 보고에 명시 필드를 추가할지는 02의 결정 사항이다. 이 spec은 02를 수정하지 않았고 추측하지 않았다. 비차단.
+- 02 조율: 완료 보고(02 §3.2-C)에 `lesson_candidate` 대칭인 `best_practice_candidate` 명시 필드 부재 — 해소(v0.1은 보편 후보 자격("모든 성공은 Best Practice 후보" — AGENT.md)으로 충족. 02 수정 보류 — v0.2 이후 재검토. 비차단 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
 **상위 규약 정합 (비차단):**
 
-- AGENT.md Memory("모든 실패는 Lesson 후보")와 02 §3.2-D `lesson_candidate.여부`(예/아니오)의 관계. 본 spec은 "모든 실패가 후보 **자격**을 가지며(INV-3), 여부=예이면 즉시 Candidate로 등록되고, 여부=아니오라도 자격은 유지되어 승격 심사에서 재평가된다"로 정합했다. 이는 상위 규약과 하위 spec 필드를 모순 없이 잇는 해석이며 하드 충돌이 아니다. Advisor 확인 요청.
+- AGENT.md Memory("모든 실패는 Lesson 후보")와 02 §3.2-D `lesson_candidate.여부`(예/아니오)의 관계 — 해소(승인된 정합 해석 = 모든 실패가 후보 **자격**을 가지며(INV-3), 여부=예이면 즉시 Candidate 등록, 여부=아니오라도 자격은 유지되어 승격 심사에서 재평가된다. 하드 충돌 아님 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-**Glossary 추가 요청** (본 spec이 형식화하지만 Glossary §3.2에 정본 항목이 없는 용어. Glossary §9-OQ6 흐름에 따라 정본화 요청. 승인 전까지 이 spec이 로컬로 형식화하며 새 정의를 임의 확정하지 않는다):
-
-- Glossary 추가 요청: 적용 조건 (Applicability Condition) — Lesson·Best Practice가 언제 회수되어야 하는가를 규정하는 매칭 signature. 회수 시 현재 작업의 상황 서술자와 대조된다. (정본 필드: 본 spec §3.2-C.)
-- Glossary 추가 요청: 승격 (Promotion) — Lesson·Best Practice 후보가 Advisor 승인으로 정식(`Active`) 기록이 되는 절차. 승격 권한은 Advisor에 있다.
-- Glossary 추가 요청: 재발 (Recurrence) — 적용 조건이 매칭되고 회수되었음에도 같은 실패가 다시 발생한 상태. ARCHITECTURE 3.5 "같은 실수를 반복하지 않는다"의 검증 가능한 판정 결과. (분류: Novel / RecallGap / Recurrence — 본 spec §3.1-C.)
+**Glossary 추가 요청** — 용어 3종(적용 조건 Applicability Condition · 승격 Promotion · 재발 Recurrence)은 00-glossary §3.2-J-05 정본 등재 완료(요청 3건 전부 Advisor 승인). 상세 필드·판정의 정본은 이 spec(§3.1-A/C·§3.2-C)이 유지한다.
 
 **ARCHITECTURE 충돌:** 발견되지 않음. §3은 ARCHITECTURE 3.5(Learn from Failure)·5.1(Memory 단일 Port·Lessons 특화 계약)·3.6(Token Efficiency)과 Glossary §3.2-C 정의에 정렬한다.
 
@@ -395,3 +391,5 @@ Advisor 에스컬레이션 대상.
 - 02 best_practice_candidate 필드: v0.1은 보편 후보 자격(AGENT.md)으로 충족. 02 수정 보류 — v0.2 이후 재검토.
 - 상위 규약 정합 해석(모든 실패 = 후보 자격 보유, 여부=예는 즉시 등록) 승인.
 - Glossary 추가 요청 3건 승인 — Glossary §3.2-J 반영.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 항목(04 조율 3건·02 조율·상위 규약 정합)의 원문+답 이중 잔존 1줄화, Glossary 추가 요청 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen) 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체·§6 표·§7 무촉, dependents(§2 목록 = 03·06·07) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

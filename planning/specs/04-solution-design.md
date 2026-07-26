@@ -1,7 +1,7 @@
 # planning/specs/04-solution-design — Solution Design Specification
 
 작성일: 2026-07-13
-상태: v1.3 Baseline → DC-1 Draft (Wave 1 [04]: CP2 Pass·Advisor CP3 승인 2026-07-18 — 트랙 진행 중) (기준선 = v1.3 Baseline[CP2 Pass — W1 재검증·W2 교차 8/8 · CP3 승인 · 사용자 Baseline 승인 2026-07-13]; 설계완성도 강제 트랙 §DC-1 개정 진행 중 — 버전 라벨/Baseline 승격은 트랙 완료·사용자 승인 소관)
+상태: v1.3 Baseline → DC-1 Draft (Wave 1 [04]: CP2 Pass·Advisor CP3 승인 2026-07-18 — 트랙 진행 중) (기준선 = v1.3 Baseline[CP2 Pass — W1 재검증·W2 교차 8/8 · CP3 승인 · 사용자 Baseline 승인 2026-07-13]; 설계완성도 강제 트랙 §DC-1 개정 진행 중 — 버전 라벨/Baseline 승격은 트랙 완료·사용자 승인 소관) · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c)
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -25,6 +25,7 @@
 | 2026-07-17 | v1.3 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. §0 경계 표제 "무수정"→"§ 포인터 참조(재정의·확장 0)"(본문 의미 2 "재정의·확장하지 않고 § 포인터로만 참조" 존치). 의미 2(SP-INV 6 "UAHF 무수정·역참조 금지" 명칭·내용·§1 UAHF 계약 변경 제외)·자매 spec 02 무수정 일방 참조(§0 근거정본·§3.6·§7) 존치. SP-INV 1~8 카운트·문면·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
 | 2026-07-17 | v1.3 (정합) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §0 근거정본(:8)·§부록 입력 목록(:93)의 삭제 산출물 참조 앵커 전환(`docs/v1.3-context-and-design.md@cd9247b`)·:93 물리 실재("실재") 표기 개정(아카이브). SP-INV·계약·§ 포인터 문면 무변경(참조 정합·버전 무상승). | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 | 2026-07-18 | DC-1 Draft (CP2 대기) | 설계완성도 강제 트랙 §DC-1 — SP-INV 9(설계 커버리지 완성도) 신설·§3.3 전체 범위 커버리지 바닥·§3.4 다라운드 심의 명시·§3.5 기본 세트 default-required opt-out 전환. 구체 유형 카탈로그·정책 값·역할명은 Adapter/비정본 부록 소관(SP-INV 5 보존·유형명 0). 사용자 결정 2026-07-18. | Worker (Advisor 위임) |
+| 2026-07-26 | (정합) | md 슬림화 격리 개정(`docs/spec-versioning-policy.md` §3.2 유형 (B) 비계약). §0·§1 자기 재서술 압축(C2 3항·신규 용어 4건·Non-Goals 항목 보존) · §7 완료 기준을 §3 재서술 → 판정 항목 목록(근거 절 + 원 done) 포인터로 전환 · stale 교차 참조 정정(§2 dependents의 `planning/docs/appendix/` "(예정)" → 실재 · 03 v1.2 델타 "(예정, 후속)" → 실재 v1.2 Baseline · §0의 "planning 개관 이중 책임 정합은 후속 소관" 문구 삭제 — `planning/ARCHITECTURE.md` 상태 라인·§9 v1.3 이중 책임 정합 행으로 실현 확인) · **§3 내 상태 주석 1지점 포함 전 지점 정정(L-06)** — §3.3 개방 네임스페이스 항의 부록 "(예정)" → "실재"(상태 주석 토큰만 교체·역할 계약 문면 무촉·검증기 판정 2026-07-26). **계약 요소 무촉** — §3.1~§3.7·§3.4-A 상태표·§3.4-B 전이표 T1~T11·§3.8 SP-INV 1~9·§3.9·§4·§6·§8 문면 무변경, § heading 삭제·개칭·재번호 0(`uaf-verified:` 개정 전후 해당 절 diff 대조). | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, `ARCHITECTURE.md` §9·`planning/specs/03-project-contract.md` §9·`discovery/specs/02-discovery.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -32,7 +33,7 @@
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본 배치 (성숙 활동 측).** 이 문서는 **planning/ Layer의 Solution Design 단계 정본**이다. planning/ Layer는 W0(모델 P·D2)로 **이중 책임**을 갖는다 — (i) Project Contract 스키마 소유(정본: `planning/specs/03-project-contract.md`)와 (ii) **Solution Design 성숙 활동 소유(본 문서)**. 본 문서는 후자를 확정하며, planning Layer 개관(`planning/ARCHITECTURE.md`)의 이중 책임 정합 반영은 후속 소관이다.
+- **정본 배치 (성숙 활동 측).** 이 문서는 **planning/ Layer의 Solution Design 단계 정본**이다. planning/ Layer는 W0(모델 P·D2)로 **이중 책임**을 갖는다 — (i) Project Contract 스키마 소유(정본 = `planning/specs/03-project-contract.md`) · (ii) **Solution Design 성숙 활동 소유(본 문서)**.
 
 - **C2 — 3항 네임스페이스 구분 (핵심 경계).** planning/ 문맥에서 다음 셋을 혼동하지 않는다.
   - ① **Contract 설계** — Project Contract의 지위·논리 스키마·버저닝(정본: 03). "무엇을 계약으로 고정하는가."
@@ -49,25 +50,15 @@
   - **Contract Maturation(성숙)** — Ready 인스턴스 vN을 기준선으로 새 설계 결정을 반영한 v(N+1)을 supersedes 계보로 재발행하는 것. 단일 문서의 상태 변경이 아니라 **완결 인스턴스의 재발행**이다(03 §3.4 정합).
   - **어휘 주의.** 통칭 "Draft Contract"/"Final Contract"는 **비정본 사용자 어휘**다 — 정본 표기는 "Ready 인스턴스 vN"/"superseding 성숙 인스턴스 v(N+1)"이다(M2·D5).
 
-- **UAF·UAHF 상위 정본 § 포인터 참조 (재정의·확장 0).** 본 문서의 신설은 UAF 상위 구조(루트 `ARCHITECTURE.md`)·자매 정본(02·03·`planning/ARCHITECTURE.md`)·UAHF 정본(`uahf/`·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. 특히 Contract 스키마·PC-INV·UAHF 연산/필드/불변은 신설·변경하지 않는다(UAF-INV ① 접점 원칙).
+- **UAF·UAHF 상위 정본 § 포인터 참조 (재정의·확장 0) · INV-3 무촉.** 본 문서는 UAF 상위 구조(루트 `ARCHITECTURE.md`)·자매 정본(02·03·`planning/ARCHITECTURE.md`)·UAHF 정본(`uahf/`·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**하며, Contract 스키마·PC-INV·UAHF 연산/필드/불변을 신설·변경하지 않는다(UAF-INV ① 접점 원칙). "planning Layer"의 "Layer"는 UAHF 6-Layer 스택(`uahf/specs/00-glossary.md` §3.2-A)의 지층이 아니라 UAF 파이프라인 요소를 소유하는 최상위 물리 Layer 명칭이므로(루트 §0·§2.4), Glossary INV-3("Layer는 정확히 6개다")는 무촉이다.
 
-- **INV-3 무촉 (Layer 어휘 주의).** "planning Layer"의 "Layer"는 UAHF 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter, `uahf/specs/00-glossary.md` §3.2-A)의 지층이 아니라, UAF 파이프라인 요소를 소유하는 최상위 물리 Layer 명칭이다(루트 §0·§2.4). 본 문서는 UAHF Layer 수를 늘리는 서술을 두지 않으며 Glossary INV-3("Layer는 정확히 6개다")는 무촉이다.
-
-- **AI 비의존.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명·방법론 고유명·고정 역할 카탈로그를 두지 않는다(루트 §0·03 §0 동형). 구체 실현(실행 호스팅·게이트 제시 채널·저장 위치·Policy 실값)은 Adapter Binding 소관이며(§4), 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
+- **AI 비의존.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명·방법론 고유명·고정 역할 카탈로그를 두지 않고(루트 §0·03 §0 동형), 구체 실현(실행 호스팅·게이트 제시 채널·저장 위치·Policy 실값)은 Adapter Binding 소관 포인터로만 가리킨다(§4).
 
 ---
 
 ## §1. 목적 (Purpose)
 
-이 문서는 **Discovery 이후·UAHF 이전에, Ready 종단 Contract 인스턴스를 실행 가능한 Solution Design으로 어떻게 성숙시키는가**의 상세 계약을 확정한다.
-
-책임은 다섯 가지다.
-
-- Solution Design **단계 계약**(입력·출력 2경로·완료·실패)을 확정한다(§3.1).
-- 프로젝트 **복잡도 판정**과 스킵 게이트를 Policy as Data로 확정한다(§3.2).
-- **역할 할당 계약**(Expert Role·Capability 선언·개방 네임스페이스·최소 할당)과 **협업 설계 프로토콜** 골격을 확정한다(§3.3, §3.4).
-- **Projection**(Contract = Source of Truth·파생 산출)과 **경계 기준**(vs Discovery)을 확정한다(§3.5, §3.6).
-- 저장 스코프 원칙과 불변 **SP-INV**를 확정한다(§3.7, §3.8).
+이 문서는 **Discovery 이후·UAHF 이전에, Ready 종단 Contract 인스턴스를 실행 가능한 Solution Design으로 어떻게 성숙시키는가**의 상세 계약을 확정한다. 책임은 다섯 가지다 — (i) **단계 계약**(입력·출력 2경로·완료·실패) 확정(§3.1), (ii) **복잡도 판정**과 스킵 게이트를 Policy as Data로 확정(§3.2), (iii) **역할 할당 계약**(Expert Role·Capability 선언·개방 네임스페이스·최소 할당)과 **협업 설계 프로토콜** 골격 확정(§3.3·§3.4), (iv) **Projection**(Contract = Source of Truth·파생 산출)과 **경계 기준**(vs Discovery) 확정(§3.5·§3.6), (v) 저장 스코프 원칙과 불변 **SP-INV** 확정(§3.7·§3.8).
 
 ### 본 문서가 실현하는 정본 결정
 
@@ -99,8 +90,8 @@
   - `uahf/specs/00-glossary.md` (실재, Frozen 0.2)·`uahf/specs/TEMPLATE.md` (실재, Frozen 0.1) — 용어 네임스페이스·문서 구조.
 
 - **이 문서에 의존하는 문서 (dependents).**
-  - `planning/docs/appendix/` 비정본 부록(예정) — 설계 기법·역할 카탈로그·Projection 유형 레지스트리. 본 문서가 개방 네임스페이스·개방 레지스트리를 정의함으로써 그 격리 지점이 성립한다(§3.3·§3.5·§3.10-D 선례 동형).
-  - `planning/specs/03-project-contract.md` v1.2 델타(예정, 후속) — 생산자 문면에 성숙 주체 등재·인스턴스 갱신 유형에 Maturation 추가. **현재 03은 v1.1이며 본 문서는 03의 미래 개정을 전제하지 않는다**(무촉).
+  - `planning/docs/appendix/` 비정본 부록(실재) — 설계 기법·역할 카탈로그·Projection 유형 레지스트리. 본 문서가 개방 네임스페이스·개방 레지스트리를 정의함으로써 그 격리 지점이 성립한다(§3.3·§3.5·§3.10-D 선례 동형).
+  - `planning/specs/03-project-contract.md` v1.2 Baseline(실재 — 2026-07-13 승인) — 생산자 문면에 성숙 주체 등재·인스턴스 갱신 유형에 Maturation 추가가 반영되었다(03 §3.1-B·§3.4). 본 문서는 03을 § 포인터로만 참조하며 03 스키마를 확장하지 않는다(무촉).
 
 - **순환 의존 없음.** 의존은 본 문서 → 루트 `ARCHITECTURE.md`·03·02 방향이다. 성숙 활동은 하류 요소(UAHF·Execution)나 Discovery 내부 개념을 역참조하지 않는다(루트 §2.5, §3.8 SP-INV 6).
 
@@ -165,7 +156,7 @@ Solution Design은 **Ready 종단 Contract 인스턴스를 입력으로, 프로�
   | `outputContract` | 출력 — 담당 관심사의 설계 Proposal(§3.4-D ①). |
 
   역할이 바꾸는 것은 `capability`와 Proposal의 성격뿐이며, 협업 프로토콜(§3.4)·SP-INV·산출 인스턴스 스키마는 어느 역할 구성에서도 불변이다.
-- **개방 네임스페이스·고정 열거 0.** 역할명은 **개방 네임스페이스**다. 본 코어는 구체 역할명 카탈로그를 열거하지 **않는다**(고정 팀 열거 0). 신규 역할은 코어·엔진 변경 없이 선언 등록만으로 참여한다. 구체 역할 예시가 필요하면 **비정본 부록**(`planning/docs/appendix/`, 예정) 소관이다(§3.8 SP-INV 5, D9).
+- **개방 네임스페이스·고정 열거 0.** 역할명은 **개방 네임스페이스**다. 본 코어는 구체 역할명 카탈로그를 열거하지 **않는다**(고정 팀 열거 0). 신규 역할은 코어·엔진 변경 없이 선언 등록만으로 참여한다. 구체 역할 예시가 필요하면 **비정본 부록**(`planning/docs/appendix/`, 실재) 소관이다(§3.8 SP-INV 5, D9).
 - **최소 할당 원칙.** 프로젝트 특성·복잡도가 요구하는 **필요 역할만** 할당한다. 불필요한 다중 역할 구성을 강제하지 않는다 — 불필요한 Multi-Agent 비용을 방지한다(§3.8 SP-INV 8).
 - **전체 범위 커버리지 바닥.** 패널은 선언된 **전체 프로젝트 범위를 관장하는 커버리지 capability를 반드시 포함한다** — 좁은 관심사 역할들의 합으로 전체 설계 완성도를 대체하지 않는다. 이 커버리지 capability는 최소 할당(SP-INV 8)의 예외가 아니라 그 위의 **필수 바닥**이며, 전문 역할은 그와 별개로 최소 할당·상한 정책을 따른다. 두 원칙은 층위가 다르다 — 최소 할당은 각 좁은 관심사에 대해 **필요 이상으로 전문 역할을 늘리지 않음**을 규율하고, 커버리지 바닥은 그와 독립적으로 **선언 범위 전체가 관장 없이 비는 일이 없음**을 규율한다(모순 아님). 이 바닥은 개방 네임스페이스를 닫지 않는다 — 커버리지 capability도 고정 역할명이 아니라 Capability 선언으로 표현되며, 구체 역할명·상한 실값은 Policy·비정본 부록 소관이다(SP-INV 5). 성숙 경로에서 이 커버리지가 선언 범위를 어떻게 필수 세트로 결착시키는지는 §3.8 SP-INV 9가 규율한다.
 - **실행 주체 매핑은 Adapter 소관 (M5·폐쇄성).** 논리 Expert Role을 어느 실행 주체가 호스팅하는가는 코어가 정의하지 않는다 — **코어는 역할 추상까지만**이다. UAHF Agent·특정 하네스 개념을 역참조하지 않는다(루트 §2.5, §3.8 SP-INV 6). 물리 호스팅은 §4·확장 포인트(§3.9).
@@ -336,18 +327,20 @@ Solution Design은 어떤 구현·복잡도에서도 다음 9건을 유지한다
 
 ### 완료 기준 (시연 가능 문장)
 
-- **단계 계약 시연.** §3.1이 입력(Ready\|ReadyWithAssumptions 종단 vN·비Ready 금지)과 출력 2경로(성숙 = superseding v(N+1)+Projection / 스킵 = 무산출+경량 확인)를 명문화하고, 두 경로가 사용자 게이트를 통과함을 보인다(done 1·2).
-- **복잡도 판정 시연.** §3.2가 판정을 Policy as Data로 두고 스킵 게이트(D6·경량 사용자 확인)를 포함함을 보인다(done 3).
-- **역할 할당 시연.** §3.3이 Expert Role을 Capability 선언·**개방 네임스페이스**로 정의하고, 코어에 구체 역할 카탈로그가 0건이며(전수 스캔), 최소 할당·실행 주체 매핑 Adapter 위임을 명문화함을 보인다(done 4).
-- **협업 프로토콜 시연.** §3.4 State Machine이 비종단 5·종단 3을 열거하고, 전이표가 종단 도달성·비종단 진출성을 만족하며, 성숙/스킵 두 종단이 `Validating` 사용자 게이트를 통과함을 보인다(done 5).
-- **Projection 시연.** §3.5가 Contract = Source of Truth·Projection = 파생(예시로만)·동적 선택·전 유형 강제 금지·워크스페이스 귀속을 명문화함을 보인다(done 6).
-- **SP-INV 시연.** §3.8이 SP-INV 1~9를 전수 열거함을 센다(표 9행)(done 7).
-- **경계 기준 시연.** §3.6이 W0 §4.4 문안을 04 소유로 명문화하고 02가 무수정임을 보인다(done 8).
-- **저장 스코프 시연.** §3.7이 워크스페이스 귀속 원칙만 선언하고 물리 배치를 Adapter로 위임함을 보인다(done 9).
-- **Adapter 지점 시연.** §4.1이 v1.4 물리화 바인딩 지점(호스팅·게이트 채널·저장 위치·Policy 실값)을 설계 없이 열거함을 보인다(done 10).
-- **확장 포인트 시연.** §3.9가 형태 B 호스팅·step 실행기 연결·물리 재배치 퇴로·Solution Design Strategy Provider·UI/UX Visual Contract 협의 프로토콜을 명칭만·설계 0으로 표기함을 보인다(done 11).
-- **관행 규격 시연.** 상태 라인 "v1.3 Baseline → DC-1 Draft" 계열 표기·§9 이력(머리 배치·append-only)·§ 포인터(03/02/UAHF 재정의 0)·방법론 고유명·특정 AI/모델/제품 기능명·고정 역할 카탈로그 0건을 전수 스캔으로 보인다(done 12).
-- **설계 커버리지 완성도 시연.** §3.8 SP-INV 9(설계 커버리지 완성도)가 성숙 경로에서 선언 범위를 기본 필수 세트 커버 또는 정당화 제외로 결착시킴을, §3.3이 전체 범위 커버리지 바닥을 최소 할당 위의 필수 바닥으로, §3.4가 다라운드 심의를, §3.5가 기본 세트 default-required opt-out 전환을 각각 명문화하며, 이 넷 모두 구체 유형명·역할명 0으로 Policy·비정본 부록 소관 포인터만 둠을 보인다(done 13).
+판정은 아래 항목을 지목 절 문면과 직접 대조해 내린다(여기서 §3을 재서술하지 않는다). 괄호는 원 done 번호다.
+
+1. 단계 계약 — 입력(Ready\|ReadyWithAssumptions 종단 vN·비Ready 금지)·출력 2경로·두 경로의 사용자 게이트 통과 — §3.1 (done 1·2)
+2. 복잡도 판정 = Policy as Data · 스킵 게이트(D6 경량 확인) — §3.2 (done 3)
+3. 역할 할당 — Capability 선언·개방 네임스페이스·코어 역할 카탈로그 0건(스캔)·최소 할당·실행 주체 매핑 Adapter 위임 — §3.3 (done 4)
+4. 협업 프로토콜 — 비종단 5·종단 3 열거 · 전이표의 종단 도달성·비종단 진출성 · 성숙/스킵의 `Validating` 게이트 통과 — §3.4-A·B (done 5)
+5. Projection — Contract = Source of Truth · 파생(예시로만)·동적 선택·전 유형 강제 금지·워크스페이스 귀속 — §3.5 (done 6)
+6. SP-INV 1~9 열거(표 9행) — §3.8 (done 7)
+7. 경계 기준 — W0 §4.4 문안의 04 소유 · 02 무수정 — §3.6 (done 8)
+8. 저장 스코프 — 귀속 원칙만 선언·물리 배치 Adapter 위임 — §3.7 (done 9)
+9. Adapter 바인딩 지점 열거(설계 0) — §4.1 (done 10)
+10. 확장 포인트 5건을 명칭만·설계 0으로 표기 — §3.9 (done 11)
+11. 관행 규격(상태 라인·§9 이력 머리 배치·append-only·§ 포인터 재정의 0 · 방법론 고유명·특정 AI/모델/제품 기능명·고정 역할 카탈로그 0건 스캔) (done 12)
+12. 설계 커버리지 완성도 — SP-INV 9(선언 범위의 기본 필수 세트 커버 또는 정당화 제외)·§3.3 커버리지 바닥·§3.4-C 다라운드 심의·§3.5 default-required opt-out, 넷 모두 구체 유형명·역할명 0(Policy·비정본 부록 포인터만) (done 13)
 
 ### 검증 방법 (Verifier)
 

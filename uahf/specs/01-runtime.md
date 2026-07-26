@@ -1,7 +1,7 @@
 # specs/01-runtime — Runtime Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -41,10 +41,12 @@ Runtime은 Loop Engine이 Agent Lifecycle을 구동할 "환경"을 제공하며,
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 3.2 Modular, 5 스택, 5.1 Memory Service.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본.
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본.
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
 - .claude/AGENT.md (실재) — Agent 공통 규약.
 - ROADMAP.md v0.3 (실재) — Runtime & Core Kernel 완료 조건과 산출물.
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정 상태다. `uaf-verified: 00-glossary 머리 상태 라인·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted" 표기는 작성 시점 기록이었다.)
 
 ## 이 spec에 의존하는 spec (dependents)
 
@@ -312,25 +314,15 @@ Memory Service Provider가 `contract = MemoryServiceInterface`를 구현하는 M
 
 Advisor 에스컬레이션 대상.
 
-**Glossary 추가 요청** (본 spec이 정의·형식화하지만 Glossary §3.2에 정본 항목이 없는 용어. Glossary §9-OQ6 흐름에 따라 정본화 요청):
-
-- Glossary 추가 요청: Module (모듈) — 독립적으로 사용·교체 가능한 기능 단위. 안정적 `id`와 구현 `contract`를 가지며 Runtime이 등록·해소·교체한다.
-- Glossary 추가 요청: 모듈 시스템 (Module System) — Module의 정의·등록·해소·교체 규칙의 총체. Runtime Component가 관장한다. (현재 Glossary에서 참조만 되고 정본 정의가 없음.)
-- Glossary 추가 요청: Module Manifest — Module의 등록 서술자. 필드는 specs/01-runtime §3.2-A.
-- Glossary 추가 요청: Config (설정) — 스코프(Global/Project/Module)와 우선순위를 가진 key→value 설정 트리. (현재 Glossary에서 참조만 되고 정본 정의가 없음.)
-- Glossary 추가 요청: Runtime Context — Bootstrap 산출물이자 호스팅 상태. 필드는 specs/01-runtime §3.2-C.
-
-결정(Advisor): 5건 전부 승인. Glossary §3.2-I "Runtime 계약 용어"로 추가되었다. 상세 필드의 정본은 이 spec §3.2가 유지한다.
+**Glossary 추가 요청** — 용어 5종(Module · 모듈 시스템 · Module Manifest · Config · Runtime Context)은 00-glossary §3.2-I "Runtime 계약 용어" 정본 등재 완료(요청 5건 전부 Advisor 승인). 상세 필드의 정본은 이 spec §3.2가 유지한다.
 
 **설계 확인 요청:**
 
-- OQ-R1 (결정 완료) — Config 우선순위 방향.
-  결정(Advisor): **Module > Project > Global**로 확정한다. 근거 — Module scope는 모듈 자체의 기본값이 아니라 특정 Module을 겨냥해 작성되는 가장 좁은 override이므로, 좁은 스코프 우선(specificity) 원칙이 결정성과 예측 가능성을 높인다. Module 자체의 기본값은 configSchema 기본값으로서 병합 최하위에 위치하므로, "Project가 모듈 기본값을 덮는" 요구는 Project scope로 이미 충족된다.
+- OQ-R1: Config 우선순위 방향 — 해소(**Module > Project > Global** 확정 · 근거는 좁은 스코프 우선(specificity), 규범 정본 = §3.2-B · 상세 = git 앵커 90ca19c).
 
 **타 spec 조율:**
 
-- 02-agent 조율 필요 — Runtime이 Agent를 Bootstrap·Shutdown하려면 Agent 진입점(entrypoint) 계약이 필요하다. Runtime은 generic "hosted unit / Module" 진입점 계약만 정의했다. Agent가 이 계약을 어떻게 구현하는지(입력/출력/실행 진입점 시그니처)는 specs/02-agent.md가 정의해야 하며, 두 계약이 정합해야 한다. 02의 내용을 추측·인용하지 않았다.
-  결정(Advisor — 조율 확정): Agent Module의 entrypoint는 위임 메시지(specs/02-agent.md §3.2-B)를 입력으로 받고, 완료 보고(02 §3.2-C) 또는 실패 보고(02 §3.2-D)를 출력으로 반환한다. 메시지 계약은 02가 소유하고, 호스팅 계약(등록·해소·교체·Bootstrap)은 01이 소유하며, 메시지가 흐르는 물리 채널은 각 spec의 §4 Adapter Binding 소관이다. 두 spec 모두 이 경계와 모순되지 않음을 확인했다.
+- 02-agent 조율: Agent 진입점(entrypoint) 계약의 정합 — 해소(Agent Module entrypoint = 위임 메시지(02 §3.2-B) 입력 → 완료 보고(02 §3.2-C)·실패 보고(02 §3.2-D) 출력. 메시지 계약 = 02 소유, 호스팅 계약(등록·해소·교체·Bootstrap) = 01 소유, 물리 채널 = 각 spec §4 소관. 02 §9-OQ-1 동일 기록 · 상세 = git 앵커 90ca19c).
 - 03-loop 조율 필요 — Runtime의 "Serve" 구간에서 Loop Engine이 소비하는 호스팅 계약(Config·계약 해소·자원 제공)의 정확한 노출 표면은 specs/03-loop.md와 정합 확인이 필요하다. Runtime은 호스팅 계약만 정의하고 루프 단계는 정의하지 않았다 (Glossary §9-OQ2 준수).
 
 **ARCHITECTURE 충돌:** 발견되지 않음. §3은 ARCHITECTURE 3.2(Modular)·5(스택)·5.1(Memory 단일 Port)과 Glossary §9-OQ1 결정에 정렬한다.
@@ -338,3 +330,5 @@ Advisor 에스컬레이션 대상.
 ## 결정 기록 (Advisor — Wave 4 통합)
 
 결정(Advisor — Wave 4 통합): specs/10-plugins.md §9의 요청에 따라 §3.1-A에 Deregister 연산을 추가했다. Registry 수명주기는 Runtime 소유이므로 Plugins가 우회 정의하지 않고 01이 소유한다. Plugin의 Deactivate/Remove(잔여물 0)는 이 연산 위에서 성립한다.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 OQ의 원문+답 이중 잔존 1줄화, Glossary 추가 요청 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen) 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — dependents(§2 목록 = 02·03·08·09·10·11) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

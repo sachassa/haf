@@ -1,7 +1,7 @@
 # specs/02-agent — Agent Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화 + §9-OQ-2 상위 규약 실측 정정·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -43,15 +43,16 @@ AGENT.md는 Agent의 원칙을 선언한다. 그러나 원칙만으로는 검증
 - 아키텍처 상 위치: Agent Layer (Component: Agent). Glossary §3.2-D의 Agent (Component) 규격이다.
 - 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것):
   - ARCHITECTURE.md 0.2 (실재)
-  - specs/00-glossary.md (실재, Status: Review)
-  - specs/TEMPLATE.md (실재)
+  - specs/00-glossary.md (실재, Status: Frozen)
+  - specs/TEMPLATE.md (실재, Status: Frozen)
   - AGENT.md (실재) — 상위 규약
   - ROADMAP.md v0.2 (실재)
 - 이 spec에 의존하는 spec:
   - specs/03-loop.md — Loop가 Agent Lifecycle을 구동한다.
   - specs/06-verifier.md — Verifier는 Agent 역할이며 이 spec의 역할 경계를 따른다.
   - specs/07-workflow.md — Workflow는 Agent에게 작업을 디스패치한다.
-- specs/01-runtime.md 관계: Runtime Layer가 Agent의 실행·수명주기·config를 관장한다. 01-runtime은 현재 동시 작성 중이다. 이 spec은 01의 내용에 의존하지 않으며, 계약 필드만 정의하고 실행 채널은 침범하지 않는다. 조율 지점은 §9에 기록한다.
+- specs/01-runtime.md 관계: Runtime Layer가 Agent의 실행·수명주기·config를 관장한다. 01-runtime은 Frozen 확정 상태다(종전 "동시 작성 중" 표기는 작성 시점 기록 — 2026-07-26 현행 정정). 이 spec은 01의 내용에 의존하지 않으며, 계약 필드만 정의하고 실행 채널은 침범하지 않는다. 조율 지점은 §9에 기록한다.
+- (위 상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01-runtime·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`.)
 - specs/04-memory.md, specs/05-lessons.md 관계: 이 spec의 §5와 §3.2-D는 Memory 접근 상세와 Lesson 생성 규칙을 04·05에 위임한다. 위임 방향의 참조이며 순환이 아니다 (04 §2·05 §2와 정합).
 - 순환 의존: 없다. 이 spec은 03/06/07에 의존하지 않는다. 의존은 항상 그들 → 02 방향이다.
 
@@ -281,16 +282,19 @@ Worker는 추측하지 않고 (O4) Advisor에게 에스컬레이션한다.
 
 # §9. Open Questions
 
-- **OQ-1 (01-runtime 조율 필요) — Agent 실행 채널.**
-  Agent의 실행·수명주기·config는 Runtime Layer(specs/01-runtime.md) 소관이다. Agent Component 계약이 Runtime에 요구하는 인터페이스(Agent 인스턴스화, 위임 메시지 전달 채널, 보고 회수 채널)의 정확한 형태는 01과 조율이 필요하다. 이 spec은 §3.2의 계약 필드만 정의하고 실행 채널은 침범하지 않았다. 01-runtime의 내용을 추측해 인용하지 않았다.
-  결정(Advisor — 조율 확정): Agent는 Runtime의 generic Module(hosted unit) 계약을 구현한다. Agent Module의 entrypoint는 이 spec §3.2-B 위임 메시지를 입력으로 받고 §3.2-C/D 보고를 출력으로 반환한다. 메시지 계약은 이 spec이 소유하고, 호스팅 계약은 01-runtime §3이 소유하며, 물리 전달 채널은 각 spec §4 Adapter Binding 소관이다 (01-runtime §9 동일 기록).
+- **OQ-1: Agent 실행 채널(01-runtime 조율)** — 해소(Agent는 Runtime의 generic Module(hosted unit) 계약을 구현한다. entrypoint = 이 spec §3.2-B 위임 메시지 입력 → §3.2-C/D 보고 출력. 메시지 계약 = 이 spec 소유, 호스팅 계약 = 01-runtime §3 소유, 물리 전달 채널 = 각 spec §4 소관. 01-runtime §9 동일 기록 · 상세 = git 앵커 90ca19c).
 
-- **OQ-2 (상위 규약 잠재 불일치 보고) — AGENT.md Delegation에 Planner 부재.**
-  AGENT.md Delegation은 Advisor/Worker/Verifier 3자만 명시하고 Planner를 명시하지 않는다. 반면 AGENT.md Purpose와 Glossary §3.2-E는 Planner를 4번째 역할로 포함한다. 이 spec은 Glossary §3.2-E 정의를 따랐다. AGENT.md Delegation에 Planner를 추가하는 것은 상위 규약 변경이므로, Glossary §9-OQ4 결정에 따라 사용자 승인 대상 제안으로 이관되어 있다. 이 spec은 AGENT.md를 수정하지 않았다. 반영 전까지 두 문서는 모순 없이 공존한다(AGENT.md = 위임 3자 예시, 이 spec/Glossary = Planner 보조 역할 명시).
+- **OQ-2: 상위 규약 잠재 불일치 보고 — AGENT.md Delegation의 Planner 취급.** 원 질문 요지 = 작성 시점의 AGENT.md Delegation이 Planner를 명시하지 않아 Glossary §3.2-E의 4역할 정의와 갈리는지. — **해소(실측 2026-07-26): AGENT.md §Delegation·§Roles에 Planner 반영 확인**(§Delegation = "Planner는 계획·브리프 초안만 작성한다. 스스로 채택하지 못한다" · §Roles & Boundaries = `### Planner` 소절 실재). 이 spec이 따른 Glossary §3.2-E 4역할 정의와 상위 규약이 정합하며 불일치는 남지 않는다. `uaf-verified: .claude/AGENT.md §Delegation·§Roles & Boundaries 직접 대조` · `uaf-allow-legacy: 앞의 "명시하지 않아 …갈리는지"는 해소된 원 질문의 작성 시점 요지 인용 — 현재형 주장 아님`
 
-- **OQ-3 (Glossary 추가 요청) — Best Practice.**
-  AGENT.md Memory는 "모든 성공은 Best Practice 후보가 된다"고 규정하나, Glossary §3.2에는 "Best Practice" 정의가 없다. §5 쓰기 계약이 이 용어를 참조한다. Glossary 추가 요청: Best Practice — 성공에서 도출된 재사용 가능한 모범 사례. Memory Service 위의 특화 기록 후보이며 다음 작업에서 회수된다. 확정 전까지 이 spec은 AGENT.md 원문 표현을 그대로 인용하고 새 정의를 만들지 않았다.
-  결정(Advisor): 승인. Glossary §3.2-C에 정의가 추가되었다. 이 spec의 §5 참조는 유효하다.
+- **OQ-3: Glossary 추가 요청 — Best Practice.** 용어 1종(Best Practice)은 00-glossary §3.2-C 정본 등재 완료(Advisor 승인). 이 spec §5 참조는 유효하다.
 
 - **OQ-4 (비차단 — 경계 명시) — Verify 주체·순서.**
   Lifecycle Verify 단계의 자체 점검, Verifier 역할의 독립 판정, Advisor의 최종 승인 사이의 정확한 시퀀싱은 specs/03-loop.md와 specs/06-verifier.md 소관이다. 이 spec은 "완료 보고는 Verify 통과 이후에만 생성된다"는 의무(INV-4)만 정의하고 단계 전이·판정 상세는 침범하지 않았다. 이 항목은 Frozen을 막지 않는다.
+
+## 결정 기록 (Advisor)
+
+(이 spec은 Wave 4 통합 시점에 별도 결정 기록 소절을 두지 않았다 — 아래는 그 자리에 append하는 격리 개정 이력이다. append-only.)
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 OQ(OQ-1·OQ-2·OQ-3)의 원문+답 이중 잔존 1줄화, §2 stale 상태 표기(Review·"동시 작성 중" → Frozen) 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — dependents(§2 목록 = 03·06·07) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.
+
+2026-07-26 OQ-2 해소(같은 회차 자기 행 교정 — 정책 §3.4 예외, 위 행에 OQ-2를 포함시켜 정합): OQ-2의 전제("AGENT.md Delegation이 Planner를 명시하지 않는다")가 실측과 반대임을 확인해 해소 상태로 전환했다 — AGENT.md §Delegation·§Roles & Boundaries 양쪽에 Planner가 반영되어 있다. 상위 규약과 Glossary §3.2-E 4역할 정의는 정합하며 이 spec의 계약(§3.2-A 역할 경계 등)은 무변경이다. `uaf-verified: .claude/AGENT.md §Delegation·§Roles & Boundaries 직접 대조` · `uaf-allow-legacy: 괄호 안 문면은 정정 대상이 된 종전 전제의 인용 — 정정 사유 기록에 필요한 이력 인용이며 현재형 주장 아님`

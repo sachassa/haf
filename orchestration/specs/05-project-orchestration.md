@@ -1,7 +1,7 @@
 # orchestration/specs/05-project-orchestration — Project Orchestration Specification
 
 작성일: 2026-07-13
-상태: v1.6 Baseline (CP2 5단계 전건 첫 판정 Pass — S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0 · CP3 승인 · 사용자 승인 2026-07-13)
+상태: v1.6 Baseline (CP2 5단계 전건 첫 판정 Pass — S1 8/0/0·S2 7/0/0·S3 10/0/0·S4 9/0/0·S5 9/0/0 · CP3 승인 · 사용자 승인 2026-07-13) · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c)
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -33,6 +33,7 @@
 | 2026-07-17 | v1.6 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. ① 인용/근거 4곳(§0 근거정본 §8 포인터·§0 UAHF 관계·§6·§7)을 "①의 핵심=무수정"→"substrate 라이브러리 무수정 import는 §2.5 하향 소비로 UAF-INV ①(접점 원칙)과 병존(루트 §8 병존 주)"으로 재서술. 의미 3(substrate 무수정 import/재사용·§6 "무수정 경계" 표제·내용·라이브러리 무수정 인용) 존치. PO-INV 1~8·§3 계약·게이트 5종·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
 | 2026-07-17 | v1.6 (정합) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §0 근거정본(:8)의 삭제 산출물(설계 정본) 참조 앵커 전환(`docs/project-orchestration-design.md@cd9247b`). PO-INV·§3 계약·게이트·§ 포인터 문면 무변경(참조 정합·버전 무상승). | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 | 2026-07-19 | v1.6 (명확화) | §DC-7 WBS(작업 분해) 소유 삼분 명확화 — §2.1 3분해 표 뒤에 명확화 문장 1개 append(관리=엔진 / 초안 분해=Planner Lifecycle 역할 / 실행=Worker · 2경로[a 엔진이 Planner-role proposal step 디스패치 / b Advisor 직접 위임 Planner 초안]). 위 §2.1 3분해·§3.4 2축 병존(4역할 Lifecycle 축 × Expert Role capability 축)의 인용 파생일 뿐 **재정의 0·새 계약/역할/용어 창설 0**("WBS"는 서술 라벨·정본 용어=Work Graph[Glossary J-07]). PO-INV·§3 계약·게이트·§9 기존 행 문면 무변경. | Worker (Advisor 위임) |
+| 2026-07-26 | v1.6 (정합) | md 슬림화 격리 개정(`docs/spec-versioning-policy.md` §3.2 유형 (B) 비계약). §0·§1 자기 재서술 압축(경계 항목·신규 소유 4종 표·substrate 관계·INV-3 무촉·경계 불가침 보존) · stale 교차 참조 정정(§6 불릿 1·§7 말미 "현 시점 미존재"·"S2~S5 예정" → 실재, 실측 근거는 §6에 기재). **계약 요소 무촉** — §2.1·§2.2·§3.1~§3.7(4종 레코드 스키마·게이트 5종·단조성·2축 병존)·§4 PO-INV 1~8·§5 바인딩 표·§6 무수정 경계·§9 기존 행 문면 무변경, § heading 삭제·개칭·재번호 0. | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, `entry/specs/01-entry.md` §9·`planning/specs/04-solution-design.md` §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -40,13 +41,13 @@
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본 배치 (UAF 레벨 Layer 상세 계약).** 이 문서는 **`orchestration/` Layer의 상세 계약 정본**이다. `orchestration/`은 **UAF 레벨 신규 최상위 Layer**이며, 루트 `ARCHITECTURE.md` §2.3 "Agentic Runtime (향후)" slot의 실현이다(플랜 원안의 UAHF 내부 프레이밍을 대체 — 사용자 배치 재검증 게이트 2026-07-13). 자매 = `entry/specs/01-entry.md`·`discovery/specs/02-discovery.md`·`planning/specs/03-project-contract.md`·`planning/specs/04-solution-design.md`(UAF spec 번호 계보 01~04를 승계한 5번째). Layer 개관(무엇이 어디에 있고 어떻게 연결되는가)은 `orchestration/ARCHITECTURE.md`가 소유하고, 본 문서는 상세 계약을 소유한다.
+- **정본 배치 (UAF 레벨 Layer 상세 계약).** 이 문서는 **`orchestration/` Layer의 상세 계약 정본**이다. `orchestration/`은 **UAF 레벨 신규 최상위 Layer**이며 루트 `ARCHITECTURE.md` §2.3 "Agentic Runtime (향후)" slot의 실현이다(사용자 배치 재검증 게이트 2026-07-13). 자매 = UAF spec 01~04(`entry/`·`discovery/`·`planning/`)를 승계한 5번째다. Layer 개관은 `orchestration/ARCHITECTURE.md`가, 상세 계약은 본 문서가 소유한다.
 
 - **UAHF와의 관계 = substrate 소비 (라이브러리 무수정 재사용).** 본 Layer의 중립 코드는 `uahf/framework/loop/step-host/` 중립 모듈을 **라이브러리로 무수정 import**하여 단일 run 실행을 substrate로 위임한다. 이는 루트 §2.5 "상위만이 하위를 안다"의 **허용 방향**(상위 UAF 컴포넌트가 하위 UAHF를 안다)이며, **substrate 라이브러리 무수정 import는 UAF-INV ①(접점 원칙)과 병존**하므로(루트 §8 병존 주 — substrate 소비는 §2.5 하향 방향) 읽기·라이브러리 재사용은 위반이 아니다. `uahf/` 정본·코드는 무촉이며, 본 트랙의 `uahf/` 트리 접촉은 정확히 2건(§5·§6 — Adapter 물리 경계 동거 바인딩 신설 + OQ-SH-4 1개소, 전부 비Frozen 경계)뿐이다.
 
-- **정본은 인용된 각 spec의 §3 계약이다.** 이 문서는 `uahf/specs/07-workflow.md`·`uahf/specs/02-agent.md`·`uahf/specs/03-loop.md`·`uahf/specs/06-verifier.md`의 계약과 `04-solution-design` §3.3·§3.4·§3.8·`03-project-contract` §3.4·§3.6의 계약을 **재정의·확장하지 않는다**. 이들은 정본 § 포인터로만 참조한다. 상류(`02-discovery`·`03-project-contract`·`04-solution-design`) 인용은 UAF 레벨 컴포넌트가 자신의 상류 파이프라인 산출물을 인수하는 **정상 방향**이다(루트 §2.5 — 상위가 하위·상류를 안다). 별도 방어적 정당화가 필요치 않다.
+- **정본은 인용된 각 spec의 §3 계약이다.** 이 문서는 `uahf/specs/07-workflow.md`·`02-agent.md`·`03-loop.md`·`06-verifier.md`의 계약과 `04-solution-design` §3.3·§3.4·§3.8·`03-project-contract` §3.4·§3.6의 계약을 **재정의·확장하지 않고 § 포인터로만 참조**한다. 상류(`02-discovery`·`03-project-contract`·`04-solution-design`) 인용은 UAF 레벨 컴포넌트가 상류 파이프라인 산출물을 인수하는 **정상 방향**이다(루트 §2.5).
 
-- **본 프로토콜이 새로 소유하는 계약 영역 (정직 구분).** 본 문서는 기존 계약을 재사용하는 데 더해 **다음 4종의 신규 계약 레코드를 직접 소유**한다. 이 4종은 기존 spec 어디에도 필드가 실재하지 않는 신규 소유물임을 정직하게 표기한다(설계 constraint 2 — "새 계약 요소 0" 주장을 복제하지 않는다. 이번엔 신규 계약이 실재한다).
+- **본 프로토콜이 새로 소유하는 계약 영역 (정직 구분).** 본 문서는 기존 계약 재사용에 더해 **다음 4종의 신규 계약 레코드를 직접 소유**한다 — 기존 spec 어디에도 필드가 실재하지 않는 신규 소유물임을 그대로 표기한다(설계 constraint 2 — "새 계약 요소 0" 주장을 복제하지 않는다).
 
   | 신규 소유 계약 | 소유 절 | 무엇을 새로 정의하는가 | 기존 계약과의 관계 |
   |---|---|---|---|
@@ -57,26 +58,19 @@
 
   **재사용과 신규 소유를 혼동하지 않는다.** Work Graph·Task·parallelSets·R1~R4·Merge, 이벤트 스키마·단계 상태 5종, 위임 8필드·완료 보고·4역할, verdict·VT, Expert Role·복잡도 판정·협업 State Machine, supersedes 계보는 전부 **재사용(재정의 0)**이다. 위 표 4종만 **본 Layer 신규 소유**다.
 
-- **INV-3 무촉 (UAF 레벨 Layer 신설이되 UAHF 6-Layer 무촉).** `orchestration/`은 UAF 파이프라인 축의 **최상위 물리 Layer**이며, UAHF 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter, `uahf/specs/00-glossary.md` §3.2-A)의 지층(stratum)이 **아니다**(`entry/`·`discovery/`·`planning/` 동형·v1.1 선례 = UAF 레벨 신설·UAHF 무수정). 따라서 Glossary INV-3("Layer는 정확히 6개다")는 **무촉**이며, 본 문서는 UAHF Layer 수를 늘리거나 새 UAHF Component·spec을 창설하지 않는다. **새 상태 열거도 창설하지 않는다**(`uahf/specs/03-loop.md` §3.2-B 5종 재사용 — §4).
+- **INV-3 무촉 (UAF 레벨 Layer 신설이되 UAHF 6-Layer 무촉).** `orchestration/`은 UAF 파이프라인 축의 **최상위 물리 Layer**이며 UAHF 6-Layer 스택(`uahf/specs/00-glossary.md` §3.2-A)의 지층(stratum)이 **아니다**(`entry/`·`discovery/`·`planning/` 동형·v1.1 선례). 따라서 Glossary INV-3("Layer는 정확히 6개다")는 **무촉**이며, UAHF Layer 수를 늘리거나 새 UAHF Component·spec을 창설하지 않는다. **새 상태 열거도 창설하지 않는다**(`uahf/specs/03-loop.md` §3.2-B 5종 재사용 — §4).
 
 - **경계 불가침 — 두 번째 Runtime·두 번째 Step Host 아님.** 본 Layer는 Step Host를 라이브러리로 무수정 재사용하며 별도 실행 엔진을 신설하지 않는다. **단일 run의 무인 관리는 Step Host가 완결 소유**하고, 본 Layer는 그 위에서 **run/작업 단위 입도**로 프로젝트 lifecycle(그래프 진화·게이트·할당·계보)을 조율한다 — 디스패치 입도는 run/작업 단위이지 개별 step이 아니다.
 
-- **이 문서는 Core 문서 관행을 따른다.** 본문 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명·실행 옵션 문자열을 두지 않는다(`uahf/framework/core/structure.md` §5 C-3 동형). 직렬화 형식·물리 배치·게이트 큐 제시 채널·capability→물리 호출 매핑·정책 실값은 중립 모듈 경계·Adapter Binding 문서 소관이며, 필요한 자리에는 소관 포인터만 둔다(§5).
+- **Core 문서 관행.** 본문 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명·실행 옵션 문자열을 두지 않고(`uahf/framework/core/structure.md` §5 C-3 동형), 직렬화 형식·물리 배치·게이트 큐 제시 채널·capability→물리 호출 매핑·정책 실값은 중립 모듈 경계·Adapter Binding 소관 포인터로만 가리킨다(§5).
 
 ---
 
 ## §1. 목적
 
-Project Orchestration 계약의 책임은 여섯 가지다.
+Project Orchestration 계약의 책임은 여섯 가지다 — (i) Orchestrator의 **위상** 확정(무엇을 조율하고 무엇을 판단하지 않는가·Step Host와의 관계 — §2), (ii) **Project Work Graph** 정의(`uahf/specs/07-workflow.md` §3.2-A 스키마의 상위 입도 무수정 재사용 — §3.1), (iii) **Graph Revision Ledger** 정의(진행 중 그래프 확장의 append-only 실현·결정성 조건 — §3.2), (iv) **Gate Policy·할당·모델·Artifact 계약** 확정(게이트 5종·단조성·Role/AgentSpec/Instance·모델 선택 정책·산출물 계보 — §3.3~§3.7), (v) **불변 PO-INV 8건** 확정(전부 기존 정본 불변의 파생 — §4), (vi) **Adapter 바인딩 지점·무수정 경계** 확정(§5·§6).
 
-- Project Orchestrator의 **위상**을 확정한다 — UAF 레벨 상위 컴포넌트로서 무엇을 조율하고 무엇을 판단하지 않는가, Step Host와의 관계(§2).
-- **Project Work Graph**를 정의한다 — `uahf/specs/07-workflow.md` §3.2-A Work Graph 스키마의 상위 입도 무수정 재사용(§3.1).
-- **Graph Revision Ledger**를 정의한다 — 진행 중 그래프 확장의 append-only 실현과 결정성 조건(§3.2).
-- **Gate Policy·할당·모델·Artifact 계약**을 확정한다 — 5종 게이트 어휘와 단조성, Role/AgentSpec/Instance 할당, 모델 선택 정책, 산출물 계보(§3.3~§3.7).
-- **불변 PO-INV 8건**을 확정한다 — 전부 기존 정본 불변의 파생(§4).
-- **Adapter 바인딩 지점·무수정 경계**를 확정한다(§5·§6).
-
-이 계약은 루트 `ARCHITECTURE.md` §11이 후속 트랙에 예약한 "Layer 연결·오케스트레이션 정식화"의 실현이며, **04-solution-design §3.9 확장 포인트 1·2의 실현**(04-solution-design 무수정 인용)이다. 자매 step-hosting-protocol이 확립한 형태 B 패턴(deterministic 구동자 + LLM 국소화 + append-only + 게이트 코드 강제)의 프로젝트 레벨 확장이되, UAHF 내부 편입이 아니라 UAHF를 substrate로 소비하는 UAF 레벨 컴포넌트다. 계약을 바꾸어야만 성립하는 위반이 발견되면 구현하지 않고 Advisor에게 보고한다(`uahf/framework/core/structure.md` §7 규칙 4 동형).
+이 계약은 루트 `ARCHITECTURE.md` §11이 예약한 "Layer 연결·오케스트레이션 정식화"의 실현이며 **04-solution-design §3.9 확장 포인트 1·2의 실현**(04 무수정 인용)이다. 자매 step-hosting-protocol이 확립한 형태 B 패턴(deterministic 구동자 + LLM 국소화 + append-only + 게이트 코드 강제)의 프로젝트 레벨 확장이되, UAHF 내부 편입이 아니라 UAHF를 substrate로 소비하는 UAF 레벨 컴포넌트다. 계약을 바꾸어야만 성립하는 위반이 발견되면 구현하지 않고 Advisor에게 보고한다(`uahf/framework/core/structure.md` §7 규칙 4 동형).
 
 ---
 
@@ -258,7 +252,7 @@ non-core 실행 경계 사이의 정확한 분할은 `uahf/framework/core/struct
 
 본 문서(S1 r2)는 **계약만** 확정하며 실행 코드·데이터를 생성하지 않는다(자매 step-hosting-protocol W1 동형·L-07). §5가 가리키는 산출물의 실측 상태와 무수정 경계는 다음과 같다.
 
-- **미존재를 실재로 쓰지 않는다(L-07).** §5의 중립 Orchestrator 모듈(`orchestration/framework/orchestrator/`)·직렬화·바인딩·run 데이터 백엔드·CP2 모델 독립 지정의 코드는 **현 시점 미존재**다. 후속 구현 단계(S2~S5)에서 생성 예정이며, 그때 provider·언어 토큰 0(전수 스캔)이 CP2 검증 대상이 된다(설계 §5).
+- **미존재를 실재로 쓰지 않는다(L-07).** 저술 시점(S1 r2)에는 §5 산출물이 미존재였고, **2026-07-26 실측 상태 = 실재**다 — 중립 Orchestrator 모듈(`orchestration/framework/orchestrator/` — 모듈 + 레코드 스키마 + tests)·Adapter 바인딩·run 데이터 백엔드·CP2 모델 독립 지정(Step Host `cp2_model`)이 S2~S5 구현으로 생성되었다. provider·언어 토큰 0은 그 산출물의 CP2 검증 대상이다(설계 §5). 검색 범위 = `orchestration/framework/orchestrator/`·`orchestration/adapters/claude/`·`uahf/framework/adapters/claude/orchestration-data/`·`uahf/framework/loop/step-host/` 4경로 조회.
 - **무수정 경계.** 본 문서는 다음을 무수정으로 둔다 — `uahf/specs` 00~13 Frozen(07/02/03/06 포함)·`04-solution-design`·`03-project-contract`·루트 `ARCHITECTURE.md`·step-hosting-protocol 본문·`uahf/framework/loop/step-host/`(OQ-SH-4 1개소 제외)·기존 Adapter 바인딩 본문·append-only 데이터. 전부 § 포인터 인용·라이브러리 무수정 import만이다.
 - **`uahf/` 트리 접촉은 정확히 2건.** (i) `uahf/framework/adapters/<adapter>/project-orchestration-binding.md` + `orchestration-data/` 신설(Adapter 물리 경계 동거 — UAF 레벨 바인딩 선례 4건 동형). (ii) Step Host 코드 1개소(CP2 검증 단위 모델 상속 지점) — CP2 Verifier 모델 독립 지정(OQ-SH-4 해소·S4·테스트 갱신 동반). 그 외 정본·중립 코드는 전부 `orchestration/` 신규 Layer 소유다. substrate 라이브러리 무수정 import는 UAF-INV ①(접점 원칙)과 병존하며(루트 §8 병존 주), 이 2건은 모두 비Frozen 경계의 신설·명시 변경이다.
 - **트랙 종단 별도 결정(선전제 금지).** 루트 라우터 등재(`orchestration/` 1행 — 루트 문서버전 상승·사용자 게이트)·step-hosting-protocol §9 이력 append·Contract 성숙 재발행은 트랙 종단 별도 결정이다. 배치·프레이밍 자체는 2026-07-13 사용자 결정으로 해소되었다.
@@ -273,5 +267,5 @@ non-core 실행 경계 사이의 정확한 분할은 `uahf/framework/core/struct
 - **UAHF 관계 = substrate 라이브러리 무수정 소비.** `uahf/` 트리 접촉은 정확히 2건(바인딩 신설·OQ-SH-4 1개소)뿐이며 substrate 소비로서 UAF-INV ①(접점 원칙)과 병존한다(루트 §8·§0·§6).
 - **본 Layer가 새로 소유하는 계약 4종** — RevisionEvent(§3.2)·GatePolicyEntry(§3.3)·AgentSpec(§3.4)·ArtifactRecord(§3.6). 기존 계약(Work Graph·Task·이벤트·상태 5종·위임·verdict·Expert Role·supersedes 계보)은 전부 재사용(재정의 0)이다(§0).
 - **Graph Revision Ledger** = Decompose 반복 실행 산출의 append-only 합성. fold 파생 뷰·결정성 3조건·`task_superseded` 문면 불변 포인터 append(§3.2). **Gate Policy** = 5종 어휘·기존 계약 매핑·게이트 단조성·Autonomy 직교(§3.3). **할당** = Role/AgentSpec/Instance 3층 + 4역할 병존(§3.4). **Model Selection** = Policy as Data·hysteresis·CP2 모델 독립(OQ-SH-4)(§3.5). **Artifact Record** = append-only 계보·approvalState 파생 뷰·레지스트리 파생 인덱스(§3.6).
-- **PO-INV 8건은 전부 기존 정본(SH-INV/SP-INV/PC-INV/C-3)의 파생**이며 새 Core Contract 0이다(§4). 값·물리 실현은 `orchestration/framework/orchestrator/`·Adapter Binding 소관이고 현재 미존재(S2~S5 예정)다(§5·§6).
+- **PO-INV 8건은 전부 기존 정본(SH-INV/SP-INV/PC-INV/C-3)의 파생**이며 새 Core Contract 0이다(§4). 값·물리 실현은 `orchestration/framework/orchestrator/`·Adapter Binding 소관이며 S2~S5 구현으로 실재한다(§5·§6 — 2026-07-26 실측).
 - 본문에 특정 AI·모델·제품 기능·언어·툴체인·직렬화 형식·실행 옵션 토큰은 0건이다(C-3). 본 Layer는 루트 §11 "Layer 연결·오케스트레이션 정식화"와 `04-solution-design` §3.9 확장 포인트 1·2의 실현이다.

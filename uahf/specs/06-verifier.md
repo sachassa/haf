@@ -1,7 +1,7 @@
 # specs/06-verifier — Verifier Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -45,12 +45,14 @@ Verifier는 판정 기준 카탈로그·검증 리포트·재작업 지시·독�
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 특히 3.4 Verify Everything. 최상위 기준.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본.
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD. DoD 8항목 자체가 규격 준수 검증(§3.2-E VT-3)의 대표 대조 기준이다.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본.
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD. DoD 8항목 자체가 규격 준수 검증(§3.2-E VT-3)의 대표 대조 기준이다.
 - .claude/AGENT.md (실재) — 상위 규약. 특히 Verification, Memory.
-- specs/02-agent.md (실재, Review) — 역할 경계(§3.2-A), 완료 보고(§3.2-C), 실패 보고(§3.2-D). 판정 대상 계약이다.
-- specs/01-runtime.md (실재, Review) — Verifier Module 호스팅 계약, Failure Report(§3.2-D) 구분.
+- specs/02-agent.md (실재, Frozen) — 역할 경계(§3.2-A), 완료 보고(§3.2-C), 실패 보고(§3.2-D). 판정 대상 계약이다.
+- specs/01-runtime.md (실재, Frozen) — Verifier Module 호스팅 계약, Failure Report(§3.2-D) 구분.
 - ROADMAP.md v0.5 (실재) — Verifier 완료 조건과 산출물.
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted" 표기는 작성 시점 기록이었다.)
 
 ## 이 spec에 의존하는 spec (dependents)
 
@@ -338,22 +340,18 @@ Advisor 에스컬레이션 대상.
 
 **타 spec 조율:**
 
-- **OQ-V1 (03-loop 조율 — 경계 명시, 02 §9-OQ-4 응답).**
-  02 §9-OQ-4는 "Verify 단계의 자체 점검, Verifier 독립 판정, Advisor 최종 승인의 정확한 시퀀싱"을 03-loop와 06의 소관으로 지목했다. 응답: 세 행위의 **역할 구분**은 확정한다 — 자체 점검은 Worker(02 §3.2-C), 독립 판정은 Verifier(이 spec §3.1), 최종 승인·재량 판정은 Advisor(02 §3.2-A). 세 행위의 **시점·전이·시퀀싱**은 이 spec이 정의하지 않는다 (INV-9, specs/03-loop.md 소관). 06은 판정 기준·검증 리포트·독립성 계약만 소유한다. 03-loop 완성 시 시퀀싱 정합을 확인한다. 03의 내용을 추측·인용하지 않았다.
+- **OQ-V1: 03-loop 조율 — Verify 3행위의 경계(02 §9-OQ-4 응답)** — 해소(역할 구분 확정 = 자체 점검 Worker(02 §3.2-C) · 독립 판정 Verifier(이 spec §3.1) · 최종 승인·재량 판정 Advisor(02 §3.2-A). 시점·전이·시퀀싱은 이 spec이 정의하지 않는다(INV-9, 03-loop 소관). 03 §3.1-A 게이트-단계 매핑과 대조해 정합 확인 완료 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-- **OQ-V2 (05-lessons 조율).**
-  검증 결과(위반·거짓 완료 보고)가 Lesson 후보가 되는 상세 규칙(생성 조건·포맷·회수)은 specs/05-lessons.md 소관이다. 06은 "모든 실패는 Lesson 후보"(AGENT.md, 02 §3.2-D)라는 상위 규약만 참조하고, §5에서 접근 경로 계약만 정의했다. 05의 내용을 추측하지 않았다. 05 완성 시 §5 쓰기 계약과 정합을 확인한다.
+- **OQ-V2: 05-lessons 조율** — 해소(검증 결과의 Lesson 후보화 상세 규칙은 05 소관이며, 05 §3.1-A Register Candidate와 정합 확인 완료. 06은 상위 규약 참조와 §5 접근 경로 계약만 소유 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-- **OQ-V3 (07-workflow 조율 — 비차단).**
-  Workflow의 병합·검증(ROADMAP v0.7)이 이 Verifier 판정 계약을 소비하는 정확한 표면은 07 완성 시 확인한다. 이 spec은 07을 추측하지 않았다. 이 항목은 Frozen을 막지 않는다.
+- **OQ-V3: 07-workflow 조율 (비차단)** — 해소(07 INV-5(검증 후 병합)가 06 판정을 선행 조건으로 소비 — 정합 확인 완료 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-- **OQ-V4 (01-runtime 정합 — 확인 완료).**
-  Verifier는 Runtime의 generic Module로 호스팅된다 (01 §4.1 `framework/verifier/`). 두 실패 구조는 목적이 다르며 충돌하지 않는다 — 01 §3.2-D Failure Report는 Runtime 연산 실패용이고, 이 spec §3.2-A 검증 리포트는 판정 산출물이다. Verifier 자신의 연산 실패(산출물 접근 불가 등)와 판정 대상의 `final_verdict = Fail`을 §3.1에서 명시적으로 구분했다.
+- **OQ-V4: 01-runtime 정합** — 해소(Verifier는 Runtime의 generic Module로 호스팅된다(01 §4.1 `framework/verifier/`). 01 §3.2-D Failure Report(Runtime 연산 실패)와 이 spec §3.2-A 검증 리포트(판정 산출물)는 목적이 달라 충돌하지 않으며, Verifier 자신의 연산 실패와 판정 대상의 `final_verdict = Fail`을 §3.1에서 구분했다 · 상세 = git 앵커 90ca19c).
 
 **Glossary 승격 후보 (Advisor 판단 대상, Glossary §9-OQ6 흐름):**
 
-- 이 spec은 새 용어를 신설하지 않았다. 핵심 명사는 ROADMAP v0.5 어휘("검증 리포트", "재작업 지시", "거짓 완료 보고")이거나 Glossary 기존 용어(Verifier, Worker 완료 보고, 검증, 판정)이거나 평이한 열거 값(충족/위반/판정 불가, 통과/실패/조건부)이다. 상세 필드의 정본은 이 spec §3.2가 유지한다.
-- 승격 후보: 03·05·07이 이 spec을 참조하며 아래 용어를 교차 참조할 경우, Advisor 판단으로 Glossary에 정본화할 수 있다 — 검증 리포트(Verification Report, §3.2-A), 검증 유형(Verification Type, §3.2-E), 재작업 지시(Rework Instruction, §3.2-D), 거짓 완료 보고(False Completion Report, §3.2-F). 확정 전까지 타 spec은 이 spec의 § 포인터로 참조한다(02가 자신의 메시지 포맷을 참조시킨 방식과 동일). 06이 단독으로 Glossary를 수정하지 않았다.
+- 이 spec은 새 용어를 신설하지 않았다. 핵심 명사는 ROADMAP v0.5 어휘이거나 Glossary 기존 용어이거나 평이한 열거 값이다. 상세 필드의 정본은 이 spec §3.2가 유지한다.
+- 승격 후보 4종(검증 리포트 Verification Report §3.2-A · 검증 유형 Verification Type §3.2-E · 재작업 지시 Rework Instruction §3.2-D · 거짓 완료 보고 False Completion Report §3.2-F)은 00-glossary §3.2-J-06 정본 등재 완료(Advisor 승인). 06이 단독으로 Glossary를 수정하지 않았다.
 
 **ARCHITECTURE 충돌:** 발견되지 않음. §3은 ARCHITECTURE.md 3.4(Verify Everything)에 정렬한다 — 검증되지 않은 결과는 완료가 아니다(INV-7).
 
@@ -363,3 +361,5 @@ Advisor 에스컬레이션 대상.
 - OQ-V2: 05 완성 확인 — 검증 실패의 Lesson 후보화는 05 §3.1-A Register Candidate와 정합.
 - OQ-V3: 07 완성 확인 — 07 INV-5(검증 후 병합)가 06 판정을 선행 조건으로 소비. 정합.
 - Glossary 승격 후보 4건(검증 리포트·검증 유형·재작업 지시·거짓 완료 보고) 승인 — Glossary §3.2-J 반영.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 OQ(OQ-V1~V4)의 원문+답 이중 잔존 1줄화, Glossary 승격 후보 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen) 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체·§6·§7·§8 규범-예시(거짓 완료 검출·Conditional 경계·Pass 워크스루) 무촉, dependents(§2 목록 = 03·05·07) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

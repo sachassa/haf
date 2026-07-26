@@ -1,7 +1,7 @@
 # specs/13-harness — Harness Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화 + §9-OQ-H5 상위 규약 실측 정정·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -43,16 +43,18 @@ Harness는 그 구성이 항상 만족해야 할 무결성 규칙과, 부트스�
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 3.2 Modular, 3.4 Verify Everything, 6 Core Components.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본. 특히 Harness 정의(§3.2-D), 역할 정의(§3.2-E).
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본. 특히 Harness 정의(§3.2-D), 역할 정의(§3.2-E).
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
 - .claude/AGENT.md (실재) — Agent 공통 규약. 부트스트랩 하네스의 상위 규약 실물.
-- specs/01-runtime.md (실재, Review) — 호스팅 계약. Harness는 이 계약의 최소 부분집합 선택이다.
-- specs/02-agent.md (실재, Review) — 역할 경계·위임/보고 프로토콜의 정본.
+- specs/01-runtime.md (실재, Frozen) — 호스팅 계약. Harness는 이 계약의 최소 부분집합 선택이다.
+- specs/02-agent.md (실재, Frozen) — 역할 경계·위임/보고 프로토콜의 정본.
 - ROADMAP.md v0.2(Agent Harness Bootstrap), v0.9(Adapter & Scaffold 정식화) (실재).
 
 ## 이 spec에 의존하는 spec (dependents)
 
-- specs/12-scaffold.md — Scaffold가 신규 프로젝트에 설치하는 초기 형태가 Harness의 최소 구성(§3.2-A)이다. 의존 방향은 12 → 13이다. 12는 동시 작성 중이므로 설치 계약의 정밀 조율은 §9에 기록한다.
+- specs/12-scaffold.md — Scaffold가 신규 프로젝트에 설치하는 초기 형태가 Harness의 최소 구성(§3.2-A)이다. 의존 방향은 12 → 13이다. 설치 계약의 정밀 조율은 §9에 기록되며 해소되었다(§9-OQ-H1).
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·12·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted"·"동시 작성 중" 표기는 작성 시점 기록이었다.)
 
 ## 순환 의존
 
@@ -261,27 +263,19 @@ Advisor 에스컬레이션 대상.
 
 **타 spec 조율:**
 
-- **OQ-H1 (12-scaffold 조율 필요) — Scaffold와 Harness의 설치 관계.**
-  Scaffold(specs/12-scaffold.md)가 신규 프로젝트에 설치하는 초기 형태가 Harness의 최소 구성(§3.2-A)이다. 설치 대상 목록·순서·설치 후 초기 상태의 정확한 계약은 12와 조율이 필요하다. 12는 동시 작성 중이며, 그 내용을 추측·인용하지 않았다. Harness는 "설치 대상 = 최소 구성 집합(§3.2-A)"만 선언하고, 설치 메커니즘은 12 소관으로 남긴다. 전이 조건 4(§3.2-B)가 이 조율에 의존한다.
+- **OQ-H1: Scaffold와 Harness의 설치 관계(12 조율)** — 해소(설치 대상 = 이 spec §3.2-A 최소 구성 집합. Harness는 "설치 대상 = 최소 구성 집합"만 선언하고 설치 메커니즘은 12 소관으로 남긴다. 전이 조건 4(§3.2-B)가 이 조율에 의존하며 충족 가능해졌다 — 12 §9-OQ-2 동일 결정 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-- **OQ-H2 (07-workflow 경계 확인 — 비차단) — 검증 게이트와 병렬 오케스트레이션.**
-  Harness는 위임 사이클에 검증 게이트가 존재할 것만 요구한다 (H-INV-4). 큰 작업의 분해·병렬 디스패치·병합·충돌 처리 상세는 specs/07-workflow.md 소관이다. Harness는 07의 오케스트레이션을 정의하지 않으며, 검증 게이트의 "존재"만 불변 규칙으로 요구한다. 07 확정 시 정합만 확인한다. 이 항목은 Frozen을 막지 않는다.
+- **OQ-H2: 검증 게이트와 병렬 오케스트레이션(07 경계 — 비차단)** — 해소(Harness는 위임 사이클에 검증 게이트가 존재할 것만 요구한다(H-INV-4). 분해·병렬 디스패치·병합·충돌 처리 상세는 07 소관 — 경계 정합 확인 완료, 비차단 유지).
 
-- **OQ-H3 (06-verifier 경계 확인 — 비차단) — 검증 게이트의 판정 기준.**
-  검증 게이트(H-INV-4)의 상세 판정 기준·리포트 포맷은 specs/06-verifier.md 소관이다. Harness는 게이트의 존재와 "구현 주체와 검증 주체의 분리"(H-INV-2)만 요구한다. 06 확정 시 정합만 확인한다. 이 항목은 Frozen을 막지 않는다.
+- **OQ-H3: 검증 게이트의 판정 기준(06 경계 — 비차단)** — 해소(게이트의 상세 판정 기준·리포트 포맷은 06 소관. Harness는 게이트의 존재와 "구현 주체와 검증 주체의 분리"(H-INV-2)만 요구 — 경계 정합 확인 완료, 비차단 유지).
 
-**Glossary 추가 요청** (본 spec이 형식화하나 Glossary §3.2에 정본 항목이 없는 Harness 소유 용어. Glossary §9-OQ6 흐름에 따라 정본화 요청. Advisor 승인 전까지 새 canonical 정의를 Glossary에 만들지 않고 본 spec에서만 사용):
+**Glossary 추가 요청:**
 
-- **OQ-H4 (Glossary 추가 요청) — Harness 소유 용어 4건.**
-  - 최소 구성 집합 (Minimal Composition Set) — Harness가 성립하기 위해 반드시 존재해야 하는 5개 필수 요소의 집합. 정본 필드는 본 spec §3.2-A.
-  - Harness 상태 (Bootstrap / Formal) — 부트스트랩 하네스와 정식 Harness의 두 상태. 전이 조건은 본 spec §3.2-B.
-  - 검증 게이트 (Verification Gate) — 완료 보고를 독립 검증 없이 승인하지 않는 통제 지점. 상세 판정은 06 소관.
-  - 작업 추적 (Task Tracking) — 위임 사이클의 진행·완료 상태와 설계 결정을 기록·추적하는 최소 구성 요소.
+- **OQ-H4: Harness 소유 용어 4건** — 용어 4종(최소 구성 집합 Minimal Composition Set · Harness 상태(Bootstrap/Formal) · 검증 게이트 Verification Gate · 작업 추적 Task Tracking)은 00-glossary §3.2-J-13 정본 등재 완료(요청 4건 전부 Advisor 승인). 상세 필드·전이 조건의 정본은 이 spec §3.2-A/B가 유지한다.
 
 **상위 규약 정합 확인 (비차단) — Planner와 최소 구성.**
 
-- **OQ-H5 (비차단 — 기존 결정 흐름 참조).**
-  Harness 최소 구성은 "Agent 역할 정의 4종"을 요구한다 (§3.2-A, Glossary §3.2-E). 그러나 AGENT.md Delegation은 Advisor/Worker/Verifier 3자만 명시하고 Planner를 명시하지 않는다. 이는 이미 02 §9-OQ2와 Glossary §9-OQ4에서 기록·이관된 사안이다. 이 spec은 Glossary §3.2-E의 4역할 정의를 따랐고 AGENT.md를 수정하지 않았다. AGENT.md Delegation에 Planner를 추가하는 것은 상위 규약 변경이므로 사용자 승인 대상 제안으로 남아 있다. 반영 전까지 두 문서는 모순 없이 공존한다. 이 항목은 Frozen을 막지 않는다.
+- **OQ-H5: Planner와 최소 구성의 상위 규약 정합.** 원 질문 요지 = 최소 구성이 요구하는 "Agent 역할 정의 4종"(§3.2-A, Glossary §3.2-E)에 대해 작성 시점의 AGENT.md Delegation이 Planner를 명시하지 않아 갈리는지(02 §9-OQ-2·Glossary §9-OQ4와 동일 사안). — **해소(실측 2026-07-26): AGENT.md §Delegation·§Roles에 Planner 반영 확인**(§Delegation = "Planner는 계획·브리프 초안만 작성한다. 스스로 채택하지 못한다" · §Roles & Boundaries = `### Planner` 소절 실재). 최소 구성의 4역할 요구와 상위 규약이 정합한다. `uaf-verified: .claude/AGENT.md §Delegation·§Roles & Boundaries 직접 대조` · `uaf-allow-legacy: 앞의 "명시하지 않아 …갈리는지"는 해소된 원 질문의 작성 시점 요지 인용 — 현재형 주장 아님`
 
 **ARCHITECTURE 충돌:** 발견되지 않음. §3은 ARCHITECTURE 3.2(Modular, 최소 부분집합)·3.4(Verify Everything)·6(Harness는 Core Component)과 Glossary §3.2-D 정의에 정렬한다.
 
@@ -291,3 +285,6 @@ Advisor 에스컬레이션 대상.
 - OQ-H2/OQ-H3: 07·06 완성 확인 — 경계 정합. 비차단 유지.
 - OQ-H4 Glossary 추가 요청 4건 승인 — Glossary §3.2-J 반영.
 - OQ-H5: 기존 사용자 승인 대기 제안(AGENT.md Delegation에 Planner 추가)과 동일 사안 — 유지.
+- OQ-H5 해소(2026-07-26 실측) — AGENT.md 반영 확인. 위 Wave 4 기재는 그 시점의 기록으로 무수정 보존한다(`uaf-allow-legacy: Wave 4 시점의 승인 대기 상태 기록 — 정책 §3.4 append-only·시점 불변`). `uaf-verified: .claude/AGENT.md §Delegation·§Roles & Boundaries 직접 대조`
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 OQ(OQ-H1~H4)의 원문+답 이중 잔존 1줄화, Glossary 추가 요청 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen)·"동시 작성 중" 서술 현행 정정. OQ-H5는 같은 회차 자기 행 교정(정책 §3.4 예외)으로 해소 전환 — 그 전제("AGENT.md Delegation이 Planner를 명시하지 않는다")가 실측과 반대임을 확인했다(`uaf-allow-legacy: 괄호 안 문면은 정정 대상이 된 종전 전제의 인용 — 정정 사유 기록에 필요한 이력 인용이며 현재형 주장 아님`). 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체·§6·§7·§8 규범-예시(self-hosting 위임 사이클·부트스트랩→정식 전이 워크스루) 무촉, dependents(§2 목록 = 12) 참조 영향 0(정책 §4-a·§4-c). §8 예1의 "미작성 상태" 서술은 당시 위임 시점의 사실 기록이므로 보존한다(`uaf-allow-legacy: §8 예1은 부트스트랩 하네스 self-hosting 사이클의 이력 인용 — 시점 기록 보존`). 종전 문면 = git 앵커 90ca19c.

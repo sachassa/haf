@@ -1,7 +1,7 @@
 # specs/12-scaffold — Scaffold Specification
 
 Version: 0.1
-Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05)
+Status: Frozen (v0.1 기준선 — 사용자 승인, 2026-07-05 · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c))
 근거: ARCHITECTURE.md 0.2
 상위 규약: AGENT.md
 
@@ -43,10 +43,10 @@ Scaffold는 그 구조가 유효함을 스스로 검증하고, 재실행 시 멱
 ## 의존하는 문서 (이 spec을 읽기 전에 이해가 필요한 것)
 
 - ARCHITECTURE.md 0.2 (실재) — 최상위 기준. 특히 3.2 Modular, 5 스택, 6 Core Components.
-- specs/00-glossary.md (실재, Review) — 모든 용어의 정본. 특히 §3.2-D Scaffold 정의.
-- specs/TEMPLATE.md (실재, Adopted) — 문서 구조와 DoD.
-- specs/01-runtime.md (실재, Review) — Bootstrap 계약(§3.1-C)과 Config 스코프(§3.2-B).
-- specs/02-agent.md (실재, Review) — Agent 정의의 계약과 역할 경계.
+- specs/00-glossary.md (실재, Frozen) — 모든 용어의 정본. 특히 §3.2-D Scaffold 정의.
+- specs/TEMPLATE.md (실재, Frozen) — 문서 구조와 DoD.
+- specs/01-runtime.md (실재, Frozen) — Bootstrap 계약(§3.1-C)과 Config 스코프(§3.2-B).
+- specs/02-agent.md (실재, Frozen) — Agent 정의의 계약과 역할 경계.
 - .claude/AGENT.md (실재) — Agent 공통 규약.
 - ROADMAP.md v0.9 (실재) — Scaffold 완료 조건("설치 → 루프 동작")과 산출물.
 
@@ -54,7 +54,9 @@ Scaffold는 그 구조가 유효함을 스스로 검증하고, 재실행 시 멱
 
 - 현재 확정된 hard dependent는 없다.
 - specs/11-adapters.md — 이 spec의 이식 교체 지점(§4.2)을 Adapter Interface로 정식화한다 (11 조율, §9).
-- specs/13-harness.md — Scaffold가 Harness를 설치하는 관계. 조율 중이다 (§9-OQ2). 13의 내용을 추측·인용하지 않았다.
+- specs/13-harness.md — Scaffold가 Harness를 설치하는 관계. 조율 해소됨 (§9-OQ2).
+
+(상태 표기는 2026-07-26 현행 정합 — 규율 대상 15종(numbered spec 14 + TEMPLATE)이 전부 Frozen 확정이다. `uaf-verified: 00-glossary·01·02·13·TEMPLATE 머리 상태 라인·docs/spec-versioning-policy.md §2.2 대조`. 종전 "Review"·"Adopted"·"조율 중" 표기는 작성 시점 기록이었다.)
 
 ## 순환 의존
 
@@ -309,23 +311,15 @@ Uninstall 입력: 설치된 프로젝트 구조 + Install Manifest.
 
 Advisor 에스컬레이션 대상.
 
-- **OQ-1 (Layer 귀속 확인 — Glossary §9-OQ6 흐름) — Scaffold의 Layer 귀속.**
-  Scaffold는 Core Component(Glossary §3.2-D)다. 그러나 6개 Layer 중 어디에 귀속되는지는 Glossary가 아직 확정하지 않았다(§9-OQ6). 이 spec은 ROADMAP v0.9가 Scaffold를 Presentation 최소 기능과 함께 묶은 점에 근거해, Scaffold의 사용자 대면 호출 표면을 Presentation Layer에 귀속하는 것을 제안한다. 단, Scaffold의 산출물(설치 구조)은 Runtime이 Bootstrap하는 대상이므로 실행 스택의 특정 위치에 고정되지 않는 설치 단계 도구라는 해석도 가능하다. Advisor 확정을 요청한다. 확정 전까지 §2는 Layer를 단정하지 않는다.
+- **OQ-1: Scaffold의 Layer 귀속** — 해소(Scaffold의 사용자 대면 호출 표면은 Presentation Layer에 귀속하고, 산출물은 전 Layer에 걸치는 설치 도구 성격을 병기한다(00-glossary §3.2-D 매핑표 반영). §2의 "Layer를 단정하지 않는다"는 이 결정으로 해소 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-- **OQ-2 (13-harness 조율 필요) — Scaffold와 Harness의 관계.**
-  Scaffold는 설치 도구이고 Harness(specs/13-harness.md)는 설치되는 실행 골격이다. Scaffold의 설치 산출물 중 어디까지가 Harness의 최소 실행 골격에 해당하는지, 그리고 Scaffold가 Harness를 어떤 계약으로 설치하는지는 13과 조율이 필요하다. 13은 동시 작성 중이므로 이 spec은 13의 내용을 추측·인용하지 않았다. 관계 정의는 13 완성 후 확정한다.
+- **OQ-2: Scaffold와 Harness의 관계(13 조율)** — 해소(설치 대상 = 13 §3.2-A 최소 구성 집합. 설치 메커니즘·계약은 12 소유, 최소 구성의 정의는 13 소유. 13 §3.2-B 전이 조건 4가 이 조율로 충족 가능해진다 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-- **OQ-3 (10-plugins 경계 확인) — 초기 설치 vs Plugin 설치.**
-  Scaffold는 초기 설치만 담당하고 이후 Plugin 설치는 specs/10-plugins.md 소관이다. `moduleSelection`이 초기 설치 대상 Module 집합과 Plugin으로 추가되는 기능 묶음 사이의 경계를 어디에 두는지는 10과 조율이 필요하다. 10은 동시 작성 중이므로 이 spec은 10의 내용을 추측하지 않았다. 이 항목은 Frozen을 막지 않는다.
+- **OQ-3: 초기 설치 vs Plugin 설치(10 경계)** — 해소(초기 설치(`moduleSelection`)는 12 소관, 이후 추가 기능 묶음은 10 소관 — 모순 없음 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-- **OQ-4 (03-loop 조율 — 비차단) — 설치 직후 루프 구동 진입점.**
-  §3.2-C CK-5와 §7이 "설치 직후 루프가 동작함"을 완료 기준으로 삼는다. 루프의 구동·단계 전이 계약은 specs/03-loop.md 소관이다. 이 spec은 루프 구동 결과(1 사이클 통과)만 판정 대상으로 삼고 루프 내부를 정의하지 않았다. "설치 직후 루프 구동" 진입점의 정합을 03과 확인할 필요가 있다. 이 항목은 Frozen을 막지 않는다.
+- **OQ-4: 설치 직후 루프 구동 진입점(03 조율 — 비차단)** — 해소(§3.2-C CK-5의 "루프 1 사이클 구동"은 03 §3.1의 단일 사이클 연산 호출로 정합. 이 spec은 루프 구동 결과만 판정 대상으로 삼고 루프 내부를 정의하지 않는다 · 상세 = 결정 기록 소절·git 앵커 90ca19c).
 
-- **Glossary 추가 요청** (본 spec이 정의·형식화하지만 Glossary §3.2에 정본 항목이 없는 Scaffold 고유 계약 용어. Glossary §9-OQ6 흐름에 따라 정본화 요청):
-  - Glossary 추가 요청: Project Template (프로젝트 템플릿) — Scaffold가 설치하는 구조의 추상 정의. 구성은 이 spec §3.2-A. (ROADMAP v0.9 산출물 "프로젝트 템플릿"의 정본화.)
-  - Glossary 추가 요청: Install Manifest (설치 매니페스트) — Scaffold 설치 내용의 서술자. 필드는 이 spec §3.2-B. 멱등성·제거의 기준.
-  - Glossary 추가 요청: 설치 검증 체크리스트 (Install Verification Checklist) — 설치 유효성 판정 계약. 항목은 이 spec §3.2-C.
-  확정 전까지 이 spec §3.2가 세 용어 정의의 정본을 유지한다. 사유 코드(§3.2-D)는 국소 열거값이므로 Glossary 대상이 아니다 (01 §3.2-D reason 코드 선례와 동일).
+- **Glossary 추가 요청** — 용어 3종(Project Template 프로젝트 템플릿 · Install Manifest 설치 매니페스트 · 설치 검증 체크리스트 Install Verification Checklist)은 00-glossary §3.2-J-12 정본 등재 완료(요청 3건 전부 Advisor 승인). 상세 필드의 정본은 이 spec §3.2-A/B/C가 유지한다. 사유 코드(§3.2-D)는 국소 열거값이므로 Glossary 대상이 아니다 (01 §3.2-D reason 코드 선례와 동일).
 
 - **ARCHITECTURE 충돌:** 발견되지 않음. §3은 ARCHITECTURE 3.2(Modular), 6(Core Components에 Scaffold 포함), 5.1(Memory 단일 Port)과 Glossary §3.2-D 정의에 정렬한다.
 
@@ -336,3 +330,5 @@ Advisor 에스컬레이션 대상.
 - OQ-3: 경계 확정 — 초기 설치(moduleSelection)는 12, 이후 추가 기능 묶음은 10 소관. 모순 없음.
 - OQ-4: 03 완성 확인 — CK-5의 "루프 1 사이클 구동"은 03 §3.1의 단일 사이클 연산 호출로 정합.
 - Glossary 추가 요청 3건 승인 — Glossary §3.2-J 반영.
+
+2026-07-26 정합(격리 개정 — 유형 (B), docs/spec-versioning-policy.md §3.2): md 슬림화 — §9 해소 OQ(OQ-1~OQ-4)의 원문+답 이중 잔존 1줄화, Glossary 추가 요청 블록의 등재 완료 1줄화, §2 stale 상태 표기(Review/Adopted → Frozen)·"조율 중"·"동시 작성 중" 서술 현행 정정. 계약 요소(연산·데이터 포맷·필드·불변·완료 조건·의미) 무변경 — §3 전체(CK-1~CK-8 포함)·§4.1/§4.2·§6·§7·§8 무촉, dependents(§2 = hard dependent 0 · 11·13 조율) 참조 영향 0(정책 §4-a·§4-c). 종전 문면 = git 앵커 90ca19c.

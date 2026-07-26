@@ -1,7 +1,7 @@
 # discovery/specs/02-discovery — Project Discovery Specification
 
 작성일: 2026-07-07
-상태: v1.1 Baseline (CP2 첫 판정 Pass 15/0/0 · CP3 승인 · 사용자 승인 2026-07-07)
+상태: v1.1 Baseline (CP2 첫 판정 Pass 15/0/0 · CP3 승인 · 사용자 승인 2026-07-07) · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c)
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -20,6 +20,7 @@
 | 2026-07-07 | v1.1 Draft (Module부 완성) | **Module부 완성** — §3.9 Module Structure(7모듈 책임·경계·상호 의존 표)·§3.10 Strategy Provider Interface(Capability 선언·입출력 계약·레퍼런스 Provider 1건·방법론 대응 비정본 부록 § 포인터)·§3.11 Discovery Dimension 5(Intent/Requirement/Constraint/Risk/Architecture — 차원별 Confidence)·§3.12 Confidence([0,1]·근거 등급·Policy 임계)·§3.13 Adaptive Discovery·§3.14 Question Budget(soft/hard·소진 강제 종합·T17 재진입 예산 규칙)·§3.15 Discovery Policy(Policy as Data)·§3.16 Metrics 분류(효율·품질·개입 — 전 지표 §3.5 Event 파생) 확정. §1 Non-Goals P4 비담당 5건 재기재. §3.3-A Contextualizing에 incremental mode 결속 명시(Advisor 승인 보강 2건). §4~§7 Module부 주석을 상세·§ 포인터로 해소. Workflow부(§3.1~§3.8) 문면 보존(§3.3-B 전이표 불변). 방법론 고유명·특정 AI 실명·모델명·제품 기능명 0(자가 전수 스캔)·정본 재정의 0(§ 포인터만). | Worker (Advisor 위임, v1.1 W3 T4) |
 | 2026-07-07 | v1.1 Baseline | v1.1 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass — 충족 15/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-17 | v1.1 (정합) | 루트 v1.7 UAF-INV ① 재정의(구 "무수정"[동결] 폐지·접점 원칙[Project Contract 단일 접점] 존치) 인용 정합 — 사용자 승인 하 Frozen 개정. §0 경계 표제 "무수정"→"§ 포인터 참조(재정의·확장 0)"·① 인용에 "접점 원칙" 명기(본문 의미 2 "재정의·확장하지 않고 § 포인터로만 참조"·"유일한 접점은 Project Contract 하나" 서술 존치). DISC-INV 1~9·State Machine·전이표·§9 기존 행 무변. 참조 정합(시맨틱 개정 아님·버전 무상승). | Worker (Advisor 위임) |
+| 2026-07-26 | v1.1 (정합) | md 슬림화 격리 개정(`docs/spec-versioning-policy.md` §3.2 유형 (B) 비계약). §0·§1·§2 자기 재서술 압축(항목 보존·병합만 — Non-Goals P4 비담당 5건 존치) · §3.3-B 주(전수성 확인) 3항 자기감사를 정보 손실 없이 1항으로 통합(설계 결정 기록 항 무촉) · §5 P4 비담당 중복 서술 1곳으로 통합 · §7 완료 기준(Workflow부·Module부)을 §3 재서술 → 판정 항목 목록(근거 절) 포인터로 전환 · stale 교차 참조 **전 지점 정정(L-06)** — §0·§1·§2(01-entry "(예정)·병렬 작성 중" 3곳·03-project-contract "(예정, W4)" 3곳) + **§3 내 상태 주석 6지점**(§3.1 Back-end 행·§3.7 축 1·§3.8 DISC-INV-8·§3.9 Contract Compiler 행·§3.11 Contract 매핑의 03 "(예정, W4)" 5곳 · §3.10-D 부록 methodology-mapping "(예정 — 후속 W5)" 1곳) → 실재 상태 표기. 상태 주석 토큰만 교체하며 계약 문면(필드·연산·판정식·전이표)은 무촉이다(검증기 판정 2026-07-26 — 상태 주석은 계약 요소가 아니므로 §3 내부라도 유형 (B) 정정 대상). §8 말미 주의 시나리오 워크스루 "(예정)"도 실측상 산출 후 아카이브였으므로 앵커 표기(`@cd9247b`)로 정정(2026-07-17 산출물 수명 정책 앵커 전환 선례 동형). §9 v1.1 Draft 행의 "병렬 작성 중" 표기는 **작성 시점 기록**이므로 append-only로 보존한다(정정 대상 아님). **계약 요소 무촉** — §3.3 State Machine·§3.3-B 전이표 T1~T25·§3.5 Event 15·§3.7 판정식·§3.8 DISC-INV 1~9·§3.9~§3.16·§4 문면 무변경, § heading 삭제·개칭·재번호 0(`uaf-verified:` 개정 전후 해당 절 diff 대조). | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, ARCHITECTURE.md §9·uahf/framework/core/structure.md §9 동형. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -27,44 +28,29 @@
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본 배치.** 이 문서는 **UAF specs 경계**의 **Project Discovery 정본**이다. UAF 파이프라인 6요소 중 **Project Discovery** 요소(ARCHITECTURE.md §2.2)의 상세 계약을 소유한다. 특히 Discovery의 **오케스트레이션 구조**(어떻게 상태가 전이하며 산출로 수렴하는가)를 확정한다.
+- **정본 배치.** 이 문서는 **UAF specs 경계**의 **Project Discovery 정본**이며, UAF 파이프라인 6요소 중 **Project Discovery** 요소(ARCHITECTURE.md §2.2)의 상세 계약 — 특히 Discovery의 **오케스트레이션 구조**(어떻게 상태가 전이하며 산출로 수렴하는가) — 를 소유한다.
 
-- **Workflow부 / Module부 완성.** 본 문서는 **두 단계에 걸쳐 완성**되었다. **Workflow부**(§3.1~§3.8 — Compiler 프레이밍·State Machine·파생 뷰·Event Model·Termination·Execution Ready·Invariants)는 v1.1 W2 Task가 완성했고, **Module부**(§3.9~§3.16 및 §1 Non-Goals의 P4 재기재·§4~§7의 Module 상세 — Module Structure·Strategy Provider Interface·Discovery Dimension·Confidence·Adaptive Discovery·Question Budget·Discovery Policy·Metrics 분류)는 v1.1 W3 Task가 완성한다. 두 부는 하나의 정본으로 통합되며, 어느 부도 §3.3 State Machine 단일 정본을 재정의하지 않는다(DISC-INV-2).
+- **Workflow부 / Module부.** 본 문서는 두 단계에 걸쳐 완성되었다 — **Workflow부**(§3.1~§3.8, v1.1 W2)와 **Module부**(§3.9~§3.16 및 §1 Non-Goals의 P4 재기재·§4~§7의 Module 상세, v1.1 W3). 두 부는 하나의 정본으로 통합되며, 어느 부도 §3.3 State Machine 단일 정본을 재정의하지 않는다(DISC-INV-2).
 
 - **UAF·UAHF 상위 정본 § 포인터 참조 (재정의·확장 0).** 이 문서는 UAF 상위 구조(ARCHITECTURE.md)와 UAHF 정본(ARCHITECTURE.md·uahf/specs/·uahf/framework/·상위 규약)을 **재정의·확장하지 않고 § 포인터로만 참조**한다. Discovery와 UAHF의 유일한 접점은 Project Contract 하나다(ARCHITECTURE.md §8 UAF-INV ① 접점 원칙).
 
-- **선행 인터페이스만 소비.** Discovery의 입력인 **Discovery Request**의 확정 추상은 ARCHITECTURE.md §12.2다(3요소 {mode, inputs, policy}). 본 문서는 이 확정 추상만 소비하며, Entry Resolution의 상세 정본(`entry/specs/01-entry.md`, 예정)은 병렬 작성 중이므로 그 미완성 산출물을 참조·추측하지 않는다(07 R2).
+- **선행 인터페이스만 소비.** Discovery의 입력인 **Discovery Request**의 확정 추상은 ARCHITECTURE.md §12.2다(3요소 {mode, inputs, policy}). 본 문서는 이 확정 추상만 소비하며, Entry Resolution의 상세 정본(`entry/specs/01-entry.md` — 실재, v1.1 Baseline)의 내부 계약은 참조·추측하지 않는다(07 R2 정합 — 공유 계약은 §12.2 추상뿐).
 
-- **AI 비의존.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명을 두지 않는다(uahf/specs/TEMPLATE.md §3, uahf/framework/core/structure.md §5 C-3 동형). 구체 실현(진입 명령의 형태·직렬화 형식·증거 스캔 구현·사용자 확인 채널)은 Adapter Binding 소관이며(§4), 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
+- **AI 비의존 · 네임스페이스 분리.** 본문 전체(특히 §3 Core Contract)에 특정 AI 이름·모델명·제품 기능명을 두지 않고(uahf/specs/TEMPLATE.md §3, uahf/framework/core/structure.md §5 C-3 동형), 구체 실현(진입 명령의 형태·직렬화 형식·증거 스캔 구현·사용자 확인 채널)은 Adapter Binding 소관 포인터로만 가리킨다(§4). Discovery 내부 용어(파생 뷰 라벨 "Lifecycle"·"Process"·"Workflow" 등)는 UAHF Glossary 동명 용어와 **네임스페이스로 구분**하며 UAHF 용어를 재정의하지 않는다(ARCHITECTURE.md §12 동형).
 
-- **네임스페이스 분리.** Discovery 내부 용어(파생 뷰 라벨 "Lifecycle"·"Process"·"Workflow" 등)는 UAHF Glossary(uahf/specs/00-glossary.md)의 동명 용어와 **네임스페이스로 구분**한다(ARCHITECTURE.md §12 동형). UAHF 용어는 정본을 § 포인터로 참조하고 재정의하지 않는다.
-
-- **정본 위임.** Contract 스키마·버저닝·UAHF Interface의 상세 정본은 `planning/specs/03-project-contract.md`(예정, W4)가 소유한다. 본 문서는 "필수 코어 필드"·"완결 기준"을 추상으로 참조하고 그 소유 지점을 포인터로만 표기한다.
+- **정본 위임.** Contract 스키마·버저닝·UAHF Interface의 상세 정본은 `planning/specs/03-project-contract.md`(실재 — v1.2 Baseline)가 소유한다. 본 문서는 "필수 코어 필드"·"완결 기준"을 추상으로 참조하고 그 소유 지점을 포인터로만 표기한다.
 
 ---
 
 ## §1. 목적 (Purpose)
 
-이 문서는 Project Discovery가 **Discovery Request(+증거)를 입력으로 어떻게 Project Contract로 수렴하는가**의 오케스트레이션 구조를 확정한다.
-
-Workflow부의 책임은 다섯 가지다.
-
-- Discovery를 **Compiler**로 프레이밍하고 3부 구조와 Strategy Invariance를 명문화한다(§3.1).
-- Discovery Principles 5를 열거한다(§3.2).
-- Discovery의 진행을 **단일 정본 State Machine**으로 정의하고, 상태·전이·종단을 전수 열거한다(§3.3). 파생 뷰 3이 이 정본에서 도출됨을 규정한다(§3.4).
-- 모든 전이를 유발하는 **Event Model 15종**을 열거하고, 기록의 append-only 성질과 Metrics의 파생 원칙을 확정한다(§3.5).
-- **Termination 4경로**와 **Execution Ready 2축 판정식**을 문면화한다(§3.6, §3.7). 상시 불변 2건을 반영한다(§3.8).
+이 문서는 Project Discovery가 **Discovery Request(+증거)를 입력으로 어떻게 Project Contract로 수렴하는가**의 오케스트레이션 구조를 확정한다. Workflow부의 책임은 다섯 가지다 — (i) Discovery를 **Compiler**로 프레이밍하고 3부 구조·Strategy Invariance 명문화(§3.1), (ii) Discovery Principles 5 열거(§3.2), (iii) 진행을 **단일 정본 State Machine**으로 정의하고 상태·전이·종단을 열거표로 고정(§3.3)하며 파생 뷰 3의 도출 규칙 규정(§3.4), (iv) 모든 전이를 유발하는 **Event Model 15종** 열거와 기록 append-only·Metrics 파생 원칙 확정(§3.5), (v) **Termination 4경로**·**Execution Ready 2축 판정식** 문면화(§3.6·§3.7)와 상시 불변 2건 반영(§3.8).
 
 ### Non-Goals
 
 - **구현 0.** v1.1은 Architecture·계약 설계만 수행한다. 실행 코드·물리 실현을 정의하지 않는다(Adapter 소관, §4).
-- **UAHF 하류 책임 비담당 (P4 재기재).** Project Discovery는 다음 **5건을 담당하지 않는다** — 전부 하류 UAHF의 책임이며(ARCHITECTURE.md §10 책임 경계표 비담당 5), Discovery는 Project Contract를 산출한 지점에서 멈춘다.
-  - ① **Agent 실행** — UAHF Agent Layer 소관(uahf/specs/00-glossary.md §3.2-A).
-  - ② **Planning** — 구현 계획·작업 분해. UAHF Advisor/Planner 소관(uahf/specs/00-glossary.md §3.2-E).
-  - ③ **Workflow 실행** — 분해·병렬 디스패치·병합. UAHF Workflow Layer 소관(uahf/specs/00-glossary.md §3.2-A).
-  - ④ **Memory Consult** — 기억 회수. UAHF Memory Service 소관(uahf/specs/00-glossary.md §3.2-C).
-  - ⑤ **UAHF Execution** — 핵심 루프 구동. UAHF 하류 소관(uahf/specs/00-glossary.md §3.2-J 핵심 루프).
-- **Contract 스키마 상세 비정의.** Project Contract의 필드·스키마·버저닝은 `planning/specs/03-project-contract.md`(예정, W4) 소관이다. 본 문서는 "필수 코어 필드"를 추상으로만 다룬다.
+- **UAHF 하류 책임 비담당 (P4 재기재).** Project Discovery는 다음 **5건을 담당하지 않는다** — 전부 하류 UAHF의 책임이며(ARCHITECTURE.md §10 책임 경계표 비담당 5), Discovery는 Project Contract를 산출한 지점에서 멈춘다. ① **Agent 실행**(UAHF Agent Layer — uahf/specs/00-glossary.md §3.2-A) · ② **Planning**(구현 계획·작업 분해 — UAHF Advisor/Planner, §3.2-E) · ③ **Workflow 실행**(분해·병렬 디스패치·병합 — UAHF Workflow Layer, §3.2-A) · ④ **Memory Consult**(기억 회수 — UAHF Memory Service, §3.2-C) · ⑤ **UAHF Execution**(핵심 루프 구동 — UAHF 하류, §3.2-J).
+- **Contract 스키마 상세 비정의.** Project Contract의 필드·스키마·버저닝은 `planning/specs/03-project-contract.md`(실재 — v1.2 Baseline) 소관이다. 본 문서는 "필수 코어 필드"를 추상으로만 다룬다.
 - **Discovery 실행 호스팅·Memory 활용 비설계.** 역할 추상까지만 정의하고 물리 호스팅은 설계하지 않으며, Memory 활용은 확장 포인트로만 표기한다(ARCHITECTURE.md §11, §5).
 
 ---
@@ -78,10 +64,10 @@ Workflow부의 책임은 다섯 가지다.
   - uahf/specs/00-glossary.md (실재, Frozen 0.2) — UAHF 용어 정본. 네임스페이스 분리의 대조 기준. 특히 §3.2-A·§3.2-C·§3.2-E·§3.2-F.
   - uahf/specs/TEMPLATE.md (실재, Frozen 0.1) — 문서 구조(§0~§9)·품질 기준.
 
-- **입력 계약(선행 확정).** Discovery의 입력 **Discovery Request** {mode, inputs, policy}의 추상은 ARCHITECTURE.md §12.2가 확정한다. 이 추상만 소비한다. Entry Resolution 상세(`entry/specs/01-entry.md`, 예정)는 병렬 작성 중이며 본 문서는 참조·추측하지 않는다(07 R2).
+- **입력 계약(선행 확정).** Discovery의 입력 **Discovery Request** {mode, inputs, policy}의 추상은 ARCHITECTURE.md §12.2가 확정한다. 이 추상만 소비하며, Entry Resolution 상세(`entry/specs/01-entry.md` — 실재, v1.1 Baseline)의 내부 계약은 참조·추측하지 않는다(07 R2 정합).
 
 - **이 문서에 의존하는 문서 (dependents).**
-  - `planning/specs/03-project-contract.md` (예정, W4) — Discovery의 산출(Project Contract)의 스키마·완결 기준·UAHF Interface 정본. Discovery의 출력 계약을 소비·고정한다.
+  - `planning/specs/03-project-contract.md` (실재 — v1.2 Baseline) — Discovery의 산출(Project Contract)의 스키마·완결 기준·UAHF Interface 정본. Discovery의 출력 계약을 소비·고정한다.
   - 본 문서 **Module부**(§3.9~§3.16) — v1.1 W3 Task로 완성되어 본 문서에 통합되었다(별도 하류 문서 아님).
 
 - **순환 의존.** 없다. Discovery는 상위(ARCHITECTURE.md·Glossary)의 확정 계약을 소비하는 방향이며, 하위 요소(UAHF·Execution)를 역참조하지 않는다(ARCHITECTURE.md §2.5 의존 방향).
@@ -106,7 +92,7 @@ Compiler는 **3부 구조**다. 각 부는 §3.3 State Machine의 특정 구간�
 |---|---|---|---|
 | **Front-end — Strategy (교체 가능)** | 증거 수집. 어떤 기법으로 프로젝트를 이해하는가. **교체 가능한 증거 수집 계층**이다. | Contextualizing · Eliciting | Strategy Provider Interface 상세 = **§3.10** |
 | **Middle — Confidence · Synthesis** | 판정. 수집 증거로 차원별 확신을 측정하고 이해를 종합한다. | Synthesizing (Confidence는 전 구간 누적) | Confidence 상세 = **§3.12** |
-| **Back-end — Contract Compiler** | 컴파일. 종합된 이해를 **단일 타깃 형식(Project Contract)**으로 산출한다. | Compiling | 출력 스키마·완결 기준 정본 = `planning/specs/03-project-contract.md` (예정, W4) |
+| **Back-end — Contract Compiler** | 컴파일. 종합된 이해를 **단일 타깃 형식(Project Contract)**으로 산출한다. | Compiling | 출력 스키마·완결 기준 정본 = `planning/specs/03-project-contract.md` (실재 — v1.2 Baseline) |
 
 - **Strategy Invariance (P2, ARCHITECTURE.md §8 UAF-INV ③).** Front-end(Strategy)가 바뀌어도 Middle·Back-end의 **출력 스키마와 완결 기준은 불변**이다. 즉 어떤 Strategy를 쓰든 결과는 항상 동일한 Project Contract다. 교체 가능한 생산자(Strategy)를 안정 계약(Contract)이 흡수한다.
 - **불완전 출력 금지 (P2 정합).** Compiler는 불완전 출력을 내지 않는다. 필수 코어 필드가 채워지지 않은 Contract는 산출하지 않는다(§3.7 Completeness 불가침, DISC-INV-5).
@@ -189,11 +175,9 @@ Discovery의 진행은 **단일 정본 State Machine**으로 정의된다. 이 �
 | T24 | 임의 비종단 | `DiscoverySuspended` | — | `Suspended` |
 | T25 | 임의 비종단 | `DiscoveryAborted` | — | `Aborted` |
 
-주(전수성 확인):
+주(커버리지 대조 — 위 표에서 도출되는 색인이며 표를 재정의하지 않는다):
 
-- **Event 커버리지.** 15 Event가 모두 표에 등장한다 — `DiscoveryStarted`(T1)·`ContextCaptured`(T3)·`QuestionAsked`(T4)·`AnswerReceived`(T5·T16·T17)·`EvidenceRecorded`(T2·T6)·`ConfidenceUpdated`(T7·T13)·`BudgetConsumed`(T8·T11·T15)·`DimensionSaturated`(T9·T10)·`AssumptionRecorded`(T12)·`ValidationRequested`(T14)·`UserOverride`(T21~T23)·`ContractCompiled`(T18)·`ExecutionReadyDeclared`(T19·T20)·`DiscoverySuspended`(T24)·`DiscoveryAborted`(T25).
-- **종단 도달성.** 5 종단이 모두 도달 가능하다 — `Ready`(T19)·`ReadyWithAssumptions`(T20)·`Suspended`(T21·T24)·`Escalated`(T15·T23)·`Aborted`(T22·T25).
-- **비종단 진출성.** 6 비종단 상태는 모두 진출 전이를 가진다 — `Initiated`(T1)·`Contextualizing`(T3)·`Eliciting`(T10·T11)·`Synthesizing`(T14·T15)·`Validating`(T16·T17)·`Compiling`(T19·T20). 여기에 더해 모든 비종단 상태는 `UserOverride`·`DiscoverySuspended`·`DiscoveryAborted`(T21~T25)로 예외 종단에 이를 수 있다.
+- **Event 커버리지(15).** `DiscoveryStarted`(T1)·`ContextCaptured`(T3)·`QuestionAsked`(T4)·`AnswerReceived`(T5·T16·T17)·`EvidenceRecorded`(T2·T6)·`ConfidenceUpdated`(T7·T13)·`BudgetConsumed`(T8·T11·T15)·`DimensionSaturated`(T9·T10)·`AssumptionRecorded`(T12)·`ValidationRequested`(T14)·`UserOverride`(T21~T23)·`ContractCompiled`(T18)·`ExecutionReadyDeclared`(T19·T20)·`DiscoverySuspended`(T24)·`DiscoveryAborted`(T25). **종단 도달성(5).** `Ready`(T19)·`ReadyWithAssumptions`(T20)·`Suspended`(T21·T24)·`Escalated`(T15·T23)·`Aborted`(T22·T25). **비종단 진출성(6).** `Initiated`(T1)·`Contextualizing`(T3)·`Eliciting`(T10·T11)·`Synthesizing`(T14·T15)·`Validating`(T16·T17)·`Compiling`(T19·T20) — 여기에 더해 모든 비종단 상태는 `UserOverride`·`DiscoverySuspended`·`DiscoveryAborted`(T21~T25)로 예외 종단에 이를 수 있다.
 - **설계 결정 기록(비차단).** 15 Event에는 전용 "escalation" 이벤트가 없으므로, `Escalated`는 (i) 자동 — 예산 소진 시 완결 불가 판정(T15), (ii) 지시 — 사용자 강제(T23)의 두 경로로 도달한다. 또한 `AnswerReceived`는 "미해결 요청(질문 또는 확인 요청)에 대한 사용자 응답"이라는 단일 의미로 정의되어 Eliciting의 답변(T5)과 Validating의 승인/수정 응답(T16·T17)에 함께 쓰인다. 이 이벤트-전이 결속은 본 문서(State·Event 상세 소유)의 설계 결정이며, Advisor 확인 대상으로 완료 보고 open_questions에 기록한다.
 
 ---
@@ -267,7 +251,7 @@ Ready = Contract Completeness  ∧  Confidence  ∧  사용자 승인
         (필수 코어 필드 전건 충족)   (전 차원 임계 충족)   (Preserve Human Authority)
 ```
 
-- **축 1 — Contract Completeness (타협 불가).** 필수 코어 필드가 **전건 충족**되어야 한다. 이 축은 **모든 Ready 종단에서 타협 불가**다. `Ready`는 필수 필드를 실측으로 충족하고, `ReadyWithAssumptions`도 필수 필드를 **가정으로 충족**시키고 Assumption Ledger에 기재해야 성립한다. Compiler는 불완전 출력을 내지 않는다(§3.1, DISC-INV-5). 필수 코어 필드의 정의·목록은 `planning/specs/03-project-contract.md`(예정, W4) 소관이며, 본 문서는 추상으로만 참조한다.
+- **축 1 — Contract Completeness (타협 불가).** 필수 코어 필드가 **전건 충족**되어야 한다. 이 축은 **모든 Ready 종단에서 타협 불가**다. `Ready`는 필수 필드를 실측으로 충족하고, `ReadyWithAssumptions`도 필수 필드를 **가정으로 충족**시키고 Assumption Ledger에 기재해야 성립한다. Compiler는 불완전 출력을 내지 않는다(§3.1, DISC-INV-5). 필수 코어 필드의 정의·목록은 `planning/specs/03-project-contract.md`(실재 — v1.2 Baseline) 소관이며, 본 문서는 추상으로만 참조한다.
 - **축 2 — Confidence (가정 대체 허용).** 전 차원 Confidence가 임계를 충족하면 `Ready`다. 예산 소진 등으로 일부 차원이 임계에 미달하면, **Confidence 축에 한해** 가정으로 대체하여 `ReadyWithAssumptions`로 성립한다(축 1은 여전히 충족 필수). Confidence 차원·척도·임계 상세는 §3.11·§3.12·§3.15.
 - **축 3 — 사용자 승인 (게이트).** 사용자 최종 승인 게이트 없이 어떤 Ready 종단에도 도달하지 못한다(ARCHITECTURE.md §8 UAF-INV ⑤, DISC-INV-6). 승인은 `Validating` 상태에서 받고(T16), 그 결과는 Readiness 선언에 기록된다.
 
@@ -299,7 +283,7 @@ Discovery는 어떤 구현·Strategy에서도 다음을 유지한다. DISC-INV-7
 - **DISC-INV-5 (Completeness 불가침 · 불완전 출력 금지).** Compiler는 불완전 Contract를 산출하지 않는다. 모든 Ready 종단에서 필수 코어 필드 Completeness는 타협 불가다(§3.7, P2 정합).
 - **DISC-INV-6 (사용자 승인 게이트).** 사용자 최종 승인 없이 `Ready`·`ReadyWithAssumptions` 종단에 도달하지 않는다(ARCHITECTURE.md §8 UAF-INV ⑤).
 - **DISC-INV-7 (Strategy Invariance — 상시 불변 ①).** 어떤 Strategy(Front-end)를 쓰든 State Machine·Event는 **동일한 스키마·동일한 완결 기준의 Project Contract**로 수렴한다. Discovery는 언제든 교체 가능하게 유지된다(ARCHITECTURE.md §7.1 ①·§8 UAF-INV ③).
-- **DISC-INV-8 (Stable Contract 정합 — 상시 불변 ②).** Contract 완결 기준은 Project Contract의 Stable Contract 지위와 정합한다. Discovery 내부 개념(질문·전략·예산)이 Contract 코어 스키마나 UAHF 접점으로 **새어나가지 않는다**. 장기 호환성 규칙의 상세 정본은 `planning/specs/03-project-contract.md`(예정, W4)가 소유한다(ARCHITECTURE.md §7.1 ②·§8 UAF-INV ①②).
+- **DISC-INV-8 (Stable Contract 정합 — 상시 불변 ②).** Contract 완결 기준은 Project Contract의 Stable Contract 지위와 정합한다. Discovery 내부 개념(질문·전략·예산)이 Contract 코어 스키마나 UAHF 접점으로 **새어나가지 않는다**. 장기 호환성 규칙의 상세 정본은 `planning/specs/03-project-contract.md`(실재 — v1.2 Baseline)가 소유한다(ARCHITECTURE.md §7.1 ②·§8 UAF-INV ①②).
 - **DISC-INV-9 (AI 비의존).** §3의 어떤 계약도 특정 AI 모델·실행 환경에 의존하지 않는다. 환경 바인딩은 §4에 위치한다.
 
 ---
@@ -315,7 +299,7 @@ Discovery는 §3.1 Compiler 3부를 실현하는 **7개 모듈**로 구성된다
 | **Question Engine** | Front-end 집행 | Strategy가 낸 질문 집합에서 다음 질문을 선택하고 Question Budget(§3.14)을 집행하며 적응 규칙(§3.13)을 적용한다. | 질문 내용을 스스로 창안하지 않는다(Strategy 소관). 예산 값을 하드코딩하지 않는다(Policy 데이터, §3.15). | Strategy Provider·Discovery Policy·Confidence Model 소비. `QuestionAsked`·`BudgetConsumed` Event 방출. |
 | **Evidence Store** | 전 구간 | 증거와 Event 로그를 **append-only**로 보관한다(§3.5, DISC-INV-3). | 증거를 수정·삭제하지 않는다(append-only). 증거를 해석하지 않는다(Confidence Model 소관). | 모든 모듈이 기록·조회. UAHF Memory가 아니다(§5 네임스페이스 구분). |
 | **Confidence Model** | Middle | 수집 증거로 차원별 Confidence(§3.11·§3.12)를 측정·갱신하고 차원 포화를 판정한다. | 질문을 만들지 않고 Contract를 컴파일하지 않는다. 임계값을 소유하지 않는다(Policy 데이터, §3.15). | Evidence Store 소비. `ConfidenceUpdated`·`DimensionSaturated` Event 방출. Confidence Vector를 Question Engine·Orchestrator에 공급. |
-| **Contract Compiler** | Back-end | 종합된 이해를 **단일 타깃 형식(Project Contract)**으로 컴파일한다(§3.1 Back-end). | Strategy·질문·예산 등 Discovery 내부 개념을 Contract 코어 스키마로 내보내지 않는다(DISC-INV-8). 출력 스키마를 정의하지 않는다(`planning/specs/03-project-contract.md` 예정, W4 소유). | Evidence Store·Confidence Model·Assumption Ledger 소비. `ContractCompiled`·`ExecutionReadyDeclared` Event 방출. |
+| **Contract Compiler** | Back-end | 종합된 이해를 **단일 타깃 형식(Project Contract)**으로 컴파일한다(§3.1 Back-end). | Strategy·질문·예산 등 Discovery 내부 개념을 Contract 코어 스키마로 내보내지 않는다(DISC-INV-8). 출력 스키마를 정의하지 않는다(`planning/specs/03-project-contract.md` 소유 — 실재, v1.2 Baseline). | Evidence Store·Confidence Model·Assumption Ledger 소비. `ContractCompiled`·`ExecutionReadyDeclared` Event 방출. |
 | **Discovery Policy** | 전 구간(데이터) | 임계값·예산·종료 규칙·충돌 게이트 정책을 **데이터로 외부화**한다(§3.15, Policy as Data). | 실행 로직을 담지 않는다(데이터일 뿐). 엔진 코드에 정책을 하드코딩하지 않는다. | Confidence Model(임계값)·Question Engine(예산)·Orchestrator(종료 규칙)가 참조. |
 
 - **Strategy Invariance 보존(DISC-INV-7).** 교체되는 것은 Strategy Registry에 등록된 Provider뿐이다. Orchestrator·Confidence Model·Contract Compiler·Discovery Policy의 계약과 출력(Project Contract 스키마·완결 기준)은 어떤 Provider에서도 불변이다(§3.1, ARCHITECTURE.md §8 UAF-INV ③).
@@ -353,7 +337,7 @@ Strategy Provider는 고정 열거가 아니라 **Capability 선언**으로 선�
 
 #### 3.10-D 방법론 대응 (비정본 — 정본 청정)
 
-특정 발견·설계 방법론(외부 고유명을 가진 기법)과 Strategy Provider Capability의 대응표는 **본 정본이 소유하지 않는다**. 방법론 지식이 Framework 정본으로 새면 UAF-INV ⑥ 위반이다. 방법론 대응은 **비정본 부록**(`planning/docs/appendix/methodology-mapping.md`, 예정 — 후속 W5)이 소유하며, 본 절은 그 소유 지점을 § 포인터로만 표기한다. 따라서 본 정본에 방법론 고유명은 0건이다.
+특정 발견·설계 방법론(외부 고유명을 가진 기법)과 Strategy Provider Capability의 대응표는 **본 정본이 소유하지 않는다**. 방법론 지식이 Framework 정본으로 새면 UAF-INV ⑥ 위반이다. 방법론 대응은 **비정본 부록**(`planning/docs/appendix/methodology-mapping.md`, 실재)이 소유하며, 본 절은 그 소유 지점을 § 포인터로만 표기한다. 따라서 본 정본에 방법론 고유명은 0건이다.
 
 ---
 
@@ -371,7 +355,7 @@ Discovery가 확신(Confidence)을 측정하는 축이 **Discovery Dimension**�
 
 - **책임 경계 정합.** 이 5차원은 ARCHITECTURE.md §10 책임 경계표 담당 ①("프로젝트 이해 — 의도·요구·제약·리스크·방향")의 5축을 실현한다.
 - **차원별 Confidence 보유.** 각 차원은 [0,1] Confidence 스칼라를 독립 보유하며(§3.12), 차원별 포화·임계 판정(`DimensionSaturated`, §3.5)은 차원 단위로 일어난다.
-- **Contract 매핑은 W4 소유.** 각 차원의 이해가 Project Contract의 어느 필드로 컴파일되는가는 Back-end(§3.1)의 일이며, 그 스키마 정본은 `planning/specs/03-project-contract.md`(예정, W4)가 소유한다. 본 절은 Discovery 내부의 확신 측정 축만 정의하고 Contract 스키마를 정의하지 않는다(DISC-INV-8).
+- **Contract 매핑은 W4 소유.** 각 차원의 이해가 Project Contract의 어느 필드로 컴파일되는가는 Back-end(§3.1)의 일이며, 그 스키마 정본은 `planning/specs/03-project-contract.md`(실재 — v1.2 Baseline)가 소유한다. 본 절은 Discovery 내부의 확신 측정 축만 정의하고 Contract 스키마를 정의하지 않는다(DISC-INV-8).
 
 ---
 
@@ -484,9 +468,8 @@ Discovery의 관측 지표(Metrics)는 별도 계측이 아니라 **§3.5 Event 
 Discovery는 v1.1에서 UAHF Memory를 회수·활용하지 **않는다**. Memory Consult는 Discovery의 **비담당**이며(ARCHITECTURE.md §10 비담당 ④), Discovery의 Memory 활용은 **확장 포인트로만** 열어두고 설계하지 않는다(ARCHITECTURE.md §11).
 
 - **확장 포인트(설계 안 함).** 향후 Discovery가 Memory를 활용한다면, 접근은 **Memory Service Interface(단일 Port)** 경유만 허용되며 영속성 백엔드에 직접 접근하지 않는다(uahf/specs/00-glossary.md §3.2-C, uahf/ARCHITECTURE.md §5.1). v1.1은 이 경로를 설계하지 않는다.
-- **네임스페이스 구분.** §3.5 Discovery Event 로그(append-only)는 Discovery **내부 기록**이며 UAHF Memory가 아니다. 둘을 혼동하지 않는다.
-
-**Module부 정합.** §3.9 Evidence Store는 Discovery 내부 append-only 기록이며 UAHF Memory가 아니다(위 네임스페이스 구분). 어떤 Module부 모듈도 v1.1에서 UAHF Memory를 회수·기록하지 않는다 — Memory Consult는 여전히 비담당이다(ARCHITECTURE.md §10 비담당 ④, §1 Non-Goals P4 ④). Discovery의 Memory 활용은 확장 포인트로만 열려 있다(ARCHITECTURE.md §11).
+- **네임스페이스 구분.** §3.5 Discovery Event 로그(append-only)와 §3.9 Evidence Store는 Discovery **내부 기록**이며 UAHF Memory가 아니다. 둘을 혼동하지 않는다.
+- **Module부 정합.** 어떤 Module부 모듈(§3.9~§3.16)도 v1.1에서 UAHF Memory를 회수·기록하지 않는다 — 위 비담당·확장 포인트 규정이 그대로 적용된다.
 
 ---
 
@@ -520,14 +503,16 @@ Workflow부 범위의 대표 실패 시나리오와 대응이다.
 
 ### 완료 기준 (시연 가능 문장) — Workflow부
 
-- **전이 전수성 시연.** §3.3-B 표의 모든 전이가 Event를 가지고(Event 없는 전이 0), 비종단 6·종단 5가 모두 도달·진출 가능함을 표로 보인다.
-- **Event 커버리지 시연.** 15 Event가 모두 전이표에 등장함을 대조로 보인다.
-- **Termination 정합 시연.** 4 Termination 경로가 전이표·판정식과 정합함을 보인다.
-- **사용자 승인 게이트 시연.** `Ready`·`ReadyWithAssumptions` 종단이 사용자 승인 없이 도달 불가함을 보인다(DISC-INV-6).
-- **Completeness 불가침 시연.** 모든 Ready 종단에서 필수 코어 필드 Completeness가 충족됨을(ReadyWithAssumptions는 가정 충족+원장 기재) 보인다(DISC-INV-5).
-- **파생 뷰 무재정의 시연.** 파생 뷰 3이 §3.3 정본을 재정의하지 않고 참조·도출만 함을 보인다.
-- **상시 불변 시연.** 상시 불변 2건 위반 서술 0건 — Discovery 내부 개념의 Contract 코어/UAHF 접점 누출 0(DISC-INV-7·DISC-INV-8).
-- **AI 비의존 시연.** §3 본문에 특정 AI 모델명·제품 기능명이 0건임을 다중 패턴 전수 스캔으로 보인다(DISC-INV-9).
+판정은 아래 항목을 지목 절 문면과 직접 대조해 내린다(여기서 §3을 재서술하지 않는다).
+
+1. 전이 커버리지·종단 도달성·비종단 진출성 — §3.3-B(표·주 색인)·DISC-INV-1
+2. Event 커버리지(15) — §3.5 ↔ §3.3-B
+3. Termination 4경로 정합 — §3.6 ↔ §3.3-B·§3.7
+4. 사용자 승인 게이트(승인 없이 Ready 계열 도달 불가) — §3.7 축 3·DISC-INV-6
+5. Completeness 불가침(가정 충족 시 원장 기재) — §3.7 축 1·DISC-INV-5
+6. 파생 뷰 무재정의 — §3.4·DISC-INV-2
+7. 상시 불변 2건(내부 개념의 Contract 코어·UAHF 접점 누출 0) — DISC-INV-7·8
+8. AI 비의존(특정 AI 모델명·제품 기능명 0건 스캔) — DISC-INV-9
 
 ### 검증 방법
 
@@ -538,12 +523,12 @@ Workflow부 범위의 대표 실패 시나리오와 대응이다.
 
 **Module부 완료 기준 (시연 가능 문장).**
 
-- **모듈 경계 시연.** §3.9 표가 7개 모듈의 책임·경계·상호 의존을 열거하고, Strategy 교체가 Strategy Registry의 Provider에 국한됨을 보인다(DISC-INV-7).
-- **Provider 계약 시연.** §3.10이 Capability 선언·입출력 계약을 정의하고, 레퍼런스 Provider가 정확히 1건이며 방법론 고유명이 0건임을 스캔으로 보인다(UAF-INV ⑥).
-- **차원·확신 시연.** §3.11이 5차원을, §3.12가 [0,1]·근거 등급·Policy 임계를 정의함을 보인다.
-- **예산·정책 시연.** §3.14 soft/hard 경계·소진 강제 종합·T17 재진입 예산 규칙과 §3.15 Policy as Data(정책 변경 ↔ 엔진 무변경)를 대조한다.
-- **Metrics Event 파생 시연.** §3.16의 전 지표가 §3.5 Event에서 파생됨을 매핑표로 보인다(DISC-INV-4).
-- **누출 0 시연.** Strategy·Capability·질문·예산이 Contract 코어 스키마·UAHF 접점 서술로 새지 않음을 전수 스캔한다(DISC-INV-8).
+9. 모듈 경계(7모듈 책임·경계·상호 의존 · Strategy 교체가 Registry Provider에 국한) — §3.9·DISC-INV-7
+10. Provider 계약(Capability 선언·입출력 · 레퍼런스 1건 · 방법론 고유명 0건) — §3.10·UAF-INV ⑥
+11. 차원·확신(5차원 · [0,1]·근거 등급·Policy 임계) — §3.11·§3.12
+12. 예산·정책(soft/hard 경계·소진 강제 종합·T17 재진입 · 정책 변경 ↔ 엔진 무변경) — §3.14·§3.15
+13. Metrics Event 파생 — §3.16·DISC-INV-4
+14. 누출 0(Strategy·Capability·질문·예산이 코어 스키마·UAHF 접점으로 새지 않음) — DISC-INV-8
 
 ---
 
@@ -565,4 +550,4 @@ Assumption Ledger가 필수로 채워진다(비어 있을 수 없음, §3.7). �
 
 임의 비종단 상태에서 `UserOverride`[강제 일시중단](T21) → `Suspended`. 상태가 보존되어 재개 가능하다(P-D5).
 
-주: 완전한 시나리오 워크스루(Greenfield /new · Brownfield /continue 최초 도입 · 가상 /import 확장)는 별도 검증 산출물(`docs/v1.1-scenario-walkthrough.md`, 예정) 소관이다. 본 예시는 State Machine 최소 예시다.
+주: 완전한 시나리오 워크스루(Greenfield /new · Brownfield /continue 최초 도입 · 가상 /import 확장)는 별도 검증 산출물(`uahf/docs/v1.1-scenario-walkthrough.md@cd9247b` — 산출 후 산출물 수명 정책에 따라 아카이브) 소관이다. 본 예시는 State Machine 최소 예시다.

@@ -885,5 +885,280 @@ class TestF4F5Integration(unittest.TestCase):
                 )
 
 
+# --------------------------------------------------------------------------
+# 백로그 K — Contract 포인터 정합: 산출물이 지목한 정본 인스턴스 vs 현재 인스턴스
+# --------------------------------------------------------------------------
+# 정책을 always 1종(project-plan)만으로 최소화해 포인터 오류를 다른 완전성 오류와 격리한다.
+_K_POLICY = {
+    "projectionSelection": {
+        "requirementClasses": {"always": "항상 required"},
+        "defaultRequiredSet": [
+            {"id": "project-plan", "name": "프로젝트 계획서", "requirement": "always"},
+        ],
+        "exclusionRule": {"silentOmission": "금지"},
+    }
+}
+
+# 실물 yt-stt Projection 헤더 문면 2종(바이트 복사 — 접합부 왕복 픽스처).
+_K_REAL_HEADER_A = (
+    "> Solution Design 산출물 · id `project-plan` · 소유 역할 = PM(전체 커버리지 / coverageFloor).\n"
+    "> 정본 계약 = `.claude/project-contract/project-contract.v4.md`(pc-yt-stt-004 · 인스턴스 v4).\n"
+)
+_K_REAL_HEADER_B = (
+    "> Solution Design 산출물. 소유 = Architecture 역할.\n"
+    "> 정본 = Project Contract v4 (`.claude/project-contract/project-contract.v4.md`). "
+    "본 문서는 Contract Architecture Direction을 **설계 방향 수준**으로 구체화하며 재정의하지 않는다.\n"
+)
+
+
+class TestContractPointerIntegrity(unittest.TestCase):
+    """백로그 K — design_completeness 의 Contract 포인터 정합 검사."""
+
+    def _tree(self, *, versions, docs, artifacts):
+        """관례 배치 임시 트리를 만들고 (policy_path, manifest_path) 반환.
+
+        <td>/.claude/project-contract/project-contract.v<N>.md   (versions)
+        <td>/.claude/solution-design/{default-policy.yaml,design-manifest.json}
+        <td>/docs/<name>                                          (docs: {상대명: 본문})
+        contract_dir 인자를 넘기지 않으므로 **파생 경로**(<manifest 부모의 부모>/project-contract)를
+        실제로 타는 구성이다(k12 = 이 헬퍼를 쓰는 전 케이스가 파생 경로를 커버).
+        """
+        import yaml
+        td = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: __import__("shutil").rmtree(td, ignore_errors=True))
+
+        if versions:
+            cdir = td / ".claude" / "project-contract"
+            cdir.mkdir(parents=True)
+            for n in versions:
+                (cdir / ("project-contract.v%d.md" % n)).write_text(
+                    "# Project Contract 인스턴스 v%d\n" % n, encoding="utf-8")
+
+        for rel, body in docs.items():
+            p = td / rel
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body, encoding="utf-8")
+
+        sd = td / ".claude" / "solution-design"
+        sd.mkdir(parents=True, exist_ok=True)
+        (sd / "default-policy.yaml").write_text(
+            yaml.safe_dump(_K_POLICY, allow_unicode=True), encoding="utf-8")
+        (sd / "design-manifest.json").write_text(
+            json.dumps({"declaredTouchpoints": [], "declaredInterfaces": [],
+                        "artifacts": artifacts}, ensure_ascii=False),
+            encoding="utf-8")
+        return str(sd / "default-policy.yaml"), str(sd / "design-manifest.json")
+
+    @staticmethod
+    def _plan_art(**extra):
+        a = {"id": "project-plan", "status": "produced", "path": "../../docs/plan.md"}
+        a.update(extra)
+        return a
+
+    def test_k1_stale_pointer_blocks(self):
+        pair = self._tree(
+            versions=[1, 2],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v1.md`\n"},
+            artifacts=[self._plan_art()])
+        errors = dc.check_design_completeness(*pair)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("stale", errors[0])
+        self.assertIn("project-plan", errors[0])
+        self.assertIn("v1", errors[0])
+        self.assertIn("v2", errors[0])
+
+    def test_k2_max_reference_wins_over_history_line(self):
+        # 헤더가 현재 v2 를 지목하고 이력 줄에 v1 을 병기 → 최고 참조 == 현재 → 통과.
+        body = ("정본 = `.claude/project-contract/project-contract.v2.md`\n"
+                "이력: v1(`project-contract.v1.md`) 을 supersede.\n")
+        pair = self._tree(versions=[1, 2], docs={"docs/plan.md": body},
+                          artifacts=[self._plan_art()])
+        self.assertEqual(dc.check_design_completeness(*pair), [])
+
+    def test_k3_absent_contract_lineage_is_inapplicable(self):
+        pair = self._tree(
+            versions=[],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v1.md`\n"},
+            artifacts=[self._plan_art()])
+        self.assertEqual(dc.check_design_completeness(*pair), [])
+
+    def test_k4_zero_reference_is_skipped(self):
+        pair = self._tree(versions=[1, 2],
+                          docs={"docs/plan.md": "# 계획서\nContract 를 언급하지 않는 본문.\n"},
+                          artifacts=[self._plan_art()])
+        self.assertEqual(dc.check_design_completeness(*pair), [])
+
+    def test_k5_dangling_pointer_blocks(self):
+        pair = self._tree(
+            versions=[1, 2],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v3.md`\n"},
+            artifacts=[self._plan_art()])
+        errors = dc.check_design_completeness(*pair)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("dangling", errors[0])
+        self.assertIn("v3", errors[0])
+
+    def test_k6_valid_pin_skips_check(self):
+        pair = self._tree(
+            versions=[1, 2],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v1.md`\n"},
+            artifacts=[self._plan_art(contractRefPinned={
+                "reason": "v2 는 구현 범위 밖 확장 — 본 산출물은 v1 근거를 유지",
+                "confirmedBy": "user"})])
+        self.assertEqual(dc.check_design_completeness(*pair), [])
+
+    def test_k7_invalid_pin_reports_and_still_checks(self):
+        pair = self._tree(
+            versions=[1, 2],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v1.md`\n"},
+            artifacts=[self._plan_art(contractRefPinned={"reason": "사유만 있음"})])
+        errors = dc.check_design_completeness(*pair)
+        self.assertEqual(len(errors), 2, errors)
+        self.assertIn("contractRefPinned 요건 미충족", errors[0])
+        self.assertIn("confirmedBy", errors[0])
+        self.assertIn("stale", errors[1], "무효 핀은 핀이 아니다 — 포인터 검사가 그대로 수행된다")
+
+    def test_k8_deterministic(self):
+        pair = self._tree(
+            versions=[1, 2, 3],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v1.md`\n"},
+            artifacts=[self._plan_art()])
+        self.assertEqual(dc.check_design_completeness(*pair),
+                         dc.check_design_completeness(*pair))
+
+    def test_k9_non_md_artifact_is_skipped(self):
+        pair = self._tree(
+            versions=[1, 2],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v2.md`\n",
+                  "mocks/index.html": "<!-- project-contract.v1.md -->\n"},
+            artifacts=[self._plan_art(),
+                       {"id": "screen-mock", "status": "produced",
+                        "path": "../../mocks/index.html"}])
+        self.assertEqual(dc.check_design_completeness(*pair), [])
+
+    def test_k10_real_header_roundtrip(self):
+        # 실물 헤더 문면 2종(v4 표기) — 계보 v1..v4 면 통과.
+        docs = {"docs/plan.md": _K_REAL_HEADER_A, "docs/arch.md": _K_REAL_HEADER_B}
+        arts = [self._plan_art(),
+                {"id": "arch-direction", "status": "produced", "path": "../../docs/arch.md"}]
+        pair = self._tree(versions=[1, 2, 3, 4], docs=docs, artifacts=arts)
+        self.assertEqual(dc.check_design_completeness(*pair), [])
+
+        # 계보에 v5 추가 → 두 산출물 모두 stale.
+        pair2 = self._tree(versions=[1, 2, 3, 4, 5], docs=docs, artifacts=arts)
+        errors = dc.check_design_completeness(*pair2)
+        self.assertEqual(len(errors), 2, errors)
+        self.assertTrue(all("stale" in e for e in errors), errors)
+        self.assertIn("project-plan", errors[0])
+        self.assertIn("arch-direction", errors[1])
+        self.assertTrue(all("v4" in e and "v5" in e for e in errors), errors)
+
+    def test_k11_gate_level_blocks_and_ledger_untouched(self):
+        # 게이트 레벨 접합부: 워크스페이스에 계보 v1·v2 + 산출물이 v1 참조 → 비영 종료·원장 무변경.
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=_valid_plan())
+            ws = run / "workspace"
+            cdir = ws / ".claude" / "project-contract"
+            cdir.mkdir(parents=True)
+            for n in (1, 2):
+                (cdir / ("project-contract.v%d.md" % n)).write_text(
+                    "# 인스턴스 v%d\n" % n, encoding="utf-8")
+            (ws / "docs").mkdir(parents=True, exist_ok=True)
+            (ws / "docs" / "plan.md").write_text(
+                "정본 = `.claude/project-contract/project-contract.v1.md`\n", encoding="utf-8")
+
+            manifest = json.loads(json.dumps(_DESIGN_MANIFEST_OK))  # 깊은 복사(원본 불변).
+            manifest["artifacts"][0]["path"] = "../../docs/plan.md"  # project-plan.
+            _write_design(run, manifest=manifest)
+
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertNotEqual(rc, 0, "stale 포인터는 승격 전 비영 종료로 차단")
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before, "events.jsonl 무변경")
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before, "revisions.jsonl 무변경")
+
+    def test_k11b_gate_level_current_pointer_passes(self):
+        # 음성 대조의 짝 — 동일 배선에서 포인터가 현재 인스턴스면 통과·정상 승격(rc 0).
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct", plan=_valid_plan())
+            ws = run / "workspace"
+            cdir = ws / ".claude" / "project-contract"
+            cdir.mkdir(parents=True)
+            for n in (1, 2):
+                (cdir / ("project-contract.v%d.md" % n)).write_text(
+                    "# 인스턴스 v%d\n" % n, encoding="utf-8")
+            (ws / "docs").mkdir(parents=True, exist_ok=True)
+            (ws / "docs" / "plan.md").write_text(
+                "정본 = `.claude/project-contract/project-contract.v2.md`\n", encoding="utf-8")
+
+            manifest = json.loads(json.dumps(_DESIGN_MANIFEST_OK))
+            manifest["artifacts"][0]["path"] = "../../docs/plan.md"
+            _write_design(run, manifest=manifest)
+
+            rc = rg.main([str(run), "--gate-kind", "user_decision", "--actor", "human"])
+            self.assertEqual(rc, 0, "현재 인스턴스 포인터는 게이트 통과·승격")
+
+    def test_k12_explicit_contract_dir_argument(self):
+        # 3번째 인자 명시 경로(파생과 다른 위치)도 동작한다 — 파생 커버는 k1~k10(관례 배치).
+        pair = self._tree(
+            versions=[1, 2],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v1.md`\n"},
+            artifacts=[self._plan_art()])
+        explicit = Path(pair[1]).resolve().parent.parent / "project-contract"
+        errors = dc.check_design_completeness(pair[0], pair[1], str(explicit))
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("stale", errors[0])
+        # 존재하지 않는 명시 경로 → 비적용(계보 부재 경로와 동형).
+        self.assertEqual(
+            dc.check_design_completeness(pair[0], pair[1], str(explicit) + "-nonexistent"), [])
+
+    # --- 판독 실패 = 판정 불가 = 차단(이진 상태 원칙) — 비적용과 구분 ---
+    def test_k13_lineage_read_failure_blocks(self):
+        # 계보 디렉터리는 실재하는데 iterdir 이 OSError → 비적용이 아니라 차단.
+        from unittest import mock
+        pair = self._tree(
+            versions=[1, 2],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v2.md`\n"},
+            artifacts=[self._plan_art()])
+        self.assertEqual(dc.check_design_completeness(*pair), [], "패치 전 기저는 통과")
+
+        real_iterdir = Path.iterdir
+
+        def fake_iterdir(self):
+            # 대상 계보 디렉터리에서만 raise — 정책·매니페스트 판독 경로는 오염시키지 않는다.
+            if self.name == "project-contract":
+                raise OSError(13, "permission denied(테스트 주입)")
+            return real_iterdir(self)
+
+        with mock.patch.object(Path, "iterdir", fake_iterdir):
+            errors = dc.check_design_completeness(*pair)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("Contract 계보 판독 실패", errors[0])
+        self.assertIn("판정 불가", errors[0])
+
+    def test_k14_artifact_read_failure_blocks(self):
+        # 산출물 본문 판독 실패 → 스킵이 아니라 차단.
+        from unittest import mock
+        pair = self._tree(
+            versions=[1, 2],
+            docs={"docs/plan.md": "정본 = `.claude/project-contract/project-contract.v2.md`\n"},
+            artifacts=[self._plan_art()])
+        self.assertEqual(dc.check_design_completeness(*pair), [], "패치 전 기저는 통과")
+
+        real_read_text = Path.read_text
+
+        def fake_read_text(self, *a, **kw):
+            # 대상 산출물에서만 raise — 정책 YAML·매니페스트 JSON 판독은 그대로 둔다.
+            if self.name == "plan.md":
+                raise OSError(5, "I/O error(테스트 주입)")
+            return real_read_text(self, *a, **kw)
+
+        with mock.patch.object(Path, "read_text", fake_read_text):
+            errors = dc.check_design_completeness(*pair)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("산출물 판독 실패", errors[0])
+        self.assertIn("project-plan", errors[0])
+
+
 if __name__ == "__main__":
     unittest.main()

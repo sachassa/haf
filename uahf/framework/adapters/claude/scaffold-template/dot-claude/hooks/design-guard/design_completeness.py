@@ -68,6 +68,20 @@ required 판정(requirementClasses):
                  있으면 클래스 전체 제외이므로 classExclusions.interface{reason,confirmedBy} 확인 필요
                  (없으면 차단 — 위와 동형).
 
+Contract 포인터 정합(백로그 K):
+  Solution Design 성숙이 superseding Contract 인스턴스(v(N+1))를 발행해도, 이미 산출된 Projection
+  문서 헤더의 정본 포인터(`.claude/project-contract/project-contract.vN.md`)는 옛 인스턴스를 가리킨
+  채 남는다. 계보가 append-only 라 옛 파일이 실재하므로 어떤 검사도 실패하지 않고 **조용히 틀린다**.
+  이 체커는 `contract_dir`(미지정 시 매니페스트 기준 파생 `<manifest 부모의 부모>/project-contract`)
+  에서 `project-contract.v<N>.md` 계보를 수집해 현재 인스턴스 vN(최고 N)을 판정하고, produced 이며
+  실재하는 `.md` 산출물이 참조하는 **최고** Contract 인스턴스가 현재 인스턴스와 일치하는지 본다.
+  낡음(stale·max(refs) < current)·실재 부재(dangling·max(refs) > current)를 오류로 표면화한다.
+  계보 부재·참조 0건·비-md 는 비적용(오류 0). 계보 디렉터리가 실재하는데 판독 불가하거나 산출물
+  본문을 판독하지 못하면 **판정 불가 = 차단**으로 오류를 낸다(비적용과 구분·이진 상태 원칙).
+  이탈 채널 = artifact 의
+  `contractRefPinned{reason,confirmedBy}`(원칙 11 (b) — 요건 미충족 핀은 핀이 아니다).
+  체커는 **파일명 토큰 정합만** 본다 — 참조 문면의 시맨틱 진위는 CP2/사용자 게이트 몫이다.
+
 오프라인 안전(불변):
   - 네트워크·npm·npx·tsc·빌드 0. 파일 판독·구조 검사만.
   - 결정성: 같은 정책·같은 매니페스트·같은 파일시스템 → 같은 오류 목록(입력 순서 보존).
@@ -80,12 +94,13 @@ required 판정(requirementClasses):
   2 = 사용법 오류(인자 부족·argparse)도 동일 계열 비영 종료.
 
 사용법:
-  python design_completeness.py <policy.yaml> <design-manifest.json>
+  python design_completeness.py <policy.yaml> <design-manifest.json> [<contract-dir>]
 """
 
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -311,7 +326,110 @@ def _check_design_elements(de_policy: dict, manifest: dict, errors: list) -> Non
             _check_element("screen", sid, el, smap.get(el["id"]), errors)
 
 
-def check_design_completeness(policy_path, manifest_path) -> list:
+# --- Contract 포인터 정합(백로그 K) — 산출물이 지목한 정본 인스턴스 vs 현재 인스턴스 ------------
+_CONTRACT_FILE_RE = re.compile(r"^project-contract\.v([0-9]+)\.md$")
+_CONTRACT_REF_RE = re.compile(r"project-contract\.v([0-9]+)\.md")
+
+
+def _current_contract_version(contract_dir: Path) -> tuple:
+    """Contract 계보에서 현재 인스턴스 N(최고 instanceVersion) 판정 — (N 또는 None, 오류목록) 반환.
+
+    파일명 관례 정본 = planning/adapters/claude/contract-binding.md §4.1
+    (`project-contract.v<N>.md` · 현재 인스턴스 = 최고 N · 갱신은 새 파일 추가 append-only).
+
+    (None, []) = 정당한 계보 부재(디렉터리 없음 또는 매칭 0건) → 검사 비적용.
+    (None, [오류]) = 디렉터리는 실재하나 판독 불가 → **판정 불가는 통과가 아니라 차단**이다
+    (이진 상태 원칙 — 정책 파싱 실패를 오류로 표면화하는 이 체커의 기존 관례와 동형).
+    """
+    if not contract_dir.is_dir():
+        return None, []  # 정당한 부재(pathlib 관례상 접근 불가도 False) — 비적용.
+    try:
+        versions = []
+        for entry in contract_dir.iterdir():
+            m = _CONTRACT_FILE_RE.fullmatch(entry.name)
+            if m:
+                versions.append(int(m.group(1)))
+    except OSError as exc:
+        return None, [
+            "Contract 계보 판독 실패(%s): %s — 포인터 정합 판정 불가(차단)" % (contract_dir, exc)
+        ]
+    return (max(versions) if versions else None), []
+
+
+def _check_contract_pointers(artifacts: list, manifest_dir: Path, contract_dir: Path,
+                             errors: list) -> None:
+    """produced·실재·.md 산출물의 최고 Contract 참조가 현재 인스턴스와 일치하는지 결정적 판정.
+
+    계보 부재 → 전면 비적용(오류 0). 참조 0건 → 스킵(포인터 **존재 강제**는 04 spec 소관이며 이
+    체커 범위 밖). 계보·산출물 **판독 실패는 판정 불가 = 차단**이다(비적용과 구분 — 이진 상태 원칙).
+    오류는 artifacts 원 순서로 append(기존 오류들 뒤 — 기존 목록 바이트 불변).
+    """
+    current, lineage_errors = _current_contract_version(contract_dir)
+    if lineage_errors:
+        # 계보 판독 불가 → 현재 인스턴스 미확정. 이 상태에서 stale/dangling 판정은 불가하므로
+        # 오류만 표면화하고 검사를 중단한다(추측 0).
+        errors.extend(lineage_errors)
+        return
+    if current is None:
+        return  # Contract 계보 없는 워크스페이스 — 검사 비적용.
+
+    for a in artifacts:
+        if not isinstance(a, dict):
+            continue  # 상류(by_id 구축)에서 이미 오류 표면화됨.
+        aid = a.get("id")
+        if not isinstance(aid, str) or not aid.strip():
+            continue  # 동상.
+        if a.get("status") != _STATUS_PRODUCED:
+            continue
+        path = a.get("path")
+        if not isinstance(path, str) or not path.strip():
+            continue
+        # path → 실경로 해석은 produced 존재 검사(위 (5))와 **동일 식**을 재사용한다(해석 이원화 금지).
+        p = Path(path)
+        target = p if p.is_absolute() else (manifest_dir / path)
+        if not target.exists():
+            continue  # 부재는 (5)가 이미 표면화한다.
+        if target.suffix.lower() != ".md":
+            continue  # 비-md 산출물(mock html 등) — 헤더 포인터 관례 밖·비적용.
+
+        pinned = a.get("contractRefPinned")
+        if pinned is not None:
+            ok, miss = _reason_confirmed_ok(pinned)
+            if ok:
+                continue  # 정당화 핀 — 이 산출물의 포인터 검사 스킵(원칙 11 (b)).
+            errors.append(
+                "contractRefPinned 요건 미충족 — 산출물 id=%s: %s 누락"
+                "(핀 무효 — 포인터 정합 검사 적용)" % (aid, "·".join(miss))
+            )
+
+        try:
+            body = target.read_text(encoding="utf-8", errors="replace")
+        except OSError as exc:
+            # 판독 불가 = 판정 불가 → 통과가 아니라 차단(이진 상태 원칙·추측 0).
+            errors.append(
+                "산출물 판독 실패 — 포인터 정합 판정 불가: id=%s(path=%s): %s" % (aid, path, exc)
+            )
+            continue
+        refs = {int(x) for x in _CONTRACT_REF_RE.findall(body)}
+        if not refs:
+            continue  # 포인터 미기재 — 존재 강제는 04 spec 소관(이 체커 범위 밖).
+        m = max(refs)
+        if m == current:
+            continue  # 통과(옛 버전 병기 인용은 이력 보존상 정당 — 최고 참조만 본다).
+        if m < current:
+            errors.append(
+                "정본 포인터 낡음(stale) — 산출물 id=%s(path=%s) 의 최고 Contract 참조 v%d < "
+                "현재 인스턴스 v%d(project-contract.v%d.md) — superseded 인스턴스를 근거 정본으로 지목"
+                % (aid, path, m, current, current)
+            )
+        else:
+            errors.append(
+                "정본 포인터 실재 부재(dangling) — 산출물 id=%s(path=%s) 가 v%d 를 참조하나 "
+                "현재 최고 인스턴스는 v%d — 실재하지 않는 인스턴스 참조" % (aid, path, m, current)
+            )
+
+
+def check_design_completeness(policy_path, manifest_path, contract_dir=None) -> list:
     """설계완성도 게이트 — 오류 목록 반환(빈 목록 = 통과). 순수 함수·결정적·오프라인.
 
     로직:
@@ -327,6 +445,10 @@ def check_design_completeness(policy_path, manifest_path) -> list:
          미트리거): 조용한 자동 N/A 대신 매니페스트 classExclusions.<class>{reason,confirmedBy}
          확인을 요구한다(없으면 차단 — 고임팩트 이탈 표면화·원칙 11 (c)·silentOmission 금지).
          클래스가 선언(트리거)되면 6은 적용 안 되고 per-item(5)이 적용된다.
+      8) Contract 포인터 정합(백로그 K): contract_dir 계보(project-contract.v<N>.md)에서 현재
+         인스턴스를 판정하고, produced·실재·.md 산출물의 최고 Contract 참조가 그것과 일치하는지
+         검사한다(stale/dangling 표면화). contract_dir 미지정 시 매니페스트 기준으로 파생한다
+         (<manifest 부모의 부모>/project-contract — 배치 규약). 계보 부재 → 전면 비적용.
     """
     manifest_path = Path(manifest_path)
     policy_path = Path(policy_path)
@@ -476,18 +598,24 @@ def check_design_completeness(policy_path, manifest_path) -> list:
         if active:
             _check_design_elements(de_policy, manifest, errors)
 
+    # (8) Contract 포인터 정합(백로그 K) — 기존 오류들 뒤에 append(기존 시나리오 오류 목록 불변).
+    cdir = Path(contract_dir) if contract_dir is not None else (manifest_dir.parent / "project-contract")
+    _check_contract_pointers(artifacts, manifest_dir, cdir, errors)
+
     return errors
 
 
 def main(argv) -> int:
-    if len(argv) != 2:
+    if len(argv) not in (2, 3):
         print(
-            "사용법 오류: python design_completeness.py <policy.yaml> <design-manifest.json>",
+            "사용법 오류: python design_completeness.py <policy.yaml> <design-manifest.json> "
+            "[<contract-dir>]",
             file=sys.stderr,
         )
         return 2
-    policy_path, manifest_path = argv
-    errors = check_design_completeness(policy_path, manifest_path)
+    policy_path, manifest_path = argv[0], argv[1]
+    contract_dir = argv[2] if len(argv) == 3 else None
+    errors = check_design_completeness(policy_path, manifest_path, contract_dir)
     if errors:
         print(
             "[DESIGN-INCOMPLETE] 설계완성도 게이트 차단 — 누락 산출물(Solution Design에서 산출 또는 "

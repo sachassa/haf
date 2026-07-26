@@ -118,6 +118,7 @@
 - **Dependency**: `planning/specs/04-solution-design.md` 성숙 경로(`Matured` 산출 규정) · design-manifest CP2 체커 · `planning/specs/03-project-contract.md` §3.4(append-only·supersedes).
 - **관련**: [[uaf-design-manifest-path-defect]] 계열(design-manifest ↔ 실제 산출물 배선 결함)과 같은 축 — 매니페스트가 산출물의 **경로**는 알지만 산출물이 **어느 인스턴스에 귀속되는지**는 검사하지 않는다.
 - **Suggested Future Track**: 「Projection Provenance Integrity」 소형 트랙. 우선순위 미배정(사용자 결정).
+- **[해소 2026-07-26 — Desired ③]** `design_completeness` 결정적 체커에 Contract 포인터 정합 검사 신설 — produced·실재·`.md` 산출물의 최고 `project-contract.v<N>.md` 참조 == 계보 현재 인스턴스(최고 vN). 미달=stale·초과=dangling·계보/산출물 판독 실패=차단(판정 불가는 통과가 아니다)·계보 정당 부재/참조 0건/비-md=비적용. 이탈 채널 = `contractRefPinned{reason,confirmedBy}`. path 해석은 기존 produced 존재 검사와 동일 식 재사용(해석 이원화 금지·RC-2 재발 방지). `uaf-verified:` 실물 yt-stt 워크스페이스 왕복 양방향(현행 v4 → 통과 EXIT=0 / 합성 v5 주입 → stale 7건 EXIT=2·검색 범위 = yt-stt 매니페스트 등재 7종) + 테스트 3트리 129+175+42 재실행. 정본 = `orchestration/adapters/claude/design-manifest.schema.md` §Contract 포인터 정합 규칙. Desired ①(성숙 경로 강제)·②(간접 참조)는 미도입 — 사유: ③이 구현 편입 게이트에서 stale 을 차단하므로 하류 소비 전 검출이 성립하며, ①은 04 spec 개정(거버넌스 무게)·②는 append-only 계보 인용 관행 전면 변경이 필요하다. 트랙 원장 = `docs/backlog-k-delegation-b-ledger.md`. 강제 지점: 코드 — `resolve_gate` task_added 승격 직전 fail-closed + `pretooluse_design_guard` 백스톱 동일 코드 재사용 + 테스트 15건 + scaffold 미러 상속.
 
 ---
 

@@ -58,6 +58,22 @@ Worker의 입력은 위임 메시지다 (AGENT.md §Delegation).
 
 착수 전에 위임을 반환하고 질의한다 (AGENT.md §Delegation).
 
+### 착수 전 점검 (INV-6 운용 — docs/delegation-protocol.md §2.4 점검 산출 의무)
+
+작업 시작 전에 세 가지를 이진 판정한다.
+
+1. 필수 7필드(from/to/task/input/output/done/context)가 각각 존재하는가.
+2. done 각 항목이 대조로 참·거짓이 갈리는 문장인가 — **모호한 done은 누락과 동급**이다. 추측으로 메우지 않는다.
+3. context 각 경로가 실재하는가 — 열어서 확인한다.
+
+하나라도 0이면 착수하지 않고 반환한다(실패 보고·blocking=차단·reason에 누락·모호 필드 목록).
+
+점검 결과는 **모든 보고(완료·실패)의 서두 첫 블록**으로 제출한다:
+`[착수 전 점검] 필수 필드 7/7 존재 · done N/N 이진 판정 가능 · context M/M 실재`
+이 블록이 없는 보고는 무효로 반려된다(delegation-protocol §3.2).
+
+병렬 집합(delegation-protocol §2.5) 위임이면 점검 블록 다음에 **이탈 선언 블록**을 제출한다 — 위임 문면·전제에서 벗어난 결정의 목록(없으면 "없음" 명시). 브리프의 동료 계약 블록에 닿는 이탈은 `[동료 영향]`과 해당 Task를 지목한다.
+
 ## 출력 (Output)
 
 Worker의 출력은 완료 보고 또는 실패 보고다.

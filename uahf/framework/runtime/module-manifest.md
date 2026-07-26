@@ -5,15 +5,14 @@
 상위 규약: AGENT.md
 근거 정본:
 
-- specs/01-runtime.md §3.2-A — Module Manifest 7필드(`id`/`contract`/`version`/`requires`/`entrypoint`/`configSchema`/`replaceable`). 본 문서가 인스턴스화하는 계약의 정본. 필드명·의미·필수/선택 표기의 정본은 이 § 하나가 유지한다.
-- specs/01-runtime.md §3.3 INV-7 — 안정 식별자 불변 규칙(`id`·`contract` id 안정성).
-- specs/01-runtime.md §3.3 INV-1 — 교체 가능성(`replaceable` 기본값의 근거).
-- specs/01-runtime.md §3.2-B — Config 계약(정본). `configSchema` 필드가 참조하는 계약. 본 문서는 § 포인터로만 참조한다.
-- specs/01-runtime.md §4 — Adapter Binding(구체 직렬화·진입점 해소 소관). 본 문서는 § 포인터로만 참조하고 구체 바인딩 토큰을 재현하지 않는다.
-- framework/core/structure.md §5 — 금지 토큰 규칙(확정 조건 C-3). §6 — 본 파일의 소속 경계 배정(`framework/runtime/`, 01 §3.2-A 인스턴스). §7 — Core Contract 불변 조건(확정 조건 C-1).
+- specs/01-runtime.md §3.2-A — Module Manifest 7필드 계약의 정본(필드명·의미·필수/선택 표기의 진위 판정 기준).
+- specs/01-runtime.md §3.3 INV-7·INV-1 — 안정 식별자 불변·교체 가능성(`replaceable` 기본값 근거).
+- specs/01-runtime.md §3.2-B — Config 계약(`configSchema`가 참조, § 포인터만).
+- specs/01-runtime.md §4 — 구체 직렬화·진입점 해소 소관(§ 포인터만).
+- framework/core/structure.md §2·§5·§7 — 소속 경계(4경계 배치 표)·금지 토큰 규칙(C-3)·Core Contract 불변(C-1).
 - ROADMAP.md v0.3 — 산출물 "Runtime 프로토콜 구현물"(일부).
 
-거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인 비의존을 유지한다 (framework/core/structure.md §5 확정 조건 C-3). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 본문은 AI·언어·툴체인 비의존을 유지한다(structure.md §5 C-3). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
 
 ---
 
@@ -24,38 +23,32 @@
 | 2026-07-05 | v0.3 Draft | 최초 작성. 01 §3.2-A Module Manifest 7필드 인스턴스화(필드명·의미·필수/선택 표기 정본 대조), 필드별 작성 지침(좋은/나쁜 예), INV-7 안정 식별자 규칙, 언어 중립 추상 스키마 시그니처(확정 조건 C-1). | Worker (Advisor 위임, Task A2) |
 | 2026-07-05 | v0.3 Baseline | v0.3 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass, CP3 Advisor 승인). | Advisor |
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본은 specs/01-runtime.md §3.2-A이다.** 이 문서는 그 Module Manifest 계약의 **인스턴스**이며, 필드·의미·필수/선택 표기를 **재정의·확장하지 않는다**. 필드 계약 요소는 01 §3.2-A를 § 포인터로만 참조한다 (framework/core/structure.md §7 확정 조건 C-1).
-- 이 문서는 Module 등록 서술자(Module Manifest)를 이 프로젝트에서 **어떻게 작성·판독하는가**를 규율하는 규격이다. 계약 요소의 진위 판정 기준은 항상 01 §3.2-A다.
-- **이 문서는 Core 문서다.** 본문 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명을 두지 않는다 (framework/core/structure.md §5 C-3, 01 §3.3 INV-4). 구체 직렬화 형식·물리 진입점 해소·환경 경로 관례는 **Adapter Binding 문서 소관**이며 (01 §4), 필요한 자리에는 소관 포인터만 둔다.
-- 용어는 specs/00-glossary.md 정본만 사용한다. Module / Module Manifest / 모듈 시스템 / Runtime Context는 Glossary §3.2-I가 정본이다. 새 용어를 정본처럼 신설하지 않는다.
-- 필드명에 쓰는 백틱 표기(`id` 등)와 예시 식별자는 특정 언어·직렬화 형식의 문법이 아니라, 정본 01 §3.2-A가 쓰는 필드명·서술 라벨을 그대로 인용한 것이다.
+이 절이 본 문서의 경계 선언 정본이다(다른 절에서 반복하지 않는다).
+
+- **정본은 specs/01-runtime.md §3.2-A다.** 이 문서는 그 Module Manifest 계약의 **인스턴스**이며 필드·의미·필수/선택 표기를 재정의·확장하지 않는다(structure.md §7 C-1). 계약 요소의 진위 판정 기준은 항상 01 §3.2-A다.
+- 이 문서는 Module 등록 서술자를 **어떻게 작성·판독하는가**를 규율하는 규격이다.
+- **Core 문서.** 본문 전체에 금지 토큰(AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명)을 두지 않는다 — 규칙·분류 정본은 structure.md §5 C-3(및 01 §3.3 INV-4)이다. 구체 직렬화 형식·물리 진입점 해소·환경 경로 관례는 Adapter Binding 문서 소관이다(01 §4).
+- 용어는 specs/00-glossary.md §3.2-I 정본만 사용한다. 필드명 백틱 표기·예시 식별자는 01 §3.2-A 필드명·일반형 예시의 인용이며 특정 언어·형식의 문법이 아니다.
 
 ---
 
 ## §1. 목적
 
-Module Manifest는 Module의 **등록 서술자**다 (Glossary §3.2-I, 01 §3.2-A). Register 연산의 입력이자, Resolve·Replace가 의존하는 안정 기준의 원천이다 (등록·해소·교체 운용 규칙은 module-registry.md 소관).
-
-이 규격의 책임은 세 가지다.
-
-- 01 §3.2-A의 7필드를 **재정의 없이** 이 프로젝트의 작성 지침으로 인스턴스화한다 — 각 필드를 무엇으로 채우고 무엇을 피하는가.
-- 교체·해소가 의존하는 **안정 식별자 규칙**(INV-7)을 작성 규범으로 전개한다.
-- Manifest의 **언어 중립 추상 스키마 시그니처**를 제시하여, 실행 코드(향후 형태 B) 도입 시에도 01 §3.2-A 계약 변경이 0으로 유지됨을 보장한다 (C-1).
-
-각 Module은 자기완결(self-contained) 단위이므로, Manifest는 그 Module의 `id`·`contract`·`entrypoint` 등 자기완결 참조를 한 서술자에 묶는다 (01 §3.2-E 규칙 2).
+Module Manifest는 Module의 **등록 서술자**다(Glossary §3.2-I, 01 §3.2-A). Register 연산의 입력이자 Resolve·Replace가 의존하는 안정 기준의 원천이며(운용 규칙은 module-registry.md 소관), 각 Module의 자기완결 참조를 한 서술자에 묶는다(01 §3.2-E 규칙 2). 이 규격은 세 가지를 확정한다 — 7필드 작성 지침(§2·§3) · 안정 식별자 규칙(§4, INV-7) · 언어 중립 추상 스키마 시그니처(§5, C-1).
 
 ---
 
 ## §2. Module Manifest 7필드 (정본 대조 표)
 
-아래 표는 01 §3.2-A의 7필드를 **정본과 일치하게** 옮긴 것이다. 필드명·의미·필수/선택 표기는 정본 그대로이며, 본 문서는 이를 재정의하지 않는다.
+정본 = `uahf/specs/01-runtime.md §3.2-A`(재정의 0). 아래 필드명·의미·필수 표기는 정본 문면 그대로다.
 
 | 필드 | 의미 (정본: 01 §3.2-A) | 필수 |
 |---|---|---|
@@ -69,58 +62,22 @@ Module Manifest는 Module의 **등록 서술자**다 (Glossary §3.2-I, 01 §3.2
 
 주:
 
-- **필수/선택 표기는 정본 그대로 보존한다.** `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 같은 속성 표기는 필드명과 함께 복제한다 — 이 표기가 누락되면 계약 변경으로 읽힌다.
-- 필수 4필드: `id`·`contract`·`version`·`entrypoint`. 선택 3필드: `requires`(기본 없음)·`configSchema`·`replaceable`(기본 true).
-- 의미 열의 "구체 바인딩은 01 §4가 해소한다"는 정본의 "§4"를 소속 spec으로 명시한 것이다(01 §4 = Adapter Binding). 계약 변경이 아니라 § 포인터의 명시화다.
-- 상세 필드 계약의 정본은 01 §3.2-A가 유지한다. 이 표는 인스턴스이며 진위 판정 기준이 아니다.
+- **필수/선택 표기는 정본 그대로 보존한다** — `requires`의 "(기본 없음)"·`replaceable`의 "(기본 true)" 속성 표기가 누락되면 계약 변경으로 읽힌다. 필수 4필드: `id`·`contract`·`version`·`entrypoint`. 선택 3필드: `requires`·`configSchema`·`replaceable`.
+- 의미 열의 "구체 바인딩은 01 §4가 해소한다"는 정본의 "§4"를 소속 spec으로 명시한 것이며 계약 변경이 아니다.
 
 ---
 
 ## §3. 필드별 작성 지침 (좋은/나쁜 예)
 
-각 필드를 무엇으로 채우고 무엇을 피하는가. 예시 식별자는 전부 **일반형 예시**이며, 특정 AI·언어·툴체인·직렬화 형식·제품 기능 토큰을 담지 않는다 (§0, C-3).
+각 필드를 무엇으로 채우고 무엇을 피하는가. 예시 식별자는 전부 **일반형 예시**다(§0).
 
-### `id` (필수)
-
-- 채우는 법: 역할·계약에 기반한 **안정 식별자**. 구현 세부(버전·환경·백엔드 종류)를 인코딩하지 않는다.
-- 좋은 예: `dispatcher` — 구현이 여러 번 교체돼도 유지되는 안정 식별자. 교체의 기준이 된다 (INV-7).
-- 나쁜 예: `dispatcher-fast-rev2` — 성능 특성·리비전을 id에 인코딩. 구현이 바뀔 때마다 id가 바뀌어 교체의 안정 기준(INV-7)이 무너진다.
-
-### `contract` (필수)
-
-- 채우는 법: 이 Module이 구현하는 **Port/Interface 계약** 식별자. 교체 후보 Module들이 공유하는 안정 식별자다.
-- 좋은 예: `DispatchPort` — 여러 구현 Module이 공유하는 계약 식별자. 동일 `contract` 내에서만 교체가 성립한다 (INV-1).
-- 나쁜 예: `DispatchPort-implA` — 특정 구현을 계약 식별자에 섞음. 계약과 구현이 1:1로 묶여 동일 contract 교체(INV-1)가 불가능해진다.
-
-### `version` (필수)
-
-- 채우는 법: 이 Module의 버전을 가리키는 **고정된 버전 문자열**. 같은 문자열은 항상 같은 Module 버전을 가리킨다.
-- 좋은 예: `2.3.0` — 특정 시점의 Module 버전을 고정적으로 식별하는 버전 문자열.
-- 나쁜 예: `latest` — 가리키는 대상이 시점에 따라 달라지는 비고정 라벨. 버전으로서 안정 참조가 되지 못한다.
-
-### `requires` (선택 — 기본 없음)
-
-- 채우는 법: 의존하는 **contract id** 목록. **module id가 아니라 contract id**를 나열한다. Resolve 시 모두 해소되어야 한다. 의존이 없으면 생략한다(기본 없음).
-- 좋은 예: contract id `StorageContract`, `ClockContract`를 나열 — 계약에 의존하므로 그 계약의 활성 구현이 무엇으로 교체돼도 이 Module은 영향받지 않는다.
-- 나쁜 예: 특정 module id(예: `storage-provider-alpha`)를 나열 — 구현 Module에 직접 의존하면 그 Module 교체가 이 Module의 참조를 깨어 교체 가능성(INV-1)을 훼손한다.
-
-### `entrypoint` (필수)
-
-- 채우는 법: Module 활성화 진입을 가리키는 **추상 참조**(논리적 진입점). 구체 바인딩(직렬화·물리 경로·호출 규약)은 기입하지 않는다.
-- 좋은 예: 이 Module의 활성화 진입을 가리키는 논리적 진입점 참조. 구체 해소는 Adapter Binding 문서 소관이다 (01 §4).
-- 나쁜 예: 특정 실행 환경의 물리 경로·형식별 로케이터를 Manifest에 직접 기입 — 환경 의존을 Core 서술자에 하드코딩하면 이식 시 서술자가 함께 바뀌어 AI/환경 비의존(INV-4)이 깨진다. 물리 바인딩은 Adapter로 격리한다.
-
-### `configSchema` (선택)
-
-- 채우는 법: 이 Module이 수용하는 설정의 **스키마 참조**. 자기 Module 네임스페이스에 국한된다. 설정을 받지 않으면 생략한다. Config 계약 정본은 01 §3.2-B다.
-- 좋은 예: 이 Module의 설정만을 서술하는 스키마 참조. 없으면 생략(선택 필드).
-- 나쁜 예: 다른 Module의 설정까지 이 스키마에 포함 — `configSchema`는 자기 Module 범위에 한정된다. 타 Module 설정은 그 Module의 `configSchema` 소관이다.
-
-### `replaceable` (선택 — 기본 true)
-
-- 채우는 법: 교체 가능 여부. 기본은 `true`이므로 보통 생략한다. `false`는 명시적 예외이며 근거를 요구한다.
-- 좋은 예: 생략(= 기본 `true`). 모든 Module은 교체 가능이 기본이다 (INV-1, ARCHITECTURE 3.2).
-- 나쁜 예: 근거 없이 `false` 지정 — `false`는 근거를 요구하는 명시적 예외다 (INV-1). 근거 없는 `false`는 Modular 원칙 위반이다.
+- **`id` (필수)** — 역할·계약 기반 **안정 식별자**로 채우고 구현 세부(버전·환경·백엔드 종류)를 인코딩하지 않는다. 좋은 예 `dispatcher` / 나쁜 예 `dispatcher-fast-rev2`(리비전·성능 특성 인코딩 → 교체마다 id가 바뀌어 INV-7 안정 기준이 무너진다).
+- **`contract` (필수)** — 교체 후보 Module들이 공유하는 **Port/Interface 계약** 식별자. 좋은 예 `DispatchPort` / 나쁜 예 `DispatchPort-implA`(계약과 구현이 1:1로 묶여 동일 contract 교체(INV-1)가 불가능해진다).
+- **`version` (필수)** — 같은 문자열이 항상 같은 Module 버전을 가리키는 **고정 버전 문자열**. 좋은 예 `2.3.0` / 나쁜 예 `latest`(비고정 라벨 → 안정 참조 불가).
+- **`requires` (선택 — 기본 없음)** — 의존하는 **contract id** 목록(**module id가 아니다**). 의존이 없으면 생략한다. 좋은 예 `StorageContract`·`ClockContract` 나열 / 나쁜 예 특정 module id 나열(그 Module 교체가 참조를 깨어 INV-1을 훼손한다).
+- **`entrypoint` (필수)** — 활성화 진입을 가리키는 **추상(논리) 참조**. 구체 해소는 Adapter Binding 소관이다(01 §4). 나쁜 예: 특정 실행 환경의 물리 경로·형식별 로케이터 직접 기입(이식 시 서술자가 함께 바뀌어 AI/환경 비의존 INV-4가 깨진다).
+- **`configSchema` (선택)** — 이 Module이 수용하는 설정의 **스키마 참조**로 자기 Module 네임스페이스에 국한된다(Config 계약 정본 01 §3.2-B). 설정을 받지 않으면 생략한다. 나쁜 예: 다른 Module의 설정 포함.
+- **`replaceable` (선택 — 기본 true)** — 기본이 `true`이므로 보통 생략한다. 근거 없는 `false`는 두지 않는다 — `false`는 근거를 요구하는 명시적 예외다(INV-1, ARCHITECTURE 3.2).
 
 ---
 
@@ -161,18 +118,6 @@ Manifest 7필드의 **타입 수준** 서술이다. 특정 언어의 타입 표�
 
 ---
 
-## §6. 정본 경계·금지 토큰 준수 (self-note)
+## §6. 정본 경계
 
-- 본 문서의 모든 필드 계약은 01 §3.2-A의 인스턴스다. 어떤 필드도 이 문서에서 진위가 확정되지 않는다 — 판정 기준은 01 §3.2-A다 (C-1).
-- 본문·표·예시 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명이 0건이다. 필드 값의 물리 표현(직렬화·진입점 해소)이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4)" 포인터를 둔다 (mention/use 경계 — 금지 토큰의 예시도 Core 문서에서는 누출이다).
-- §3의 예시 식별자(`dispatcher`, `DispatchPort`, `StorageContract` 등)는 일반형 예시일 뿐, 특정 제품·환경·구현을 명명하지 않는다.
-
----
-
-## §7. 요약 (한눈에 보기)
-
-- Module Manifest = Module의 등록 서술자. 정본 = 01 §3.2-A (본 문서는 인스턴스, 재정의 아님 — C-1).
-- 7필드: `id`(식별자, 필수) · `contract`(식별자, 필수) · `version`(버전 문자열, 필수) · `requires`(식별자 목록, 선택·기본 없음) · `entrypoint`(추상 참조, 필수) · `configSchema`(추상 참조, 선택) · `replaceable`(불리언, 선택·기본 true).
-- 안정 식별자 규칙(INV-7): `id`·`contract`는 교체·해소의 기준이므로 가변 정보를 인코딩하지 않는다.
-- 언어 중립 시그니처는 실행 코드 도입 후에도 01 §3.2-A 계약 변경 0을 보장한다 (C-1).
-- 구체 직렬화·물리 진입점·환경 경로는 Adapter Binding 문서 소관 (01 §4). Core 문서 본문에는 그 토큰이 0건이다 (C-3).
+경계 선언 정본은 §0이다(01 §3.2-A 계약 재정의 0 · 금지 토큰 규칙 = structure.md §5 C-3 · 물리 표현은 Adapter Binding 소관 01 §4 · Glossary 정본). §3의 예시 식별자는 일반형 예시이며 특정 제품·환경·구현을 명명하지 않는다.

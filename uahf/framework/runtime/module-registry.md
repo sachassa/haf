@@ -5,16 +5,16 @@
 상위 규약: AGENT.md
 근거 정본:
 
-- specs/01-runtime.md §3.1-A — Module 시스템 4연산(Register / Resolve / Replace / Deregister). 각 연산의 입력·출력·완료 조건·실패 보고의 정본. 본 문서가 인스턴스화하는 계약이다.
-- specs/01-runtime.md §3.2-C — Runtime Context의 `registry` 필드(contract id → 활성 module id 바인딩과 등록된 Manifest 집합). 본 문서는 § 포인터로만 참조한다.
-- specs/01-runtime.md §3.2-D — Failure Report 공통 구조(`operation`/`target`/`reason`/`location`). 본 문서는 구조를 재정의하지 않고 § 포인터로만 참조하며, reason 코드 목록만 연산별로 전개한다.
-- specs/01-runtime.md §3.3 INV-1(교체 가능)·INV-3(계약당 단일 바인딩)·INV-7(안정 식별자). 등록/교체 절차 규칙의 근거.
-- specs/01-runtime.md §8 예1 — 동일 contract 교체(백엔드 스왑) 예시. 본 문서는 § 포인터로만 참조하고 구체 예시 토큰을 재현하지 않는다.
-- specs/01-runtime.md §3.2-A — Register/Replace의 입력인 Module Manifest. 필드 정본이자, 자매 문서 framework/runtime/module-manifest.md가 인스턴스화하는 계약. 본 문서는 § 포인터로만 참조한다.
-- framework/core/structure.md §5 — 금지 토큰 규칙(확정 조건 C-3). §6 — 본 파일의 소속 경계 배정(`framework/runtime/`). §7 — Core Contract 불변 조건(확정 조건 C-1).
+- specs/01-runtime.md §3.1-A — Module 시스템 4연산(Register/Resolve/Replace/Deregister)의 정본(본 문서가 인스턴스화).
+- specs/01-runtime.md §3.2-C — Runtime Context의 `registry` 필드(§ 포인터만).
+- specs/01-runtime.md §3.2-D — Failure Report 공통 구조(구조 재정의 0 · reason 목록만 §5에 전개).
+- specs/01-runtime.md §3.3 INV-1·INV-3·INV-7 — 등록/교체 절차 규칙의 근거.
+- specs/01-runtime.md §8 예1 — 동일 contract 교체 예시(구체 토큰 재현 0).
+- specs/01-runtime.md §3.2-A — Register/Replace 입력인 Module Manifest 필드 정본.
+- framework/core/structure.md §2·§5·§7 — 소속 경계(4경계 배치 표)·금지 토큰 규칙(C-3)·Core Contract 불변(C-1).
 - ROADMAP.md v0.3 — 산출물 "모듈 등록/교체 규칙 문서".
 
-거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 문서 본문은 AI 비의존이면서 특정 프로그래밍 언어·툴체인 비의존을 유지한다 (framework/core/structure.md §5 확정 조건 C-3). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 본문은 AI·언어·툴체인 비의존을 유지한다(structure.md §5 C-3). 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
 
 ---
 
@@ -25,32 +25,26 @@
 | 2026-07-05 | v0.3 Draft | 최초 작성. 01 §3.1-A 4연산(Register/Resolve/Replace/Deregister)을 입력·출력·완료 조건·실패 reason으로 운용 규칙 전개, 등록/교체/해제 절차 규칙(INV-1·INV-3, 소비자 참조 변경 0 확인, DependentExists 거부), 4연산 언어 중립 시그니처(C-1), 연산별 reason 코드 목록. | Worker (Advisor 위임, Task A2) |
 | 2026-07-05 | v0.3 Baseline | v0.3 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass, CP3 Advisor 승인). | Advisor |
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본은 specs/01-runtime.md §3.1-A(4연산)와 §3.2-C(registry)·§3.2-D(Failure Report)이다.** 이 문서는 그 Module 시스템 계약의 **인스턴스**이며, 연산의 입력·출력·완료 조건·실패 구조를 **재정의·확장하지 않는다**. 계약 요소는 01의 해당 §를 § 포인터로 참조한다 (framework/core/structure.md §7 확정 조건 C-1).
-- 이 문서는 Registry(등록부)의 4연산을 이 프로젝트에서 **어떻게 운용하는가**를 규율하는 규칙 문서다. 연산의 진위 판정 기준은 항상 01 §3.1-A다.
-- **이 문서는 Core 문서다.** 본문 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명을 두지 않는다 (framework/core/structure.md §5 C-3, 01 §3.3 INV-4). 구체 등록·활성화의 물리 실현은 Adapter Binding 문서 소관이며 (01 §4), 필요한 자리에는 소관 포인터만 둔다.
-- 용어는 specs/00-glossary.md 정본만 사용한다. Module / Module System / Module Manifest / Runtime Context는 Glossary §3.2-I가 정본이다. 새 용어를 정본처럼 신설하지 않는다.
-- Registry가 무엇을 담는지(contract id → 활성 module id 바인딩, 등록된 Manifest 집합)는 01 §3.2-C `registry` 필드가 정본이다. 본 문서는 그 구조를 재정의하지 않고, 그 위에서 4연산이 어떻게 작동하는가만 규율한다.
+이 절이 본 문서의 경계 선언 정본이다(다른 절에서 반복하지 않는다).
+
+- **정본은 specs/01-runtime.md §3.1-A(4연산)·§3.2-C(registry)·§3.2-D(Failure Report)다.** 이 문서는 그 Module 시스템 계약의 **인스턴스**이며 연산의 입력·출력·완료 조건·실패 구조를 재정의·확장하지 않는다(structure.md §7 C-1). 위반(형태 B가 계약을 바꾸어야만 성립하는 경우)이 발견되면 구현하지 않고 Advisor에게 보고한다.
+- 이 문서는 Registry(등록부)의 4연산을 **어떻게 운용하는가**를 규율하며, 연산의 진위 판정 기준은 항상 01 §3.1-A다. Registry가 무엇을 담는지는 01 §3.2-C `registry` 필드가 정본이다.
+- **Core 문서.** 본문 전체에 금지 토큰(AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명)을 두지 않는다 — 규칙·분류 정본은 structure.md §5 C-3(및 01 §3.3 INV-4)이다. 구체 등록·활성화의 물리 실현은 Adapter Binding 문서 소관이다(01 §4).
+- 용어는 specs/00-glossary.md §3.2-I 정본만 사용한다. 새 용어를 신설하지 않는다 — reason 코드·필드명 백틱 표기는 01 §3 계약 식별자의 인용이다.
 
 ---
 
 ## §1. 목적
 
-Registry는 Module의 **정의·등록·해소·교체 규칙의 총체**(Module System, Glossary §3.2-I)를 담는 등록부다. Runtime Component가 관장한다 (01 §3.1-A).
-
-이 규격의 책임은 세 가지다.
-
-- 01 §3.1-A의 4연산(Register/Resolve/Replace/Deregister)을 **재정의 없이** 이 프로젝트의 운용 규칙으로 전개한다 — 각 연산의 입력·출력·완료 조건·실패 reason.
-- 등록·교체·해제의 **절차 규칙**을 명문화한다 — 동일 contract 내 교체(INV-1), 계약당 활성 바인딩 정확히 1(INV-3), 소비자 참조 변경 0 확인, 의존 존재 시 해제 거부(DependentExists).
-- 4연산의 **언어 중립 시그니처**를 제시하여, 실행 코드(향후 형태 B) 도입 시에도 01 §3.1-A 계약 변경이 0으로 유지됨을 보장한다 (C-1).
-
-Register/Replace의 입력인 Module Manifest의 필드 계약은 자매 문서 framework/runtime/module-manifest.md가 01 §3.2-A를 인스턴스화한다. 본 문서는 그 계약을 소비하며 재정의하지 않는다.
+Registry는 Module의 **정의·등록·해소·교체 규칙의 총체**(Module System, Glossary §3.2-I)를 담는 등록부이며 Runtime Component가 관장한다(01 §3.1-A). 이 규격은 세 가지를 확정한다 — 4연산의 운용 규칙(§2) · 등록·교체·해제 절차 규칙(§3) · 4연산 언어 중립 시그니처(§4, C-1). Register/Replace의 입력인 Module Manifest 필드 계약은 자매 문서 framework/runtime/module-manifest.md가 01 §3.2-A를 인스턴스화하며, 본 문서는 이를 소비만 한다.
 
 ---
 
@@ -176,24 +170,11 @@ Deregister는 대상 Module의 contract에 의존하는 다른 활성 Module이 
 
 주:
 
-- 위 목록은 4연산(Module 시스템)에 한정된다. 01 §3.2-D의 완전한 reason 열거에는 Config·수명주기 연산의 코드(예: SchemaViolation, MissingRequired, ShutdownIncomplete 등)도 포함되나, 그 연산들은 본 문서의 소관이 아니다 — 완전 열거의 정본은 01 §3.2-D를 참조한다.
-- `ContractMismatch`는 Register와 Replace가 공유한다 (01 §3.1-A). 어느 연산의 실패인지는 Failure Report의 `operation` 필드로 구분된다 (구조 정본 01 §3.2-D).
+- 위 목록은 4연산(Module 시스템)에 한정된다. 01 §3.2-D의 완전한 reason 열거에는 Config·수명주기 연산의 코드도 포함되나 그 연산들은 본 문서 소관이 아니다 — 완전 열거의 정본은 01 §3.2-D다.
+- `ContractMismatch`는 Register와 Replace가 공유한다(01 §3.1-A). 어느 연산의 실패인지는 Failure Report의 `operation` 필드로 구분된다.
 
 ---
 
-## §6. 정본 경계·금지 토큰 준수 (self-note)
+## §6. 정본 경계
 
-- 본 문서의 모든 연산 계약은 01 §3.1-A의 인스턴스다. 어떤 연산도 이 문서에서 진위가 확정되지 않는다 — 판정 기준은 01 §3.1-A(연산)·§3.2-C(registry)·§3.2-D(Failure Report)다 (C-1).
-- 본문·표·규칙 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명이 0건이다. 등록·활성화의 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관 (01 §4)" 포인터를 둔다 (mention/use 경계 — 금지 토큰의 예시도 Core 문서에서는 누출이다).
-- reason 코드(`ContractMismatch` 등)와 필드명(`id`·`contract`·`requires`·`replaceable`)은 정본 01 §3이 쓰는 계약 식별자를 그대로 인용한 것이며, 특정 언어·직렬화 형식의 문법이 아니다.
-
----
-
-## §7. 요약 (한눈에 보기)
-
-- Registry = Module System의 등록부. 4연산의 정본 = 01 §3.1-A (본 문서는 인스턴스, 재정의 아님 — C-1).
-- 4연산: Register(등록·유일성) · Resolve(활성 바인딩 정확히 1 → 유일 핸들) · Replace(동일 contract 내 교체, 소비자 참조 0) · Deregister(의존 존재 시 거부).
-- 절차 규칙: 동일 contract 교체(INV-1) · 계약당 활성 바인딩 1(INV-3) · 소비자 참조 변경 0 확인(INV-1) · DependentExists 해제 거부.
-- 언어 중립 시그니처는 실행 코드 도입 후에도 01 §3.1-A 계약 변경 0을 보장한다 (C-1).
-- Failure Report 구조 정본 = 01 §3.2-D. 본 문서는 4연산 reason 코드 목록만 전개한다.
-- 구체 등록·활성화의 물리 실현은 Adapter Binding 문서 소관 (01 §4). Core 문서 본문에는 그 토큰이 0건이다 (C-3).
+경계 선언 정본은 §0이다(01 계약 재정의 0 · 금지 토큰 규칙 = structure.md §5 C-3 · 물리 실현은 Adapter Binding 소관 01 §4 · Glossary 정본).

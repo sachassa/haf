@@ -24,6 +24,7 @@
 | 2026-07-06 | v0.4 Baseline | v0.4 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 재작업 1회 후 재검증, CP3 Advisor 승인). | Advisor |
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-07 유지)·삭제 산출물(docs/v0.4-demo*.md 시연 기록) 참조 @cd9247b 앵커 전환. memory-data/ store·index 참조는 append-only 예외(정책 §2)로 유지. 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 | 2026-07-26 | (정합) | md 슬림화 Wave 2 — 비계약 격리 개정: 재서술·스냅샷·죽은 참조 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
+| 2026-07-26 | (정합) | 자매 memory-service.md 절 정리에 따른 인용 좌표 재지정(§8→§0) | Advisor 위임 |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -32,7 +33,7 @@
 ## §0. 이 문서의 위치와 정본 경계
 
 - **정본은 specs/04-memory.md §3·§4, specs/05-lessons.md §3·§4, framework/memory/ 4문서다.** 이 문서는 그 계약의 **환경 실현 매핑**이며, 계약 요소(연산·데이터 포맷·불변 규칙·필드·`kind` 값)를 **재정의·확장하지 않는다** — 정본 § 포인터로만 인용한다. **이 재정의 0 선언은 문서 전체에 대해 여기 1곳에서만 선언되며**, 이하 각 절은 이를 반복 선언하지 않고 정본 §만 지목한다.
-- **소관 지점.** framework/memory/ 4문서가 "물리 저장·직렬화·백엔드 I/O·물리 진입점 해소·매칭 구현은 Adapter Binding 문서 소관"이라며 미룬 **물리 경로·파일 구조·직렬화 형식·I/O 절차·매칭 알고리즘**이 확정되는 유일한 자리가 이 문서다(memory-service.md §0·§8, memory-store.md §4.2, module-manifest.md §4, lessons.md §5.2, 04 §4.1, 05 §4).
+- **소관 지점.** framework/memory/ 4문서가 "물리 저장·직렬화·백엔드 I/O·물리 진입점 해소·매칭 구현은 Adapter Binding 문서 소관"이라며 미룬 **물리 경로·파일 구조·직렬화 형식·I/O 절차·매칭 알고리즘**이 확정되는 유일한 자리가 이 문서다(memory-service.md §0, memory-store.md §4.2, module-manifest.md §4, lessons.md §5.2, 04 §4.1, 05 §4).
 - **격리 지점(C-3 비적용).** Core 경계와 Module 구현 디렉터리(`framework/memory/` 등) 문서 본문은 특정 AI·언어·툴체인·직렬화 형식 토큰이 0건이어야 하지만(structure.md §5 C-3 확장, 04 §3.3 INV-8), 이 문서는 그 **반대편**이다 — 직렬화 형식명·물리 경로·파일 확장자·세션/턴 토큰의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다.
 - **물리 store·index 위치 정본 선언(done 2).** Memory Store·Memory Index의 물리 데이터 위치는 **`framework/adapters/claude/memory-data/`로 확정한다**(Advisor 결정 — Adapter 경계 이하). 이 위치는 Core 경계·`specs/`·`docs/` **밖**이다. **하위 경로·파일 구조·직렬화 형식·I/O 절차의 정본은 §2**이며, 라벨 키 물리 표기의 정본은 §5.4다.
 - **창설 금지.** 04 §4.1·05 §4.1 표를 넘어서는 새 바인딩 계약·새 연산·필드·불변 규칙·`kind` 값·reason 코드를 만들지 않는다.

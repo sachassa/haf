@@ -5,25 +5,25 @@
 상위 규약: AGENT.md
 근거 정본:
 
-- specs/00-glossary.md — 용어 정본. INV-3(Layer 6·Cross-cutting 1·Core Component 13). 본 문서 §0이 준수하는 용어·계수 경계(새 Component·Layer 창설 0).
-- specs/03-loop.md §3.1-A — Agent Lifecycle 7단계·검증 게이트 CP1/CP2/CP3·게이트-단계 매핑. 본 프로토콜이 무인으로 구동하는 사이클 계약의 정본.
-- specs/03-loop.md §3.1-B — 재작업 루프·retry_count·재시도 한도(Config). 본 문서 §5.1이 준수하는 계약.
-- specs/03-loop.md §3.1-D — 사람 개입 5조건. 본 문서 §5·§6이 Escalated 정지로 보존하는 게이트의 정본.
-- specs/03-loop.md §3.2-A — 전이 이벤트 스키마(cycle_id·seq·from/to·trigger·outcome·retry_count·actor·ref·at)·append-only 불변. 본 문서 §4가 동형 재사용하는 기록 계약.
-- specs/03-loop.md §3.2-B — 단계 상태 5종(Pending/Active/Passed/Failed/Escalated). 본 문서 §4.1이 재사용하는 상태 어휘.
-- specs/07-workflow.md §3.1-A — Decompose(Work Graph 산출). §3.2-A — Work Graph·parallelSets 도출 규칙. §3.2-B — Task 필드. §3.2-C — 병렬 디스패치 프로토콜 R1~R4. §3.2-D — Merge. 본 문서 §3·§4.2·§6이 소비하는 Work Graph·Task 계약.
-- specs/02-agent.md §3.1 — 공통 의무 O4(추측 금지)·O5(실패 은폐 금지)·각 역할 Lifecycle 책임. §3.2-B — 위임 8필드("하나라도 누락 시 착수 불가"). §3.2-C — 완료 보고 5필드. §3.2-D — 실패 보고. 본 문서 §3·§5이 소비하는 위임·보고 계약.
-- specs/06-verifier.md §3.1 — 독립 판정 의무 V1~V6. §3.2-B/C — verdict·최종 판정 도출 규칙. §3.2-D — 재작업 지시. §3.2-E — 검증 유형 카탈로그(VT-1~VT-5). 본 문서 §5.2가 통합하는 판정 계약.
-- specs/04-memory.md §3.1-B — Recall 연산·회수 정책. §3.4 — 소비자 계약(Agent·Loop·Workflow·Verifier; **Runtime은 소비자가 아니다**). 본 문서 §3.2가 준수하는 Memory 접근 경계.
-- specs/01-runtime.md §3 — Core Contract(본 문서가 인스턴스화하는 계약, C-1). §3.1-C — Serve 구간 오케스트레이션 경계. §3.2-B — Config(재시도 한도·정책 값의 소유 소재). § 포인터로만 인용.
-- discovery/specs/02-discovery.md §3.2 주 — P-D4(개입 최소)·P-D5(권한 보존)는 상충하지 않는다. 본 문서 §6.2 게이트 등급 분리(SH-INV-4)의 상위 UAF 근거.
-- planning/specs/04-solution-design.md §3.3 — 역할 할당 계약(Expert Role = Capability 선언 기반 논리 역할·최소 할당). 본 문서 §3.1 role/capability/model 슬롯 값의 원천.
-- framework/core/structure.md §4 — 실행 코드 배치 규칙(C-2·규칙 2·규칙 4 — non-core 경계 분할의 "형태 B 설계 시 확정"). §5 — 금지 토큰 규칙(C-3). §7 — Core Contract 불변 조건(C-1). 본 문서 본문·§7이 준수하는 조건.
-- framework/runtime/lifecycle.md·module-manifest.md·module-registry.md — 자매 Core 문서. 골격·거버넌스·언어 중립 시그니처 관례의 관찰 대상.
-- framework/adapters/<adapter>/loop-binding.md §4·workflow-binding.md §4 — "사이클 구동을 사람 없이 자동 트리거·반복하는 실행 코드"·"무인 병렬 오케스트레이션 실행 진입점·로더(형태 B 예정)"의 예약 로케이터 문면. 본 프로토콜이 실현하는 두 예약 자리(인용).
-- `docs/form-b-step-hosting-design.md@cd9247b` (W0 확정, 사용자 승인 2026-07-13; 열람: `git show cd9247b:docs/form-b-step-hosting-design.md`) — 본 프로토콜의 **설계 정본**(track-design 등급으로 아카이브). 계약 정본은 이 설계 문서가 아니라 위 spec·프로토콜·바인딩이 소유한다(설계 §0.6). 본 문서는 설계 §3·§4·§5·§8을 프로토콜로 형식화한다.
+- specs/00-glossary.md — 용어 정본·INV-3(Component·Layer 계수 경계).
+- specs/03-loop.md §3.1-A — Lifecycle 7단계·검증 게이트 CP1/CP2/CP3·게이트-단계 매핑.
+- specs/03-loop.md §3.1-B — 재작업 루프·retry_count·재시도 한도(§5.1).
+- specs/03-loop.md §3.1-D — 사람 개입 5조건(§5·§6의 Escalated 정지 근거).
+- specs/03-loop.md §3.2-A — 전이 이벤트 스키마·append-only 불변(§4가 동형 재사용).
+- specs/03-loop.md §3.2-B — 단계 상태 5종(§4.1이 재사용하는 상태 어휘).
+- specs/07-workflow.md §3.1-A·§3.2-A~D — Decompose·Work Graph/parallelSets·Task 필드·R1~R4·Merge.
+- specs/02-agent.md §3.1(O4·O5)·§3.2-B·§3.2-C·§3.2-D — 위임 8필드·완료 보고·실패 보고.
+- specs/06-verifier.md §3.1·§3.2-B/C·§3.2-D·§3.2-E — 독립 판정 의무·verdict 도출·재작업 지시·VT 카탈로그.
+- specs/04-memory.md §3.1-B·§3.4 — Recall·소비자 계약(**Runtime은 소비자가 아니다** — §3.2).
+- specs/01-runtime.md §3·§3.1-C·§3.2-B — Core Contract·Serve 구간 경계·Config 값 소유.
+- discovery/specs/02-discovery.md §3.2 주 — P-D4(개입 최소)·P-D5(권한 보존) 비상충(§6.2 근거).
+- planning/specs/04-solution-design.md §3.3 — 역할 할당 계약(§3.1 슬롯 값의 원천).
+- framework/core/structure.md §4·§5·§7 — 실행 코드 배치 규칙(C-2)·금지 토큰 규칙(C-3)·Core Contract 불변(C-1).
+- framework/runtime/lifecycle.md·module-manifest.md·module-registry.md — 자매 Core 문서(관례 관찰 대상).
+- framework/adapters/<adapter>/loop-binding.md §4·workflow-binding.md §4 — 형태 B 예약 로케이터 2자리.
+- `docs/form-b-step-hosting-design.md@cd9247b` — 본 프로토콜의 **설계 정본**(아카이브). 계약 정본은 위 spec·프로토콜·바인딩이 소유한다.
 
-거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 문서 본문은 특정 AI·언어·툴체인 비의존을 유지한다(structure.md §5, C-3). Step Host의 구체 실현(직렬화 형식·물리 실행 표면·정지 신호 값·정책 값 매핑)은 **Module 구현 경계(`framework/loop/step-host/`)·Adapter Binding 문서 소관**이며, 본 문서는 소관 포인터만 둔다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다(docs 운용 문서 거버넌스 관행).
+거버넌스: 이 문서는 `framework/runtime/` 소속 Core 문서다. 본문은 AI·언어·툴체인 비의존을 유지한다(structure.md §5 C-3). Step Host의 구체 실현(직렬화 형식·물리 실행 표면·정지 신호 값·정책 값 매핑)은 Module 구현 경계(`framework/loop/step-host/`)·Adapter Binding 문서 소관이며 본 문서는 소관 포인터만 둔다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다.
 
 ---
 
@@ -38,42 +38,37 @@
 | 2026-07-13 | v1.5 Baseline | 마일스톤 v1.5 「형태 B Step Execution Hosting」 사용자 승인 — 기준선 확정(Baseline 승격 게이트 통과·상태행 승격). 본문 무변경. | Advisor |
 | 2026-07-13 | v1.6 정합 (본문 무변경) | 프로젝트 레벨 소비자 실재 — orchestration Layer(마일스톤 v1.6·정본 `orchestration/specs/05-project-orchestration.md`)가 본 프로토콜의 중립 Host(`framework/loop/step-host/`)를 substrate로 **라이브러리 무수정 소비**한다(공유 EventStore·결정적 재개·SH-INV 전건 상속). 본문 계약·SH-INV 무변경. | Advisor |
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-XX·mi 유지)·삭제 산출물 참조 앵커 전환(@cd9247b·@004bfa9). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다 — W1 시점의 §7.3 미존재 스냅샷 문면도 위 W3 행이 이력으로 보존한다.)
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본은 인용된 각 spec의 §3 계약이다.** 이 문서는 01 §3 Core Contract의 **인스턴스**이며, 03/07/02/06/04의 계약(상태·전이·필드·연산·불변)을 **재정의·확장하지 않는다**. 모든 계약 요소는 정본 § 포인터로만 참조한다(structure.md §7, C-1). 새 상태 열거·새 필드·새 Component·새 Layer를 창설하지 않는다(Glossary INV-3 무촉).
-- 이 문서는 **Step Host** — 03 사이클 구동과 07 디스패치·순서 규칙을 사람 없이 무인으로 트리거·반복하는 실행 코드(형태 B)의 provider-중립 계약을 서술한다. 형태 B가 무엇을 직렬화하고, 어떤 순서로 구동하며, 무엇을 기록·재개하고, 무엇을 하지 않는가의 계약이다.
-- **이 문서는 Core 문서다.** 본문 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명·실행 옵션 문자열을 두지 않는다(structure.md §5, C-3). Step 물리 형식·물리 실행 표면·백엔드 경로·정지 신호 값·정책 값 매핑은 **Module 구현 경계(`framework/loop/step-host/`)·Adapter Binding 문서 소관**이며, 필요한 자리에는 소관 포인터만 둔다(§7.2).
-- **경계 불가침.** 이 프로토콜은 Runtime(01)의 Serve 구간 호스팅 계약을 재정의하지 않는다 — Step Host는 Loop Engine 구동의 형태 B 실현이며 **두 번째 Runtime이 아니다**(01 §3.1-C·INV-6, 설계 §3.1). Agent Lifecycle 단계 전이 규칙은 정의하지 않는다 — 그 정본은 03 소관이다.
-- 용어는 specs/00-glossary.md 정본만 사용한다. "형태 A / 형태 B"는 structure.md 확정 조건의 서술 라벨이며 Glossary 표제어가 아니다. "Step Host"·"Step Contract"는 설계 정본이 도입한 서술 명칭으로, 기존 Task(07 §3.2-B)+delegation(02 §3.2-B)의 실행 시점 직렬화를 가리키는 라벨이지 새 Component가 아니다(§3.1).
+이 절이 본 문서의 경계 선언 정본이다(다른 절에서 반복하지 않는다).
+
+- **정본은 인용된 각 spec의 §3 계약이다.** 이 문서는 01 §3 Core Contract의 **인스턴스**이며 03/07/02/06/04의 계약(상태·전이·필드·연산·불변)을 재정의·확장하지 않는다(structure.md §7 C-1). 새 상태 열거·새 필드·새 Component·새 Layer를 창설하지 않는다(Glossary INV-3 무촉). 위반(형태 B가 계약을 바꾸어야만 성립하는 경우)이 발견되면 구현하지 않고 Advisor에게 보고한다.
+- 이 문서는 **Step Host** — 03 사이클 구동과 07 디스패치·순서 규칙을 사람 없이 무인으로 트리거·반복하는 실행 코드(형태 B)의 provider-중립 계약을 서술한다.
+- **Core 문서.** 본문 전체에 금지 토큰(AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명·실행 옵션 문자열)을 두지 않는다 — 규칙 정본은 structure.md §5 C-3다. Step 물리 형식·물리 실행 표면·백엔드 경로·정지 신호 값·정책 값 매핑은 Module 구현 경계(`framework/loop/step-host/`)·Adapter Binding 문서 소관이다(§7.2).
+- **경계 불가침.** Runtime(01)의 Serve 구간 호스팅 계약을 재정의하지 않는다 — Step Host는 Loop Engine 구동의 형태 B 실현이며 **두 번째 Runtime이 아니다**(01 §3.1-C·INV-6). Agent Lifecycle 단계 전이 규칙은 정의하지 않는다(03 소관).
+- 용어는 specs/00-glossary.md 정본만 사용한다. "형태 A / 형태 B"는 structure.md 확정 조건의 서술 라벨이며, "Step Host"·"Step Contract"는 설계 정본이 도입한 서술 명칭으로 기존 Task(07 §3.2-B)+delegation(02 §3.2-B)의 실행 시점 직렬화를 가리키는 라벨이지 새 Component가 아니다(§3.1).
 
 ---
 
 ## §1. 목적
 
-Step 실행 호스팅 프로토콜의 책임은 다섯 가지다.
-
-- Step Host의 **위상**을 확정한다 — 무엇을 구동하고 무엇을 판단하지 않는가(§2).
-- 실행 단위인 **Step**을 정의한다 — 기존 계약의 실행 시점 자기완결 직렬화이며 새 계약 요소가 0임을 보인다(§3).
-- Host의 **기록·상태·재개 규칙**을 확정한다 — append-only 파생 뷰와 결정적 재개(§4).
-- **재시도·피드백·검증 통합**을 확정한다 — 실패의 재주입과 CP1/CP2/CP3 보존(§5).
-- **진입 판정·자율성·진입 모드**를 확정한다 — 착수 충분성, 정책 축과 게이트 등급 분리, 두 실행 모드(§6).
-
-이 프로토콜은 형태 A(주 컨텍스트에서 규약으로 직접 실수행)와 **같은 계약의 두 번째 실현 형태**이며, 형태 A는 그대로 유효하다. 형태 A → 형태 B 전환에도 01/02/03/06/07 §3 Core Contract 변경은 0이다(structure.md §7, C-1). 위반(형태 B가 계약을 바꾸어야만 성립하는 경우)이 발견되면 구현하지 않고 Advisor에게 보고한다(structure.md §7 규칙 4).
+이 프로토콜은 다섯 가지를 확정한다 — Step Host의 위상(§2) · 실행 단위 Step의 정의(§3) · 기록·상태·재개 규칙(§4) · 재시도·피드백·검증 통합(§5) · 진입 판정·자율성·진입 모드(§6). 형태 A(주 컨텍스트에서 규약으로 직접 실수행)와 **같은 계약의 두 번째 실현 형태**이며 형태 A는 그대로 유효하다. 전환에도 01/02/03/06/07 §3 Core Contract 변경은 0이다(C-1).
 
 ---
 
 ## §2. 위상 선언 — Step Host는 판단하지 않는 기계 구동자
 
-Step Host는 **판단하지 않는 기계 구동자**다. 03 사이클 구동과 07 디스패치·순서 규칙(R1~R4·병합)을 **무인으로 트리거·반복**할 뿐, 의미 판단을 하지 않는다.
+Step Host는 **판단하지 않는 기계 구동자**다. 03 사이클 구동과 07 디스패치·순서 규칙(R1~R4·병합)을 **무인으로 트리거·반복**할 뿐 의미 판단을 하지 않는다.
 
-- **의미 판단은 전부 기존 주체가 소유한다.** 완료·실패·차단의 선언은 실행 단위(Worker 역할, 02 §3.2-C/D)가, 독립 검증 판정은 Verifier(06 §3.1)가, 최종 승인·재량 판정은 Advisor(02 §3.2-A)가, 사람 개입 결정은 사람(03 §3.1-D)이 소유한다. Host는 이 판단들을 **오케스트레이션 순서로 배열·구동**할 뿐 대신 내리지 않는다.
-- **재정의 0.** Host는 Runtime(01)의 Bootstrap/Shutdown·Serve 호스팅 계약, Loop(03)의 단계 전이 규칙, Workflow(07)의 R1~R4·병합 5단계를 **재정의하지 않고 구동만** 한다. Step Host는 형태 B 예약 로케이터(loop-binding §4·workflow-binding §4)가 명시 예약한 두 자리 — "사이클 구동을 사람 없이 자동 트리거·반복하는 실행 코드"와 "무인 병렬 오케스트레이션 실행 진입점" — 의 실현이다.
-- **두 번째 Runtime 아님·형태 A 병존.** Step Host는 Loop Engine 구동의 형태 B 실현이며 별도 Runtime을 신설하지 않는다(01 INV-6). 형태 A(주 컨텍스트가 규약으로 사이클을 실수행)와 병렬 체계가 아니라 같은 계약의 다른 실현이며, 둘은 양립한다(설계 §3.1).
+- **의미 판단은 전부 기존 주체가 소유한다.** 완료·실패·차단 선언은 실행 단위(02 §3.2-C/D), 독립 검증 판정은 Verifier(06 §3.1), 최종 승인·재량 판정은 Advisor(02 §3.2-A), 사람 개입 결정은 사람(03 §3.1-D)이 소유한다. Host는 이 판단들을 오케스트레이션 순서로 배열·구동할 뿐 대신 내리지 않는다.
+- **재정의 0.** Host는 01의 Bootstrap/Shutdown·Serve 호스팅 계약, 03의 단계 전이 규칙, 07의 R1~R4·병합 5단계를 재정의하지 않고 구동만 한다. Step Host는 형태 B 예약 로케이터(loop-binding §4·workflow-binding §4)가 예약한 두 자리의 실현이다.
+- **두 번째 Runtime 아님·형태 A 병존.** 별도 Runtime을 신설하지 않으며(01 INV-6), 형태 A와 병렬 체계가 아니라 같은 계약의 다른 실현으로 양립한다.
 
 ---
 
@@ -91,8 +86,8 @@ Step Host는 **판단하지 않는 기계 구동자**다. 03 사이클 구동과
 | feedback (재시도 시에만) | 02 §3.2-D 실패 보고·06 §3.2-D 재작업 지시에서 파생(§5.1) |
 
 - **유효성 = 착수 가능성.** Step의 유효성 검사는 02 §3.2-B의 "필드(input·output·done·context) 하나라도 누락 시 착수 불가"를 그대로 사용한다(02 INV-6). 필수 필드가 누락된 Step은 디스패치되지 않고 진입 Sufficiency 판정(§6.1)으로 넘긴다.
-- **role/capability/model 슬롯은 선언의 전달자다.** 값의 원천은 기존 구조(하네스 역할 또는 04-solution-design §3.3 동적 Capability 선언)이며, Host는 이 선언을 실행 단위에 전달만 한다. 새 고정 Persona 세트·역할 카탈로그를 창설하지 않는다(설계 §3.9).
-- **물리 형식은 Adapter 소관.** Step 파일의 직렬화 형식·물리 배치·필드의 물리 표현은 Adapter Binding 문서 소관이다(§7.2). 본 문서는 어떤 직렬화 형식명도 두지 않는다(C-3).
+- **role/capability/model 슬롯은 선언의 전달자다.** 값의 원천은 기존 구조(하네스 역할 또는 04-solution-design §3.3 동적 Capability 선언)이며 Host는 전달만 한다 — 새 고정 Persona 세트·역할 카탈로그를 창설하지 않는다.
+- **물리 형식은 Adapter 소관.** Step 파일의 직렬화 형식·물리 배치·필드의 물리 표현은 Adapter Binding 문서 소관이다(§7.2).
 
 ### §3.2 Fresh Context Assembly 계약
 
@@ -101,11 +96,11 @@ Step Host는 **판단하지 않는 기계 구동자**다. 03 사이클 구동과
 **번들 = Step Contract(§3.1) + 확정 참조 + Memory 재료 + constraints + (재시도 시) feedback.**
 
 - **확정 참조(R2 준수).** 번들의 참조는 input·interfaceContract가 가리키는 **확정된** 산출물뿐이다. 동시 진행 중인 다른 Step의 미완성 산출물은 추측·인용하지 않는다(07 R2·INV-4).
-- **Host의 Memory 직접 접근 금지.** Host는 Memory Store·Index에 **직접 접근하지 않는다** — 04 §3.4 소비자 목록(Agent·Loop·Workflow·Verifier)에 Runtime이 없으며, Runtime은 배선만 하고 Memory 내용에 접근하지 않는다(04 §3.4·INV-1, PortBypass 방지). Memory 재료는 두 경로로만 번들에 들어온다.
+- **Host의 Memory 직접 접근 금지.** Host는 Memory Store·Index에 직접 접근하지 않는다 — 04 §3.4 소비자 목록에 Runtime이 없으며 Runtime은 배선만 한다(04 §3.4·INV-1, PortBypass 방지). Memory 재료는 두 경로로만 번들에 들어온다.
   - (a) **위임자(Advisor/Loop Consult 단계)가 Recall(purpose·scope·index-first — 04 §3.1-B)로 회수한 결과 요약을 Step의 `context`에 포함**(권장 기본 — 03 Consult 단계의 기존 책임 그대로).
   - (b) Step 실행 단위가 스스로 Consult 규약을 수행해 단일 Port로 Recall(04 §3.1-B 계약 준수).
-- **새 Memory 체계·캐시 신설 0.** 번들 조립은 위 두 허용 경로 위에서만 성립하며, 병렬 Memory·중간 캐시를 신설하지 않는다.
-- **반환 방향도 격리(설계 §3.10).** 격리는 유입(번들)만이 아니라 반환에도 적용된다 — Step 실행 상세·중간 기록·대량 산출물은 run 데이터 백엔드(§7.2)에 남고, 상위(주 컨텍스트/호출자)로는 완료 보고 5필드 수준의 요약·상태·검증 결과만 반환한다(02 §3.2-C 재사용). Host 자체는 어떤 내용도 주 컨텍스트에 누적하지 않는다(SH-INV-8).
+- **새 Memory 체계·캐시 신설 0.** 번들 조립은 위 두 허용 경로 위에서만 성립한다.
+- **반환 방향도 격리.** 격리는 유입(번들)만이 아니라 반환에도 적용된다 — Step 실행 상세·중간 기록·대량 산출물은 run 데이터 백엔드(§7.2)에 남고, 상위로는 완료 보고 5필드 수준의 요약·상태·검증 결과만 반환한다(02 §3.2-C 재사용). Host 자체는 어떤 내용도 주 컨텍스트에 누적하지 않는다(SH-INV-8).
 
 ---
 
@@ -123,21 +118,21 @@ Host의 상태는 03 §3.2-B **단계 상태 5종에 전건 흡수**된다 — �
 | failed | `Failed` | 실패(재시도 잔여 시 재디스패치 대상) |
 | blocked | `Escalated` | 사람/상위 개입 대기(03 §3.1-D) |
 
-- **기록 = append-only 이벤트 로그.** 기록은 03 §3.2-A 전이 이벤트 스키마(cycle_id·seq·from/to·trigger·outcome·retry_count·actor·ref·at)를 **동형 재사용**한다. 기록은 append-only이며, 기록된 뒤에 유효하다(03 INV-3). 이 로그만으로 재구성·검증할 수 있어야 한다.
-- **현재 상태 = 로그 파생 뷰.** "현재 상태"는 별도의 mutable 상태 필드가 아니라 로그의 파생 뷰다 — 마지막 관련 이벤트가 상태를 결정한다. Host는 mutable 상태 필드를 두지 않는다(설계 §3.4). 판독 계약만 흡수하고 기록은 append-only를 유지한다.
-- 전이 이벤트의 필드·의미·필수 표기의 정본은 03 §3.2-A이며, 직렬화 형식·물리 표현은 Adapter Binding 소관이다(§7.2). 본 문서는 필드를 재정의하지 않는다.
+- **기록 = append-only 이벤트 로그.** 기록은 03 §3.2-A 전이 이벤트 스키마(cycle_id·seq·from/to·trigger·outcome·retry_count·actor·ref·at)를 **동형 재사용**한다. 기록은 append-only이며 기록된 뒤에 유효하다(03 INV-3). 이 로그만으로 재구성·검증할 수 있어야 한다.
+- **현재 상태 = 로그 파생 뷰.** "현재 상태"는 별도의 mutable 상태 필드가 아니라 로그의 파생 뷰다 — 마지막 관련 이벤트가 상태를 결정한다. Host는 mutable 상태 필드를 두지 않는다.
+- 전이 이벤트의 필드·의미·필수 표기의 정본은 03 §3.2-A이며 직렬화 형식·물리 표현은 Adapter Binding 소관이다(§7.2).
 
 ### §4.2 결정적 재개 규칙
 
-크래시·중단 후 Host는 로그를 재생해 각 Task의 파생 상태를 복원하고, 다음 디스패치 대상을 결정적으로 도출한다.
+크래시·중단 후 Host는 로그를 재생해 각 Task의 파생 상태를 복원하고 다음 디스패치 대상을 결정적으로 도출한다.
 
-- **다음 대상 = "`Passed`가 아닌 Task 중 `dependsOn`이 전부 `Passed`인 최소 순번 집합".** 이는 07 §3.2-A parallelSets 도출 규칙과 동일 논리이며(선행 의존이 모두 완료된 Task들이 하나의 병렬 집합을 이룬다), **순차 실행은 그 특수형**(집합 원소 1)이다. 같은 로그에서 항상 같은 재개 지점이 나온다.
-- **`Escalated` 잔존 시 즉시 정지.** 해소되지 않은 `Escalated`가 하나라도 있으면 진행하지 않는다(해소 전 진행 금지). 해소 이벤트가 append된 뒤에만 해당 Task가 위 규칙으로 재선택된다.
-- **`Active` 잔존(중단 흔적) 처리.** 재생 결과 `Active`로 남은 채 종료된 Task는 결과가 미확정이므로 `Failed`(계기: 실행 중단) 이벤트를 append한 뒤 재시도 규칙(§5.1)을 적용한다. 이벤트 중복 없이 로그에서 재구성 가능해야 한다(멱등).
+- **다음 대상 = "`Passed`가 아닌 Task 중 `dependsOn`이 전부 `Passed`인 최소 순번 집합".** 07 §3.2-A parallelSets 도출 규칙과 동일 논리이며 **순차 실행은 그 특수형**(집합 원소 1)이다. 같은 로그에서 항상 같은 재개 지점이 나온다.
+- **`Escalated` 잔존 시 즉시 정지.** 해소되지 않은 `Escalated`가 하나라도 있으면 진행하지 않는다. 해소 이벤트가 append된 뒤에만 해당 Task가 위 규칙으로 재선택된다.
+- **`Active` 잔존(중단 흔적) 처리.** 재생 결과 `Active`로 남은 채 종료된 Task는 결과가 미확정이므로 `Failed`(계기: 실행 중단) 이벤트를 append한 뒤 재시도 규칙(§5.1)을 적용한다(멱등).
 
 ### §4.3 실행 시퀀스 (4 국면)
 
-위 상태·재개 규칙이 Step 실행에서 어떻게 흐르는가다(설계 §3.5). 각 국면의 상태 전이는 전부 §4.1 이벤트 로그에 append되며, 어느 국면도 검증되지 않은 결과를 완료로 기록하지 않는다.
+각 국면의 상태 전이는 전부 §4.1 이벤트 로그에 append되며, 어느 국면도 검증되지 않은 결과를 완료로 기록하지 않는다.
 
 | 국면 | 흐름 |
 |---|---|
@@ -154,17 +149,17 @@ Host의 상태는 03 §3.2-B **단계 상태 5종에 전건 흡수**된다 — �
 
 ### §5.1 재시도·피드백
 
-- **재시도 조건·한도.** CP1 실패 또는 CP2 Fail 시 `Failed` 이벤트(관련 실패 보고·재작업 지시 `ref` 포함)를 append하고, `retry_count`가 재시도 한도 미만이면 재디스패치한다. `retry_count`·재시도 한도는 03 §3.1-B 소관이며, 한도 값은 Config(01 §3.2-B)로 주어진다 — Host는 값의 소비자일 뿐 소유자가 아니다.
+- **재시도 조건·한도.** CP1 실패 또는 CP2 Fail 시 `Failed` 이벤트(관련 실패 보고·재작업 지시 `ref` 포함)를 append하고, `retry_count`가 재시도 한도 미만이면 재디스패치한다. `retry_count`·한도는 03 §3.1-B 소관이며 한도 값은 Config(01 §3.2-B)로 주어진다 — Host는 값의 소비자일 뿐 소유자가 아니다.
 - **feedback 재주입.** 다음 fresh context(§3.2)의 feedback 슬롯에 **직전 실패 보고(02 §3.2-D — reason·repro)와 CP2 재작업 지시(06 §3.2-D)**에서 파생한 피드백을 주입한다. feedback은 append-only 로그에서 도출되며 별도 상태 시스템을 신설하지 않는다.
-- **한도 초과 → Escalated.** `retry_count`가 한도를 초과하면 `Escalated`로 정지한다(03 §3.1-D 조건 1). 실패·미완성은 로그와 보고에 반드시 남으며 은폐되지 않는다(02 O5·INV-5).
+- **한도 초과 → Escalated.** 한도를 초과하면 `Escalated`로 정지한다(03 §3.1-D 조건 1). 실패·미완성은 로그와 보고에 반드시 남으며 은폐되지 않는다(02 O5·INV-5).
 
 ### §5.2 검증 통합 — CP1/CP2/CP3 보존 + AC 3형
 
-검증 게이트 순서(CP1 → CP2 → CP3)는 03 §3.1-A가 소유하며, Host는 그 순서를 구동만 한다.
+검증 게이트 순서(CP1 → CP2 → CP3)는 03 §3.1-A가 소유하며 Host는 그 순서를 구동만 한다.
 
 - **CP1 — 자체 점검.** Step 실행 단위가 Execute 종료 시 수행한다(02 §3.2-C self_check; 실행형 AC의 기계 실행 포함). 자체 점검은 최종 승인이 아니다(02 §3.2-A).
-- **CP2 — 독립 판정.** Host는 CP2를 **별도 독립 실행 단위**(Verifier 역할)로 디스패치한다. 산출물 자체를 근거로 판정하며 완료 보고를 판정 근거로 삼지 않는다(06 §3.1 V1). **자가판정으로 완료를 확정하지 않는다** — CP1과 CP2는 같은 단위가 겸하지 않는다. "Passed" 이벤트는 CP2 Pass 확정 후에만 append된다.
-- **CP3 — Advisor 역할 승인.** CP3는 사람 승인이 아니라 **Advisor 역할의 승인**(02 §3.1)이므로 무인 실행과 양립한다. Host는 사이클 Complete 전(또는 배치 종단에서 일괄) Advisor 역할 단위에 CP3를 디스패치한다. 06 거짓 완료 검출·final_verdict 도출 규칙(Pass/Fail/Conditional)은 그대로다.
+- **CP2 — 독립 판정.** Host는 CP2를 **별도 독립 실행 단위**(Verifier 역할)로 디스패치한다. 산출물 자체를 근거로 판정하며 완료 보고를 판정 근거로 삼지 않는다(06 §3.1 V1). **자가판정으로 완료를 확정하지 않는다** — CP1과 CP2는 같은 단위가 겸하지 않는다. `Passed` 이벤트는 CP2 Pass 확정 후에만 append된다.
+- **CP3 — Advisor 역할 승인.** CP3는 사람 승인이 아니라 **Advisor 역할의 승인**(02 §3.1)이므로 무인 실행과 양립한다. Host는 사이클 Complete 전(또는 배치 종단에서 일괄) Advisor 역할 단위에 CP3를 디스패치한다. 06 거짓 완료 검출·final_verdict 도출 규칙은 그대로다.
 
 **AC 3형** (06 무수정 — done 필드의 유형 표기 관행이며, 모든 AC를 실행형으로 강제하지 않는다):
 
@@ -174,7 +169,7 @@ Host의 상태는 03 §3.2-B **단계 상태 5종에 전건 흡수**된다 — �
 | 독립 검토형(Review) | 독립 판정 단위의 검토로 판정 | VT-1~VT-5 그대로 |
 | 사람 검토형(Human Review) | `Escalated` 게이트로 물리화(사람 해소 대기) | 03 §3.1-D 조건 5 |
 
-(독립 검토형의 판정 단위가 어떤 provider·모델로 실현되는가는 Adapter Binding 소관이며, 본 문서는 명명하지 않는다 — §7.2.)
+(독립 검토형의 판정 단위가 어떤 provider·모델로 실현되는가는 Adapter Binding 소관이다 — §7.2.)
 
 ---
 
@@ -182,20 +177,20 @@ Host의 상태는 03 §3.2-B **단계 상태 5종에 전건 흡수**된다 — �
 
 ### §6.1 Execution Readiness Clarification
 
-기존 앵커(02 §3.2-B 착수 거부 · 02 O4 추측 금지 · 03 §3.1-D 사람 개입 5조건 · 상위 UAF 게이트 P-D4/P-D5)의 **명명·정식화 + Step Host의 blocked 신호와의 접속**이다. 새 Engine을 신설하지 않는다(설계 §3.7). 3지점에서 작동한다.
+기존 앵커(02 §3.2-B 착수 거부 · 02 O4 추측 금지 · 03 §3.1-D 사람 개입 5조건 · 상위 UAF 게이트 P-D4/P-D5)의 **명명·정식화 + Step Host의 blocked 신호와의 접속**이다. 새 Engine을 신설하지 않으며 3지점에서 작동한다.
 
-- **진입 Sufficiency 판정.** 위임/Step 필드의 완전성을 검사한다 — 02 §3.2-B가 곧 판정 기준이다(필드 누락 시 착수 불가). 완전 → 즉시 Implementation Planning(03 Plan). 불완전 → 부족 필드를 지목한 **최소 범위 scoped 질의**(02 반환·질의 관행의 정식화)로 위임자/사용자에게 반환한다. Discovery 전체 재실행을 하지 않는다.
-- **실행 중 scoped 질의·blocked.** 실행 단위가 O4(추측 금지)에 따라 차단을 선언하면(실패 보고 `blocking=차단됨`, 02 §3.2-D) Host는 `Escalated` 기록 + 물리 정지 신호(값은 Adapter 소관, §7.2)로 정지한다. scoped question을 기록에 남기고 해소 후 재개한다(§4.2).
-- **upstream 급 부족 → 명시적 Discovery 호출 fallback.** 무엇을 만들지 자체가 불명일 때는 추측으로 우회하지 않고, 부족한 upstream 산출물을 명시적으로 획득하는 **Discovery Capability 호출 fallback**(게이트 통과 후)을 사용한다. 이는 중복 Interview가 아니라 부족한 upstream 산출물의 명시적 획득이다.
+- **진입 Sufficiency 판정.** 위임/Step 필드의 완전성을 검사한다 — 02 §3.2-B가 곧 판정 기준이다. 완전 → 즉시 Implementation Planning(03 Plan). 불완전 → 부족 필드를 지목한 **최소 범위 scoped 질의**로 위임자/사용자에게 반환한다. Discovery 전체 재실행을 하지 않는다.
+- **실행 중 scoped 질의·blocked.** 실행 단위가 O4에 따라 차단을 선언하면(실패 보고 `blocking=차단됨`, 02 §3.2-D) Host는 `Escalated` 기록 + 물리 정지 신호(값은 Adapter 소관)로 정지한다. scoped question을 기록에 남기고 해소 후 재개한다(§4.2).
+- **upstream 급 부족 → 명시적 Discovery 호출 fallback.** 무엇을 만들지 자체가 불명일 때는 추측으로 우회하지 않고 부족한 upstream 산출물을 명시적으로 획득하는 **Discovery Capability 호출 fallback**(게이트 통과 후)을 사용한다 — 중복 Interview가 아니다.
 
 ### §6.2 Autonomy Policy 어휘·게이트 등급 분리
 
-- **정책 어휘(Policy as Data).** `interactive`(도구 실행 승인 프롬프트 유지) / `auto_approve`(선언된 허용 범위 내 자동 승인) / `unrestricted`(승인 프롬프트 전면 생략) 3값. 정책 값은 **데이터**이며 엔진·계약 무변경으로 조정된다. 값의 실값·provider 실행 옵션 매핑은 Adapter/정책 데이터 소관이다(§7.2, 01 §3.2-B).
-- **게이트 등급 분리(불가침).** 위 정책은 **도구 실행 승인 프롬프트 축만** 제어한다. **Human Decision Gate — Contract 변경·중대 Architecture Decision·파괴적 작업·해결 불가 불확실성(= 03 §3.1-D 조건 2~5 + UAF 레벨 게이트) — 는 어떤 policy 값에서도 `Escalated` 정지로 보존**된다. `unrestricted`에서도 이 게이트는 정지하며 CP2를 우회하지 않는다. 정본 근거: 개입 최소(P-D4)와 권한 보존(P-D5)은 상충하지 않는다(02-discovery §3.2 주, 설계 §3.8).
+- **정책 어휘(Policy as Data).** `interactive`(도구 실행 승인 프롬프트 유지) / `auto_approve`(선언된 허용 범위 내 자동 승인) / `unrestricted`(승인 프롬프트 전면 생략) 3값. 정책 값은 **데이터**이며 엔진·계약 무변경으로 조정된다. 실값·provider 실행 옵션 매핑은 Adapter/정책 데이터 소관이다(§7.2, 01 §3.2-B).
+- **게이트 등급 분리(불가침).** 위 정책은 **도구 실행 승인 프롬프트 축만** 제어한다. **Human Decision Gate — Contract 변경·중대 Architecture Decision·파괴적 작업·해결 불가 불확실성(= 03 §3.1-D 조건 2~5 + UAF 레벨 게이트) — 는 어떤 policy 값에서도 `Escalated` 정지로 보존**된다. `unrestricted`에서도 이 게이트는 정지하며 CP2를 우회하지 않는다. 정본 근거: 개입 최소(P-D4)와 권한 보존(P-D5)은 상충하지 않는다(02-discovery §3.2 주).
 
 ### §6.3 Full UAF / Standalone 진입 시퀀스
 
-두 실행 모드의 진입 차이다(설계 §5). Planning·실행 단계는 두 모드가 동일하며(03 Plan → 07 Decompose → Step 직렬화 → Host 구동), **차이는 진입 판정과 중복 실행 금지 규칙**에 있다.
+Planning·실행 단계는 두 모드가 동일하며(03 Plan → 07 Decompose → Step 직렬화 → Host 구동) **차이는 진입 판정과 중복 실행 금지 규칙**에 있다.
 
 | 국면 | Full UAF Mode | Standalone UAHF Mode |
 |---|---|---|
@@ -203,7 +198,7 @@ Host의 상태는 03 §3.2-B **단계 상태 5종에 전건 흡수**된다 — �
 | 진입 판정 | Consult 정독 후 즉시 Implementation Planning | Sufficiency 판정(§6.1): 충분 → 즉시 Planning / 불충분 → 최소 Clarification / upstream 부족 → 명시적 Discovery fallback(게이트 후) |
 | 금지 | 상위 Interview·상위 Plan 재수행·재생성 | 무조건적 전체 Discovery 재실행 |
 
-**중복 실행 금지 규칙.** Full UAF Mode는 상위 산출물을 재사용하며 상위 Interview/Plan을 재생성하지 않는다. Standalone UAHF Mode는 부족분에 한한 최소 Clarification만 수행하고 무조건적 전체 Discovery를 재실행하지 않는다. 두 규칙 모두 이벤트 로그에 상위 단계 재실행 흔적이 남지 않아야 한다(실증은 dogfooding E2E — 설계 §8).
+**중복 실행 금지 규칙.** Full UAF Mode는 상위 산출물을 재사용하며 상위 Interview/Plan을 재생성하지 않는다. Standalone UAHF Mode는 부족분에 한한 최소 Clarification만 수행한다. 두 규칙 모두 이벤트 로그에 상위 단계 재실행 흔적이 남지 않아야 한다.
 
 ---
 
@@ -211,7 +206,7 @@ Host의 상태는 03 §3.2-B **단계 상태 5종에 전건 흡수**된다 — �
 
 ### §7.1 불변 SH-INV
 
-아래 불변은 이 프로토콜이 준수를 서약하는 Host 의무이며, **전부 기존 정본 계약의 파생**이다. 새 Core Contract·새 상태·새 필드·새 Component를 창설하지 않는다(C-1·Glossary INV-3 무촉).
+아래 불변은 이 프로토콜이 준수를 서약하는 Host 의무이며 **전부 기존 정본 계약의 파생**이다. 새 Core Contract·새 상태·새 필드·새 Component를 창설하지 않는다(C-1·Glossary INV-3 무촉).
 
 - **SH-INV-1 (판단 금지).** Host는 의미 판단(완료/실패/차단/검증/승인)을 0건 수행한다. 판단은 전부 기존 주체 소유다(§2; 02 §3.2-A, 06 §3.1, 03 §3.1-D).
 - **SH-INV-2 (append-only 파생 뷰).** 기록은 append-only 이벤트 로그이며, 현재 상태는 그 로그의 파생 뷰다. mutable 상태 필드를 두지 않는다(§4.1; 03 §3.2-A INV-3).
@@ -220,7 +215,7 @@ Host의 상태는 03 §3.2-B **단계 상태 5종에 전건 흡수**된다 — �
 - **SH-INV-5 (Memory 직접 접근 금지).** Host는 Memory Store·Index에 직접 접근하지 않는다 — 두 허용 경로만 경유한다(§3.2; 04 §3.4 Runtime 비소비자·INV-1).
 - **SH-INV-6 (Core Contract 무변).** 이 프로토콜은 01/02/03/06/07 §3 계약을 구현만 하고 재정의 0이다(§0·§1; structure.md §7 C-1).
 - **SH-INV-7 (provider·언어 중립).** 본 문서 본문과 중립 엔진 경계(`framework/loop/step-host/`)에 특정 AI·모델·제품 기능·언어·툴체인·실행 옵션 토큰이 0건이다(§7.2·§7.3; structure.md §5 C-3).
-- **SH-INV-8 (컨텍스트 격리).** 각 Step은 전체 컨텍스트를 상속하지 않고 번들만으로 실행되며, 상위로는 완료 보고 5필드 수준의 요약·상태·검증 결과만 반환한다(§3.2; 02 §3.2-C, 07 R2, 설계 §3.10).
+- **SH-INV-8 (컨텍스트 격리).** 각 Step은 전체 컨텍스트를 상속하지 않고 번들만으로 실행되며, 상위로는 완료 보고 5필드 수준의 요약·상태·검증 결과만 반환한다(§3.2; 02 §3.2-C, 07 R2).
 
 ### §7.2 Adapter·구현 바인딩 지점 (본 문서 미확정 — 소관 포인터)
 
@@ -228,32 +223,20 @@ Host의 상태는 03 §3.2-B **단계 상태 5종에 전건 흡수**된다 — �
 
 | 바인딩 지점 | 소관 경계 |
 |---|---|
-| 중립 Step Host 엔진 배치(host 코드 + configSchema) | `framework/loop/step-host/` **신설**(설계 §4 확정 — loop-binding §4 형태 B 로케이터가 예약한 1순위 자리; structure.md §4 규칙 2). provider·언어·옵션 토큰 0 유지(C-3 확장). |
-| invoker 인터페이스의 provider 구현 | `framework/adapters/<adapter>/step-invoker/` **신설**(AI·실행 환경 의존 격리 — structure.md §4 규칙 4). |
+| 중립 Step Host 엔진 배치(host 코드 + configSchema) | `framework/loop/step-host/`(loop-binding §4 형태 B 로케이터가 예약한 1순위 자리; structure.md §4 규칙 2). provider·언어·옵션 토큰 0 유지(C-3 확장). |
+| invoker 인터페이스의 provider 구현 | `framework/adapters/<adapter>/step-invoker/`(AI·실행 환경 의존 격리 — structure.md §4 규칙 4). |
 | Step 직렬화 형식·이벤트 로그 직렬화 형식 | Adapter Binding 문서 소관(직렬화 형식명은 Core 문서에 0). |
 | run 데이터 백엔드 경로 | 이원화 — 일반 관례 = 소비 프로젝트 관례 경로 / dogfooding = `framework/adapters/<adapter>/step-data/`(워크스페이스 귀속). |
 | 물리 정지 신호 값 | Adapter Binding 문서 소관(§6.1 blocked·정지의 물리 값). |
 | Autonomy Policy 실값·provider 실행 옵션 매핑 | Adapter/정책 데이터 소관(§6.2 — 실행 옵션 문자열은 해당 바인딩에만 등장). |
 | role/capability/model 슬롯의 실행 모델 지정 의미 | 02 §4 실행 모델 바인딩·04-solution-design §3.3 소관(Host는 전달만 — §3.1). |
 
-non-core 실행 경계 사이의 정확한 분할은 structure.md §4 규칙 4가 "형태 B 설계 시 확정"으로 미룬 자리이며, 위 표가 그 이번 확정분(step 실행 호스팅 축)이다. 규칙 4가 계속 이연한 여타 축(Module별 연산 코드 분할 등)은 본 문서 범위 밖이다.
+non-core 실행 경계 사이의 정확한 분할은 structure.md §4 규칙 4가 "형태 B 설계 시 확정"으로 미룬 자리이며, 위 표가 그 확정분(step 실행 호스팅 축)이다.
 
-### §7.3 실측 대조 (L-07)
+### §7.3 실측 대조 (현행)
 
-본 문서(W1)는 **계약만** 확정하며 실행 코드·데이터를 생성하지 않는다. §7.2가 가리키는 산출물의 실측 상태는 다음과 같다(파일 시스템 실측 근거).
+본 문서는 **계약만** 확정하며 실행 코드·데이터를 소유하지 않는다. §7.2가 가리키는 산출물의 현행 실측 상태는 다음과 같다.
 
-- `framework/loop/step-host/`·`framework/adapters/<adapter>/step-invoker/`·run 데이터 백엔드는 **현 시점 미존재**다. W2(중립 Host + invoker 구현·자체 테스트)·W3(dogfooding E2E 데이터)에서 생성 예정이다.
-- 따라서 위 경로에 대한 "실재" 주장은 하지 않는다 — 미존재를 실재로 쓰지 않는다(L-07). 실행 코드 첫 도입은 W2이며, 그때 provider·언어 토큰 0(전수 스캔)이 CP2 검증 대상이 된다(설계 §8).
-- 본 문서(W1)는 이 1파일만 신설하며, 기존 spec·루트 ARCH·04·구조 규격·자매 runtime 문서·바인딩을 무수정으로 둔다(설계 §6 신설 4±1 중 ① — 기존 정본 개정 0목표). 경미 append 후보(loop/workflow-binding OQ에 "형태 B 부분 실현" 사실 추가 등)는 구현 마일스톤(W3)의 별도 정합 작업이며 본 문서 범위 밖이다.
-
----
-
-## §8. 요약 (한눈에 보기)
-
-- **Step Host = 판단하지 않는 기계 구동자.** 03 사이클·07 디스패치를 무인 트리거·반복하는 형태 B 실현이며, 의미 판단은 전부 기존 주체 소유다. 두 번째 Runtime이 아니고 형태 A와 병존한다(§2; 01 INV-6).
-- **Step = Task(07 §3.2-B) + delegation(02 §3.2-B)의 실행 시점 자기완결 직렬화.** 새 계약 요소 0. 유효성 = "필드 누락 시 착수 불가"(§3.1). 번들은 전체 컨텍스트를 상속하지 않으며, Host는 Memory에 직접 접근하지 않는다(§3.2; 04 §3.4).
-- **상태 = 03 §3.2-B 5종 재사용.** 기록은 append-only(03 §3.2-A), 현재 상태는 파생 뷰. 결정적 재개 = "Passed 아닌 Task 중 dependsOn 전부 Passed인 최소 순번 집합"(07 §3.2-A 논리). Escalated 잔존 시 정지·Active 잔존은 Failed(중단) append(§4).
-- **재시도·검증.** retry_count·한도 = Config(03 §3.1-B·01 §3.2-B). feedback = 직전 실패 보고 + CP2 재작업 지시 파생. CP1→CP2(독립·자가판정 완료 확정 금지)→CP3(Advisor 역할, 사람 아님). AC 3형(실행형/독립 검토형/사람 검토형 — 06 무수정)(§5).
-- **진입·자율성.** Execution Readiness Clarification 3지점(진입 Sufficiency·실행 중 blocked·upstream fallback). Autonomy 3값은 도구 승인 축만 제어하고 Human Decision Gate는 모든 policy에서 Escalated로 보존(§6).
-- **SH-INV 8건은 전부 기존 정본의 파생이며 새 Core Contract 0이다.** 값·물리 실현은 `framework/loop/step-host/`·Adapter Binding 소관이고, 그 산출물은 현재 미존재(W2/W3 예정)다(§7).
-- Core 문서 본문에 특정 AI·모델·제품 기능·언어·툴체인·직렬화 형식·실행 옵션 토큰은 0건이다(C-3). 형태 A → 형태 B 전환에도 Core Contract 변경은 0이다(C-1).
+- `framework/loop/step-host/`(중립 Host + `config_schema.json` + `tests/`)와 `framework/adapters/<adapter>/step-invoker/`, run 데이터 백엔드(`step-data/`)는 **실재한다** — W2 구현·W3 dogfooding E2E로 생성되었고(§9 W3 행) 이후 orchestration Layer가 중립 Host를 substrate로 무수정 소비한다(§9 v1.6 행). uaf-verified: 디렉터리 목록 실측(`framework/loop/step-host/` 및 adapters 하위 `step-invoker`·`step-data` 엔트리 존재 확인, 2026-07-26).
+- 종전 W1 시점의 "미존재" 스냅샷 문면은 §9 W3 행이 이력으로 보존한다(BPD-17) — 라이브 본문은 현행 실재를 기술한다(미존재를 실재로 쓰지 않는 원칙의 반대 방향 적용: 실재를 미존재로 남기지 않는다).
+- 계약·SH-INV 문면은 이 실재화로 변경되지 않는다. provider·언어 토큰 0(C-3)의 판정 대상은 중립 엔진 경계이며 그 검증은 CP2 소관이다.

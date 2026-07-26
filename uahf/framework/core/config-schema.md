@@ -5,16 +5,14 @@
 상위 규약: AGENT.md
 근거 정본:
 
-- specs/01-runtime.md §3.2-B — Config 스코프·로딩 순서·우선순위·결정성·누락 스코프 규칙. 본 문서가 인스턴스화하는 계약의 정본.
-- specs/01-runtime.md §3.1-B — Load Config 연산(입력·출력·완료 조건·실패 보고). 연산 시그니처의 정본.
-- specs/01-runtime.md §3.2-D — Failure Report. Load Config 실패의 공통 보고 구조 정본.
-- specs/01-runtime.md §3.3 INV-5 — 결정적 Config 불변 규칙.
-- specs/01-runtime.md §8 예2 — Config 스코프 병합 예시. 병합 도출 결과 재현의 근거.
-- specs/01-runtime.md §9 OQ-R1 — Config 우선순위 방향 결정(Advisor)의 정본.
-- specs/03-loop.md §3.1-B — 재시도 한도 항목 원문. DP-1 자리 예약의 승계 근거.
-- framework/core/structure.md §6 — 본 산출물의 소속 경계·소유 경계.
-- framework/core/structure.md §5 — Core 경계 문서 금지 토큰 규칙(C-3).
-- framework/core/structure.md §7 — Core Contract 불변 조건(C-1).
+- specs/01-runtime.md §3.2-B — Config 스코프·로딩 순서·우선순위·결정성·누락 스코프 규칙의 정본.
+- specs/01-runtime.md §3.1-B — Load Config 연산 시그니처의 정본.
+- specs/01-runtime.md §3.2-D — Failure Report 공통 보고 구조의 정본.
+- specs/01-runtime.md §3.3 INV-5 — 결정적 Config 불변.
+- specs/01-runtime.md §8 예2 — 스코프 병합 예시(§6 재현 근거).
+- specs/01-runtime.md §9 OQ-R1 — Config 우선순위 방향 결정의 정본.
+- specs/03-loop.md §3.1-B — 재시도 한도 항목 원문(DP-1 승계 근거).
+- framework/core/structure.md §2·§5·§7 — 소속·소유 경계(4경계 배치 표)·금지 토큰 규칙(C-3)·Core Contract 불변(C-1).
 - specs/00-glossary.md §3.2-I — Config 용어 정본.
 
 거버넌스: 이 문서는 `framework/core/` 소속 Core 문서다. 개정은 Advisor 승인 + 본 문서 §9 이력 절 기록으로만 이뤄진다 (docs 운용 문서 거버넌스 관행).
@@ -30,33 +28,26 @@
 | 2026-07-05 | v0.3 Draft r3 | CP2(A8 Verifier) Fail 재작업 — r2 개정 잔여 결함 교정. (1) §1·§7 서두·§7 제목·§10의 "미결정/자리만 예약/미기입" 서술을 DP-1 해소 상태와 정합화 (§5.3 상태 서술 모순 해소). (2) §7 말미 주의 실재하지 않는 "§Open Questions" 참조 제거 — §5 조율 결정으로 해소됨을 명시 (DoD-5 준용 해소). Verifier 검출 위반 2건 전체 대응. | Advisor |
 | 2026-07-05 | v0.3 Baseline | v0.3 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass, CP3 Advisor 승인, DP-1 사용자 재가: `retry.limit` 기본값 2·Global). | Advisor |
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 L-XX·mi 유지)·삭제 산출물 참조 앵커 전환(@cd9247b·@004bfa9). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본은 specs/01-runtime.md §3.2-B(Config)·§3.1-B(Load Config)·§3.2-D(Failure Report)·§3.3 INV-5이다.** 이 문서는 그 Core Contract의 **인스턴스**이며, 계약을 재정의·확장하지 않는다 (structure.md §7 C-1). 계약 요소는 § 포인터로만 참조한다.
-- 이 문서는 `framework/core/` 소속 **Config 스키마 문서**다 (structure.md §6, §4 C-2 — Core 경계는 계약·스키마 문서 전용). 물리 소스·직렬화 형식은 여기서 정하지 않는다 — Adapter Binding 문서 소관이다 (01 §4.1).
-- **이 문서는 Core 문서다.** 본문 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명·직렬화 형식명을 두지 않는다 (structure.md §5 C-3, 01 §3.3 INV-4). 규칙을 서술하는 문안에서도 구체 예시 토큰을 나열하지 않는다. 구체 인스턴스가 필요한 자리에는 소관 포인터(Adapter Binding 문서 소관)만 둔다.
-- 용어는 specs/00-glossary.md 정본만 사용한다. Config는 Glossary §3.2-I가 정본이며, 상세 필드의 정본은 01 §3.2-B가 유지한다. **새 용어를 신설하지 않는다** (Glossary §3.3 INV-4).
-- **라벨 주의.** 본 문서가 인용하는 `C-1`·`C-2`·`C-3`(structure.md 확정 조건)과 `DP-1`(아래 §7 결정 지점)은 **서술 참조 라벨**이며 Glossary 표제어가 아니다 — 정본 용어처럼 신설·확장하지 않고 참조 라벨로만 인용한다 (structure.md §0의 라벨 처리 방식과 동일).
+이 절이 본 문서의 경계 선언 정본이다(다른 절에서 반복하지 않는다).
+
+- **정본은 specs/01-runtime.md §3.2-B(Config)·§3.1-B(Load Config)·§3.2-D(Failure Report)·§3.3 INV-5다.** 이 문서는 그 Core Contract의 **인스턴스**이며 계약을 재정의·확장하지 않는다(structure.md §7 C-1).
+- 이 문서는 `framework/core/` 소속 **Config 스키마 문서**다(structure.md §2·§4 C-2 — Core 경계는 계약·스키마 문서 전용). 물리 소스·직렬화 형식은 여기서 정하지 않는다 — Adapter Binding 소관이다(01 §4.1, §8).
+- **Core 문서.** 본문 전체에 금지 토큰(AI 이름·모델명·제품 기능명·언어명·툴체인명·직렬화 형식명)을 두지 않으며 규칙 서술 문안에서도 구체 예시 토큰을 나열하지 않는다 — 규칙·분류 정본은 structure.md §5 C-3(및 01 §3.3 INV-4)이다.
+- 용어는 specs/00-glossary.md §3.2-I 정본만 사용하고 새 용어를 신설하지 않는다. `C-1`·`C-2`·`C-3`(structure.md 확정 조건)과 `DP-1`(§7)은 **서술 참조 라벨**이며 Glossary 표제어가 아니다.
 
 ---
 
 ## §1. 목적
 
-이 문서는 01 §3.2-B Config 계약을 `framework/core/` 경계 위에 **스키마 수준**으로 인스턴스화한다.
-
-책임은 네 가지다.
-
-- Config 3스코프(Global/Project/Module)의 정의·로딩 순서·우선순위·결정성·누락 스코프 처리를 01 §3.2-B와 일치하게 명문화한다 (§3, §4).
-- Config 트리의 언어 중립 추상 스키마와 Load Config 연산 시그니처를 01 §3.1-B·§3.2-D의 인스턴스로 제시한다 (§2, §5).
-- 병합 규칙이 01 §8 예2와 같은 도출 결과를 내는지 예시로 확인한다 (§6).
-- 재시도 한도 항목(DP-1)의 키·타입과 결정된 기본값·스코프를 기록한다 (§7 — 최초 Draft에서는 자리만 예약했고, 2026-07-05 Advisor 결정으로 DP-1이 해소되었다. v0.3 마일스톤 승인 시 사용자 재가 대상).
-
-이 문서는 01 §3의 어떤 계약 요소(연산·데이터 포맷·불변 규칙)도 재정의·확장하지 않는다 (§0, structure.md §7 C-1).
+이 문서는 01 §3.2-B Config 계약을 `framework/core/` 경계 위에 **스키마 수준**으로 인스턴스화한다 — 3스코프 정의·로딩 순서·우선순위·결정성·누락 스코프 처리(§3·§4) · 언어 중립 추상 스키마와 Load Config 시그니처(§2·§5) · 01 §8 예2 병합 도출 재현(§6) · 재시도 한도 키(§7, DP-1 해소). 01 §3의 어떤 계약 요소도 재정의·확장하지 않는다(C-1).
 
 ---
 
@@ -189,9 +180,7 @@ Config(scope 기여 단위)
 
 ## §7. 재시도 한도 키 (DP-1 — 해소)
 
-재작업 재시도 한도 값은 Config(01 §3.2-B)로 주어진다 (specs/03-loop.md §3.1-B). 최초 작성(Draft r1) 시점에는 그 기본값·스코프가 미결정 보류 항목이어서 **자리만 예약**했으나, **2026-07-05 Advisor 결정으로 DP-1이 해소되어** 아래 표와 결정 기록에 기본값·스코프가 확정 기입되었다 (v0.3 마일스톤 승인 시 사용자 재가 대상).
-
-**결정 지점 라벨: DP-1** — 재시도 한도의 값·확정 스코프 결정 (§0 라벨 주의 참조 — Glossary 표제어 아님).
+재작업 재시도 한도 값은 Config(01 §3.2-B)로 주어진다(specs/03-loop.md §3.1-B). 그 기본값·스코프는 **2026-07-05 Advisor 결정(DP-1)으로 해소**되어 아래에 확정 기입되었다(v0.3 마일스톤 승인 시 사용자 재가 완료 — §9).
 
 | 예약 요소 | 값 |
 |---|---|
@@ -200,15 +189,10 @@ Config(scope 기여 단위)
 | 기본값이 위치하는 스코프 | **Global** (Framework 전역 기본값). Project/Module scope의 override를 허용한다 — 우선순위는 §4.2 (01 §3.2-B) 그대로. |
 | 기본값 | **`2`** (DP-1 결정, 2026-07-05). |
 
-**결정 기록 (DP-1 해소 — Advisor, 2026-07-05).**
+**결정 기록 (DP-1 해소 — Advisor, 2026-07-05).** 기본값 **2**, 기본값 스코프 **Global**(Project/Module override 허용).
 
-- 근거: specs/03-loop.md §3.1-B은 "재시도 한도 값은 Config(01 §3.2-B)로 주어진다. 기본값·스코프는 Config·Adapter Binding(§4)이 정한다. Loop는 한도 초과 판정 규칙만 정의한다"고 원문 규정한다. 값·스코프는 03이 열어 둔 항목이며, `uahf/docs/session-handoff-v0.2.md@004bfa9` §3.5가 "v0.3 Config 구현 시 값 결정" 보류 항목으로 승계했다.
-- 결정(Advisor): 기본값 **2**, 기본값 스코프 **Global**(Project/Module override 허용).
-  - 기본값 2의 근거 — v0.1·v0.2 실측에서 모든 재작업이 1회로 해소되었다 (`uahf/docs/session-handoff-v0.2.md@004bfa9` §1.4). 한도 2는 1회 재작업 + 1회 여유를 허용하면서, 03 §3.1-B의 한도 초과 에스컬레이션(사람 개입)을 과도하게 지연시키지 않는다.
-  - Global 스코프의 근거 — Framework 전역 기본값의 정의 위치는 Global scope다 (01 §3.2-B). 프로젝트·모듈별 조정 요구는 §4.2 우선순위(Module > Project > Global)로 이미 충족된다.
-- 이 결정은 v0.3 마일스톤 사용자 승인 시 함께 재가·거부 대상으로 상정된다. Loop의 한도 초과 판정 규칙 자체는 03 §3.1-B 소관으로 불변이다.
-
-주: 이 키가 검증되는 스키마의 출처는 §5 주의 조율 결정(Advisor, 2026-07-05)으로 해소되었다 — `retry.limit`은 Framework 수준 키이므로 §2 구조 규칙으로 대조한다. 물리 표기·명명 관례는 Adapter Binding 문서 소관이다.
+- 근거: 03 §3.1-B는 값·스코프를 Config·Adapter Binding 소관으로 열어 두었고(`uahf/docs/session-handoff-v0.2.md@004bfa9` §3.5가 보류 항목으로 승계), v0.1·v0.2 실측에서 모든 재작업이 1회로 해소되었으므로(같은 문서 §1.4) 한도 2는 1회 재작업 + 1회 여유를 허용하면서 한도 초과 에스컬레이션을 과도하게 지연시키지 않는다. Framework 전역 기본값의 정의 위치는 Global scope이며(01 §3.2-B) 프로젝트·모듈별 조정은 §4.2 우선순위로 충족된다.
+- Loop의 한도 초과 판정 규칙 자체는 03 §3.1-B 소관으로 불변이다. 이 키의 대조 스키마 출처는 §5 조율 결정으로 해소되었다 — Framework 수준 키이므로 §2 구조 규칙으로 대조하며, 물리 표기·명명 관례는 Adapter Binding 소관이다.
 
 ---
 
@@ -217,15 +201,3 @@ Config(scope 기여 단위)
 - Config 소스의 **물리 파일 위치·직렬화 형식(파일 형태·문법)**은 이 Core 문서가 정하지 않는다. **Adapter Binding 문서 소관**이다 (01 §3.2 서두 "직렬화 형식은 Adapter Binding(§4)이 정한다", 01 §4.1 Config 소스 바인딩 행).
 - 스코프별 물리 소스(Global/Project/Module 각각의 실제 저장 위치)와 그 형식은 대상 환경마다 교체되는 이식 지점이다 (01 §4.2 "Config 소스·위치"). 본 문서의 스코프·우선순위·결정성 계약(§3~§6)은 이식 시에도 유지된다.
 - 따라서 본 문서 본문에는 구체 파일 경로·형식 토큰을 두지 않는다 (§0, structure.md §5 C-3).
-
----
-
-## §10. 요약 (한눈에 보기)
-
-- Config = 스코프(Global/Project/Module)를 가진 key→value 트리. Module scope만 `target`(module id)을 가진다 (§2·§3, 01 §3.2-B).
-- 로딩 순서 Global → Project → Module, 우선순위 Module > Project > Global (§4, 01 §3.2-B; 방향 결정 근거 01 §9 OQ-R1).
-- effective config는 결정적이고, 누락 스코프는 건너뛴다 (§4, 01 §3.3 INV-5·§3.2-B).
-- Load Config: 입력=스코프별 소스 집합 / 출력=effective config / 실패=SchemaViolation+location (§5, 01 §3.1-B·§3.2-D).
-- 병합 예시는 01 §8 예2와 같은 도출 결과를 낸다 (§6).
-- 재시도 한도(DP-1)는 해소 — 추상 키 `retry.limit`, 기본값 2, Global 스코프 기본 + Project/Module override 허용 (§7, Advisor 결정 2026-07-05 — 사용자 재가 대상).
-- 모든 계약 요소는 01 §3의 인스턴스이며 확장·수정이 아니다 (C-1). 물리 소스·형식은 Adapter Binding 문서 소관이다 (§8).

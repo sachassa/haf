@@ -37,29 +37,26 @@
 | 2026-07-07 | v1.2 Draft (개정 — §8 트리 갱신) | v1.2 Task T-S — Advisor 승인 하 격리 개정 (v0.5 V13·v0.6 L14·v0.7 WF8·v0.8 EX-C1·v0.9 T8·v1.0 T8 동형, 비차단 정합 개정). §8 트리 첫 `<adapter>/` 경계(scaffold-binding.md 다음·scaffold-template/ 앞)에 v1.2 신규 UAF 정본 바인딩 3문서(contract-binding.md=uaf/specs/03 §4·entry-binding.md=uaf/specs/01 §4·discovery-binding.md=uaf/specs/02 §4)를 파일 시스템 직접 실측 후 반영(L-07) — 각 바인딩 문서 1행 + uaf/specs §4 물리 실현 § 포인터. 백엔드 격리 데이터 디렉터리는 트리에 추가하지 않고 기존 포괄 주석("백엔드 격리 데이터 — Core 문서 비서술")이 커버(타 Module 백엔드 데이터 디렉터리 미열거 선례 동형 · 물리 이름 비명명으로 C-3 확장 누출 금지). 상태 라인 v1.2 Draft 갱신 · 직전 기준선 v1.0 문면 보존. §6 v0.3 산출물 표는 DP-V4대로 무변경. C-3 금지 토큰 0(개정분 포함 자가 전수 스캔 — uaf/specs·UAF는 § 포인터·상위 프레임워크 네임스페이스 참조로 허용, 특정 AI·모델명·제품 기능명·언어·툴체인·직렬화 형식 토큰 0), 01 §3 계약 재정의 0, Glossary 밖 용어 신설 0. 근거: v1.2 `framework/adapters/<adapter>/` 신규 3바인딩 문서(W1~W3) 확정. | Worker (Advisor 위임, Task T-S) |
 | 2026-07-07 | v1.2 Baseline | v1.2 마일스톤 사용자 승인 — 기준선 확정 (CP2 첫 판정 Pass 16/0/0; CP3 Advisor 승인) | Advisor |
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·복제 절 포인터화·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다. uaf-allow-legacy: §9 기존 행은 개정 시점의 이력 기록이므로 문면을 고치지 않고 보존한다.)
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본은 specs/01-runtime.md §3이다.** 이 문서는 그 Core Contract의 **인스턴스**이며, 계약을 재정의·확장하지 않는다. 계약 요소는 § 포인터로만 참조한다.
-- 이 문서는 `framework/` 디렉터리 구조의 **규격(specification)**이다. 물리 경로 이름은 01 §4.1 디렉터리 행에서 도출하고, 그 경계 위에 배치·역할·소유 계약을 확정한다.
-- **이 문서는 Core 문서다.** 본문 전체에 특정 AI 이름·모델명·제품 기능명·프로그래밍 언어명·툴체인명을 두지 않는다 (01 §3.3 INV-4, 확정 조건 C-3, §5). 구체 인스턴스(구체 어댑터명·디렉터리명·직렬화 형식·환경 경로 관례)는 **Adapter Binding 문서 소관**이며, 필요한 자리에는 일반형 표기 `<adapter>`와 소관 포인터만 둔다.
-- 용어는 specs/00-glossary.md 정본만 사용한다. 새 용어를 신설하지 않는다. "형태 A / 형태 B"는 아래 확정 조건 C-1·C-2에서 도입된 서술 라벨이며 Glossary 표제어가 아니다 — 정본 용어처럼 신설·확장하지 않고 확정 조건의 라벨로만 인용한다.
+이 절이 본 문서의 경계 선언 정본이다(다른 절에서 반복하지 않는다).
+
+- **정본은 specs/01-runtime.md §3이다.** 이 문서는 그 Core Contract의 **인스턴스**이며 계약을 재정의·확장하지 않는다. 계약 요소는 § 포인터로만 참조한다.
+- 이 문서는 `framework/` 디렉터리 구조의 **규격**이다. 물리 경로 이름은 01 §4.1 디렉터리 행에서 도출하고 그 경계 위에 배치·역할·소유 계약을 확정한다.
+- **Core 문서.** 본문 전체에 특정 AI 이름·모델명·제품 기능명·언어명·툴체인명을 두지 않는다 — 이 금지 토큰 규칙의 정본은 본 문서 §5(확정 조건 C-3)이며 01 §3.3 INV-4가 상위 근거다. 구체 인스턴스(어댑터명·디렉터리명·직렬화 형식·환경 경로 관례)는 Adapter Binding 문서 소관이며 일반형 `<adapter>`와 소관 포인터만 둔다.
+- 용어는 specs/00-glossary.md 정본만 사용하고 새 용어를 신설하지 않는다. "형태 A / 형태 B"는 확정 조건 C-1·C-2가 도입한 서술 라벨이며 Glossary 표제어가 아니다.
 
 ---
 
 ## §1. 목적
 
-`framework/` 디렉터리는 UAHF의 Core Layer·Runtime Layer 규격, Module 자기완결 구현 경계, Adapter Layer 바인딩 산출물이 물리적으로 어디에 놓이는가를 규율한다.
-
-이 규격의 책임은 세 가지다.
-
-- Core 계약(AI 비의존)과 Adapter 바인딩(환경 의존)의 **물리 경계**를 분리한다 (ROADMAP 2.3, 01 §3.2-E 규칙 3).
-- v0.3 산출물 각각이 01 §3의 어느 계약을 인스턴스화하는지 **경계와 소유**를 확정하여, 후속 병렬 Task의 소유 경계(specs/07-workflow.md §3.2-B)가 이 표에서 도출되게 한다.
-- 실행 코드가 도입되어도(향후 형태 B) 01 §3 Core Contract 변경이 0으로 유지되는 **불변 조건**을 명문화한다 (확정 조건 C-1).
+`framework/` 디렉터리는 UAHF의 Core Layer·Runtime Layer 규격, Module 자기완결 구현 경계, Adapter Layer 바인딩 산출물이 물리적으로 어디에 놓이는가를 규율한다. 이 규격은 세 가지를 확정한다 — Core 계약(AI 비의존)과 Adapter 바인딩(환경 의존)의 **물리 경계** 분리(§2·§3, ROADMAP 2.3·01 §3.2-E 규칙 3) · 각 경계의 배치·역할·소유와 실행 코드 배치·금지 토큰 규칙(§4·§5) · 형태 B 도입에도 01 §3 Core Contract 변경이 0으로 유지되는 불변 조건(§7, C-1). live 디렉터리 트리는 §8이 소유한다.
 
 ---
 
@@ -78,7 +75,7 @@
 
 - 네 물리 디렉터리(군) 이름은 01 §4.1 "디렉터리 바인딩 표"의 디렉터리 행에서 도출한다. §4.1은 `framework/core/`·`framework/runtime/`을 "Core 디렉터리 (AI 비의존)"으로, `framework/{loop,memory,verifier,workflow,plugins}/`를 "Module 구현 디렉터리"로, `framework/adapters/`를 "Adapter Binding 산출물" 격리 경계로 지정한다. §4.1 표 본문의 **구체 환경·제품·형식 바인딩 토큰은 Adapter Binding 문서 소관**이므로 본 Core 문서는 재현하지 않고 § 포인터로만 참조한다.
 - **Module 구현 디렉터리의 지위.** `framework/{loop,memory,verifier,workflow,plugins}/`(Module 구현 디렉터리)는 §4.1이 "Core 디렉터리"로 명시한 두 경계(`framework/core/`·`framework/runtime/`)와는 **별개의 디렉터리 행**이다. 다만 그 **문서 본문**은 같은 AI·언어·툴체인 비의존을 유지한다 (C-3 확장 — §5, Advisor 확정 v0.4). 하위 디렉터리 이름(loop·memory·verifier·workflow·plugins)은 §4.1 도출 물리 이름이자 Core Component 명칭이므로 금지 토큰이 아니다 (§5). v0.4에서 `framework/memory/`(4문서)가, v0.5에서 `framework/verifier/`(5문서)가, v0.6에서 `framework/loop/`(4문서)가, v0.7에서 `framework/workflow/`(5문서)가, v0.8에서 `framework/plugins/`(3문서)가 이 경계의 실사용 인스턴스다 (계약 정본은 각각 specs/04-memory.md·specs/05-lessons.md와 specs/06-verifier.md와 specs/03-loop.md와 specs/07-workflow.md와 specs/10-plugins.md 소관 — § 포인터, 본 Core 문서는 그 내용을 재서술하지 않는다). 이로써 다섯 Module 구현 디렉터리(loop·memory·verifier·workflow·plugins)가 전부 실사용 상태이며(미실현 경계 0), 각 실측 파일 목록은 §8 트리에 열거한다.
-- `<adapter>`는 일반형 표기다. 구체 어댑터명(하위 디렉터리 이름 포함)은 해당 Adapter Binding 문서가 소유한다 (§6, §0).
+- `<adapter>`는 일반형 표기다. 구체 어댑터명(하위 디렉터리 이름 포함)은 해당 Adapter Binding 문서가 소유한다 (§0, §5).
 - `framework/adapters/` 외에 존재할 수 있는 여타 환경 의존 바인딩 뿌리 역시 Adapter Binding 문서 소관이며 본 Core 문서는 명명하지 않는다.
 
 ---
@@ -91,18 +88,18 @@
 
 - **충족 방식.** `framework/core/`는 오직 AI 비의존 계약·스키마 문서만 담는다 (§2, 확정 조건 C-2 — §4). `framework/runtime/` 문서 본문도 같은 비의존 지위를 승계한다 (01 §4.1이 두 디렉터리를 함께 AI 비의존으로 지정).
 - **강화.** 본 규격은 여기에 언어·툴체인 비의존까지 더한다 (확정 조건 C-3 — §5). 따라서 두 경계 문서 본문의 금지 대상은 { 특정 AI 요소 } ∪ { 특정 언어·툴체인 요소 }다. 이 금지 대상 집합은 `framework/{loop,memory,verifier,workflow,plugins}/`(Module 구현 디렉터리)의 **문서 본문**에도 확장 적용된다 (C-3 확장 — §5, Advisor 확정 v0.4). 이 경계는 §4.1이 "Core 디렉터리"로 명시한 두 경계에 포함되지는 않으나(§2 주), 문서 본문의 AI·언어·툴체인 비의존은 동일하게 유지한다.
-- **검증 지점.** §5 금지 토큰 규칙 + §6 파일 목록의 "소속 경계" 열. AI·언어·툴체인 의존이 필요한 실현은 규칙 3에 따라 `framework/adapters/<adapter>/`로 격리된다.
+- **검증 지점.** §5 금지 토큰 규칙 + §8 트리의 경계 귀속. AI·언어·툴체인 의존이 필요한 실현은 규칙 3에 따라 `framework/adapters/<adapter>/`로 격리된다.
 
 ### 규칙 2 — 각 Module은 자기완결(self-contained) 단위다 (01 §3.2-E)
 
-- **충족 방식.** 각 Module은 자신의 Manifest·구현·(있다면) configSchema를 한 경계 안에 둔다 (01 §3.2-E). 이 자기완결 경계의 물리 자리가 `framework/{loop,memory,verifier,workflow,plugins}/`(Module 구현 디렉터리, §2 — 01 §4.1 도출)이며, 각 Module은 그 아래 자신의 한 경계에 요소를 모은다. 이와 별개로, Module 등록 서술자 계약(정본: 01 §3.2-A Module Manifest)이 자기완결 단위의 기준 인스턴스이며, `framework/runtime/module-manifest.md`(§6)가 그 서술자 계약을 인스턴스화한다.
+- **충족 방식.** 각 Module은 자신의 Manifest·구현·(있다면) configSchema를 한 경계 안에 둔다 (01 §3.2-E). 이 자기완결 경계의 물리 자리가 `framework/{loop,memory,verifier,workflow,plugins}/`(Module 구현 디렉터리, §2 — 01 §4.1 도출)이며, 각 Module은 그 아래 자신의 한 경계에 요소를 모은다. 이와 별개로, Module 등록 서술자 계약(정본: 01 §3.2-A Module Manifest)이 자기완결 단위의 기준 인스턴스이며, `framework/runtime/module-manifest.md`(§8 트리)가 그 서술자 계약을 인스턴스화한다.
 - **형태 B 확장.** 실행 코드 도입 시 각 Module은 `framework/{loop,memory,verifier,workflow,plugins}/`(Module 구현 디렉터리, §2) 아래 **자신의 한 경계**에 Manifest·구현·configSchema를 함께 둔다. 한 Module의 요소가 여러 경계로 흩어지지 않는다. 이 경계의 실행 코드 실현은 형태 B 사안이며, v0.4 시점의 실현은 형태 A(문서)다 (§4 C-2, Advisor 확정).
 - **검증 지점.** Manifest 서술자(01 §3.2-A)가 `id`·`contract`·`entrypoint` 등 자기완결 참조를 한 서술자에 묶는다는 점 — 필드 정본은 01 §3.2-A가 유지하며 본 문서는 재정의하지 않는다.
 
 ### 규칙 3 — Adapter Binding 산출물은 Core 디렉터리와 물리적으로 분리된 별도 경계에 둔다 (01 §3.2-E)
 
 - **충족 방식.** Adapter Binding 산출물은 `framework/adapters/<adapter>/`로 물리 분리된다 (§2). 이 경계는 Core 경계(`framework/core/`·`framework/runtime/`)와 **겹치지 않는다**.
-- **검증 지점.** §6 파일 목록에서 Adapter 바인딩 문서만 `framework/adapters/<adapter>/` 소속이고, 나머지 v0.3 산출물은 전부 `framework/core/`·`framework/runtime/` 소속이다 — 두 경계 집합이 비중첩임을 표로 확인할 수 있다. AI·실행 환경·백엔드 의존은 전부 Adapter Layer 뒤(이 경계)에 둔다 (INV-4).
+- **검증 지점.** §8 트리에서 Adapter 바인딩 산출물만 `framework/adapters/<adapter>/` 소속이고 Core·Module 구현 문서는 전부 그 밖의 경계 소속이다 — 두 경계 집합이 비중첩임을 트리로 확인할 수 있다. AI·실행 환경·백엔드 의존은 전부 Adapter Layer 뒤(이 경계)에 둔다 (INV-4).
 
 ---
 
@@ -140,24 +137,9 @@
 
 ---
 
-## §6. v0.3 산출물 파일 목록 (done 대상 — 산출물 표)
+## §6. v0.3 산출물 파일 목록 (동결 스냅샷 — DP-V4)
 
-v0.3 산출물 각 파일과 그것이 인스턴스화하는 01 § 계약, 소속 경계, 소유 경계다. 각 행이 후속 병렬 Task 하나의 소유 경계(specs/07-workflow.md §3.2-B ownedBoundary)를 도출한다 — 한 Task는 자신의 행 파일만 배타 소유·수정한다 (07 R4, INV-2 경계 불가침).
-
-| 산출물 파일 | 소속 경계 | 인스턴스화하는 01 § 계약 | 대응 ROADMAP v0.3 산출물 | 후속 Task 소유 경계 |
-|---|---|---|---|---|
-| `framework/runtime/module-manifest.md` | `framework/runtime/` (Core, AI·언어/툴체인 비의존) | 01 §3.2-A (Module Manifest), §3.2-E 규칙 2 | Runtime 프로토콜 구현물 (일부) | 이 파일 1개 |
-| `framework/runtime/module-registry.md` | `framework/runtime/` (Core, AI·언어/툴체인 비의존) | 01 §3.1-A (Register/Resolve/Replace/Deregister), §3.2-C (registry 필드), §3.3 INV-1·INV-3·INV-7 | 모듈 등록/교체 규칙 문서 | 이 파일 1개 |
-| `framework/core/config-schema.md` | `framework/core/` (Core, 계약·스키마 문서 전용) | 01 §3.2-B (Config), §3.1-B (Load Config), §3.3 INV-5 | config 스키마 | 이 파일 1개 |
-| `framework/runtime/lifecycle.md` | `framework/runtime/` (Core, AI·언어/툴체인 비의존) | 01 §3.1-C (Bootstrap/Shutdown), §3.2-C (Runtime Context), §3.2-D (Failure Report), §3.3 INV-2·INV-6 | Runtime 프로토콜 구현물 (일부) | 이 파일 1개 |
-| `framework/adapters/<adapter>/runtime-binding.md` | `framework/adapters/<adapter>/` (Adapter, 환경 의존 격리) | 01 §4.1 (바인딩 표), §4.2 (이식 교체 지점) | (Adapter 바인딩 — Core 산출물의 환경 실현) | 이 파일 1개 |
-
-주:
-
-- 마지막 행의 경로는 **일반형**이다. `<adapter>`(하위 디렉터리 이름 = 구체 어댑터명)는 해당 Adapter Binding 문서가 소유한다. 본 Core 문서는 구체 어댑터명을 명명하지 않는다 (§0, §5).
-- `config-schema.md`는 스키마 문서이므로 `framework/core/`에 둔다 (Config는 01 §3.2-B Core Contract 데이터 포맷이고, 스키마 문서는 C-2가 허용하는 "계약·스키마 문서"다). 나머지 프로토콜 문서는 Runtime 호스팅·모듈 시스템 계약(01 §3.1)의 인스턴스이므로 `framework/runtime/`에 둔다.
-- 필드·연산의 상세 정본은 인용한 01 § 각각이 유지한다. 본 표는 계약을 재정의하지 않고 § 포인터로 소유를 배정할 뿐이다.
-- **표 범위 (DP-V4, v0.5).** 이 표는 **v0.3 산출물** 범위로 유지하며, v0.4·v0.5 산출물의 버전별 소유 경계 기록은 각 버전 핸드오프·검증 리포트 관행이 담당하고(본 표에 버전별 산출물 표를 누적하지 않는다), 실측 파일 목록의 트리 반영은 §8이 담당한다.
+**표 범위 (DP-V4, v0.5).** 이 절의 v0.3 산출물 표는 v0.3 범위로 **동결**되어 누적하지 않는다 — 동결 스냅샷 문면은 git 앵커 90ca19c에서 열람하고, live 파일 목록은 §8 트리가, 버전별 소유 경계 기록은 각 버전 핸드오프·검증 리포트 관행이 담당한다. 배치 원칙(스키마 문서는 `framework/core/`, Runtime 호스팅·모듈 시스템 계약 인스턴스는 `framework/runtime/`, 환경 의존 바인딩은 `framework/adapters/<adapter>/`)은 §2·§4가 소유하며, 각 파일이 인스턴스화하는 01 § 계약의 상세 정본은 그 01 §이 유지한다.
 
 ---
 
@@ -169,8 +151,8 @@ v0.3 산출물 각 파일과 그것이 인스턴스화하는 01 § 계약, 소�
 
 규칙:
 
-1. 본 구조 규격과 §6의 v0.3 계약 문서들은 전부 01 §3 Core Contract의 **인스턴스**다. 어느 것도 01 §3의 계약 요소(연산·데이터 포맷·불변 규칙)를 재정의·확장하지 않는다.
-2. 향후 실행 코드 확장(형태 A → 형태 B)은 §6의 계약 문서가 지정한 01 §3 계약을 **구현**할 뿐, 계약 자체를 수정하지 않는다.
+1. 본 구조 규격과 Core·Runtime·Module 구현 경계의 계약 문서들(§8 트리)은 전부 01 §3 Core Contract의 **인스턴스**다. 어느 것도 01 §3의 계약 요소(연산·데이터 포맷·불변 규칙)를 재정의·확장하지 않는다.
+2. 향후 실행 코드 확장(형태 A → 형태 B)은 그 계약 문서가 지정한 01 §3 계약을 **구현**할 뿐, 계약 자체를 수정하지 않는다.
 3. 따라서 **Core Contract 변경 0**이 형태 A→B 전환의 불변 조건이다. 교체·확장 시에도 계약 소비자의 참조·규격 변경은 0이다 (01 §3.3 INV-1 교체 가능성과 정합).
 4. 이 불변 조건 위반(형태 B가 01 §3 계약을 바꾸어야만 성립하는 경우)이 발견되면, 구현을 진행하지 않고 Advisor에게 보고한다 (상위 규약의 Architecture-Spec 충돌 보고 관행 — 충돌 시 구현하지 않고 상위에 보고). 계약 변경은 01의 버전 상승과 Revision History 기록이 필수다 (Glossary §3.2-G Spec Status: Frozen).
 

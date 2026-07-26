@@ -1,0 +1,46 @@
+{
+  "completion": "all-passed",
+  "dependencies": [],
+  "goal": "절차 비례화 트랙 Wave 2 W2-b — 경량 레인(lane=lightweight) 구현 원장의 물리 형태를 기존 닫힌 스키마 재사용으로 확정하고 기존 결정적 러너로 검증 가능함을 실증한다. 조율 주체 = Advisor 직접 위임(엔진 디스패치 0)이며 원장 0건 금지는 표준 레인과 동일하게 적용된다.",
+  "tasks": [
+    {
+      "capability": "cap-lw-decompose",
+      "delegation": {
+        "constraints": "정본 수정 0(제안까지만). 계획 자기 채택 금지 — 채택은 Advisor 소관.",
+        "context": [
+          "절차 비례화 트랙 — Planner 분해 초안 단위(경량 레인·엔진 디스패치 0)",
+          "lane=lightweight · laneOverrideReason=null",
+          "브리프 정본 = docs/proportionality-track-ledger.md §4"
+        ],
+        "done": "위 done 필드와 동일",
+        "from": "Advisor",
+        "input": ".claude/CLAUDE.md · .claude/AGENT.md · docs/delegation-protocol.md §2",
+        "output": "docs/proportionality-track-ledger.md",
+        "task": "위 task 필드와 동일",
+        "to": "Planner"
+      },
+      "dependsOn": [],
+      "done": [
+        "초안에 경량 원장의 물리 형태 제안이 존재한다(기존 스키마 재사용·신규 포맷 0)",
+        "각 Wave 브리프에 done·constraints·동료 계약 블록이 존재한다"
+      ],
+      "id": "lw-w2b-plan",
+      "interfaceContract": {
+        "consumes": [
+          ".claude/CLAUDE.md",
+          "docs/delegation-protocol.md"
+        ],
+        "produces": [
+          "docs/proportionality-track-ledger.md"
+        ]
+      },
+      "model": "opus",
+      "ownedBoundary": [
+        "docs/proportionality-track-ledger.md"
+      ],
+      "role": "Planner",
+      "task": "절차 비례화 트랙 Wave 2 분해 초안 산출 — 경량 레인 판별·경량 원장 물리 형태 제안을 포함한 Wave 브리프 초안(채택·확정 권위는 Advisor·사용자)",
+      "unitType": "proposal"
+    }
+  ]
+}

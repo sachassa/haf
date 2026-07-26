@@ -1,0 +1,14 @@
+{
+  "gateKind": "user_decision_required",
+  "gate_id": "gate-unit-lw-w2b-plan",
+  "lane": "lightweight",
+  "laneOverrideReason": null,
+  "note": "경량 레인 원장 **형태 표본**(fixture) — 이 run 의 cp2-pass·게이트 해소·CP3 승인 마커는 형태 예시이며 실 판정 발화가 아니다(L-07 정직 구분). 표본의 목적은 경량 레인 원장이 기존 닫힌 스키마(revision_schema·artifact_record_schema)와 기존 결정적 러너(verify_run.py)로 검증 가능함을 실증하는 것이다. 등급 = ephemeral(setup_lite.py 재실행으로 재생성).",
+  "presentedBy": "Advisor",
+  "resolutionEventAt": 6,
+  "resolvedByActor": "human",
+  "response": "채택 — Wave 2 병렬(W2-a ∥ W2-b) 착수, lane 어휘 standard|lightweight 고정",
+  "runId": "lw-w2b-sample-lite",
+  "scopedQuestion": "Wave 2 분해 초안(경량 레인 원장 물리 형태 제안)을 채택하는가",
+  "simulated": true
+}

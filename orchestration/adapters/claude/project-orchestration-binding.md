@@ -291,6 +291,55 @@ CP2 재작업은 **그 단위만의 결함 신호가 아니다** — 같은 오�
 
 **미해소 이월(정직 구분).** hang 관측의 `current_unit`·`elapsed_s` 필드는 `request_hint` 하나로 축약했다(런처가 단위 경계를 소유하지 않으므로 요청에서 파생 가능한 값만 싣는다). 자동 되돌림(D-M3)은 위 경계 사유로 미도입 — 재심 좌표 = Verifier 구조화 verdict(`sweep_patterns` 필드) 도입 시.
 
+### §5.9 경량 레인 원장 — form-A 수기 append 규약 (절차 비례화 트랙 W2-b·§ 번호 불이동·기존 (a)~(h) 무변)
+
+경량(lightweight) 레인은 엔진 런처(`orchestrate_project.py`)를 구동하지 않고 **Advisor 직접 위임**으로 조율하는 레인이다. **원장 0건 금지는 두 레인 공통**이며(`.claude/AGENT.md` §Invariants), 경량 레인은 원장을 줄이지 않고 조율 주체만 바꾼다 — 엔진이 자동 append 하던 원장을 **form-A 수기 append** 로 남긴다. 신규 레코드 종류·신규 필드·신규 원장 포맷·신규 원장 루트·신규 검증기는 **0**이며 §5.1(직렬화)·§5.3(배치)·§5.5(파생 뷰)를 그대로 상속한다(재정의 0).
+
+**(a) 배치 경로.** `uahf/framework/adapters/claude/orchestration-data/runs/<run-id>-lite/` — §5.3 표준 run 트리의 **형제**이고 신규 루트는 0이다. `-lite` 접미가 레인 표기이며, `config.json` 의 `run_id` 는 디렉터리명(접미 포함)과 **같은 문자열**이다(러너 리포트 파일명·디렉터리 조회 일치).
+
+**(b) 파일 집합 — 필수 7 · 부재 4(엔진 호스팅 산출)**
+
+| 파일 | 경량 레인 | 근거 |
+|---|---|---|
+| `config.json`·`graph.json`·`gate_policy.json` | 필수 | §5.1·§5.3 동형(정책·초기 그래프 없이는 게이트 파생·fold 가 성립하지 않는다) |
+| `events.jsonl`·`revisions.jsonl`·`artifacts.jsonl` | 필수 | 이중 원장 + 선언 원장(§5.1). 승격 0인 run 은 `revisions.jsonl` 0행이 허용된다 |
+| `logs/gate-resolution-record.json` | 필수 | `basis.gateEventRef` 가 가리키는 실파일 — (d)·(f) |
+| `steps/<id>.json`·`workspace/`·`logs/invoke-*.json`·`logs/heartbeat.json` | 부재(0) | 엔진 호스팅·런처 관측 산출이므로 경량 레인에 존재하지 않는다. 러너는 대응 축을 `skip` 으로 처리한다 |
+
+**(c) 최소 필드 = 닫힌 스키마가 요구하는 것 그대로**
+
+- **RevisionEvent**(`revisions.jsonl` — `revision_schema.json`): `revisionSeq`(1부터 단조)·`kind`(`task_added`\|`dependency_added`\|`task_superseded` — 어휘 신설 0)·`payload`(07 §3.2-B Task 전 필드·`delegation` 8필드)·`basis{proposingStepRef,gateEventRef}`.
+- **Artifact 선언**(`artifacts.jsonl`): `artifactId`·`version`·`supersedes`·`derivedFrom`·`producedBy`·`location`·`contentHash` 7키. **`approvalState` 를 기입하지 않는다**(파생 뷰·PO-INV 7). 선언 키 집합은 `artifact_record_schema.json` 의 property 집합의 부분집합이며, 스키마 전 필드 검증 대상은 `derive_registry` 가 낸 **파생 ArtifactRecord** 다.
+- **이벤트**: 03 §3.2-A 10필드 무수정(§5.1·§2 상속). `ref.kind` 는 러너 관측 어휘 안에서만 쓴다 — (i).
+
+**(d) `basis` 두 참조의 경량 레인 형태 = `<경로>#<프래그먼트>`**
+
+| 필드 | 경로 해석 기준 | 프래그먼트 | 추가 조건 |
+|---|---|---|---|
+| `proposingStepRef` | **리포 루트** | 위임 브리프 문서 내 절 식별 문자열 | 경로 실재 1 · 프래그먼트가 그 파일 본문에 실재 1 |
+| `gateEventRef` | **run 디렉터리** | `gate_id` | 경로 실재 1 · 프래그먼트가 게이트 기록 본문과 `events.jsonl` 게이트 이벤트 `ref.gate_id` 양쪽에 문자 동일로 실재 1 |
+
+- 경량 레인에는 제안 step 을 호스팅한 엔진 단위가 없으므로 `proposingStepRef` 는 **분해 초안 실파일**을 가리킨다. 스키마는 두 필드를 `string`("참조")으로만 규정하므로 이 형태는 스키마 위반이 아니다(개정 0).
+- `gateEventRef.rsplit("#", 1)[-1]` 로 게이트 좌표(`gate_id`)가 **결정적으로 복원**된다.
+- 05 §3.2 결정성 조건 ①(게이트 통과 이벤트가 append 된 뒤에만 그 revision 을 append)은 수기 경로에도 적용된다. 그 검사는 (h) 러너가 담당한다.
+- **엔진 재개 비호환은 설계상 의도다.** 엔진 `orchestrator._gate_event_exists` 는 `ref.gate_id == basis.gateEventRef` 문자 동일을 요구하므로 복합 형태 참조는 엔진 fold 필터를 통과하지 않는다. 경량 레인은 엔진을 구동하지 않는 것이 전제이므로 `--resume` 대상이 아니며, 표준 레인으로 **승급**할 때는 새 표준 run 을 개시하고 복원된 `gate_id` 로 계보를 인용한다.
+
+**(e) lane 표기 = 기존 필드의 문면(필드 신설 0).** 어휘는 `"standard"` \| `"lightweight"` **2값**이고 세 번째 값은 없다(미선언은 `standard` 로 귀결·fail-closed). override 사유 필드명은 `laneOverrideReason` 이며 override 부재 시 `null` 이다. 원장 문면 3지점 = `graph.json` 의 `goal` · revision `payload.delegation.context` 의 1행(`lane=<값> · laneOverrideReason=<null|사유>`) · `logs/gate-resolution-record.json` 의 `lane`·`laneOverrideReason` 키. **어휘 정본은 레인 판별 로더(절차 비례화 트랙 W2-a)의 방출값**이며 본 절은 소비 측이다(재정의 0).
+
+**(f) 게이트 기록(form-A) 필드 12종.** `gate_id`·`gateKind`·`runId`·`presentedBy`·`scopedQuestion`·`resolvedByActor`·`response`·`resolutionEventAt`·`lane`·`laneOverrideReason`·`simulated`·`note`. 이 기록은 **좌표·문면 보존용**이며 해소 **자격** 판정은 `gates.py`(`is_eligible_resolver`/`is_resolved`)가 코드로 소유한다 — 수기 경로가 그 판정을 우회하지 않는다(게이트 불가침).
+
+**(g) `approvalState` 3전이 전부 파생(직접 기입 0).** `verified`(대상 step 의 CP2 Pass 이벤트) → `approved`(그 단위 게이트의 CP3 승인 마커 `verdict == Pass`) → `user_approved`(`user_decision_required` 게이트가 적격 사용자 actor 로 해소). 경량 레인도 §5.5 사다리를 그대로 쓰고 `derive_registry(선언, 이벤트, gate_id_for=…, gate_policy=…)` 로 파생한다. 게이트 좌표 규약 = `gate-unit-<stepId>`(표준 레인 동형). `gate_id_for` 를 주지 않으면 게이트 축(`approved`·`user_approved`)은 파생되지 않는다 — 등급이 이벤트 실재에 의존한다는 증거다.
+
+**(h) 강제 지점 = 기존 결정적 러너(신설 0).** 경량 레인 종결 조건에 **`python verify_run.py <run-dir>` findings 0 · exit 0** 을 둔다. 적용 축 = (a) 원장 위생(전역 `at` 1..N 연속·cycle 별 `seq` 단조·게이트 순서 `required`→`provenance`→`resolved`·관측 어휘·simulated 라벨 정직성) · (b) revision 무결(중립 `validate_revision`/`fold` progressive) · (d) delegation 참조형 · (e) 계수 정합. **한계(정직 표기)**: 러너는 원장 파일이 부재·0행이면 그 축을 `skip` 으로 떨어뜨리므로 `findings 0` 단독은 원장 실재를 증명하지 않는다 — 종결 조건은 `findings 0` **그리고** `events.jsonl`·`artifacts.jsonl` 비공집합(승격이 있으면 `revisions.jsonl` 도 비공집합)을 함께 요구한다. 이것이 "경량 레인에서도 원장 0건 금지"의 기계 강제다.
+
+**(i) 관측 어휘 실측 주의 — provenance 표기 2종.** 경량 레인은 provenance 이벤트에 `ref.kind = "user-resolution-provenance"` 를 쓴다(러너 관측 어휘 화이트리스트에 실재하는 표기). 프로덕션 resolver 가 append 하는 `"gate-resolution-provenance"`(§3.3·`resolve_gate.py`)는 그 화이트리스트에 **부재**하므로, 표준 레인 run 에 이 러너를 먹이면 축 (a)가 어휘 위반 finding 을 낸다. 이는 표준 레인 측 정합 결함이며 경량 레인 소관이 아니다 — §7 **OQ-PO-B7** 로 등재한다(러너·resolver 어느 쪽도 이 판에서 수정하지 않는다).
+
+**(j) 수명 등급·정직 라벨.** 경량 run 원장 등급 = **ephemeral**(재실행으로 재생성 — `docs/artifact-lifecycle-policy.md` §2). 표본·픽스처는 `events.jsonl` 의 `simulation-annotation` 이벤트(`ref.simulated = true`)와 게이트 기록의 `simulated` 키로 **기계 판독 가능하게** 라벨한다(L-07 — 실 발화와 형태 표본을 구분한다. 해소 이벤트 자체에 `actor=human` + `simulated=true` 를 같이 두지 않는다 — 러너 (a)가 정직성 모순으로 판정한다). ephemeral 산출물의 작업 트리 경로는 판정 근거로 인용하지 않으며(같은 정책 §4) 실증 기록은 트랙 원장·완료 보고에 남긴다.
+
+**(k) 물리화·점검 드라이버(비프로덕션).** `orchestration-data/e2e/setup_lite.py`(stdlib only·LLM 0·네트워크 0·결정적) 가 경량 원장 표본을 물리화하고 5축을 결정적으로 점검한다 — 스키마(닫힌 스키마 2종 판독 검증·선택 `jsonschema` 동반) · `basis` 왕복 · `approvalState` 파생 · 빌더 결정성(재빌드 byte 동일) · 게이트 순서 **음성 대조**(위반 표본에서 러너 findings 비공집합·exit 1). 삭제는 `runs/` 직속 `-lite` 디렉터리에만 허용한다(오삭제 가드 — `setup_m.py` 동형). `e2e/` = 비프로덕션 경계(§5.3 말미 동형).
+
+`uaf-verified:` 본 절의 사실 주장 근거 = (i) 닫힌 스키마 2종·`revision.py`·`artifacts.py`·`gates.py`·`verify_run.py` 좌표 직독 (ii) `setup_lite.py` 5축 실행 로그 (iii) 표본 run 에 대한 `verify_run.py` 실행(status=pass·fail 0·skip 1). **스윕 범위** = 그 6개 코드/스키마 파일과 표본 원장 실물이며, 그 밖(표준 레인 프로덕션 run 전수 재검증·`resolve_gate.py` 어휘 정합 수정)은 이 판의 범위 밖이고 (i)에서 OQ 로 남긴다.
+
 ---
 
 ## §6. 실측 대조 (L-07)
@@ -311,6 +360,7 @@ CP2 재작업은 **그 단위만의 결함 신호가 아니다** — 같은 오�
 - **OQ-PO-B3 (headless 런처 ↔ 사용자 세션 제시 브리지) — 해소.** 브리지 = 종료 코드 2 + `logs/stop-signal.json`(pending_gates) 기록 → 주 세션 Advisor 표면화(§3.2 채널 분리 유지) → `resolve_gate.py` 해소 이벤트 append(적격성 = gates.py 코드 소유) → `--resume` 결정적 재개(원장 fold). §5.7 실 run 으로 실증.
 - **OQ-PO-B4 (실 LLM 제안 step·비픽스처 run) — 해소.** §5.7 이 실 LLM 제안 step + 실 사용자 게이트 해소·revision 승격을 남겼다. 잔여 = 승격된 구현 단위의 resume 실 코드 산출(후속 트랙 이월).
 - **OQ-PO-B5 (엔진 `accept_revision` 게이트-pass 재검증의 actor 미검사) — 해소.** `orchestrator._gate_event_exists`(→ `_event_grounds_gate`) 강화로 엔진 측 방어를 완성했다. 규칙: 매칭 pass 이벤트가 정지 게이트 해소로 자신을 선언하고(`ref.kind == REF_KIND_RESOLVED` **그리고** `ref.gateKind ∈ STOPPING_GATES`) `self.gate_policy is not None` 이면, 그 해소 actor 가 `gate_policy.is_eligible_resolver(gateKind, actor)` 로 적격일 때만 revision 을 근거지을 수 있다(05 §3.3 확정 권위 정합). 부적격 actor 의 pass 해소 이벤트는 로그에 남아도 승격 근거가 되지 못한다. **거동 보존 3면(불가침):** (a) 레거시 이벤트(`ref.kind == "gate"`·gateKind 부재) = 실재-만 검증 · (b) 비정지 gateKind gate-resolved 이벤트 = 실재-만 검증(`is_eligible_resolver` 는 비정지에 False 라 일괄 적용 시 rework 근거 패턴이 깨진다) · (c) `gate_policy is None` = 실재-만 검증. **적용 시점** = `accept_revision`(수용)과 `_grounded_revisions`(재개 fold 필터) 양쪽이며, 프로덕션 resolver 의 상류 append 거부와 함께 이중 방어를 이룬다.
+- **OQ-PO-B7 (provenance `ref.kind` 표기 2종 — 미해소·실측 발견).** 프로덕션 resolver 는 `"gate-resolution-provenance"`(`resolve_gate.py`)를 append 하고 e2e 드라이버·검증 러너 화이트리스트는 `"user-resolution-provenance"`(`resolve_k/m/w.py`·`verify_run.py`)를 쓴다. 두 표기가 갈라져 있어 **표준 레인 프로덕션 run 에 `verify_run.py` 를 먹이면 축 (a)가 관측 어휘 위반 finding 을 낸다**(경량 레인 표본은 후자를 써서 통과한다 — §5.9 (i)). 해소 선택지 = (1) 러너 화이트리스트에 두 표기 병기 (2) resolver 표기를 화이트리스트 표기로 정렬(과거 run 원장은 append-only 이므로 소급 정정 불가 — 병기 없이는 기존 run 이 계속 발화한다). 어느 쪽도 W2-b 범위 밖이라 미수정으로 남긴다(러너·resolver 무촉).
 - **OQ-PO-B6 (해소 취소 어휘 부재 — 저순위·미해소).** append-only 원장에서 오append 된 게이트 해소 이벤트를 되돌리는 전용 어휘·연산이 없다(실사용 오용 관측 0·투기적). 도입 시 필요 설계: 취소 actor 적격성(`is_eligible_resolver` 정합)·취소 후 게이트 재-pending 전이 의미·원장 fold 에서 취소가 선행 해소를 무효화하는 규칙(append-only 보존·보상 이벤트 형태). 현행 미도입 — 필요 관측 시 착수.
 
 ---
@@ -318,6 +368,26 @@ CP2 재작업은 **그 단위만의 결함 신호가 아니다** — 같은 오�
 ## §8. 개정 이력
 
 (기재는 최신 항목이 위에 오는 역순 관례를 유지한다 — 아래 기존 기재는 무수정이다.)
+
+- **2026-07-26 (경량 레인 원장 — 절차 비례화 트랙 Wave 2 W2-b).** 엔진을 구동하지 않는 경량 레인의
+  구현 층 원장을 **기존 닫힌 스키마 재사용 + form-A 수기 append** 로 확정했다. §5.9 신설
+  (§ 번호 불이동·기존 §5.1~§5.8 무변): 배치 경로 `runs/<run-id>-lite/`(형제 배치·신규 루트 0) ·
+  필수 파일 7/부재 4 표 · 최소 필드(RevisionEvent 4키·선언 7키·이벤트 10필드) · `basis` 두 참조의
+  `<경로>#<프래그먼트>` 형태와 경로 해석 기준 2종(리포 루트 / run 디렉터리) + `gate_id` 결정적
+  복원 규칙 + **엔진 재개 비호환의 의도 명시** · lane 어휘 2값(`standard`\|`lightweight`)·
+  `laneOverrideReason` 을 **기존 필드 문면**으로만 싣는 규약(필드 신설 0·어휘 정본 = W2-a 로더) ·
+  게이트 기록 12필드 · `approvalState` 3전이 전부 파생(직접 기입 0) · **강제 지점 = 기존
+  `verify_run.py` findings 0·exit 0 + 원장 비공집합**(러너의 부재 축 `skip` 한계를 정직 표기) ·
+  수명 등급 ephemeral·픽스처 기계 라벨 규율. 신규 비프로덕션 드라이버 1 =
+  `orchestration-data/e2e/setup_lite.py`(stdlib only·LLM 0·결정적·`-lite` 오삭제 가드 —
+  표본 물리화 + 점검 5축: 스키마·`basis` 왕복·`approvalState` 파생·빌더 결정성 재빌드 byte 동일·
+  게이트 순서 음성 대조). 표본 run 실측 = `verify_run.py` status=pass(pass 4·fail 0·skip 1)·
+  exit 0, 음성 대조 exit 1·`ledger_hygiene` findings 2건(순서 위반·provenance 순서 위반).
+  §7 **OQ-PO-B7 신설**(provenance `ref.kind` 표기 2종 갈라짐 — 실측 발견·미수정 이월).
+  **스키마 파일(`revision_schema.json`·`artifact_record_schema.json`)·중립 코드
+  (`orchestration/framework/**`)·`verify_run.py`·05 spec·게이트 어휘·PO-INV·Frozen·
+  `uahf/framework/loop/**`·scaffold-template 무접촉(재정의 0)·신규 레코드 종류 0·신규 필드 0·
+  신규 원장 루트 0·신규 검증기 0.**
 
 - **2026-07-26 (정합) md 슬림화 Wave 4** — 비계약 격리 개정: 메타 템플릿·해소 OQ·경위 서술 압축,
   계약 문면 무변경. 종전 = git 앵커 90ca19c. Advisor 위임. 동반 정정 = §2 표의 권한 플래그

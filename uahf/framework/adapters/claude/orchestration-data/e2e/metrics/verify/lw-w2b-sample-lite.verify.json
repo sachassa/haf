@@ -1,0 +1,65 @@
+{
+  "checks": [
+    {
+      "check": "ledger_hygiene",
+      "detail": {
+        "cycles": 8,
+        "event_count": 12,
+        "refs_without_kind_at": [],
+        "simulated_false": 0,
+        "simulated_true": 1,
+        "simulation_annotations": 1
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "revision_integrity",
+      "detail": {
+        "final_task_count": 3,
+        "kinds": [
+          "task_added"
+        ],
+        "revision_count": 2
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "plan_schema",
+      "detail": "stage-plan.json·impl-plan.json 부재(plan 산출 run 아님)",
+      "findings": [],
+      "status": "skip"
+    },
+    {
+      "check": "delegation",
+      "detail": {
+        "tasks_checked": 3
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "artifact_counts",
+      "detail": {
+        "approval_states": [
+          "verified"
+        ],
+        "artifact_count": 3,
+        "declaration_count": 3,
+        "distinct_id_version": 3,
+        "record_count": 3
+      },
+      "findings": [],
+      "status": "pass"
+    }
+  ],
+  "run_dir": "C:\\my-claude-project\\universal-agentic-framework\\uahf\\framework\\adapters\\claude\\orchestration-data\\runs\\lw-w2b-sample-lite",
+  "run_id": "lw-w2b-sample-lite",
+  "status": "pass",
+  "summary": {
+    "fail": 0,
+    "pass": 4,
+    "skip": 1
+  }
+}

@@ -362,5 +362,52 @@ class GeneralizationTests(unittest.TestCase):
         self.assertEqual(out2["config"]["run_id"], "orch-consumer-ws-phase2")
 
 
+class RealOutputFixtureDisciplineTests(unittest.TestCase):
+    """백로그 O · D-O1 — seed 프롬프트의 실출력 픽스처 규율 문면이 실재하는가."""
+
+    def _prompt(self) -> str:
+        contract = c2g.resolve_contract(_CONSUMER_ROOT)
+        graph = c2g.build_seed_graph(
+            contract, _CONSUMER_ROOT, mode="greenfield", phase_scope="phase1"
+        )
+        return graph["tasks"][0]["task"]
+
+    def test_prompt_requires_captured_real_output_fixture(self) -> None:
+        """외부 도구 호출 단위에 실출력 캡처 픽스처 고정 + AC 소비 지시가 존재."""
+        prompt = self._prompt()
+        self.assertIn("실출력 픽스처 규율", prompt)
+        self.assertIn("실제 출력을 캡처한 픽스처", prompt)
+        # AC 가 픽스처를 '소비'해야 한다는 지시(단순 생성 지시가 아님).
+        self.assertIn("픽스처를 소비", prompt)
+
+    def test_prompt_bans_synthetic_input_contract_claim(self) -> None:
+        """합성 입력만으로 외부 도구 계약을 검증했다는 주장 금지 문면이 존재."""
+        prompt = self._prompt()
+        self.assertIn("합성", prompt)
+        self.assertIn("주장하지 마라", prompt)
+        # '실증형' 라벨의 함정 = 내 함수 실호출 ≠ 외부 프로세스 실출력 소비.
+        self.assertIn("다른 층위다", prompt)
+
+    def test_prompt_requires_unverified_contract_escalation(self) -> None:
+        """캡처 불가 시 open_questions 「미검증 외부 계약」 신고 지시(침묵 금지)가 존재."""
+        prompt = self._prompt()
+        self.assertIn("미검증 외부 계약", prompt)
+        self.assertIn("open_questions", prompt)
+        self.assertIn("침묵 금지", prompt)
+
+    def test_fixture_rule_preserves_offline_safety(self) -> None:
+        """가법 문면이 오프라인 안전 규율(금지 토큰 부재)을 깨지 않는다."""
+        prompt = self._prompt()
+        # 픽스처 규율이 네트워크·설치를 새로 허용하지 않았는지 — 기존 금지 문면 보존.
+        self.assertIn("네트워크 접근", prompt)
+        self.assertIn("오프라인", prompt)
+
+    def test_milestone_cross_check_rule_still_present(self) -> None:
+        """직전 위임(백로그 M) 산출인 milestone 상호 대조 문면이 보존됨(가법 증명)."""
+        prompt = self._prompt()
+        self.assertIn("단위 간 계약 정합 검사를 최소 1건 포함", prompt)
+        self.assertIn("상호 대조", prompt)
+
+
 if __name__ == "__main__":
     unittest.main()

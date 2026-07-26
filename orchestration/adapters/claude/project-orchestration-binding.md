@@ -187,7 +187,7 @@
 
 ### §5.2 capability → 물리 호출 매핑 (step-invoker 무수정 재사용·역할 디스패치)
 
-- **실행 주체 = fresh 세션(claude CLI headless)**. Orchestrator 가 직렬화한 단위는 중립 Step Host 를 통해 `step-invoker/claude_invoker.py`(`ClaudeInvoker`·무수정)로 디스패치된다. capability 슬롯은 매칭 입력이고(§5.4), 물리 호출은 role 슬롯이 주도한다 — Worker(실행)·Verifier(CP2·`review_required` 추가 리뷰)·Advisor(`approval_required` CP3)는 전부 `--append-system-prompt` 역할 브리프로 fresh 세션에 실린다(step-hosting-binding §5.1·§5.2 동형·신설 0). 게이트 리뷰/승인 단위도 같은 디스패치 경로를 쓴다(orchestrator `_dispatch_gate_step`).
+- **실행 주체 = fresh 세션(claude CLI headless)**. Orchestrator 가 직렬화한 단위는 중립 Step Host 를 통해 `step-invoker/claude_invoker.py`(`ClaudeInvoker`·무수정 재사용 — 오케스트레이션 층이 포크·재정의하지 않는다는 뜻이며, UAF 층의 브리프 개정까지 금지하는 것은 아니다)로 디스패치된다. capability 슬롯은 매칭 입력이고(§5.4), 물리 호출은 role 슬롯이 주도한다 — Worker(실행)·Verifier(CP2·`review_required` 추가 리뷰)·Advisor(`approval_required` CP3)는 전부 `--append-system-prompt` 역할 브리프로 fresh 세션에 실린다(step-hosting-binding §5.1·§5.2 동형·신설 0). 게이트 리뷰/승인 단위도 같은 디스패치 경로를 쓴다(orchestrator `_dispatch_gate_step`).
 - **산출물 포집 = 투명 래퍼.** Orchestrator 가 실행 invoker 를 `ArtifactCapturingInvoker`(중립·투명)로 감싸 Worker 완료 보고의 artifacts 를 선언 원장에 포집한다. 래퍼는 반환을 변경하지 않으며(재정의 0) CP2/CP3 verdict 반환은 포집하지 않는다.
 
 ### §5.3 run 데이터 백엔드 = `uahf/framework/adapters/claude/orchestration-data/runs/<run-id>/` (물리 위치는 2차 산출물 디커플링 트랙에서 확정)
@@ -298,7 +298,35 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 
 `uaf-verified:` 값이 실제 프로세스 예산에 닿는 경로 = `request.timeout` → 실 CLI invoker 의 subprocess timeout(`step-invoker/claude_invoker.py`). 검색 범위 = orchestration 2트리 + uahf step-host/step-invoker 트리의 해당 지점 정독이며, 실 LLM run 관측은 아직 없다(오프라인 stub 통합·접합부 왕복 테스트까지가 현 근거).
 
-**미해소 이월(정직 구분).** 백로그 §L 1의 `current_unit`·`elapsed_s` 필드는 `request_hint` 하나로 축약했다(런처가 단위 경계를 소유하지 않으므로 요청에서 파생 가능한 값만 싣는다).
+**(h) 횡단 결함 검지 — `[REWORK-NOTE]` 관측 라인 + `sweep_units.py` 스윕 도구 (백로그 §M D-M2·2026-07-26)**
+
+CP2 재작업은 **그 단위만의 결함 신호가 아니다.** 같은 API 오용·같은 잘못된 관례가 동료 단위에 복제돼 있어도 각 단위의 done AC는 자기 산출만 보므로 통과한다 — 개별 단위 합격의 합이 phase 완결과 같지 않은 구조적 이유다. (a)·(b)가 *정체*를 보이게 하는 장치라면 이 항은 *복제된 결함*을 보이게 하는 장치이며, 종료 코드 표(d)·기존 로그 산출·기존 종료 라인은 무변경이다.
+
+**경계(불가침) — 판단 0.** 어떤 패턴이 결함인지, 적중을 어떻게 조치할지는 **전부 사람/Advisor 소유**다(PO-INV 1). 런처와 도구는 기계 파생·기계 스캔·권고까지만 한다. 자동 되돌림은 **미도입**이다(D-M3 — 결함 패턴 추출은 내용 판단이라 엔진이 소유할 수 없고, Passed 단위의 기계 되돌림은 상태 어휘 변경 또는 supersede 의미론 신설을 요구한다).
+
+| 층 | 계약 |
+|---|---|
+| 신호 원천 | `events.jsonl` 의 `ref.kind == "rework"` 이벤트(step-host `_record_failure` — CP2 Fail/Conditional 경로). 런처는 이 어휘를 **읽기만** 하며 재정의하지 않는다 |
+| 파생 | `orchestrate_project.rework_units(run_dir)` → 해당 이벤트를 가진 `cycle_id` 목록(원장 등장 순·중복 제거·결정적) |
+| 출력 | `orchestrate_project.print_rework_note` — `[INVOKES]` 라인 **이후**, status 분기 **이전**에 3행: ① 재작업 단위 id 열거 ② 동료 단위 횡단 스윕 권고 ③ 스윕 명령 힌트(`python orchestration/adapters/claude/sweep_units.py <run_dir> --pattern "<정규식>"`) |
+| 지시 인용 | ①과 ② 사이에 단위별 1행으로 그 단위의 **마지막** `ref.rework` 를 **원문 인용**한다(`· <단위 id> ← <지시 원문>`). 비-문자열은 `json.dumps` 직렬화·개행은 행 맞춤용 공백 접기·200자 초과는 `…(클립)` 표기(`REWORK_QUOTE_CLIP` = sweep `LINE_CLIP` 동형). **인용만 한다** — 해석·요약·패턴 추출은 하지 않는다(표면화는 판단이 아니다·`render_gates` 의 `scoped_question` 렌더 동형·PO-INV 1 비저촉). `ref.rework` 부재/None/공백이면 그 단위의 인용 행을 생략한다(발명 0·본행은 유지) |
+| 거동 보존 | rework 0이면 **어떤 라인도 출력하지 않는다**(종전 출력 바이트 보존). 원장 부재·파손은 note만 생략하고 `[REWORK-NOTE-SKIP]` stderr 1행으로 생략 사실을 명시한다 — 런처 흐름·종료 코드 불변(render_gates 부가 표면 방어와 동형·침묵 0) |
+| 스윕 도구 | `orchestration/adapters/claude/sweep_units.py`(form-B·LLM 0·읽기 전용). `build_orchestrator_k` 무수정 재사용 → `active_graph()`·`derive_states()` 파생 → 각 단위 `ownedBoundary`(워크스페이스 상대경로)를 config `workspace_dir` 아래에서 해석(디렉터리는 재귀) → 라인 단위 정규식 검색 → 단위별 `file:line :: 문면` + 단위 상태 병기 |
+| 판독 규율 | 파일 판독은 `encoding="utf-8", errors="replace"` 고정(한국어·혼합 인코딩에서 디코딩 예외로 스윕이 끊기면 관측 경로가 유실된다). 바이너리(NUL 바이트 표본)·판독 불가 파일은 건너뛰되 **건수를 항상 보고**한다(`[SKIPPED] binary=N unreadable=M` — 0건도 명시). 미실재 경계 항목·워크스페이스 밖 경계 항목도 건수 표면화(침묵 스킵 0) |
+| 쓰기 | **0(사전 검사로 보장).** `build_orchestrator_k` 는 라이브러리로서 쓰기 부작용을 갖는다 — 부재 시 `events.jsonl`·`revisions.jsonl`·`artifacts.jsonl` 을 빈 파일로 생성하고 `workspace_dir` 을 `makedirs` 한다. 따라서 `sweep_units.precheck(run_dir)` 가 **조립 전에** 그 대상 전부(+ `config.json`·`graph.json`·`gate_policy.json`)와 config `workspace_dir` 디렉터리의 실재를 순수 판독으로 확인하고, 하나라도 없으면 **아무것도 만들지 않고** exit 1 + 부재 목록 열거 + "읽기 전용 도구라 생성하지 않는다(불완전 run_dir)". 결과: **정상·오류 모든 경로에서 실행 전후의 run_dir·워크스페이스 파일 집합이 바이트·목록 동일**하다(관측 장치가 관측 대상을 바꾸지 않는다) |
+| 조치 안내 | 출력 말미 `[NEXT]` 1행 = 조치는 **수정 run 또는 supersede(원장 경유)**. 적중 단위를 워크스페이스에서 직접 손보는 것은 금지(원장 밖 직접 수정 = 계보 단절) |
+
+**종료 코드(스윕 도구 — (d) 런처 표와 별개 표면):**
+
+| 코드 | 의미 |
+|---|---|
+| `0` | 스윕 정상 수행·**히트 0** |
+| `2` | **히트 존재**(단위별 `file:line` 보고) |
+| `1` | 오류 — `run_dir` 부재/비디렉터리 · `--pattern` 무지정(도구는 패턴을 발명하지 않는다) · 정규식 컴파일 실패 · **불완전 run_dir**(`precheck` 부재 항목 — 생성 0) · 그래프/원장 판독 불가 |
+
+**Planner 지시 짝(D-M1).** `contract_to_graph._seed_prompt` milestone 규칙에 두 항을 가법했다 — (i) milestone done AC는 **단위 간 계약 정합 검사를 최소 1건 포함**한다(개별 파일 존재 나열만으로는 불충분·최소 1건은 둘 이상의 단위를 상호 대조. 오프라인 안전형 예 = 선행 `produces`↔후행 `consumes` 경로 상호 대조·모듈 경계 참조 무결·공유 계약 데이터 키 집합 일치) (ii) milestone task 문면에 **횡단 관점** 지시(한 단위에서 발견된 결함 패턴을 동료 단위에 같은 기준으로 대조하고 그 결과를 보고). 기존 문면(오프라인 AC 허용 3종·금지 목록·11키·per-unit `timeout` 선택 키 항)은 무변이다.
+
+**미해소 이월(정직 구분).** 백로그 §L 1의 `current_unit`·`elapsed_s` 필드는 `request_hint` 하나로 축약했다(런처가 단위 경계를 소유하지 않으므로 요청에서 파생 가능한 값만 싣는다). §M의 자동 되돌림(D-M3)은 위 경계 사유로 미도입 — 재심 좌표 = Verifier 구조화 verdict(`sweep_patterns` 필드) 도입 시.
 
 ---
 
@@ -324,6 +352,54 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 ---
 
 ## §8. 개정 이력
+
+- **2026-07-26 (AC 실출력 픽스처 규율·자기출제 — 백로그 §O 해소·D-O1·D-O2·D-O3).** AC 를 스스로
+  출제한 단위가 합성 입력으로 통과시킨 검사를 외부 도구 계약의 검증으로 주장할 수 있던 결함을 두
+  층으로 해소했다: (i) **출제 층** — `contract_to_graph._seed_prompt` [구현 task 구성 규칙]에
+  「실출력 픽스처 규율」 가법 — 외부 도구·프로세스를 호출하는 단위는 실출력 캡처 픽스처를
+  워크스페이스에 고정하고 done AC 가 그것을 소비해야 하며(픽스처는 ownedBoundary·
+  `interfaceContract.produces` 등재·캡처 명령/버전/시점 기록), 캡처 불가 시 완료 보고
+  `open_questions` 에 「미검증 외부 계약」으로 신고한다(침묵 금지·이진). 기존 문면(밀스톤 상호
+  대조·per-unit `timeout` 선택 키·오프라인 안전 AC) 삭제 0 (ii) **판정 층** —
+  `step-invoker/claude_invoker.py` `_ROLE_BRIEFS[ROLE_VERIFIER]` 에 **AC 적정성** 판정 축 가법
+  (합성 입력의 실출력 대체 여부·assert 가 실값을 못박는가·"통과 자체가 증거가 되는가"·부적정 시
+  산출 결함과 구분해 **Fail + rework 에 AC 결함 명시**) + 외부 도구 호출 단위의 실출력 픽스처
+  소비 확인. Worker/Advisor 브리프 무변. (iii) **인코딩 스윕(D-O3)** —
+  `uaf-verified: 스윕 범위 = orchestration/**·entry/**·uahf/framework/adapters/**·.claude/hooks/**
+  의 실행 .py 48개(tests·orchestration-data/runs 제외)를 subprocess 계열·텍스트 open() 두 축으로
+  grep 수집 후 호출 단위 정독으로 판정 — 라인 grep 단독은 오탐(claude_invoker 의 text=True 는
+  후행 행에 encoding 실재)이라 채택하지 않았다.` 판정 결과와 미수정 사유는 백로그 원장에 기재.
+  신규 테스트: `test_contract_to_graph.py` 5케이스 · `test_claude_invoker.py` 5케이스(브리프 상수
+  직독이 아니라 `build_command()` argv 의 `--append-system-prompt` 값 왕복 검사).
+  **05 spec 계약 본문·게이트 어휘·PO-INV·Frozen·`orchestration/framework/**`·
+  `uahf/framework/loop/**`·uahf specs·scaffold-template 무접촉(재정의 0).**
+
+- **2026-07-26 (횡단 결함 검지 — 백로그 §M 해소·D-M1·D-M2).** CP2 재작업이 동료 단위의 복제 결함을
+  가리키는 신호임에도 그것을 볼 경로가 없던 결함을 두 층으로 해소했다: (i) **Planner 지시** —
+  `contract_to_graph._seed_prompt` milestone 규칙에 「단위 간 계약 정합 검사 최소 1건 의무」
+  (개별 파일 존재 나열 불충분·`produces`↔`consumes` 상호 대조 등 오프라인 안전형 예 3종) +
+  「횡단 관점 지시」 가법(기존 문면·per-unit `timeout` 선택 키 항 무변) (ii) **관측·도구** —
+  런처에 `rework_units`/`print_rework_note` 신설(`[INVOKES]` 이후·status 분기 이전·rework 0이면
+  무출력·원장 부재/파손은 `[REWORK-NOTE-SKIP]` stderr 1행 후 흐름·종료 코드 불변) + 신규
+  `sweep_units.py`(form-B·LLM 0·읽기 전용 — `build_orchestrator_k` 재사용 → `active_graph`/
+  `derive_states` 파생 → `ownedBoundary` 해석·디렉터리 재귀 → 라인 정규식 스캔 → 단위별
+  `file:line` 보고·exit 0/2/1). 판단 0 보존(패턴 선정·조치 판단은 사람/Advisor 소유·PO-INV 1) —
+  자동 되돌림(D-M3)은 미도입. **CP2 재작업 2건 반영**: (1) `sweep_units.precheck` 신설 —
+  조립(`build_orchestrator_k`)이 부재 시 생성하는 JSONL 3종 + 소비 JSON 3종 + `workspace_dir`
+  디렉터리의 실재를 **조립 전에** 순수 판독으로 확인하고 부재 시 생성 0·exit 1(종전 docstring
+  "쓰기 0" 선언과 조립 부작용의 문서-진실 불일치 해소 — 이제 모든 경로에서 실행 전후 파일 집합
+  동일) (2) `[REWORK-NOTE]` 에 단위별 마지막 `ref.rework` **원문 인용** 행 가법(`rework_details`
+  신설·`rework_units` 는 그 투영·비문자열 `json.dumps`·200자 클립 표기·부재 시 행 생략 —
+  인용만이며 해석·요약·추출 0). §5.8 (h) 신설(§ 번호 불이동·기존 (a)~(g) 무변). 신규 테스트
+  `test_sweep_units.py` 22케이스(seed 문면 3 = 계약 정합 의무·횡단 지시·기존 문면 보존 /
+  `[REWORK-NOTE]` 8 = 실 rework run 열거·클린 run 무출력·원장 부재·원장 파손·파생 단위 계약·
+  마지막 지시 인용+클립·부재 시 인용 생략·비문자열 직렬화 / 스윕 10 = 히트 exit 2·무히트 exit 0·
+  오류 3종 exit 1·불완전 run_dir 3종 생성 0·워크스페이스 부재 미생성·precheck 단위 계약·
+  재귀/바이너리 스킵 건수·읽기 전용·JSON 결정성·`--ignore-case` / **접합부 왕복 1 = 엔진 실구동
+  CP2 Fail→rework→재시도 Pass → 실물 events.jsonl 판독 → 실 argv 스윕 히트** — 계수 근거:
+  `def test_` 계수로 어댑터 트리 161→183).
+  `uaf-verified:` 접촉 경계 = `git status` 목록 대조 — 엔진(`orchestration/framework/**`)·
+  05 spec·게이트 어휘·PO-INV·Frozen·`uahf/**`·scaffold-template 무접촉(재정의 0).
 
 - **2026-07-26 (조건부 승인 하류 전달 — 백로그 §N 해소).** 구조 게이트 해소의 비공백
   `--response` 를 승격 payload 의 `delegation.context` 로 주입하는 채널을 신설했다

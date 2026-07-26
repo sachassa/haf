@@ -200,6 +200,107 @@ def build(run_dir: Any, invoker: Any):
 
 
 # --------------------------------------------------------------------------
+# 횡단 결함 검지 관측 — [REWORK-NOTE] (백로그 §M D-M2 ①)
+# --------------------------------------------------------------------------
+# 왜 필요한가: CP2 재작업(rework)은 **그 단위에만 있는 결함의 신호가 아니다**. 같은 API 오용·
+# 같은 잘못된 관례가 동료 단위에 복제돼 있어도 각 단위의 done AC 는 자기 산출만 보므로 통과한다.
+# 재작업이 발생한 run 은 "다른 단위도 같은 패턴을 갖고 있을 수 있다"는 유일한 기계 신호를
+# 원장에 남기므로, 런처가 그 신호를 종료 표면에 올린다.
+#
+# 경계(엔진 판단 0·PO-INV 1): 이 관측은 **파생·열거·권고**까지만 한다. 어떤 패턴을 스윕할지,
+# 적중을 어떻게 조치할지는 사람/Advisor 소유다. 자동 되돌림은 미도입(D-M3 — 결함 패턴 추출은
+# 내용 판단이라 엔진이 소유할 수 없다).
+REWORK_REF_KIND = "rework"
+SWEEP_TOOL = "orchestration/adapters/claude/sweep_units.py"
+# 인용 문면 표시 상한 — sweep_units.LINE_CLIP 동형(긴 재작업 지시가 종료 표면을 삼키지 않게).
+REWORK_QUOTE_CLIP = 200
+REWORK_QUOTE_CLIP_MARK = "…(클립)"
+
+
+def _quote_rework(value: Any) -> Any:
+    """`ref.rework` 를 note 1행에 실을 인용 문자열로 만든다(**인용만** — 해석·요약·추출 0).
+
+    - 문자열이 아니면 `json.dumps`(원 구조 보존 직렬화)로 문자열화한다.
+    - 개행은 note 가 단위별 1행 계약이므로 공백으로 접는다(행 맞춤 — 내용 변형 아님).
+    - `REWORK_QUOTE_CLIP` 초과분은 자르고 클립 표기를 붙인다(잘렸다는 사실을 숨기지 않는다).
+    - None·빈 문자열이면 None 을 반환해 **인용 행 자체를 생략**한다(없는 것을 발명하지 않는다).
+    """
+    if value is None:
+        return None
+    text = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False)
+    text = text.replace("\r\n", " ").replace("\n", " ").replace("\r", " ").strip()
+    if not text:
+        return None
+    if len(text) > REWORK_QUOTE_CLIP:
+        text = text[:REWORK_QUOTE_CLIP] + REWORK_QUOTE_CLIP_MARK
+    return text
+
+
+def rework_details(run_dir: Any) -> list:
+    """`events.jsonl` 에서 rework 단위와 **마지막** 재작업 지시 원문을 파생한다(읽기 전용).
+
+    반환 = `[(cycle_id, quote|None), ...]` — 원장 첫 등장 순서(결정적), 단위당 1건.
+    `quote` 는 그 단위의 **마지막** `ref.rework` 인용(뒤 이벤트가 앞을 덮는다 — 가장 최근
+    지시가 현재 상태를 말한다). 어휘 좌표는 step-host `_record_failure`
+    (CP2 Fail/Conditional → `ref={"kind":"rework","rework":<지시>,...}`)이며 이 함수는 그
+    어휘를 읽기만 한다. 파일 부재·행 파손 등 판독 실패는 **호출자에게 예외로 표면화**한다(침묵 0).
+    """
+    path = Path(run_dir) / "events.jsonl"
+    order: list = []
+    quotes: dict = {}
+    with open(path, "r", encoding="utf-8", errors="replace") as fh:
+        for raw in fh:
+            raw = raw.strip()
+            if not raw:
+                continue
+            event = json.loads(raw)
+            ref = event.get("ref")
+            if isinstance(ref, dict) and ref.get("kind") == REWORK_REF_KIND:
+                cycle_id = event.get("cycle_id")
+                if cycle_id is None:
+                    continue
+                if cycle_id not in quotes:
+                    order.append(cycle_id)
+                quotes[cycle_id] = _quote_rework(ref.get("rework"))
+    return [(cid, quotes[cid]) for cid in order]
+
+
+def rework_units(run_dir: Any) -> list:
+    """rework 가 발생한 cycle_id 목록(원장 등장 순·중복 제거). `rework_details` 의 투영."""
+    return [cid for cid, _quote in rework_details(run_dir)]
+
+
+def print_rework_note(run_dir: Any) -> list:
+    """[REWORK-NOTE] 관측 라인을 출력한다(부가 표면 — 종료 코드·기존 출력 불변).
+
+    - rework 0 이면 **어떤 라인도 출력하지 않는다**(종전 출력 바이트 보존).
+    - 원장 판독 실패(파일 부재·파손)는 note 를 생략하되 stderr 1행으로 생략 사실을 명시한다
+      (render_gates 부가 표면 방어와 동형 — 관측 장치가 run 을 죽이지 않되 침묵하지도 않는다).
+    반환 = 열거된 단위 목록(생략 시 빈 목록).
+    """
+    try:
+        details = rework_details(run_dir)
+    except Exception as exc:  # noqa: BLE001  (관측 부가 표면 — 런처 흐름 불변)
+        print("[REWORK-NOTE-SKIP] 재작업 원장 판독 실패 — 횡단 스윕 권고 생략"
+              "(run 결과·종료 코드는 유효): %s" % exc, file=sys.stderr)
+        return []
+    if not details:
+        return []
+    units = [cid for cid, _q in details]
+    print("[REWORK-NOTE] CP2 재작업이 발생한 단위: %s"
+          % json.dumps(units, ensure_ascii=False))
+    # 마지막 재작업 지시 **원문 인용**(해석·요약·패턴 추출 0 — 표면화까지가 이 층의 몫이다).
+    # 지시가 없는 단위는 인용 행을 내지 않는다(발명 0).
+    for cycle_id, quote in details:
+        if quote is not None:
+            print("              · %s ← %s" % (cycle_id, quote))
+    print("              같은 결함 패턴이 동료 단위에 복제돼 있을 수 있다 — 결함 패턴을 "
+          "정한 뒤 전 단위 횡단 스윕을 권고한다(패턴 선정·조치 판단은 사람/Advisor 소유).")
+    print("              python %s %s --pattern \"<정규식>\"" % (SWEEP_TOOL, run_dir))
+    return units
+
+
+# --------------------------------------------------------------------------
 # 구동 + exit-code 매핑 (run_k.py 와 동일)
 # --------------------------------------------------------------------------
 def run_and_map(orch: Any, invoker: Any, run_dir: Any) -> int:
@@ -216,6 +317,8 @@ def run_and_map(orch: Any, invoker: Any, run_dir: Any) -> int:
     print("[GRAPH] tasks=%s" % json.dumps(result.graph_task_ids, ensure_ascii=False))
     print("[STATES] %s" % json.dumps(result.states, ensure_ascii=False))
     print("[INVOKES] total=%s" % getattr(invoker, "invoke_count", "n/a"))
+    # 횡단 결함 검지 관측(백로그 §M D-M2 ①) — status 무관·rework 0 이면 무출력.
+    print_rework_note(run_dir)
 
     if result.status == "stopped" and result.stop_reason == "gate":
         marker = {

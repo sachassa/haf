@@ -502,7 +502,7 @@ def git_commit_ts(repo: Path, commit: str):
     try:
         out = subprocess.run(
             ["git", "-C", str(repo), "show", "-s", "--format=%ct", commit],
-            capture_output=True, text=True, check=True,
+            capture_output=True, text=True, check=True, encoding="utf-8",
         )
         return int(out.stdout.strip().splitlines()[-1])
     except Exception:  # noqa: BLE001

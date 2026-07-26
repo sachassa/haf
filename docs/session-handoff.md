@@ -588,6 +588,17 @@
 > - **미검증 축 이월 5건**: 실 LLM run(조건의 실 프롬프트 렌더 문면) · Worker 조건 실준수(백로그 R 계열 유보) · render_gates 표면(조건부 승인 가능함의 렌더 인지 경로 부재 — 저임팩트) · 조건 누적 시나리오 · 레거시 run 혼재.
 > - **★ 다음 착수(사용자 확정 순서의 잔여)**: **③ 백로그 M**(Cross-Unit Defect Sweep — CP2 단위별 한계·횡단 결함) **· 백로그 O**(AC 실출력 픽스처 규율·자기출제 구조). 그 외 갱신(16) ⑤ 목록 순위 미배정 유지.
 
+> **🔴 갱신 2026-07-26(20) — 백로그 M·O 해소. 사용자 확정 순서 3건(① per-unit timeout = 갱신(18) · ② N = 갱신(19) · ③ M·O = 본 갱신) 모두 해소 — 다음 순위는 미배정(사용자 결정 대기).**
+>
+> 사용자 지시 = "확정 순서대로 백로그 M·O 착수". 트랙 원장 = `docs/backlog-k-delegation-b-ledger.md` §5-A 「백로그 M·O」 절(설계 D-M1~3·D-O1~4 + 보고 승격 + open_question 판정 + CP2·CP3 각 2회). **순차 2위임**(Worker-M → Worker-O — contract_to_graph 공유·병렬 금지). 각 재작업 1회.
+>
+> - **M(횡단 결함 검지)**: milestone AC 에 **단위 간 계약 정합 검사 최소 1건 의무**(seed 프롬프트) + 런처 **[REWORK-NOTE]**(rework 이력 단위 열거·지시 원문 인용·스윕 힌트) + 신규 form-B **`sweep_units.py`**(읽기 전용 사전 검사·경계 밖 차단·exit 0/2/1). **판단(패턴·조치)은 사람 소유 유지**(PO-INV 1) — 자동 되돌림은 미도입 사유 기록(재심 = Verifier 구조화 verdict·R 계열). 실물 레거시 run 프로브(`impl-yt-stt-m1fix3`·읽기 전용 해시 실증) 포함 CP2 Pass·CP3 승인. 정본 = binding §5.8 (h).
+> - **O(AC 실출력 픽스처·자기출제)**: seed 프롬프트에 **실출력 픽스처 규율**(이진: 캡처했거나 「미검증 외부 계약」으로 신고했거나) + **CP2 Verifier 역할 브리프에 AC 적정성 판정 축**(합성 대체·assert 실값·"통과가 증거인가" — 부적정이면 Fail+AC 결함 명시·`claude_invoker._ROLE_BRIEFS` = **uahf 코드 어댑터 첫 접촉**·spec 무촉·원장 명시 승인) + **인코딩 스윕 47파일**(수정 2·오탐 6·해당 없음 39 — **예외 조항 신설**: 콘솔 코드페이지 출력 도구(taskkill)는 utf-8 강제가 신규 결함 → `locale.getpreferredencoding(False)`+`errors="replace"`). CP2 Pass·CP3 승인.
+> - **위임 규율 실사용 기록**: Worker-O 가 브리프 input↔context **자기모순**(uahf 스윕 지정 vs "유일 uahf 접촉")을 검출하고 추측 대신 미수정+반환 — 귀속 = 위임 문면(Advisor·B-5). 훅이 수임 §8 초안(무근거 완전성 문구·마커 부재)을 라이브 차단(재실증). Worker 코드 결함 = 두 위임 모두 0건 유지.
+> - **CP2 합계(Advisor 직접)**: 4트리 재실행 4회(M 1차·M 재작업·O 1차·O 재작업) — 최종 **186+188+23+24 EXIT=0×4**. 신규 테스트 = M 22 + O 10.
+> - **미검증 축 이월**: 실 LLM run 3건(Planner 의 밀스톤 상호 대조·픽스처 규율 실준수 + Verifier AC 적정성 축의 실 Fail — **다음 실 orchestration run 이 이 트랙의 관측 좌표다**) · 대형 워크스페이스 스윕 성능 · 다단위 note↔스윕 연결 · argv 길이 한계.
+> - **★ 다음 착수 = 순위 미배정(사용자 결정 대기)**: 사용자 확정 순서 3건이 위와 같이 소진됐다. 열린 후보(갱신(16) ⑤ 유지) = 커버리지 강제(θ≠커버리지) · SD manifest 배선 3건 · SD 스킵 브리지 · Q·R 기계 강제 · §DC-8(a)·02 개정 · 상류 바인딩 2차 / (제품 트랙) yt-stt M4-b 판단 · auto-percenty plan 확정. 하네스 개선분의 실 run 실증(위 관측 좌표)도 착수 후보다.
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.

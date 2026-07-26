@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import locale
 import subprocess
 import sys
 import time
@@ -42,8 +43,13 @@ def main() -> int:
                     continue
                 if e.get("cycle_id") == "B" and (e.get("ref") or {}).get("kind") == "dispatch":
                     print("[CRASH-DRIVER] B Active detected (at=%s) -> taskkill /F /T tree" % e.get("at"))
+                    # taskkill 은 콘솔 코드페이지로 출력하는 도구다 — utf-8 강제 금지(한국어
+                    # 환경 cp949 를 오디코딩/예외로 만든다). errors="replace" 로 관측 경로 보존
+                    # (디코딩 크래시로 아래 진단 출력이 유실되는 것을 막는다).
                     r = subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
-                                       capture_output=True, text=True)
+                                       capture_output=True, text=True,
+                                       encoding=locale.getpreferredencoding(False),
+                                       errors="replace")
                     print("[CRASH-DRIVER] taskkill rc=%d out=%s" % (r.returncode, (r.stdout or r.stderr).strip()[:200]))
                     killed = True
                     break

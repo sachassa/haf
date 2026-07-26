@@ -101,6 +101,57 @@ class CommandAssemblyTest(unittest.TestCase):
         self.assertIn("step_contract", prompt)
 
 
+class VerifierAcAdequacyBriefTest(unittest.TestCase):
+    """백로그 O · D-O2 — Verifier 브리프의 AC 적정성 / 실출력 픽스처 판정 축.
+
+    접합부 왕복: 브리프 상수를 직접 읽지 않고 build_command() 실호출로 조립된 argv 의
+    --append-system-prompt 값을 검사한다(실 CLI 미발화 — argv 조립까지).
+    """
+
+    def _verifier_system_prompt(self) -> str:
+        inv = ClaudeInvoker()
+        cmd = inv.build_command(req(role=ROLE_VERIFIER))
+        self.assertIn("--append-system-prompt", cmd)
+        return cmd[cmd.index("--append-system-prompt") + 1]
+
+    def test_ac_adequacy_axis_reaches_argv(self) -> None:
+        """(i) AC 적정성 판정 축이 실제 argv 에 실린다."""
+        brief = self._verifier_system_prompt()
+        self.assertIn("AC 적정성", brief)
+        self.assertIn("합성", brief)          # 합성 입력이 실출력을 대체했는가.
+        self.assertIn("통과했다", brief)      # 통과 자체가 증거가 되는가.
+
+    def test_inadequate_ac_forces_fail_with_ac_defect(self) -> None:
+        """부적정 AC 는 Fail + rework 에 AC 결함 명시 지시가 argv 에 실린다."""
+        brief = self._verifier_system_prompt()
+        self.assertIn("Fail", brief)
+        self.assertIn("AC 결함", brief)
+
+    def test_external_tool_fixture_axis_reaches_argv(self) -> None:
+        """(ii) 외부 도구 호출 단위의 실출력 픽스처 소비 확인 축이 argv 에 실린다."""
+        brief = self._verifier_system_prompt()
+        self.assertIn("실출력 캡처 픽스처", brief)
+        self.assertIn("미검증 외부 계약", brief)
+
+    def test_existing_verifier_sentences_preserved(self) -> None:
+        """가법 증명 — 기존 브리프 문장(신뢰 금지·결정적 리포트·참조형 sentinel)이 보존됨."""
+        brief = self._verifier_system_prompt()
+        self.assertIn("완료 보고를 그대로 신뢰하지 말고", brief)
+        self.assertIn("결정적 검증 리포트", brief)
+        self.assertIn("참조형 표준", brief)
+        # verdict JSON 출력 계약이 여전히 브리프의 마지막 지시로 남아있다.
+        self.assertIn('{"verdict":"Pass|Fail","rework":...}', brief)
+
+    def test_worker_brief_untouched_by_verifier_axes(self) -> None:
+        """Worker 브리프에는 신규 축 문면이 새지 않는다(역할 격리)."""
+        inv = ClaudeInvoker()
+        cmd = inv.build_command(req(role=ROLE_WORKER))
+        brief = cmd[cmd.index("--append-system-prompt") + 1]
+        self.assertIn("너는 Worker 다", brief)
+        self.assertNotIn("AC 적정성", brief)
+        self.assertNotIn("미검증 외부 계약", brief)
+
+
 class ResultParsingTest(unittest.TestCase):
     def _envelope(self, result_text, is_error=False):
         import json

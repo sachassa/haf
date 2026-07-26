@@ -30,8 +30,11 @@ description: UAF 구현 단계 진입점 /implement의 물리 발화 형태 — 
 ### 형태 B 런처 호출 (권장 경로)
 
 ```
-python orchestration/adapters/claude/orchestrate_project.py <project_root> --phase "<phase>" [--mode incremental] [--run-id <slug>] [--retry-limit N]
+python orchestration/adapters/claude/orchestrate_project.py <project_root> --phase "<phase>" [--mode incremental] [--run-id <slug>] [--retry-limit N] [--model <slot>] [--policy <policy>] [--allocation-file <경로>]
 ```
+
+- **`--allocation-file`(선택·opt-in — 위험도별 모델 차등)**: Risk-based Model Routing 정책 데이터를 배선한다. 미지정이면 `config`에 `allocation_file` 키가 **생산되지 않아** allocation 미배선(현행 거동)이다. 경로는 절대경로 또는 **`uahf/framework/adapters/claude/orchestration-data/e2e/` 기준 상대경로**이며(해석 소유 = `_orch_common.resolve_allocation`·cwd 무관), `--resume`에도 반영된다. 경량 레인 프로파일 = `policy/allocation-lightweight.json`(값·형식 정본 = 같은 디렉터리 `policy/README.md`).
+  - **CP2는 이 플래그로 꺼지지 않는다** — 정책 데이터가 바꾸는 것은 CP2 검증 단위의 **모델 슬롯**뿐이고, CP2 디스패치는 Step Host가 policy·gate 무관하게 무조건 수행하는 상시 하한이다(SH-INV-4·우회 경로 부재). 저위험 단위도 CP2를 받는다.
 
 - 런처는 (1) `contract_to_graph.compile`로 대상의 최신 Contract vN을 초기 Work Graph(단일 proposal seed) + gate_policy + config로 컴파일하고, (2) run_dir(`uahf/framework/adapters/claude/orchestration-data/runs/<run-id>/`, binding §5.3)를 조립하며(소비 프로젝트 워크스페이스 보존·삭제/스캐폴드 금지), (3) 중립 조립부(`build_orchestrator_k`)를 무수정 재사용해 오케스트레이터를 구동한다.
 - **엔진이 판단하지 않는다**(05 §2 기계 구동자). 의미 판단은 국소 fresh-context Step(실 LLM), 확정 권위는 사용자다.

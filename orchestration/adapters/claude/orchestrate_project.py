@@ -147,6 +147,7 @@ def prepare_run(
     retry_limit: Any = None,
     model: Any = None,
     policy: str = "auto_approve",
+    allocation_file: Any = None,
 ) -> tuple[Path, dict]:
     """소비 프로젝트를 컴파일(F4)·물리화해 (run_dir, config) 를 반환한다(구동 전 준비).
 
@@ -155,13 +156,19 @@ def prepare_run(
     - run_id sanitize: --run-id 우선, 없으면 compile 이 준 run_id 를 슬러그 정규화. config.run_id 일치.
     - config.workspace_dir = project_root 절대경로 재확인(compile 이 이미 설정).
     - retry_limit override(선택·smoke 지원): build_config 하드코딩(2)을 덮어쓴다.
+    - allocation_file override(선택·opt-in): config.allocation_file 키를 생산해 Risk-based
+      Model Routing 정책을 배선한다. 미지정이면 키 부재 → allocation 미배선(현행 거동 보존).
+      **경로 해석은 이 런처가 하지 않는다** — 상대경로 기준은 소비 슬롯
+      `_orch_common.resolve_allocation`(HERE = orchestration-data/e2e/ 기준) 단일 소유다.
     - run_dir 물리화(RUNS_DIR/<slug>/). 소비 프로젝트는 건드리지 않는다.
     """
     root = Path(project_root).resolve()
     if not root.exists() or not root.is_dir():
         raise FileNotFoundError("project_root 가 실재하지 않는다(비디렉터리/부재): %s" % root)
 
-    compiled = contract_to_graph.compile(root, mode=mode, phase_scope=phase_scope)
+    compiled = contract_to_graph.compile(
+        root, mode=mode, phase_scope=phase_scope, allocation_file=allocation_file
+    )
     config = compiled["config"]
     graph = compiled["graph"]
     gate_policy = compiled["gate_policy"]
@@ -187,16 +194,21 @@ def prepare_run(
     return run_dir, config
 
 
-def build(run_dir: Any, invoker: Any):
+def build(run_dir: Any, invoker: Any, allocation_path: Any = None):
     """run 데이터 백엔드에서 중립 Orchestrator 를 조립한다(e2e build_orchestrator_k 재사용).
 
     build_orchestrator_k 는 workdir 를 config.workspace_dir(=소비 프로젝트 루트 절대경로)로
     배선한다(외부 워크스페이스 인지). 무수정 라이브러리 import — 이 런처는 조립부를 재현하지
     않고 그대로 재사용한다(중복 신설 0). 반환 = (orch, cfg).
+
+    allocation_path(선택·기본 None): Risk-based Model Routing 정책 데이터 경로를 **명시
+    인자**로 전달한다. `resolve_allocation` 우선순위 = 명시 인자 > cfg["allocation_file"] >
+    None 이므로, None(기본)이면 config 경유 배선만 쓰이고 config 에도 키가 없으면
+    allocation=None(현행 거동)이다 — 이 인자의 추가만으로는 어떤 거동도 바뀌지 않는다.
     """
     wire_paths()
     from k_common import build_orchestrator_k  # noqa: E402  (무수정 재사용)
-    return build_orchestrator_k(Path(run_dir), invoker)
+    return build_orchestrator_k(Path(run_dir), invoker, allocation_path)
 
 
 # --------------------------------------------------------------------------
@@ -567,6 +579,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--policy", default="auto_approve",
                         choices=["interactive", "auto_approve", "unrestricted"],
                         help="Autonomy Policy(기본 auto_approve — headless 쓰기 가능·게이트와 직교)")
+    parser.add_argument("--allocation-file", default=None,
+                        help="Risk-based Model Routing 정책 데이터 경로(선택·opt-in). 절대경로 또는"
+                             " orchestration-data/e2e/ 기준 상대경로(예:"
+                             " policy/allocation-lightweight.json). 미지정 시 미배선(현행 거동)")
     parser.add_argument("--resume", action="store_true",
                         help="compile/조립 건너뛰고 기존 run_dir 로 구동")
     args = parser.parse_args(argv)
@@ -633,6 +649,7 @@ def _drive(args: Any, state: dict) -> int:
                 root, mode=args.mode, phase_scope=args.phase,
                 run_id=args.run_id, retry_limit=args.retry_limit,
                 model=args.model, policy=args.policy,
+                allocation_file=args.allocation_file,
             )
         except (FileNotFoundError, RuntimeError) as exc:
             print("[ERR] %s" % exc, file=sys.stderr)
@@ -652,7 +669,18 @@ def _drive(args: Any, state: dict) -> int:
     # 인터페이스 투과이므로 엔진·중립 조립부에서 본 거동은 불변이다.
     invoker = HeartbeatInvoker(make_invoker(run_dir, config), run_dir)
 
-    orch, _cfg = build(run_dir, invoker)
+    # --allocation-file 은 **명시 인자로도** 전달한다(resolve_allocation 우선순위 = 명시 인자 >
+    # cfg["allocation_file"] > None). --resume 경로에는 config 재기록이 없으므로 명시 전달이
+    # 없으면 플래그가 조용히 무시된다(침묵 금지 — --retry-limit override 선례 동형 취지).
+    # 미지정(기본)이면 **호출 형태까지 종전 그대로** 둔다(2-인자 호출) — 기본 경로의 거동·
+    # 호출 계약을 한 글자도 바꾸지 않는다. 지정 시에만 3번째 인자를 넘긴다(opt-in 국소화).
+    allocation_arg = getattr(args, "allocation_file", None)
+    if allocation_arg:
+        print("[CONFIG] allocation_file = %s (경로 해석 기준 = orchestration-data/e2e/ ·"
+              " 절대경로 허용)" % allocation_arg)
+        orch, _cfg = build(run_dir, invoker, allocation_arg)
+    else:
+        orch, _cfg = build(run_dir, invoker)
     return run_and_map(orch, invoker, run_dir)
 
 

@@ -455,14 +455,21 @@ def build_config(
     allowed_tools: list[str],
     timeout: int,
     policy: str = "interactive",
+    allocation_file: Any = None,
 ) -> dict[str, Any]:
     """오케스트레이터 config 데이터 — build_orchestrator(_orch_common/k_common) 소비 키 정합.
 
     읽히는 키(orchestrator.py 파라미터 경유): run_id · retry_limit · policy · timeout ·
     workspace_dir · allowed_tools · output_format. workspace_dir 는 run 디렉터리 밖 절대경로
     (build_orchestrator_k 가 workdir 로 배선). 순수 데이터 — 디스크 미기록.
+
+    allocation_file(선택·opt-in): Risk-based Model Routing 정책 데이터 경로. 소비 슬롯은
+    `_orch_common.resolve_allocation`(cfg["allocation_file"] 읽음)이며 이 함수는 **키만
+    생산**한다(해석 0·경로 해석 0 — 상대경로 기준은 소비 슬롯 단일 소유). 미지정(None·기본)
+    이면 키를 **넣지 않는다** — `resolve_allocation` 이 None 을 반환해 allocation 미배선
+    (현행 거동)이 되며, 동시에 config.json 직렬화 결과도 byte 동일하게 보존된다(무회귀).
     """
-    return {
+    config: dict[str, Any] = {
         "run_id": run_id,
         "policy": policy,
         "retry_limit": 2,
@@ -471,6 +478,9 @@ def build_config(
         "output_format": "json",
         "workspace_dir": workspace_dir,
     }
+    if allocation_file:
+        config["allocation_file"] = str(allocation_file)
+    return config
 
 
 # ==========================================================================
@@ -481,11 +491,15 @@ def compile(
     *,
     mode: str,
     phase_scope: str,
+    allocation_file: Any = None,
 ) -> dict[str, Any]:
     """Contract vN → 초기 Work Graph 3종 데이터로 컴파일한다(순수·디스크 미기록).
 
     반환 = {"config": {...}, "graph": {...}, "gate_policy": {...}}. 물리화(디스크 쓰기)·
     오케스트레이터 구동은 Wave 2 소관 — 이 함수는 dict 만 만든다(부작용 0).
+
+    allocation_file(선택·opt-in)은 build_config 로 그대로 전달된다(해석 0). 미지정 시
+    config 에 키가 생산되지 않아 현행 거동·직렬화가 byte 동일하다.
     """
     root = Path(project_root).resolve()
     contract_path = resolve_contract(root)
@@ -501,5 +515,6 @@ def compile(
         str(root),
         allowed_tools=DEFAULT_ALLOWED_TOOLS,
         timeout=DEFAULT_TIMEOUT,
+        allocation_file=allocation_file,
     )
     return {"config": config, "graph": graph, "gate_policy": gp}

@@ -756,7 +756,8 @@ class CommandDocFlagRoundtripTests(unittest.TestCase):
     def test_documented_flags_accepted_by_parser(self) -> None:
         flags = ["--resume", "--run-id", "X", "--retry-limit", "3",
                  "--phase", "Phase 1", "--mode", "incremental",
-                 "--model", "haiku", "--policy", "auto_approve"]
+                 "--model", "haiku", "--policy", "auto_approve",
+                 "--allocation-file", "policy/allocation-lightweight.json"]
         # 문서가 가르치는 플래그 집합이 파서에 실제로 수용되는지 — 부재 run_dir 오류(1)까지
         # 도달하면 파싱은 성공한 것이다(argparse 실패는 SystemExit 2).
         with tempfile.TemporaryDirectory() as td:

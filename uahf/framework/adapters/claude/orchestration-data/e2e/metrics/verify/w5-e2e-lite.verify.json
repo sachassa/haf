@@ -1,0 +1,65 @@
+{
+  "checks": [
+    {
+      "check": "ledger_hygiene",
+      "detail": {
+        "cycles": 10,
+        "event_count": 15,
+        "refs_without_kind_at": [],
+        "simulated_false": 0,
+        "simulated_true": 1,
+        "simulation_annotations": 1
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "revision_integrity",
+      "detail": {
+        "final_task_count": 4,
+        "kinds": [
+          "task_added"
+        ],
+        "revision_count": 3
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "plan_schema",
+      "detail": "stage-plan.json·impl-plan.json 부재(plan 산출 run 아님)",
+      "findings": [],
+      "status": "skip"
+    },
+    {
+      "check": "delegation",
+      "detail": {
+        "tasks_checked": 4
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "artifact_counts",
+      "detail": {
+        "approval_states": [
+          "verified"
+        ],
+        "artifact_count": 4,
+        "declaration_count": 4,
+        "distinct_id_version": 4,
+        "record_count": 4
+      },
+      "findings": [],
+      "status": "pass"
+    }
+  ],
+  "run_dir": "C:\\my-claude-project\\universal-agentic-framework\\uahf\\framework\\adapters\\claude\\orchestration-data\\runs\\w5-e2e-lite",
+  "run_id": "w5-e2e-lite",
+  "status": "pass",
+  "summary": {
+    "fail": 0,
+    "pass": 4,
+    "skip": 1
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "gateKind": "user_decision_required",
+  "gate_id": "gate-unit-w5-lane-plan",
+  "lane": "lightweight",
+  "laneOverrideReason": null,
+  "note": "절차 비례화 트랙 Wave 5 경량 레인 **E2E 실주행** 원장. 산출물(통합 설계 문서·구현 단위·검증 로그)은 실물이며 scratchpad 픽스처 워크스페이스에 실재한다. 다만 이 run 의 **사용자 게이트 해소·CP2 Pass 마커는 simulated 다** — 위임 수임 Agent 가 단일 세션 안에서 자기 수행한 기록이며 실 사용자 발화·독립 Verifier fresh-context 디스패치가 아니다(L-07 정직 구분 · §5.9 (j)). 실 독립 판정은 이 run 밖의 CP2(Verifier)·CP3(Advisor)가 낸다. 등급 = ephemeral.",
+  "presentedBy": "Advisor",
+  "resolutionEventAt": 6,
+  "resolvedByActor": "human",
+  "response": "채택 — 경량 프로파일 시드 후 설계 1종·구현 1단위·검증 왕복 3단위로 진행",
+  "runId": "w5-e2e-lite",
+  "scopedQuestion": "경량 레인 E2E 실주행 단위 분해와 경량 SD 프로파일 시드를 채택하는가",
+  "simulated": true
+}

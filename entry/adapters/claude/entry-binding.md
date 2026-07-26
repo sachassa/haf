@@ -142,8 +142,14 @@ policy: <Discovery Policy 참조>     # Policy as Data. 충돌 조합은 사용�
 | 예 | 시나리오 (명시 Entry·주입) | 관측 (§4.0 스코프) | 매칭 행 | 방출 Discovery Request (§5.1) |
 |---|---|---|---|---|
 | A | `/new`(물리 발화 `uaf-new`) · **신규 폴더명 주입**(예: `./my-product`) | repository-presence **무**(폴더 부재/빈 확인·§4.2) · contract-presence **무**(그 폴더에 인스턴스 없음·§4.1). UAF 저장소 ambient 스캔 개입 0. | 01 §3.2-D **행 1**(단일 매칭) | `{ mode: greenfield, inputs: [contract-presence(무), repository-presence(무)], policy: 기본 정책 참조 }` — Greenfield 정상 경로(근거 P-C). |
-| B | `/continue`(물리 발화 `uaf-continue`) · **기존 폴더 주입**(기존 프로젝트 콘텐츠는 실재하나 그 폴더의 Contract 저장 위치에 인스턴스가 없는 폴더) | repository-presence **유**(실질 프로젝트 콘텐츠 실재 확인·§4.2) · contract-presence **무**(주입 폴더로 스코프한 Contract 저장 위치에 인스턴스 없음·§4.1) | 01 §3.2-D **행 6**(단일 매칭·판별 규칙 **D3 ②**) | `{ mode: brownfield, inputs: [contract-presence(무), repository-presence(유)], policy: 기본 정책 참조 }` — Brownfield Full Discovery·최초 Contract 생성 요청. |
+| B | `/continue`(물리 발화 `uaf-continue`) · **기존 폴더 주입**(기존 프로젝트 콘텐츠는 실재하나 그 폴더의 Contract 저장 위치에 인스턴스가 없는 폴더) | repository-presence **유**(실질 프로젝트 콘텐츠 실재 확인·§4.2) · contract-presence **무**(주입 폴더로 스코프한 Contract 저장 위치에 인스턴스 없음·§4.1) | 01 §3.2-D **행 6**(단일 매칭·판별 규칙 **D3 ②**) | `{ mode: brownfield, inputs: [contract-presence(무), repository-presence(유)], policy: 경량 프로파일 참조 (ref = lightweight) }` — Brownfield Full Discovery·최초 Contract 생성 요청. |
 
+- **행 B 의 `policy` 값 정정(절차 비례화 트랙 Wave 5 · 2026-07-27).** 이 칸은 원래 "기본 정책 참조"였으나
+  Wave 4 가 결정 테이블 데이터(`entry-registry.json` 행 6)의 `policy.ref` 를 `default` → `lightweight` 로
+  교체했으므로 stale 이 됐다(uaf-allow-legacy: 정정 전 문면의 이력 인용 — 정정 경위 보존이 목적). 위 칸을
+  실동작 값으로 갱신했다. **참조 값의 정본은 레지스트리 데이터**이며 이 문서는 그것을 인용할 뿐이다(값 사본 0) —
+  `<ref>` 해소 규약(`policy/<ref>-policy.yaml`)과 프로파일 2종 값표의 정본은
+  `discovery/adapters/claude/discovery-binding.md` §8.3 이다. 행 A(행 1)는 `ref = default` 로 무변경이다.
 - Entry는 두 예 모두 여기서 멈춘다 — Discovery 수행·Contract 생성은 하지 않는다(EN-INV 1·2).
 - **예 B가 §4.0 주입 방식의 필요성을 보인다.** 구 ambient 자동 스캔은 방대한 기존 콘텐츠·비표준 Contract 저장 위치를 가진 워크스페이스에서 "이 저장소를 이어갈지 vs 하위 새 폴더에서 시작할지"의 사용자 의도를 분간하지 못하나, "기존 폴더" 주입 선언으로 repository-presence = 유가 확정되어 행 6으로 결정적으로 해소된다.
 

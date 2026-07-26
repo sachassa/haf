@@ -180,21 +180,21 @@ Solution Design에서 설계 산출 필요"). 이것이 설계 미완 프로젝�
   "declaredTouchpoints": ["web-portal", "admin-console", "mobile-app"],
   "declaredInterfaces": ["payment-gateway"],
   "artifacts": [
-    { "id": "project-plan",     "status": "produced", "path": "docs/project-plan.md" },
-    { "id": "requirements-def", "status": "produced", "path": "docs/requirements.md" },
-    { "id": "business-process", "status": "produced", "path": "docs/process.md" },
-    { "id": "functional-spec",  "status": "produced", "path": "docs/functional-spec.md" },
-    { "id": "table-def",        "status": "produced", "path": "docs/table-def.md" },
-    { "id": "test-plan-cases",  "status": "produced", "path": "docs/test-plan.md" },
-    { "id": "screen-list",      "status": "produced", "path": "docs/screen-list.md" },
-    { "id": "menu-structure",   "status": "produced", "path": "docs/menu.md" },
+    { "id": "project-plan",     "status": "produced", "path": "../../docs/project-plan.md" },
+    { "id": "requirements-def", "status": "produced", "path": "../../docs/requirements.md" },
+    { "id": "business-process", "status": "produced", "path": "../../docs/process.md" },
+    { "id": "functional-spec",  "status": "produced", "path": "../../docs/functional-spec.md" },
+    { "id": "table-def",        "status": "produced", "path": "../../docs/table-def.md" },
+    { "id": "test-plan-cases",  "status": "produced", "path": "../../docs/test-plan.md" },
+    { "id": "screen-list",      "status": "produced", "path": "../../docs/screen-list.md" },
+    { "id": "menu-structure",   "status": "produced", "path": "../../docs/menu.md" },
     { "id": "screen-design",    "status": "excluded",
       "reason": "MVP 범위에서 상세 화면설계는 후속 스프린트로 이연(와이어프레임만 확정)",
       "confirmedBy": "user" },
-    { "id": "interface-spec",   "status": "produced", "path": "docs/interface-spec.md" },
-    { "id": "design-tokens",           "status": "produced", "path": "docs/design-tokens.md" },
-    { "id": "screen-mock",             "status": "produced", "path": "mocks/index.html" },
-    { "id": "mock-convergence-record", "status": "produced", "path": "docs/mock-convergence.md" }
+    { "id": "interface-spec",   "status": "produced", "path": "../../docs/interface-spec.md" },
+    { "id": "design-tokens",           "status": "produced", "path": "../../docs/design-tokens.md" },
+    { "id": "screen-mock",             "status": "produced", "path": "../../mocks/index.html" },
+    { "id": "mock-convergence-record", "status": "produced", "path": "../../docs/mock-convergence.md" }
   ],
   "designElements": {
     "project": {
@@ -235,12 +235,12 @@ produced, `screen-design` 1종만 사용자 확인을 받아 정당화 제외되
     "interface":  { "reason": "외부 시스템 연계 없음 — 인터페이스 클래스 전체 제외", "confirmedBy": "user" }
   },
   "artifacts": [
-    { "id": "project-plan",     "status": "produced", "path": "docs/project-plan.md" },
-    { "id": "requirements-def", "status": "produced", "path": "docs/requirements.md" },
-    { "id": "business-process", "status": "produced", "path": "docs/process.md" },
-    { "id": "functional-spec",  "status": "produced", "path": "docs/functional-spec.md" },
-    { "id": "table-def",        "status": "produced", "path": "docs/table-def.md" },
-    { "id": "test-plan-cases",  "status": "produced", "path": "docs/test-plan.md" }
+    { "id": "project-plan",     "status": "produced", "path": "../../docs/project-plan.md" },
+    { "id": "requirements-def", "status": "produced", "path": "../../docs/requirements.md" },
+    { "id": "business-process", "status": "produced", "path": "../../docs/process.md" },
+    { "id": "functional-spec",  "status": "produced", "path": "../../docs/functional-spec.md" },
+    { "id": "table-def",        "status": "produced", "path": "../../docs/table-def.md" },
+    { "id": "test-plan-cases",  "status": "produced", "path": "../../docs/test-plan.md" }
   ]
 }
 ```
@@ -256,8 +256,9 @@ produced, `screen-design` 1종만 사용자 확인을 받아 정당화 제외되
 `planning/adapters/claude/solution-design-binding.md` §7.2 (다) 경량 프로파일, 워크스페이스 시드 절차 =
 같은 문서 §7A.2-S. 본문 경로 규약 정본 = 같은 문서 §7A.2.
 
-**이 절이 무엇을 정정하는가.** 위 두 예시의 `path` 값(`docs/project-plan.md` 등)은 **매니페스트가
-워크스페이스 루트에 있을 때**의 표기다. 그러나 이 문서 §배치 위치가 정한 실제 배치는
+**이 절이 무엇을 정정하는가.** 위 두 예시의 `path` 값은 원래 `docs/<id>.md` 표기였고, 그것은
+**매니페스트가 워크스페이스 루트에 있을 때**의 표기였다(uaf-allow-legacy: 정정 전 표기의 이력 인용 —
+정정 경위 보존이 목적이며 현재 예시 문면은 아래 실동작 값으로 교체됐다). 그러나 이 문서 §배치 위치가 정한 실제 배치는
 `<workspace>/.claude/solution-design/design-manifest.json` 이므로 `manifest_dir` =
 `<workspace>/.claude/solution-design/` 이고, `path` 해석식(`절대경로면 그대로 · 아니면 매니페스트
 디렉터리 기준 상대`)에 따라 `docs/solution-design.md` 는
@@ -289,8 +290,29 @@ produced, `screen-design` 1종만 사용자 확인을 받아 정당화 제외되
 `project_root` = `config.workspace_dir` = 소비 프로젝트 루트)와 **동일 파일을 지목한다**. 즉 경량 레인은
 `contract_to_graph.py` 개정 없이 산출 측과 소비 측이 정합한다.
 
-**표준 레인은 미해소다.** 위 두 예시(13종·6종)의 `docs/*.md` 표기는 이 개정에서 **고치지 않았다** —
-표준 레인의 동일 결함(메모리 `uaf-design-manifest-path-defect` 발견 2)은 W1-b 범위 밖이며 후속 트랙
-소관이다. 좌표 = `docs/proportionality-track-ledger.md` §4 W1-b done 5 · 위 예시 2종의 `artifacts[].path` 값.
+**표준 예시 2종의 `path` 정정 (절차 비례화 트랙 Wave 5 · 2026-07-27).** W1-b 시점에는 위 두
+예시(13종·6종)의 `artifacts[].path` 를 고치지 않고 미해소로 남겼으나, Wave 5 에서 **제자리 정정**했다 —
+두 예시의 `artifacts[].path` 전 항목이 `docs/<id>.md` → `../../docs/<id>.md`(`screen-mock` 은
+`mocks/index.html` → `../../mocks/index.html`)로 교체됐다. 정정 방식으로 append 주석이 아니라 제자리
+교체를 택한 근거: 이 문서는 이력 원장이 아니라 **스키마 참조 문서**이고, 예시는 그대로 복사되는 표면이라
+틀린 값을 남겨두면 소비자가 차단당한다(stale 문면 정정 규율 동형). 정정 경위는 이 절이 보존한다.
+
+**남는 것(이 정정의 범위 밖).**
+
+- **표준 레인 발견 2(seed 단일파일 가정)는 여전히 미해소다** — `contract_to_graph.py` `_solution_design_path`
+  가 SD 입력을 `<project_root>/docs/solution-design.md` 단일 파일로 가정하는 결함은 개별 Projection
+  7~13종을 산출하는 표준 레인에서 그대로 남는다(경량 레인에서만 정합). 이 정정은 **매니페스트 `path` 표기**만
+  고쳤고 seed 가정은 건드리지 않았다. 좌표 = `docs/proportionality-track-ledger.md` §6.3 항 1 ·
+  `orchestration/adapters/claude/contract_to_graph.py` `_solution_design_path`.
+- **`designElements` 의 `pointer` 값은 정정 대상이 아니다** — 체커는 `pointer` 의 파일 존재를 검사하지
+  않는다(`design_completeness` 는 요소에 대해 **선언 완전성만** 판정하며 `covered` 진위는 CP2/사용자 게이트
+  몫이다·위 §designElements 판정 규칙). 존재 검사 대상은 `artifacts[].status == produced` 의 `path` 뿐이다.
+
+uaf-verified: 위 정정 범위 주장은 (1) 정정 후 이 문서에서 `"path":` 를 키로 하는 값 전건이
+`../../` 접두를 갖는지 재판독, (2) `design_completeness.py` 의 `path` 존재 검사 지점(`produced` 분기의
+`target = p if p.is_absolute() else (manifest_dir / path)`)과 `designElements` 판정 함수에 `pointer` 존재
+검사 분기가 부재함을 코드에서 확인, (3) `contract_to_graph.py` `_solution_design_path` 의 단일 파일 가정이
+무변경임을 diff hunk 0 으로 확인해 얻었다. 검색 범위 = 이 문서 본문 + 그 2개 python 파일이며, 소비
+프로젝트가 이미 복사해 간 구표기 매니페스트의 소급 정정은 이 개정의 범위 밖이다(미해소).
 
 uaf-verified: 위 표의 경로·해석식 주장은 (1) `design_completeness.py` 의 `manifest_dir = manifest_path.resolve().parent` 와 `target = p if p.is_absolute() else (manifest_dir / path)` 2지점 판독, (2) `contract_to_graph.py` `_solution_design_path` 및 `compile`→`build_seed_graph` 의 `project_root` 전달 경로 판독, (3) 임시 워크스페이스에 경량 정책·본문·매니페스트를 실제로 배치해 체커를 2회 실행한 실측(`path: ../../docs/solution-design.md` → `[DESIGN-COMPLETE]` exit 0 / `path: docs/solution-design.md` → `[DESIGN-INCOMPLETE]` exit 2 · 오류 문면 "path 부재: docs/solution-design.md"), (4) 두 경로 문자열의 `resolve()` 후 문자 단위 동일 대조(len 168 == 168 · True) 로 얻었다. 검색 범위 = 위 2개 python 파일 + 경량 policy 1파일 + 임시 워크스페이스 1건이며, 소비 프로젝트에서의 엔진 run 경유 실왕복과 표준 레인 예시 2종의 정정은 이 개정의 실측 범위 밖이다(미검증·미해소).

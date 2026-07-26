@@ -1,0 +1,47 @@
+{
+  "completion": "all-passed",
+  "dependencies": [],
+  "goal": "절차 비례화 트랙 Wave 5 — 경량 레인(lane=lightweight) 1건을 E2E 로 실주행해 레인 판별 → 마커 물리화 → 경량 SD policy 시드 → 통합 설계 문서 1종 → 설계완성도 게이트 → 구현 1단위 직접 위임 → 경량 원장 form-A append → 결정적 러너 검증의 접합부를 실증한다. 조율 주체 = Advisor 직접 위임(엔진 디스패치 0)이며 원장 0건 금지는 표준 레인과 동일하게 적용된다.",
+  "tasks": [
+    {
+      "capability": "cap-w5-lane-plan",
+      "delegation": {
+        "constraints": "정본 수정 0(제안까지만). 계획 자기 채택 금지 — 채택은 Advisor 소관.",
+        "context": [
+          "절차 비례화 트랙 Wave 5 — 분해 초안 단위(경량 레인·엔진 디스패치 0)",
+          "lane=lightweight · laneOverrideReason=null",
+          "픽스처 워크스페이스 = scratchpad/w5-e2e/ws (리포 밖 — §5.9 (a) 경량 원장 run 디렉터리만 리포 안에 둔다). 레인 마커 = <ws>/.claude/lane.json(lane=lightweight·basis=no-touchpoint).",
+          "브리프 정본 = docs/proportionality-track-ledger.md#Wave 5 — 통합·문서 정합·E2E 실증"
+        ],
+        "done": "위 done 필드와 동일",
+        "from": "Advisor",
+        "input": ".claude/CLAUDE.md 구현 단계 = 2층 · docs/proportionality-track-ledger.md §2·§4",
+        "output": "docs/proportionality-track-ledger.md",
+        "task": "위 task 필드와 동일",
+        "to": "Planner"
+      },
+      "dependsOn": [],
+      "done": [
+        "초안이 레인 판별 근거(접점 0)와 시드할 SD 프로파일을 명시한다",
+        "후속 단위(설계 산출·구현·검증 왕복)가 각각 done 축과 함께 제안된다"
+      ],
+      "id": "w5-lane-plan",
+      "interfaceContract": {
+        "consumes": [
+          "orchestration/adapters/claude/lane_resolve.py",
+          "orchestration/adapters/claude/lane-registry.json"
+        ],
+        "produces": [
+          "docs/proportionality-track-ledger.md"
+        ]
+      },
+      "model": "opus",
+      "ownedBoundary": [
+        "docs/proportionality-track-ledger.md"
+      ],
+      "role": "Planner",
+      "task": "경량 레인 E2E 실주행의 단위 분해 초안 — 레인 판별 결과 소비 · SD 프로파일 선택(§7A.2-S S1) · 후속 구현·검증 단위 제안",
+      "unitType": "proposal"
+    }
+  ]
+}

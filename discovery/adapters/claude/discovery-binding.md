@@ -185,11 +185,18 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 
 | Discovery Dimension (02 §3.11) | 포화·Ready 임계 θ |
 |---|---|
-| Intent | 0.80 |
-| Requirement | 0.75 |
-| Constraint | 0.70 |
-| Risk | 0.70 |
-| Architecture | 0.75 |
+| Intent | 0.85 |
+| Requirement | 0.80 |
+| Constraint | 0.75 |
+| Risk | 0.75 |
+| Architecture | 0.80 |
+
+**θ 값 드리프트 정정(절차 비례화 트랙 Wave 5 · 2026-07-27).** 위 표는 §DC-5 대안 A 적용 **전** 값
+(Intent 0.80 / Requirement 0.75 / Constraint 0.70 / Risk 0.70 / Architecture 0.75)을 보이고 있었고,
+물리 데이터 `policy/default-policy.yaml` 의 `thresholds` 는 적용 **후** 값이었다
+(uaf-allow-legacy: 정정 전 값의 이력 인용 — 드리프트 경위 보존이 목적). 정본은 **물리 데이터 실측값**이므로
+위 표를 데이터에 맞춰 갱신했다(§8.3 표준 열과도 정합). 값 조정은 Policy as Data 정정이며 02 §3.12·§3.15
+계약은 무변경이다. 이 정정으로 §8.3 말미의 "§8.2 (가) θ 드리프트 미정정" 항은 해소된다.
 
 **(나) 예산 정책 — Question Budget (02 §3.14 총량·차원별·soft/hard):**
 
@@ -245,7 +252,7 @@ Discovery Policy 프로파일은 **2종**이다 — 표준 `policy/default-polic
 
 - **문항 수 직접 감소 아님.** 실제 문항 수를 좌우하는 **필수 커버리지 축 목록**은 `.claude/skills/discovery-interview/SKILL.md` Part 1 커버리지 맵(표 10행 = Discovery 소유 9축 + 하류 위임 경계 1행)이 **body 하드코딩**으로 소유하며 Policy 데이터가 아니다. 따라서 경량 프로파일은 **예산 상한만** 낮추고 최소 심문 대상 축 수를 낮추지 못한다. 커버리지 축의 Policy 데이터화·체커화는 별 트랙 소관이다(좌표 = 메모리 `uaf-coverage-enforcement-gap` · `docs/proportionality-track-ledger.md` §4 Wave 4 done 6 · 스킬 body 27행 자기신고 충돌 플래그).
 - **침묵 생략 금지 무약화.** 스킬 body 의 침묵 생략 금지 규율(Part 1 head·⑦ (ii)·⑨·⑪ — "축을 조용히 지나치는 것은 제외가 아니라 미심문"·제외는 사유 기록 + 게이트 일괄 표면화)은 이 프로파일로 약화되지 않는다. **예산 소진은 축 제외의 사유가 되지 못한다** — 예산은 질문 수의 상한이고 커버리지는 별개 축이다(θ ≠ 커버리지 역설·SKILL.md ⑦ 말미). 본 개정은 스킬 body 를 수정하지 않는다(diff hunk 0).
-- **§8.2 (가) 표와 데이터 파일의 θ 드리프트(미정정·보고 대상).** §8.2 (가) 표는 상향 전 값(0.80/0.75/0.70/0.70/0.75)을 보이나 물리 데이터 `default-policy.yaml` `thresholds` 는 §DC-5 대안 A 적용 후 값(0.85/0.80/0.75/0.75/0.80)이다. 본 §8.3 표의 표준 열은 **물리 데이터 실측값**을 적었다. §8.2 문면 정정은 표준 프로파일 정본 값 문면 개정이므로 본 개정 범위 밖이며 Advisor 판단 대상으로 남긴다(미해소).
+- **§8.2 (가) 표와 데이터 파일의 θ 드리프트 — 해소(2026-07-27 · 절차 비례화 트랙 Wave 5).** Wave 4 시점에는 §8.2 (가) 표가 상향 전 값(0.80/0.75/0.70/0.70/0.75)을 보이고 물리 데이터 `default-policy.yaml` `thresholds` 는 §DC-5 대안 A 적용 후 값(0.85/0.80/0.75/0.75/0.80)이어서 미정정으로 남았다(uaf-allow-legacy: 정정 전 상태의 이력 인용 — 경위 보존). Wave 5 가 §8.2 (가) 표를 물리 데이터 실측값으로 갱신해 드리프트를 없앴다. 본 §8.3 표의 표준 열은 처음부터 실측값이었으므로 무변경이다.
 
 (`uaf-verified:` 위 표·항목의 값·배선 주장은 `discovery-data/policy/default-policy.yaml`·`lightweight-policy.yaml` 두 파일의 키 트리·값 직접 대조, `entry/adapters/claude/entry-registry.json` `decisionRows` 8행 `policy` 전수 판독, `entry_resolve.py` 판독(`load_registry`·`verify_determinism`·`resolve` — `policy` 는 행 값을 그대로 방출하며 `ref` 값 도메인 검증·프로파일 파일 적재는 코드에 0), `.claude/skills/discovery-interview/SKILL.md` 커버리지 맵·침묵 생략 조항 판독, 그리고 `entry_resolve.py --entry continue` brownfield 실행 1건(exit 0 · `policy.ref == lightweight` · `matchedRow` 6)·`pytest entry/adapters/claude/tests` 전건 Pass·`git diff --stat` 상 `entry_resolve.py`·`discovery/specs/02-discovery.md`·`SKILL.md` hunk 0 실측으로 얻었다. **검색 범위 = 위 6파일 + 02 spec `§3.7`/`§3.11`/`§3.13`/`§3.14`/`§3.15` 절 판독 + 저장소 전체 `default-policy`·`policy.ref` grep**이며, 그 밖(실제 인터뷰 세션에서의 문항 수 실측·소비 프로젝트 실 run 왕복·`entry-binding.md` 표 행 B 문면 정합)은 이 개정의 실측 범위 밖이다.)
 

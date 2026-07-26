@@ -272,6 +272,7 @@ Verifier도 판정 중 발견한 계약 갭·불일치를 같은 채널로 Advis
 | 물리 위임·보고 채널 | uahf/specs/02-agent.md §4.1 |
 | 병렬 디스패치 R1~R4 | uahf/specs/07-workflow.md §3.2-C |
 | 위임 산출 유실 금지 (원장 승격 불변) | `.claude/AGENT.md` §Invariants |
+| 보고 전문 파일의 지위 (원장이 가리키는 artifact · `location`·`contentHash`) | `orchestration/specs/05-project-orchestration.md` §3.6 |
 | 승격 원장의 수명·삭제·아카이브·인용 | `docs/artifact-lifecycle-policy.md` §2·§3·§5 |
 | 병렬 물리 실현·충돌 중재 | uahf/specs/07-workflow.md §4.1 |
 | 용어 | uahf/specs/00-glossary.md |

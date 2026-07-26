@@ -46,6 +46,15 @@ Worker 결과는 반드시 검증 후 승인한다.
 
 라우팅 기본값: Contract를 가진 소비 프로젝트의 구현은 **엔진 경유가 기본**이다. 원장 없는 임시 Worker 직접 디스패치로 프로젝트를 구현하지 않는다(근거 = git 앵커 90ca19c). 물리 발화 = `/uaf-implement`(`.claude/commands/uaf-implement.md` → `orchestration/adapters/claude/orchestrate_project.py`). 게이트·불가침 정본 = `orchestration/specs/05-project-orchestration.md` §2.1·§3.3, 물리 배선 = `orchestration/adapters/claude/project-orchestration-binding.md` §3(재정의 0).
 
+**레인 분기(절차 비례화 트랙 — 위 기본값의 가법 특수화·기본값 문면 무변).** 라우팅은 레인 값에 따라 두 갈래로 갈린다. 레인은 **두 값만** 가지며 제3의 값을 두지 않는다 — 선언 부재·패턴 매칭 불가는 표준으로 귀결한다(fail-closed·안전측). 어휘·패턴·마커 경로의 정본은 아래 레지스트리 데이터이고 이 절은 **소비 측**이다(재정의 0·값 사본 0).
+
+- **표준 레인(`standard`) = 위 기본값 그대로.** 엔진 경유로 구현하고 원장·게이트 큐는 엔진이 소유한다. 접점(Contract·게이트·정본 문서·스키마·정책 데이터 — 구체 패턴은 레지스트리 데이터)을 건드리는 작업은 전부 이 레인이다.
+- **경량 레인(`lightweight`) = 접점 0 판별 + 마커 물리화 시에만.** **Advisor 직접 위임**으로 조율하고 **경량 원장**(form-A 수기 append)을 남긴다. 판별 = `orchestration/adapters/claude/lane_resolve.py`(형태 B·LLM 0·결정적 — 계산·방출까지만이고 적용은 0). 접점 패턴·레인 어휘·사유 필드명·마커 경로 = `orchestration/adapters/claude/lane-registry.json`(Policy as Data 단일 소스). 적용의 물리 산출물 = 워크스페이스 레인 마커(경로는 레지스트리 `marker` 절). 원장 규약(배치·최소 필드·`basis` 형태·파생 등급·종결 조건) = `orchestration/adapters/claude/project-orchestration-binding.md` §5.9. SD 프로파일 선택·워크스페이스 시드 = `planning/adapters/claude/solution-design-binding.md` §7A.2-S·§7A.2-L(프로파일 실값은 그 policy 파일 데이터). 인터뷰 프로파일 참조 배선 = `discovery/adapters/claude/discovery-binding.md` §8.3.
+- **원장 0건 금지는 두 레인 공통이다.** 경량 레인은 **원장을 줄이지 않고 조율 주체만 바꾼다**(엔진 자동 append → form-A 수기 append). 불변 자체는 `.claude/AGENT.md` §Invariants(Run 조율 우회 금지의 "원장 없는" 조건절 · 설계 산출 원장 기록 의무)가 소유하며 이 절은 재정의하지 않는다 — § 포인터만 둔다. 경량 레인 종결 조건 = 기존 결정적 러너 통과 + 원장 비공집합(binding §5.9 (h)).
+- **강제 지점 = Write 시점 훅.** 경량 레인 마커 하에서 접점 파일 Write 는 PreToolUse 훅(`orchestration/adapters/claude/pretooluse_lane_guard.py` · `.claude/settings.json` 배선)이 차단한다. 훅 배선은 상대경로로 쓰고 **실제 도구 호출로 차단을 확인**한다(위 훅 배선 절 — 단위 검증으로 갈음하지 않는다). 승급 경로 2개 = ① 레인을 표준으로 재판정 ② 사용자 override + 사유를 마커·원장에 기록(사유 필드명은 레지스트리 데이터).
+
+`uaf-verified:` 위 레인 분기 항의 파일 경로·소유 관계는 `lane_resolve.py`·`lane-registry.json`·`pretooluse_lane_guard.py`·`.claude/settings.json` PreToolUse 블록·binding §5.9·solution-design-binding §7A.2-S/§7A.2-L·discovery-binding §8.3 직독으로 확인했다. **검색 범위** = 그 8개 표면이며, 소비 프로젝트에서의 경량 레인 실운용은 이 문면의 범위 밖이다.
+
 **설계 층도 원장을 남긴다(경로 자유·기록 필수).** Contract 소비 프로젝트의 설계 산출(Solution Design Projection·매니페스트 등재 대상)은 경로(엔진 경유/Advisor 직접 위임)와 무관하게 **SD 원장(`solution-design-data` events — form-A 수기 append 허용)에 위임·게이트·산출 기록을 남긴다. 원장 0건 설계 산출 금지**(AGENT.md §Invariants 설계 산출 원장 기록 의무·사용자 결정 2026-07-26 옵션 B). 기계 차단 미도입 — 사유: 설계 산출 Write의 결정적 식별이 소비 프로젝트마다 경로가 달라 불가하다. 재심 좌표 = SD 실행 호스팅 도입 시 엔진 게이트로 승격.
 
 ## 완전성·사실 주장 규율

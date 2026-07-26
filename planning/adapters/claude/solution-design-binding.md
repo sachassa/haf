@@ -374,7 +374,7 @@ Solution Design이 **기본 필수 Projection 세트(§7.2 (다))를 어떻게 �
 | 매니페스트 `path` 값 | **`../../docs/solution-design.md`** — `path` 해석은 매니페스트 디렉터리 기준 상대이며(`design-manifest.schema.md`) 매니페스트는 `<workspace>/.claude/solution-design/` 에 있으므로 본문까지 2단 상향이다. |
 | 쓰지 않는 값 | `docs/solution-design.md` — `<workspace>/.claude/solution-design/docs/solution-design.md` 로 해석되어 `design_completeness` 가 `path 부재` 로 차단한다(실측 exit 2). 스키마 구예시 표기이며 이 배치에서는 틀린 값이다. |
 | 코드 개정 | **0** — 경량 레인은 `contract_to_graph.py` 무수정으로 정합한다(diff hunk 0 실측). |
-| 표준 레인 | **미해소** — 표준 프로파일 13종의 동일 결함은 이 항의 범위 밖이다(후속 트랙 소관 · 좌표 = `docs/proportionality-track-ledger.md` §4 W1-b done 5 · `design-manifest.schema.md` 예시 2종의 `artifacts[].path`). 이 항은 경량 레인만 정합시킨다. |
+| 표준 레인 | **미해소** — 표준 프로파일 13종의 seed 입력 가정 결함(`contract_to_graph.py` `_solution_design_path` 단일 파일 가정)은 이 항의 범위 밖이다(후속 트랙 소관 · 좌표 = `docs/proportionality-track-ledger.md` §6.3 항 1). 이 항은 경량 레인만 정합시킨다. 부기: 함께 좌표로 적었던 `design-manifest.schema.md` **예시 2종의 `artifacts[].path` 구표기**는 절차 비례화 트랙 Wave 5(2026-07-27)가 `../../docs/<id>.md` 로 제자리 정정해 **해소**됐다(uaf-allow-legacy: W1-b 시점 미해소 좌표의 이력 인용 — 상태 갱신 표기). |
 
 실동작 예시(JSON 1건)와 해석식 대조표의 정본은 `orchestration/adapters/claude/design-manifest.schema.md` §경량 프로파일 예시이며, 본 절은 값의 사본을 두지 않고 **경로 규약만** 확정한다(단일 소스 규율·§7.2 머리 동형).
 

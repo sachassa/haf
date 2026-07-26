@@ -17,6 +17,13 @@
             "command": "bash .claude/hooks/memory-guard.sh",
             "timeout": 5,
             "statusMessage": "메모리 자동 클린 가드"
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "bash .claude/hooks/md-budget-guard.sh",
+            "timeout": 10,
+            "statusMessage": "md 예산 가드"
           }
         ]
       }

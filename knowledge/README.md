@@ -1,13 +1,5 @@
 # knowledge — 공용 Knowledge Base
 
-상태: v1.2.1 스텁 (구조 이동 산출물 — 완전 저술은 후속 트랙)
-상위: Universal Agentic Framework (root README/ARCHITECTURE 참조)
-
-## 역할
-knowledge는 Layer가 아니다. 모든 Layer(entry·discovery·planning·runtime)가 Consult하는 공용 Knowledge Base다. `markdown/ metadata/ graph/ graphrag/ retrieval/ prompts/ patterns/ glossary/` 표면을 둔다.
-
-## 정본 포인터
-정본: 공용 Knowledge Base (원천·구성은 후속 트랙에서 확정). 현재 8하위 표면은 빈 스캐폴드다.
-
-## 이 문서의 지위
-스텁이다. 내용은 후속 트랙에서 완전 저술된다.
+역할: 파이프라인 단계가 아니라 모든 Layer(entry·discovery·planning·orchestration·uahf)가 Consult하는 UAF 레벨 횡단 공용 Knowledge Base다 — 8표면(`markdown/ metadata/ graph/ graphrag/ retrieval/ prompts/ patterns/ glossary/`)을 둔다. `uaf-verified: 저장소 최상위 디렉터리를 ls -d */로 열거해 루트 ARCHITECTURE.md §2.1 라우터 표의 6 Layer와 대조 — 옛 표기 "runtime"을 "uahf"로 정정하고 누락된 "orchestration"을 추가. 검색 범위 = 저장소 최상위 1단계 디렉터리.`
+정본 포인터: `knowledge/ARCHITECTURE.md`(1차 정본 — 8표면 역할·Consult 위상) · 상위 = 루트 `ARCHITECTURE.md` §4. 8표면 원천·구성은 후속 트랙에서 확정하며 현재는 빈 스캐폴드다.
+상태: 스텁 — 완전 저술은 후속 트랙.

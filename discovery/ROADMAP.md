@@ -1,13 +1,5 @@
 # discovery — Roadmap (Project Discovery Layer)
 
-상태: v1.2.1 스텁 (구조 이동 산출물 — 완전 저술은 후속 트랙)
-상위: Universal Agentic Framework (root README/ARCHITECTURE 참조)
-
-## 역할
-discovery Layer의 로드맵을 담는다. 전체 Framework 로드맵(root ROADMAP)의 discovery 축을 상세화한다.
-
-## 정본 포인터
-정본: `discovery/specs/02-discovery.md` · 상위 로드맵 = root `ROADMAP.md`.
-
-## 이 문서의 지위
-스텁이다. 내용은 후속 트랙에서 완전 저술된다.
+역할: discovery Layer의 로드맵 축 — 전체 Framework 로드맵(루트 `ROADMAP.md`)의 discovery 축을 상세화한다.
+정본 포인터: `discovery/specs/02-discovery.md` · 상위 로드맵 = 루트 `ROADMAP.md`.
+상태: 스텁 — 완전 저술은 후속 트랙.

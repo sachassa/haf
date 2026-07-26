@@ -1,15 +1,16 @@
 # ARCHITECTURE — Universal Agentic Framework 상위 구조 정본 (라우터)
 
-작성일: 2026-07-07 (v1.3 완전 재저술: 2026-07-09 · v1.4 Solution Design 성숙 루프 개정: 2026-07-13 · v1.5 orchestration Layer 등재: 2026-07-13)
-상태: v1.7 — §8 UAF-INV ① 재정의("무수정"[동결] 폐지·UAHF→UAF 승격 이행 완료로 보호 장치 해제·접점 원칙[Project Contract 단일 접점] 존치·불변 번호 ① 유지·①~⑥ 순서/카운트 무변·내용만 재정의; §0·§2.2·§2.5·§6·§10 라이브 본문 정합·사용자 결정 2026-07-17) · §5 `.claude` 거버넌스 분리 명문화(UAF 관리 vs UAHF 하네스·v1.5 이하 논지 무변) · v1.5 orchestration Layer 등재 (§2.1 라우터 표 `orchestration/` 행·§2.3 Agentic Runtime slot 실현 표기·§2.5 의존 방향 1항·§8 UAF-INV ① 병존 주·§11 Non-Goals 실현 표기·최상위 Layer 5→6 정합). v1.4 논지(Solution Design 성숙 루프·라우터 모델·6요소 파이프라인 의미론·UAF-INV ①~⑥·P1~P5·INV-3 무촉·책임 경계표 담당4/비담당5 카운트·Discovery Request 추상) 무변. 직전 Baseline: v1.1 (사용자 승인 2026-07-07) → v1.2.1 구조 이동 (사용자 승인 2026-07-09) → v1.3 완전 재저술 (2026-07-09) → v1.4 성숙 루프 (2026-07-13).
+작성일: 2026-07-07 · 상태: v1.7
+개정 이력·경위·버전별 Δ = §9 이력 표(append-only). 본 머리는 판(edition) 표기만 둔다.
 상위 규약: AGENT.md (INV-1)
+
 근거 정본:
 
-- `docs/v1.2.1-context-and-design.md@cd9247b` — v1.2.1 통합 이해 정본. 특히 §3(두 "Layer" 축·"루트=라우터, 각 Layer 독립 ARCHITECTURE"·UAHF=`uahf/` 아래 Runtime Layer 구현체·knowledge는 Layer 아닌 횡단 Base)·§4(Layer 연결=타입 계약 파이프). 본 재저술의 라우터 모델·§0 재프레이밍·knowledge 편입 근거.
-- `docs/tier2-claude-override-design.md` — `.claude` Global Default/override 설계 정본. 특히 §2(개념 모델: G/U 정의·dogfooding 이중역할·개념귀속≠물리위치·형태 A/B)·§3(네이티브 로딩 경계)·§4(합성 3연산 ADD/REPLACE/MERGE·12항목 귀속표). §5 `.claude` 절의 근거이며, 상세 계약은 이 정본에 위임한다.
-- `uahf/ARCHITECTURE.md` 0.2 (UAHF 정본) — UAF는 UAHF를 늘리지 않고, 접점은 Project Contract 하나뿐이다. UAHF 계약 요소는 § 포인터로만 참조한다.
-- `uahf/specs/00-glossary.md` 0.2 (UAHF 용어 정본) — INV-3(Layer 정확히 6개)·용어 네임스페이스 분리의 근거. UAF 신규 용어의 소유 지점은 본 문서 §12다.
-- 각 Layer 독립 정본 — `entry/ARCHITECTURE.md`·`discovery/ARCHITECTURE.md`·`planning/ARCHITECTURE.md`·`uahf/ARCHITECTURE.md`·`knowledge/ARCHITECTURE.md`. 라우터인 본 문서가 가리키는 분기 정본이며, 각 Layer의 상세는 해당 정본이 소유한다.
+- `docs/v1.2.1-context-and-design.md@cd9247b` — v1.2.1 통합 이해 정본. §3(두 "Layer" 축·"루트=라우터, 각 Layer 독립 ARCHITECTURE")·§4(Layer 연결=타입 계약 파이프)가 본 라우터 모델과 knowledge 편입의 근거다.
+- `docs/tier2-claude-override-design.md` — `.claude` Global Default/override 설계 정본. §2(개념 모델·형태 A/B)·§3(네이티브 로딩 경계)·§4(합성 3연산·12항목 귀속표). §5의 상세 계약은 이 정본에 위임한다.
+- `uahf/ARCHITECTURE.md` 0.2 (UAHF 정본) — 접점은 Project Contract 하나뿐이다. UAHF 계약 요소는 § 포인터로만 참조한다.
+- `uahf/specs/00-glossary.md` 0.2 (UAHF 용어 정본) — INV-3(Layer 정확히 6개)·용어 네임스페이스 분리의 근거. UAF 신규 용어의 소유 지점은 §12다.
+- 각 Layer 독립 정본 — `entry/`·`discovery/`·`planning/`·`uahf/`·`knowledge/`·`orchestration/`의 `ARCHITECTURE.md`. 라우터가 가리키는 분기 정본이며 각 Layer의 상세는 그 정본이 소유한다.
 
 ---
 
@@ -29,8 +30,9 @@
 | 2026-07-17 | v1.7 | §8 UAF-INV ① 재정의 — "무수정"(동결) 폐지(UAHF→UAF 승격 이행 완료로 보호 장치 해제)·접점 원칙(Project Contract 단일 접점) 존치·불변 번호 ① 유지(재번호 0·①~⑥ 순서·카운트 무변·내용만 재정의). 라이브 본문 정합 8곳: §0 근거 정본(:10)·§0 접점 절 표제(:42)·§2.2 다이어그램 태그(:105)·§2.2 UAHF 불릿(:115)·§2.5 병존 주(:138)·§6 Stable Core(:193)·§8 UAF-INV ① 본문(:228)·§10 주(:253). §9 이력 행·§8 폐지 경위 주석 제외 라벨 잔존 0. P1~P5·6요소 파이프라인·책임 경계표 담당4/비담당5·§ 포인터 참조 원칙 무변·새 설계 결정 0. 사용자 결정 2026-07-17. | Advisor (사용자 결정) |
 | 2026-07-17 | v1.7 (정합) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — §0 근거 정본(:8)·§0 라우터 선언(:38)의 삭제 산출물 참조 앵커 전환(`docs/v1.2.1-context-and-design.md@cd9247b`, 2곳). 논지·계약·규범 문면 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
 | 2026-07-19 | v1.7 (Draft) | §6 설계 원칙 11(책임 있는 자율) 신설 — 비정본 거버넌스: 필수는 Core/Policy 강제·자율은 기본값+사유기록·이탈은 게이트 표면화. §6·§1 카운트 10→11 정합. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
+| 2026-07-26 | (정합) | md 슬림화 Wave 5 — 비계약 격리 개정: 재서술·경위·완료 마일스톤 상세 압축(앵커 90ca19c), 원칙·불변·계약 문면 무변경 | Advisor 위임 |
 
-(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, uahf/framework/core/structure.md §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. 표 내 옛 행의 `uaf/ARCHITECTURE.md`·`§3`·`9종` 등 표기는 그 개정 시점의 정확한 이력 기록이므로 그대로 둔다.)
+(이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행, uahf/framework/core/structure.md §9 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. `uaf-allow-legacy: 표 내 옛 행의 uaf/ARCHITECTURE.md·§3·9종·완전성 표현 등은 그 개정 시점의 정확한 이력 기록이므로 문면을 보존한다.`)
 
 ---
 
@@ -38,14 +40,14 @@
 
 - **라우터 정본.** 이 문서는 **UAF(Universal Agentic Framework) 상위 구조의 라우터 정본**(루트 `ARCHITECTURE.md`)이다. 최상위 물리 Layer들의 **지도**를 제공하고, 각 Layer의 독립 `ARCHITECTURE.md`를 § 포인터로 가리키며, **Layer 사이의 관계(연결)만** 서술한다. 각 Layer의 내부 상세는 그 Layer의 독립 정본이 소유한다 (`docs/v1.2.1-context-and-design.md@cd9247b` §3 "루트=라우터, 각 Layer 독립 ARCHITECTURE").
 
-- **신 물리 실재 = 최상위 6 Layer.** 이 저장소의 최상위 물리 구조는 **`entry/ · discovery/ · planning/ · uahf/ · knowledge/ · orchestration/`** 다(`orchestration/`은 v1.6에서 §2.3 Agentic Runtime slot을 실현하며 등재된 6번째 최상위 Layer — 문서버전 v1.5·§2.1). 과거 `uaf/`(별개 네임스페이스 디렉터리)는 v1.2.1 구조 이동에서 물리적으로 **소멸**했고, 그 내용은 위 Layer들로 분산되었다(파이프라인 관계 → 이 라우터, 요소별 → 각 Layer ARCHITECTURE). 따라서 "`uaf/` vs UAHF 별개 디렉터리"라는 과거 프레이밍은 폐기한다.
+- **신 물리 실재 = 최상위 6 Layer.** 이 저장소의 최상위 물리 구조는 **`entry/ · discovery/ · planning/ · uahf/ · knowledge/ · orchestration/`** 다(`orchestration/`은 v1.6에서 §2.3 Agentic Runtime slot을 실현하며 등재된 6번째 최상위 Layer — §2.1). 과거 `uaf/` 디렉터리는 v1.2.1 구조 이동에서 소멸했고 그 내용은 위 Layer들로 분산되었다(경위 = §9 이력 v1.2.1·v1.3 행).
 
-- **UAF와 UAHF의 관계.** **UAF = 최상위 6 Layer를 아우르는 상위 프레임워크**(프로젝트를 이해 → 계약 → 실행하는 파이프라인 + 실행 lifecycle 오케스트레이션[`orchestration/`, §2.3] + 횡단 knowledge)다. **UAHF(Universal Agentic Harness Framework) = `uahf/` 아래의 Runtime Layer 구현체**다 — 최상위가 아니라 파이프라인 하류에서 실행(Execution)을 담당하는 한 Layer의 구현이다 (context-and-design §3, 사용자 원칙 11). UAF 용어와 UAHF Glossary는 별개 네임스페이스로 유지한다(§12 용어 네임스페이스 분리) — 개념은 유지하되 물리 서술만 재정렬했다.
+- **UAF와 UAHF의 관계.** **UAF = 최상위 6 Layer를 아우르는 상위 프레임워크**(프로젝트를 이해 → 계약 → 실행하는 파이프라인 + 실행 lifecycle 오케스트레이션[`orchestration/`, §2.3] + 횡단 knowledge)다. **UAHF(Universal Agentic Harness Framework) = `uahf/` 아래의 Runtime Layer 구현체**다 — 최상위가 아니라 파이프라인 하류에서 실행(Execution)을 담당하는 한 Layer의 구현이다 (context-and-design §3, 사용자 원칙 11). UAF 용어와 UAHF Glossary는 별개 네임스페이스로 유지한다(§12 용어 네임스페이스 분리).
 
 - **접점 원칙 (Project Contract 단일 접점).** UAF와 UAHF의 유일한 접점은 **Project Contract 하나**다 (UAF-INV ①, §8). 본 문서는 UAHF 계약 요소(`uahf/ARCHITECTURE.md`·`uahf/specs/`·`uahf/framework/`·상위 규약)를 재정의·확장하지 않고 **§ 포인터로만 참조**한다.
 
 - **INV-3 무촉 (핵심 경계 선언).** Entry Layer·Entry Resolution·Project Discovery·Project Contract는 UAHF의 6-Layer 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter, `uahf/specs/00-glossary.md` §3.2-A)에 **새 Layer로 추가되지 않는다**. 이들은 UAHF 6-Layer의 **외부**, 그보다 상위의 **UAF 레벨 구조**다. 따라서 Glossary INV-3("Layer는 정확히 6개다")는 무촉이며, 본 문서는 UAHF Layer 수를 늘리는 어떤 서술도 두지 않는다.
-  - 용어 주의: "**Entry Layer**"의 "Layer"는 UAHF Layer 스택의 지층(stratum)이 아니라, UAF 파이프라인의 한 **단계(stage)** 를 가리키는 명칭이다. 또한 최상위 물리 "Layer"(`entry/`·`discovery/`·`planning/`·`uahf/`·`knowledge/`)는 UAF 파이프라인 축의 지도 단위이지 UAHF 수직 스택의 지층이 아니다. UAHF Glossary §3.2-A의 Layer 정의와는 별개 네임스페이스다(§12 용어 네임스페이스 분리).
+  - 용어 주의: "**Entry Layer**"의 "Layer"는 UAHF Layer 스택의 지층(stratum)이 아니라 UAF 파이프라인의 한 **단계(stage)** 명칭이며, 최상위 물리 "Layer"(§2.1)는 UAF 파이프라인 축의 지도 단위다. 둘 다 UAHF Glossary §3.2-A의 Layer 정의와 별개 네임스페이스다(§12).
 
 - **Core 문서 관행.** 본문 전체에 특정 AI 이름·모델명·제품 기능명을 두지 않는다 (`uahf/framework/core/structure.md` §5 C-3 동형). 구체 실현(진입 명령의 물리 형태·직렬화 형식·환경 경로 관례)은 Adapter Binding 소관이며, 필요한 자리에는 일반형 표기와 소관 포인터만 둔다.
 
@@ -57,15 +59,7 @@
 
 이 문서는 UAF가 **Execution 이전에 어떤 순서로 프로젝트를 이해하고 계약으로 고정하는가**의 상위 구조를 확정하고, 그 구조를 물리 Layer 지도로 라우팅한다.
 
-책임은 다섯 가지다.
-
-- 최상위 6 Layer의 **지도**를 제공하고 각 Layer 독립 정본으로 라우팅한다 (§2).
-- UAF 구조 6요소의 **순서와 위상**, 요소 간 **의존 방향**을 단방향으로 명문화한다 (§2).
-- Layer 사이를 잇는 **연결 계약**(Discovery Request·Project Contract)을 서술한다 (§3).
-- **knowledge 횡단 Base**(§4)와 **`.claude` Global Default/override 합성 경계**(§5)를 선언한다.
-- UAF가 따르는 **설계 원칙 11종**·**사용자 고정 원칙 P1~P5**·**불변 규칙 UAF-INV 6건**·**책임 경계**·**용어**를 확정한다 (§6~§12). 특히 후속 병렬 작업의 선행 확정 인터페이스인 **Discovery Request 추상**을 §12에서 고정한다.
-
-이 문서는 상위 구조의 정본(라우터)이다. 각 Layer의 구현·내부 계약을 정의하지 않는다 — 그것은 각 Layer 정본 소관이다.
+책임 범위는 §0 라우터 선언·정본 위임 항이 정하며, 물리 실현은 §2(지도·6요소·의존 방향)·§3(연결 계약)·§4(횡단 Base)·§5(`.claude` 합성 경계)·§6~§12(원칙·불변·경계·용어)가 나누어 담는다. 각 Layer의 구현·내부 계약은 정의하지 않는다 — 그것은 각 Layer 정본 소관이다.
 
 ---
 
@@ -124,12 +118,12 @@ Execution            — UAHF 핵심 루프 구동 (위임 → 구현 → 검증
 
 다음 두 요소를 UAF 구조상 표기한다. **Extension System**은 자리(slot)만 표기하고 본 문서에서 설계하지 않으며, **Agentic Runtime**은 v1.6에서 `orchestration/` Layer로 실현되어 정본 포인터로 라우팅한다.
 
-- **Agentic Runtime — `orchestration/` Layer가 실현 (v1.6 Baseline, 2026-07-13).** UAF 레벨 에이전트 실행 기반의 자리이며, 마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」이 이를 UAF 레벨 신규 최상위 Layer `orchestration/`으로 실현했다 — Discovery·Solution Design 산출물을 인수해 프로젝트 완료까지 동적 작업 그래프·게이트·역할/모델 할당·산출물 계보를 무인 조율하고 UAHF를 execution substrate로 소비한다. 정본 = `orchestration/specs/05-project-orchestration.md` · 개관 = `orchestration/ARCHITECTURE.md` · 라우터 표 §2.1. (주의: UAHF의 Runtime Layer, `uahf/specs/00-glossary.md` §3.2-A와는 **별개 네임스페이스**다 — §12.)
+- **Agentic Runtime — `orchestration/` Layer가 실현 (v1.6 Baseline).** UAF 레벨 에이전트 실행 기반의 자리이며, `orchestration/` Layer가 이를 실현한다 — Discovery·Solution Design 산출물을 인수해 프로젝트 완료까지 동적 작업 그래프·게이트·역할/모델 할당·산출물 계보를 무인 조율하고 UAHF를 execution substrate로 소비한다. 정본 = `orchestration/specs/05-project-orchestration.md` · 개관 = `orchestration/ARCHITECTURE.md` · 라우터 표 §2.1. (주의: UAHF의 Runtime Layer, `uahf/specs/00-glossary.md` §3.2-A와는 **별개 네임스페이스**다 — §12.)
 - **Extension System (기존)** — UAHF의 기존 확장 서브시스템(Hooks / Skills / Plugins, `uahf/specs/00-glossary.md` §3.2-D)을 가리키는 자리. UAF는 이를 재설계하지 않으며, § 포인터로만 참조한다. 설계 제외 (Non-Goals, §11).
 
 ### §2.4 UAF 레벨 위상 (INV-3 무촉 재확인)
 
-§2.2의 6요소 중 Entry Layer·Entry Resolution·Project Discovery·Project Contract는 **UAHF 6-Layer 스택의 외부**에 위치한다. 이들은 UAHF Layer를 늘리지 않고, UAHF의 수직 스택(Presentation → Workflow → Agent → Runtime → Core → Adapter)에 편입되지도 않는다. UAHF와 Execution은 파이프라인의 하류에서 **기존 그대로** 소비되는 요소다. 이로써 Glossary INV-3("Layer는 정확히 6개다")는 UAF 신설로도 무촉이다. 최상위 물리 Layer(§2.1)는 UAF 파이프라인 축의 지도 단위이며 UAHF 수직 스택과 직교한다(두 "Layer" 축, context-and-design §3).
+§2.2의 6요소 중 Entry Layer·Entry Resolution·Project Discovery·Project Contract는 **UAHF 6-Layer 스택의 외부**에 위치하며 UAHF Layer를 늘리지 않는다(선언 정본 = §0 「INV-3 무촉」). 최상위 물리 Layer(§2.1)는 UAF 파이프라인 축의 지도 단위이며 UAHF 수직 스택과 직교한다(두 "Layer" 축, context-and-design §3).
 
 ### §2.5 의존 방향 (Dependency Direction)
 
@@ -162,15 +156,14 @@ entry ──[Discovery Request]──▶ discovery ──[Project Contract]─�
 
 ## §4. knowledge — 횡단 Knowledge Base (Cross-cutting)
 
-`knowledge/`는 **파이프라인 단계가 아니다**. 모든 Layer가 Consult하는 **횡단 공용 Knowledge Base**다 (context-and-design §3·§4, 사용자 원칙 10).
+`knowledge/`는 **파이프라인 단계가 아니다**. 모든 Layer가 Consult하는 **횡단 공용 Knowledge Base**다 — 규범 정본은 §6 설계 원칙 10(Knowledge Consult), 표면 구조·Layer별 Consult 경로 상세 정본은 `knowledge/ARCHITECTURE.md`다(context-and-design §3·§4).
 
 ```
 knowledge ◀──Consult── 모든 Layer   (횡단 — 파이프라인 파이프 아님)
 ```
 
-- **위상.** knowledge는 §2.2의 6요소 순서에 들어가지 않는다. Entry·Discovery·Planning·UAHF·Execution 어느 Layer든 필요 시 knowledge를 회수(Consult)하되, knowledge는 파이프라인 payload를 앞뒤 Layer로 흘려보내지 않는다(파이프가 아님). 세 메커니즘을 혼동하지 않는다 — **knowledge = 공유 지식(횡단)** / **Layer 연결 계약 = 파이프(파이프라인 축, §3)** / session handoff = 시간축 연속.
-- **내용.** 장기 공유 지식(Lessons·패턴 등)을 담는 공용 Base다. 표면 구조와 각 Layer의 Consult 경로 상세 정본: `knowledge/ARCHITECTURE.md`.
-- **UAHF Memory Service와의 관계.** UAHF 내부에는 6-Layer를 관통하는 자체 Cross-cutting **Memory Service**(단일 Port, `uahf/ARCHITECTURE.md` §5.1)가 있다. 그 UAHF 내부 횡단 서비스와 UAF 레벨 횡단 `knowledge/` Base의 결합 상세는 UAHF 정본·`knowledge/ARCHITECTURE.md` 소관이며, 본 라우터는 knowledge가 UAF 레벨 횡단 Base라는 위상만 선언하고 재정의하지 않는다.
+- **세 메커니즘 구분.** **knowledge = 공유 지식(횡단)** / **Layer 연결 계약 = 파이프(파이프라인 축, §3)** / session handoff = 시간축 연속. knowledge는 §2.2의 6요소 순서에 들어가지 않고 파이프라인 payload를 앞뒤 Layer로 흘려보내지 않는다.
+- **UAHF Memory Service와의 관계.** UAHF 내부 Cross-cutting Memory Service(단일 Port, `uahf/ARCHITECTURE.md` §5.1)와 UAF 레벨 횡단 `knowledge/` Base의 결합 상세는 UAHF 정본·`knowledge/ARCHITECTURE.md` 소관이며, 본 라우터는 위상만 선언하고 재정의하지 않는다.
 
 ---
 
@@ -184,7 +177,7 @@ knowledge ◀──Consult── 모든 Layer   (횡단 — 파이프라인 파�
 - **개념 귀속 ≠ 물리 위치.** "이 요소가 G인가 U인가"(귀속)와 "지금 디스크 어디에 두는가"(위치)는 다르다. 귀속은 명찰로 확정하고(형태 A), 물리 재배치는 형태 B가 존재할 때 수행한다 — 둘의 어긋남은 결함이 아니라 형태 A/B 분리의 정상 상태다 (tier2 §2.3·§2.4).
 - **환경 네이티브 로딩 경계 (정직한 제약).** 실행 환경은 **루트 `.claude/`만** 네이티브로 로드한다. 하위 `<layer>/.claude/` override는 환경이 자동 소비하지 않는 **UAF 논리 구성물**이지 환경 기능이 아니다. 따라서 override의 참된 발화(GD를 델타로 덮어 유효 설정을 만드는 `⊕` 합성)는 **형태 B(합성·스캐폴드)** 를 요구한다 (tier2 §3). 형태 B와 그 Open Questions는 후속 트랙 소관이다(Non-Goals, §11).
 - **UAF 관리 거버넌스 vs UAHF 하네스 거버넌스 (별개 — 혼동 방지).** 이 repo 루트 `.claude/AGENT.md`·`agents/*`는 **UAF-레벨 총괄 관리 에이전트**(UAF 프레임워크를 개발·감독)의 자립 정본이다. 이와 **별개로** UAHF 하네스는 자기 에이전트 거버넌스를 가지며, 그 실물은 하네스가 소비 프로젝트에 설치하는 `.claude/`(`uahf/framework/adapters/claude/scaffold-template/dot-claude/` 유래·UAHF 명)다. 하네스 spec(`uahf/specs/02-agent`·`13-harness` Minimal Composition)이 요구하는 "상위 규약 `.claude/AGENT.md`"는 **그 하네스 배포 거버넌스**를 가리킨다. 둘은 같은 4-역할 구조를 차용하되 **별개이며 서로 참조하지 않는다** — UAF가 UAHF를 self-host로 개발하고(개발은 UAF 관리 거버넌스를 따름), UAHF는 자기 배포 거버넌스로 런타임 실행한다. 역사적으로 이 둘이 루트에서 겸재해 매 세션 혼동을 유발했던 것을 분리·명문화한다.
-- **UAF-level 거버넌스 form-B 스크립트의 물리 홈 = 저장소 루트 `adapters/claude/`.** 루트 `.claude/`의 UAF-level 에이전트(`AGENT.md`·`agents/*`)를 뒷받침하는 **결정적 실행 스크립트**(예: Verifier의 VT-1 산출물 존재·VT-4 경계 전수 스캔 체커)는, 환경이 로드하는 **설정 디렉터리 `.claude/`가 아니라** 저장소 루트 `adapters/claude/`에 둔다. `<layer>/adapters/claude/`(예 `entry/adapters/claude/entry_resolve.py`) 패턴을 **레이어 없는 UAF 거버넌스 루트**에 동형 적용한 것으로, 설정(config)과 실행 스크립트(script)를 분리한다. 이 스크립트는 `agents/verifier.md`의 VT 계약(형태 A)을 **결정적 실행(entry-resolve 동형 form-B)** 으로 승격한 것이며, 이 절 위 항목의 **override 합성 form-B(§11 후속 유보)와는 다른 의미의 form-B**다(용어 중복 주의). 하류 `uahf/framework/adapters/claude/`에는 두지 않는다(과거 오배치 결함 재발 금지). 이 스크립트는 config가 아니므로 tier2 §4.2 12항목 귀속표(루트 `.claude/` config 항목)에 들어가지 않는다.
+- **UAF-level 거버넌스 실행 스크립트의 물리 홈 = 저장소 루트 `adapters/claude/`.** 루트 `.claude/`의 UAF-level 에이전트(`AGENT.md`·`agents/*`)를 뒷받침하는 **결정적 실행 스크립트**(예: Verifier의 VT-1 산출물 존재·VT-4 경계 **전수** 스캔 체커 — 정본 = `uahf/specs/06-verifier.md` §3.2-E VT-4·INV-4. `uaf-verified: VT-4의 전수(exhaustive) 스캔 의무를 uahf/specs/06-verifier.md §3.2-E 표 VT-4 행·판정 방법 주의·INV-4에서 직접 확인 · 검색 범위 = uahf/specs/06-verifier.md 전문.`)는, 환경이 로드하는 **설정 디렉터리 `.claude/`가 아니라** 저장소 루트 `adapters/claude/`에 둔다. `<layer>/adapters/claude/` 패턴을 **레이어 없는 UAF 거버넌스 루트**에 동형 적용한 것으로, 설정(config)과 실행 스크립트(script)를 분리한다. 하류 `uahf/framework/adapters/claude/`에는 두지 않는다. 이 스크립트는 config가 아니므로 tier2 §4.2 12항목 귀속표(루트 `.claude/` config 항목)에 들어가지 않는다.
 
 ---
 
@@ -219,10 +212,10 @@ UAF는 다음 11종 원칙을 따른다. UAHF와 동형인 원칙은 UAHF 정본
 
 ### §7.1 상시 불변 확인 2건
 
-다음 2건은 후속 모든 산출물이 통과해야 하는 상시 확인 항목이다. 통과하지 못한 산출물은 승인 대상이 아니다.
+다음 2건은 후속 모든 산출물이 통과해야 하는 상시 확인 항목이다. 통과하지 못한 산출물은 승인 대상이 아니다. 두 항목은 P2·P3의 상시 확인 형태이며 규범 문면은 §7 P2·P3와 §8 UAF-INV ①②③이 소유한다.
 
-- **① Project Discovery는 단일 기능이 아니라 Project Contract를 생성하는 Compiler다.** 산출물은 Discovery를 **언제든 교체 가능하게** 유지해야 한다 — Strategy·Discovery 내부 개념(질문·전략·예산)이 Contract 코어 스키마나 UAHF 접점으로 새어나가서는 안 된다 (P2, UAF-INV ②③).
-- **② Project Contract는 UAF↔UAHF 공식 Stable Contract(Public API)다.** 장기 호환성 규칙(스키마 버전 규율·소비자의 관용적 읽기·필드 제거 금지)이 훼손되어서는 안 된다. 규칙의 상세 정본은 `planning/specs/03-project-contract.md`가 소유하며, 본 문서는 지위와 원칙만 선언한다 (P3, UAF-INV ①②).
+- **①** Project Discovery는 **언제든 교체 가능한 Compiler**로 유지된다 — Strategy·Discovery 내부 개념(질문·전략·예산)이 Contract 코어 스키마나 UAHF 접점으로 새지 않는다 (P2, UAF-INV ②③).
+- **②** Project Contract는 **UAF↔UAHF 공식 Stable Contract(Public API)**의 장기 호환성 규칙(스키마 버전 규율·소비자의 관용적 읽기·필드 제거 금지)을 훼손하지 않는다. 규칙 상세 정본은 `planning/specs/03-project-contract.md`가 소유한다 (P3, UAF-INV ①②).
 
 ---
 
@@ -269,7 +262,7 @@ UAF 상위 구조 정본(이 라우터)은 다음을 **설계하지 않는다**.
 - **Workflow Engine 설계 제외** — 작업 분해·오케스트레이션은 UAHF Workflow Layer 소관이다.
 - **Extension System 설계 제외** — UAHF의 기존 확장 서브시스템(Hooks/Skills/Plugins)은 자리(slot)로만 표기하고 재설계하지 않는다 (§2.3).
 - **`.claude` 형태 B 설계 제외** — Global Default/override의 물리 합성(스캐폴드/설치기)과 그 Open Questions는 `docs/tier2-claude-override-design.md`가 관장하는 후속 형태 B 트랙 소관이다. 이 라우터는 개념 경계와 합성 계약의 위상만 선언한다(§5).
-- **Layer 연결·오케스트레이션 정식화 (오케스트레이션 실현 · 연결 정식화 잔여).** 오케스트레이션 정식화는 마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」이 `orchestration/` Layer로 **실현**했다(정본 `orchestration/specs/05-project-orchestration.md`·§2.1·§2.3 — 프로젝트 완료까지 동적 작업 그래프·게이트·역할/모델 할당·산출물 계보의 무인 조율). 잔여인 Layer 계약 저장 관례·`uaf:<layer>` 호출 표면·체이닝의 정식 spec화는 계속 후속 트랙 소관이다(§3, context-and-design §4·§5·§8).
+- **Layer 연결·오케스트레이션 정식화 (오케스트레이션 실현 · 연결 정식화 잔여).** 오케스트레이션 정식화는 마일스톤 v1.6 「Project Orchestration / Dynamic Agent System」이 `orchestration/` Layer로 **실현**했다(v1.6 실현 — §2.3·정본 `orchestration/specs/05-project-orchestration.md`). 잔여인 Layer 계약 저장 관례·`uaf:<layer>` 호출 표면·체이닝의 정식 spec화는 계속 후속 트랙 소관이다(§3, context-and-design §4·§5·§8).
 
 다음은 **확장 포인트로만** 열어두고 본문에서 설계하지 않는다.
 
@@ -287,19 +280,13 @@ UAF 신규 용어의 **소유 지점**은 이 절(및 각 Layer의 `<layer>/spec
 
 ### §12.1 용어 정의
 
-- **Entry** — UAF 공식 진입점. 사용자 입력을 수용하는 추상 연산이다. 물리 실현(진입 명령의 형태)은 Adapter 소관이다. 상세 정본: `entry/specs/01-entry.md`.
-- **Entry Resolution** — Entry가 명시 진입과 Workspace Evidence를 결정 테이블(Policy as Data)로 평가해 **Discovery Request**를 산출하는 연산. Discovery를 수행하지 않는다 (P1, UAF-INV ④). 상세 정본: `entry/specs/01-entry.md`.
+파이프라인 6요소 용어(**Entry** · **Entry Resolution** · **Project Discovery** · **Project Contract**)의 의미론은 §2.2가 소유하며, 상세 계약 정본은 각각 `entry/specs/01-entry.md` · `discovery/specs/02-discovery.md` · `planning/specs/03-project-contract.md`다. 아래는 그 밖의 UAF 레벨 용어다.
+
 - **Discovery Request** — Entry Resolution의 출력이자 Project Discovery의 입력인 데이터 계약. 3요소 구조(§12.2에서 확정).
-- **Project Discovery** — Discovery Request(+증거)를 입력으로 **Project Contract를 산출하는 Compiler**. 상세 정본: `discovery/specs/02-discovery.md`.
-- **Discovery Dimension** — Discovery가 확신을 측정하는 축. 상세(차원 목록·판정)의 정본: `discovery/specs/02-discovery.md`.
-- **Confidence** — Discovery Dimension별 확신도. 상세(척도·근거 등급·임계)의 정본: `discovery/specs/02-discovery.md`.
-- **Question Budget** — 질문의 총량·차원별 예산. Policy as Data. 상세 정본: `discovery/specs/02-discovery.md`.
-- **Execution Ready** — Discovery의 종단 판정. 계약 완결성 ∧ 확신 ∧ **사용자 승인**의 결합이다 (UAF-INV ⑤). 상세(판정식·종단 종류)의 정본: `discovery/specs/02-discovery.md`.
-- **Project Contract** — UAF↔UAHF 공식 **Stable Contract(Public API)**. Project Discovery의 산출이자 UAHF의 선택 입력이다 (P3, UAF-INV ①②). 상세(스키마·버저닝·UAHF Interface)의 정본: `planning/specs/03-project-contract.md`.
-- **Strategy / Strategy Provider** — 교체 가능한 증거 수집 Front-end와 그 제공자. Capability 선언 기반으로 선택된다 (Capability First). 특정 방법론은 이 Provider만이 안다 (UAF-INV ⑥). 상세 정본: `discovery/specs/02-discovery.md`.
+- **Discovery 내부 용어** — **Discovery Dimension**(확신 측정 축)·**Confidence**(차원별 확신도)·**Question Budget**(질문 총량·차원별 예산, Policy as Data)·**Execution Ready**(종단 판정 = 계약 완결성 ∧ 확신 ∧ 사용자 승인, UAF-INV ⑤)·**Strategy / Strategy Provider**(교체 가능한 증거 수집 Front-end와 제공자, Capability First·UAF-INV ⑥). 정의·척도·판정식의 정본은 `discovery/specs/02-discovery.md`다.
 - **Knowledge Base (`knowledge/`)** — 모든 Layer가 Consult하는 UAF 레벨 횡단 공용 지식 Base. 파이프라인 단계가 아니다 (§4). 상세 정본: `knowledge/ARCHITECTURE.md`.
 - **Solution Design** — Ready 종단 Contract 인스턴스를 입력으로, 프로젝트 복잡도에 따라 동적으로 구성된 전문가 역할 협업으로 솔루션 설계 결정을 성숙시켜, 사용자 승인 하에 superseding Contract 인스턴스를 재발행하는 UAF 레벨 활동. 소유 = `planning/`. UAHF 구현 Planning(§10 비담당②)과 별개 네임스페이스다. 상세 정본: `planning/specs/04-solution-design.md`.
-- **Expert Role** — Solution Design에서 Capability 선언으로 정의되는 논리 역할. 고정 Agent Class가 아니며 개방 네임스페이스다. 프로젝트 특성·복잡도에 따라 최소 필요 역할만 동적으로 구성된다. 실행 주체 매핑은 Adapter 소관(코어는 역할 추상까지 — M5). 상세 정본: `planning/specs/04-solution-design.md`.
+- **Expert Role** — Solution Design에서 Capability 선언으로 정의되는 논리 역할. 고정 Agent Class가 아닌 개방 네임스페이스이며, 프로젝트 특성·복잡도에 따라 최소 필요 역할만 동적으로 구성된다. 실행 주체 매핑은 Adapter 소관이다. 상세 정본: `planning/specs/04-solution-design.md`.
 - **Projection** — Project Contract를 Source of Truth로 하여 파생 생성되는 프로젝트별 산출 문서(예: PRD·ARCHITECTURE·ADR·UI Guide). 대상 프로젝트 워크스페이스에 귀속되며, 유형 목록은 개방 레지스트리(비정본 부록)다. 모든 프로젝트에 모든 유형을 강제하지 않는다. 상세 정본: `planning/specs/04-solution-design.md`.
 - **Contract Maturation(성숙)** — Ready 인스턴스 vN을 기준선으로 새 설계 결정을 반영한 v(N+1)을 supersedes 계보로 재발행하는 것. 단일 문서의 상태 변경이 아니라 **완결 인스턴스의 재발행**이다(PC-INV 7·9 무촉). 상세 정본: `planning/specs/04-solution-design.md`.
 

@@ -11,16 +11,18 @@
 
   구현하는 슬라이스:
     VT-1 산출물 존재 검증 — 입력으로 받은 "기대 산출물 경로 집합" 각각의 존재/부재를 결정적으로 판정
-                            (verifier.md §검증 유형 VT-1: "모든 지정 산출물이 존재·접근 가능").
+                            (uahf/specs/06-verifier.md §3.2-E VT-1: "모든 지정 산출물이 존재").
     VT-4 경계 검증(전수 스캔) — 입력으로 받은 "금지/경계 패턴 집합"과 "스캔 범위(경로/글롭)"에 대해,
                             각 패턴의 **모든** 매치를 file:line(:col)과 함께 **전수(exhaustive)** 수집
-                            (verifier.md §검증 유형 VT-4: "전수 스캔 후 금지 요소 0건" — 판정의 근거가
+                            (uahf/specs/06-verifier.md §3.2-E VT-4: "금지 요소를 전수 스캔(exhaustive
+                            scan)한다" / 충족 조건 "금지 요소 0건" — 판정의 근거가
                             되는 전수 매치 목록을 결정적으로 산출. 전수성은 어떤 이유로도 완화하지 않는다).
 
 무엇을 하지 않는가(결정적 슬라이스 경계 — verifier.md·AGENT.md §Verification & Gate):
   - **verdict(통과/실패/조건부)를 내리지 않는다.** VT-1 은 존재/부재 사실만, VT-4 는 매치 목록·카운트만
     방출한다. "모든 산출물이 존재하는가", "금지 요소 0건인가"의 최종 판정(Met/Violated/Undetermined,
-    final_verdict)은 Verifier LLM 몫이다(verifier.md §출력·최종 판정 도출 규칙). 이 스크립트는 그 판정의
+    final_verdict)은 Verifier LLM 몫이다(verifier.md §출력 "판정 값과 최종 판정 도출 (결정적)" ·
+    정본 06 §3.2-C). 이 스크립트는 그 판정의
     결정적·재현 가능한 **근거(evidence)** 만 제공해, LLM 이 애매 잔여만 판정하도록 한다.
   - **원문 라인을 덤프하지 않는다.** 매치는 file:line:col + 매칭 substring(truncate)만 담는다. 산출물
     본문을 그대로 실어 나르지 않는다(토큰 위생·AGENT.md §Core Principles).

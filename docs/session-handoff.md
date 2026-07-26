@@ -1,6 +1,6 @@
 # 세션 핸드오프 (UAF 레벨 정본 · 단일 live 문서)
 
-작성: Advisor · 2026-07-17 · 최근 갱신: 2026-07-26
+작성: Advisor · 2026-07-17 · 최근 갱신: 2026-07-27
 용도: 새 세션은 **본 파일 하나로 상태를 인수**한다. 원문 전체 정독 강제 없음 — demand-driven(§단위·필요 시점) 규칙을 따른다. (물리 발화 = `/uaf-continue`)
 지위: `docs/artifact-lifecycle-policy.md` §6이 정한 **UAF 레벨 단일 live 핸드오프**다. 단수·제자리 갱신이며 버전별 파일을 만들지 않는다. **과거 상태는 git 이력이 정본이다** — `git log -- docs/session-handoff.md`(전신 `docs/next-session-prompt.md` 포함). 종전 갱신 블록 (1)~(20)과 종료 트랙(Performance Tuning·산출물 수명) 서술은 앵커 `90ca19c` 에 보존되며 본 파일은 **현행 스냅샷 1부**만 담는다.
 
@@ -8,7 +8,9 @@
 
 ---
 
-## §A. 현행 상태 (갱신 2026-07-26(22))
+## §A. 현행 상태 (갱신 2026-07-27(23))
+
+**갱신(23) 이력 거버넌스 전환 트랙 완결(2026-07-27·사용자 결정: "다른 프로젝트 생성에 필요한 내용 외에는 지우고, UAF 자체 수정 시에만 앵커 참조").** ① in-file Revision History 폐지·기록 locus = git — spec-versioning-policy §3 대개정·L-10 재정의(원장 mi-0027 무촉)·루트 ARCH §6 **원칙 12 「자기 문서 경량」** 신설. ② md 이력 절 71파일 스텁 전환(도구 = `.claude/tools/history_compact.py`·결정적·앵커 = `64b6570`·절 질량 −237,927B·md 총량 2,324,958B). ③ 재퇴적 방지 가드 = `history-reaccum-guard.sh`(SessionStart·`--check` 감지·정상 침묵) + 총량 워터마크 2.5MB 하향. ④ Frozen/spec 개정 6종 버전 상승(00-glossary 0.3·TEMPLATE 0.2·08-hooks 0.2·03 v1.3·04 v1.4·05 v1.7 — TEMPLATE §1에 이력 절 금지 명문). ⑤ 구 규범 문면 스윕 r1~r5(거버넌스 라인 3변형군·done 조건·verifier-binding 산출물 규격·재량 22치환). 커밋 사슬 = `64b6570`(Wave 0·제거 전 전문 앵커)→`44b1877`(Wave 2)→`2c3992b`(Wave 3)+마감. CP2 독립 검증 7/7 Pass. `uaf-verified:` Advisor 독립 재실측 = CRLF 역행 0(수정 55파일 대조)·구 규범 grep 5패턴 히트 = 보고서 인용뿐·`--check` 재퇴적 감지 0·재실행 멱등(removed 0) — 스윕 범위 = 워킹트리 md 전량 + 변경 파일 diff. 잔여 = 가드 라이브 발화 확인(다음 세션 — 훅 침묵 기지 제약)·후속 후보 = 본문 비필수 서사 강판(슬림화 스코프 밖 ~30파일·docs 5종 우선·정본 = 메모리 `uaf-history-compaction-track`).
 
 **auto-percenty UAF 정식 편입(Contract v1·SD 7종) + 첫 엔진 run `impl-auto-percenty-p1` 완주 = 갱신(20) 실 run 실증 소화. 신규 결함 후보 2 = 갱신(22) 경량 정비 묶음으로 해소(실 run 실증 대기·아래). 절차 비례화 트랙 신설. ★다음 = 절차 비례화(사용자 게이트).**
 

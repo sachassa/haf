@@ -598,6 +598,7 @@
 > - **CP2 합계(Advisor 직접)**: 4트리 재실행 4회(M 1차·M 재작업·O 1차·O 재작업) — 최종 **186+188+23+24 EXIT=0×4**. 신규 테스트 = M 22 + O 10.
 > - **미검증 축 이월**: 실 LLM run 3건(Planner 의 밀스톤 상호 대조·픽스처 규율 실준수 + Verifier AC 적정성 축의 실 Fail — **다음 실 orchestration run 이 이 트랙의 관측 좌표다**) · 대형 워크스페이스 스윕 성능 · 다단위 note↔스윕 연결 · argv 길이 한계.
 > - **★ 다음 착수 = 순위 미배정(사용자 결정 대기)**: 사용자 확정 순서 3건이 위와 같이 소진됐다. 열린 후보(갱신(16) ⑤ 유지) = 커버리지 강제(θ≠커버리지) · SD manifest 배선 3건 · SD 스킵 브리지 · Q·R 기계 강제 · §DC-8(a)·02 개정 · 상류 바인딩 2차 / (제품 트랙) yt-stt M4-b 판단 · auto-percenty plan 확정. 하네스 개선분의 실 run 실증(위 관측 좌표)도 착수 후보다.
+> - **실 run 실증의 구체 후보(사용자 발화 2026-07-26·착수 확정은 새 세션)**: auto-percenty **keyword search 이어가기**를 엔진 run 으로 수행하며 겸증. **성립 조건 2** = ① 엔진 경유(`/uaf-implement` — Advisor 직접 위임으로 돌리면 실증 불성립·원장 없는 디스패치 금지 규율 동일) ② 새 세션 첫 행동 = `auto-percenty/START-HERE.md` 필독(메모리 ⛔ 경고). **관측 체크리스트** — (자동 발화) heartbeat 실기 갱신 · `[INVOKES] total=` 정상 · 게이트 렌더의 gate_id 상시 지목 · Planner 의 milestone 상호 대조 AC·실출력 픽스처 규율·timeout 선택 키 실준수(impl-plan 문면) · Verifier AC 적정성 축(CP2 verdict 문면) / (조건 발화 — 억지로 유발하지 않고 미발화면 「미관측」으로 기록) `--response` 조건 주입(조건부 승인할 일이 실제로 있을 때) · `[REWORK-NOTE]`(rework 실발생 시) · per-unit timeout 재기입(plan 에 timeout 지정 단위가 있을 때). 제품 측 참고 = 메모리 `coupang-403-profile-poisoning`(쿠키당 17검색 예산)·`tool-insane-search`(`PYTHONUTF8=1`).
 
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 

@@ -1,0 +1,78 @@
+{
+  "_canonical": "정본 = docs/proportionality-track-ledger.md §2(레인 판별의 물리 지점) — §2.1 판별식·접점 클래스 5종 패턴 표 · §2.2 판정 시점 2개 · §2.3 fail-closed 이진 표기. 본 파일은 그 판별 정책의 물리 직렬화이며 재정의·확장 0 — 판정 기준의 진위는 §2다. JSON은 주석을 지원하지 않으므로 본 헤더 키(_canonical·_binding·_patternSyntax)로 정본 경계를 명시한다.",
+  "_binding": "소비 지점 2곳. ① 착수 전 판정 = lane_resolve.py(형태 B 로더·LLM 0·결정적·계산·방출까지만 — 적용/시드/게이트 해소 0). ② Write 시점 강제 = pretooluse_lane_guard.py(PreToolUse deny). 두 소비자는 이 파일을 소비할 뿐 접점 패턴·레인 어휘·마커 경로를 코드에 하드코딩하지 않는다(Policy as Data — ARCHITECTURE.md §6 · entry-registry.json 선례 동형).",
+
+  "laneVocabulary": ["standard", "lightweight"],
+  "failClosedLane": "standard",
+  "overrideReasonField": "laneOverrideReason",
+
+  "_laneNote": "레인은 두 값만 갖는다(§2.3). 세 번째 값을 두지 않으며, 판정에 필요한 선언이 없거나 패턴 매칭이 불가하면 failClosedLane(standard)으로 귀결한다(안전측 — allocation 정책 defaultSlot 선례 동형). 소비자는 적재 시 laneVocabulary 가 정확히 이 2값인지 대조하고, 어긋나면 무효 레지스트리로 거부한다(코드가 어휘를 재정의하지 못하게 하는 동기화 확인).",
+
+  "marker": {
+    "_note": "레인 마커 = 주 세션이 로더 출력으로 물리화하는 적용 산출물(§2.2 (i)의 적용 측). PreToolUse 훅은 대상 파일 절대경로에서 상위로 탐색해 최초로 만나는 <dir>/<relativePath> 를 마커로 채택하고, 그 디렉터리를 레인 워크스페이스 루트 W(= 접점 패턴 상대 기준)로 삼는다. 마커 부재·파싱 실패·lane 값 미인식은 훅 무동작 통과(fail-open)다 — 훅은 lane == 'lightweight' 확정 시에만 접점 검사를 수행한다.",
+    "relativePath": ".claude/lane.json",
+    "fields": {
+      "lane": "standard|lightweight (laneVocabulary)",
+      "laneOverrideReason": "string|null — override 로 확정한 레인의 사유(원장 기록 대상)",
+      "declaredTargets": "array<string> — 판정 입력이던 선언 대상 집합(에코·감사용)",
+      "decidedAt": "ISO8601 문자열 — 판정 시점"
+    },
+    "enforcedLane": "lightweight"
+  },
+
+  "_patternSyntax": "패턴은 레인 워크스페이스 루트 기준 상대 POSIX 경로에 대한 glob이다. `**/` = 0개 이상 경로 세그먼트, `**` = 임의 문자(구분자 포함), `*` = 세그먼트 내 임의 문자(구분자 불포함), `?` = 세그먼트 내 한 문자. 그 밖 문자는 리터럴이며 전체 일치(full match)로 판정한다. 원장 §2.1 표의 중괄호 축약(`{a,b}`)은 glob 문법이 아니므로 각 대안을 개별 패턴 행으로 전개해 등재했다(문면 손실 0 — 아래 gate 클래스 4행).",
+
+  "touchpointClasses": [
+    {
+      "class": "Contract",
+      "basis": "contract-binding §4.2 경로 (원장 §2.1 표 1행)",
+      "patterns": [
+        "**/project-contract/project-contract.v*.md"
+      ]
+    },
+    {
+      "class": "게이트",
+      "basis": "원장 F-5·F-7·F-14 (원장 §2.1 표 2행 — 중괄호 축약 전개) + 강제 장치·배선 자기보호(레인 판별·강제·훅 배선 자신을 경량 레인에서 무보호로 두지 않는다 — Advisor 판정 2026-07-26, W2-a 미검증 잔여 ② 해소)",
+      "patterns": [
+        "orchestration/framework/orchestrator/gates.py",
+        "**/gate_policy.json",
+        "orchestration/adapters/claude/resolve_gate.py",
+        "orchestration/adapters/claude/contract_to_graph.py",
+        "orchestration/adapters/claude/design_completeness.py",
+        "orchestration/adapters/claude/pretooluse_design_guard.py",
+        "orchestration/adapters/claude/lane_resolve.py",
+        "orchestration/adapters/claude/lane-registry.json",
+        "orchestration/adapters/claude/pretooluse_lane_guard.py",
+        ".claude/settings.json",
+        ".claude/hooks/*.py"
+      ]
+    },
+    {
+      "class": "정본 문서",
+      "basis": "정본 소유 경계 (원장 §2.1 표 3행)",
+      "patterns": [
+        "*/specs/*.md",
+        "ARCHITECTURE.md",
+        "*/ARCHITECTURE.md",
+        ".claude/AGENT.md"
+      ]
+    },
+    {
+      "class": "스키마",
+      "basis": "원장 F-23 (원장 §2.1 표 4행)",
+      "patterns": [
+        "**/*.schema.json",
+        "**/*.schema.md",
+        "**/*_schema.json"
+      ]
+    },
+    {
+      "class": "정책 데이터",
+      "basis": "Policy as Data 단일 소스 보호 (원장 §2.1 표 5행)",
+      "patterns": [
+        "**/policy/*.yaml",
+        "**/policy/*.json"
+      ]
+    }
+  ]
+}

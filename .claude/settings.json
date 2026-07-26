@@ -45,6 +45,13 @@
             "command": "PYTHONIOENCODING=utf-8 python .claude/hooks/binary_state_guard.py",
             "timeout": 10,
             "statusMessage": "이진 원칙 가드(상태·근거)"
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "PYTHONIOENCODING=utf-8 python orchestration/adapters/claude/pretooluse_lane_guard.py",
+            "timeout": 15,
+            "statusMessage": "레인 가드(경량 레인 접점 차단)"
           }
         ]
       }

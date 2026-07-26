@@ -25,7 +25,7 @@
 | **D2** | 사용자 확인·`UserOverride` 채널 (§3.3 Validating·§3.6, §4.1 행2) | "사용자 승인/수정/강제 응답을 받는 개입 채널." | 주 세션 사용자 제시·응답 수령 채널(loop-binding §5.2 동형) — G1 Eliciting 질문/답변·G2 Validating 승인/수정·UserOverride 강제 구분. 각 개입은 Event로 기록(§3.5). 상세 §5. | 채널 확정(정본, 형태 A). 무인 자동 트리거 = 형태 B. |
 | **D3** | Contextualizing 증거 스캔·프레이밍 (§3.3, §4.1 행3) | "Greenfield 프레이밍·Brownfield 증거 스캔의 물리 구현·증거 소스 접근." | Greenfield 프레이밍 / Brownfield 실 저장소 스캔(T2, 파일 시스템 실측) / Incremental 기존 Contract 결속의 형태 A 물리 절차(주 세션 수행·Evidence Store 기록). 상세 §6. | 절차 확정(정본, 형태 A). 스캔 로더 = 형태 B. |
 | **D4** | Strategy 실행 호스팅 (§3.1 Front-end, §4.1 행4) | "Discovery 실행을 어느 주체가 호스팅하는가 — **역할 추상까지만** 정의하고 물리 호스팅은 설계하지 않는다(ARCHITECTURE.md §11)." | 주 세션(Advisor)이 Orchestrator 역할(§3.9)을 규약 절차로 수행·레퍼런스 Provider(§3.10-C)를 규약 역할로 실현. **물리 호스팅(실행 코드·자동 실행)은 설계 0**(ARCHITECTURE §11 정합). 상세 §7. | 역할 추상 확정(정본, 형태 A). 물리 호스팅 = **설계 안 함**(확장 포인트). 실행 코드 = 형태 B. |
-| **D5** | Question Budget 예산·Discovery Policy 정책 값 데이터 소스·직렬화 (§3.14·§3.15, §4.2 Module부 문단) | "Question Engine의 예산·Discovery Policy의 정책 값(임계값·예산·경계 수치)의 **데이터 소스·직렬화**는 Adapter 소관이다(§3.14·§3.15)." | `uahf/framework/adapters/claude/discovery-data/policy/` 데이터 파일 형식 + **E2E 구동용 최소 실값 1세트 정본 값 표**(차원 임계·Budget 총량/차원별·soft/hard·종료 규칙·충돌 게이트). Policy as Data — 값 조정 = 데이터 정정(엔진·계약 무변경). 상세 §8. | 형식·값 정본 문면 확정(정본, 형태 A). 물리 정책 데이터 파일 = 실재(`policy/default-policy.yaml`·§13 실측). |
+| **D5** | Question Budget 예산·Discovery Policy 정책 값 데이터 소스·직렬화 (§3.14·§3.15, §4.2 Module부 문단) | "Question Engine의 예산·Discovery Policy의 정책 값(임계값·예산·경계 수치)의 **데이터 소스·직렬화**는 Adapter 소관이다(§3.14·§3.15)." | `uahf/framework/adapters/claude/discovery-data/policy/` 데이터 파일 형식 + **E2E 구동용 최소 실값 1세트 정본 값 표**(차원 임계·Budget 총량/차원별·soft/hard·종료 규칙·충돌 게이트). Policy as Data — 값 조정 = 데이터 정정(엔진·계약 무변경). 상세 §8. | 형식·값 정본 문면 확정(정본, 형태 A). 물리 정책 데이터 파일 = 실재(프로파일 2종 — `policy/default-policy.yaml`·`policy/lightweight-policy.yaml`·§8.3·§13 실측). |
 | **D6** | Evidence Store 물리 저장 (§3.9, §4.2 Module부 문단) | "Evidence Store의 물리 저장은 위 Event 로그 직렬화 바인딩과 **동일하다**(§3.9)." | Evidence Store의 물리 저장(증거 레코드 + Event 로그) = **D1과 동일 백엔드** `uahf/framework/adapters/claude/discovery-data/events/<mode>-<run-id>/`. 증거는 `EvidenceRecorded` Event 페이로드로 append. 상세 §3·§4. | D1과 동일(정본, 형태 A). 02 §4.2 문면 "동일하다"대로 별도 백엔드를 창설하지 않음. |
 
 - 위 6행은 02 "### 4.1" 표 4행(D1~D4)과 "### 4.2" Module부 문단의 물리 실현 대상 2지점(D5·D6)이다. Module부 문단의 나머지 지점(Strategy Provider 실행 호스팅 — 역할 추상까지만, §3.10)은 §4.1 행4와 동일 지점이므로 D4로 통합해 다룬다(중복 창설 방지). 각 행의 물리 실현은 정본 표현을 이 환경의 구체 형식·경로·채널·값으로 좁힌 것이며 새 바인딩 계약을 창설하지 않는다.
@@ -217,6 +217,38 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 
 - **Policy as Data 불변.** 위 값(임계·예산·경계·종료 규칙·게이트)은 전부 데이터이며 값을 바꾸는 것만으로 Discovery 거동이 조정된다 — Confidence Model·Question Engine·Orchestrator 등 엔진이나 정본 계약(State Machine·Event·완결 기준)은 변경되지 않는다(02 §3.15). 이 값 세트는 **E2E 구동을 위한 최소 실값**이며 다른 임계·예산이 필요하면 `policy/` 데이터 정정으로 조정한다.
 
+### §8.3 프로파일 2종 값표 — 표준 / 경량 (절차 비례화 트랙 Wave 4 · 사용자 확정 Q-5)
+
+Discovery Policy 프로파일은 **2종**이다 — 표준 `policy/default-policy.yaml`(§8.2 값 세트) · 경량 `policy/lightweight-policy.yaml`. 경량은 성숙 brownfield 등 **경량 레인**의 인터뷰 예산을 비례화하기 위한 프로파일이며, 어느 프로파일을 참조하는가는 Entry 결정 테이블 데이터(`entry/adapters/claude/entry-registry.json` `decisionRows[*].policy.ref`)가 정한다. 두 프로파일 공통 절의 **값 정본은 본 §8.2·§8.3**이며, 표준 프로파일 값 개정 시 경량 파일의 공통 절도 동기 갱신 대상이다(드리프트 통제 지점 · `planning/adapters/claude/solution-design-binding.md` §7.2 경량 프로파일 관례 동형).
+
+**(a) ref 해소 규약(물리 관례 — Adapter 소관·§8.1 데이터 소스의 특수화 1항).** Discovery Request 의 `policy` 참조 값 `<ref>` 는 `uahf/framework/adapters/claude/discovery-data/policy/<ref>-policy.yaml`(그 파일의 `policyId` = `<ref>-policy`)로 해소한다. 기존 값 `default` → `default-policy.yaml`(`policyId: default-policy`)에 그대로 성립하므로 신규 규칙 창설이 아니라 **기존 데이터에서 귀납한 관례의 명문화**다. 참조는 **단일 프로파일 1건**을 가리키며 두 파일을 병합하는 오버레이·include 는 **0**이다(그래서 프로파일 파일은 완결이어야 한다).
+
+**(b) 값 대조표.**
+
+| 항목 | 표준 프로파일 (`default-policy.yaml`) | 경량 프로파일 (`lightweight-policy.yaml`) |
+|---|---|---|
+| `budget.total` | 40 | **20** |
+| `budget.perDimension` (Intent / Requirement / Constraint / Risk / Architecture) | 10 / 10 / 6 / 6 / 8 (합 40) | **5 / 5 / 3 / 3 / 4 (합 20)** — 표준의 산술 절반·비율 보존·합 = `total` |
+| `budget.soft` | 30 (총량의 75%) | **15** (총량의 75% — 비율 동일) |
+| `budget.hard` | 40 (총량) | **20** (총량 — 규칙 동일: 소진 시 강제 Synthesize T11) |
+| `budget.reentryTopUpMax` | 10 (총량의 25%) | **5** (총량의 25% — 비율 동일) |
+| `thresholds` 차원 수 | 5 (02 §3.11 5차원) | **5 — 동일**(차원 삭제 0) |
+| `thresholds` 값 (Intent / Requirement / Constraint / Risk / Architecture) | 0.85 / 0.80 / 0.75 / 0.75 / 0.80 (§DC-5 대안 A +0.05 상향·사용자 결정 2026-07-19) | **동일 값**(θ 하향 0 — 품질 하한 무변경) |
+| `termination` (ready · budgetExhausted) | §8.2 (다) | **동일 문면**(완결 기준 완화 0 · 필수 코어 필드 면제 문면 **0**) |
+| `conflictGate` | §8.2 (라) | **동일 문면**(게이트 완화 0) |
+
+- **경량 = 질문 예산 축소만이다.** θ(확신 하한)·종료 규칙·충돌 게이트·완결 기준은 무변경이다 — 02 §3.7 축1 Completeness 불가침(DISC-INV-5)에 대한 예외·면제는 경량 프로파일에 **0**이며, 경량 레인에서도 동일 판정식이 집행된다. 새 종료 경로·새 상태·새 Event 를 두지 않는다(02 §3.3·§3.5 무촉).
+- **설계된 트레이드오프.** 예산이 절반이고 θ 가 동일하므로 θ 미충족 상태로 hard 경계에 닿는 빈도가 표준보다 높다 → 그 경로는 §8.2 (다) 규칙대로 `ReadyWithAssumptions`(Assumption Ledger 필수, T20) 또는 `Escalated`(T15)로 귀결한다. 이는 우회가 아니라 정본 종료 규칙의 정상 경로이며, 가정 항목은 원장에 남아 게이트에 표면화된다.
+- **참조 배선(현행 데이터 상태).** `decisionRows` 행 6(`/continue` + Contract 무 + Repo 유 → `brownfield`)의 `policy.ref` = `lightweight` 이고, 그 밖의 비충돌 행(1·7·8)은 `default` 다. 충돌 행(2·3·4·5)의 `user-confirmation-gate` 는 게이트 정책 참조이므로 본 절의 프로파일 축과 직교한다(§8 프로파일은 게이트 판정에 관여하지 않는다). 값 변경은 그 데이터 1행 교체로 이뤄지며 `entry_resolve.py`·02 spec 은 무촉이다.
+
+**(c) 미해소 — 이 프로파일이 해소하지 않는 것(해소 주장 금지).**
+
+- **문항 수 직접 감소 아님.** 실제 문항 수를 좌우하는 **필수 커버리지 축 목록**은 `.claude/skills/discovery-interview/SKILL.md` Part 1 커버리지 맵(표 10행 = Discovery 소유 9축 + 하류 위임 경계 1행)이 **body 하드코딩**으로 소유하며 Policy 데이터가 아니다. 따라서 경량 프로파일은 **예산 상한만** 낮추고 최소 심문 대상 축 수를 낮추지 못한다. 커버리지 축의 Policy 데이터화·체커화는 별 트랙 소관이다(좌표 = 메모리 `uaf-coverage-enforcement-gap` · `docs/proportionality-track-ledger.md` §4 Wave 4 done 6 · 스킬 body 27행 자기신고 충돌 플래그).
+- **침묵 생략 금지 무약화.** 스킬 body 의 침묵 생략 금지 규율(Part 1 head·⑦ (ii)·⑨·⑪ — "축을 조용히 지나치는 것은 제외가 아니라 미심문"·제외는 사유 기록 + 게이트 일괄 표면화)은 이 프로파일로 약화되지 않는다. **예산 소진은 축 제외의 사유가 되지 못한다** — 예산은 질문 수의 상한이고 커버리지는 별개 축이다(θ ≠ 커버리지 역설·SKILL.md ⑦ 말미). 본 개정은 스킬 body 를 수정하지 않는다(diff hunk 0).
+- **§8.2 (가) 표와 데이터 파일의 θ 드리프트(미정정·보고 대상).** §8.2 (가) 표는 상향 전 값(0.80/0.75/0.70/0.70/0.75)을 보이나 물리 데이터 `default-policy.yaml` `thresholds` 는 §DC-5 대안 A 적용 후 값(0.85/0.80/0.75/0.75/0.80)이다. 본 §8.3 표의 표준 열은 **물리 데이터 실측값**을 적었다. §8.2 문면 정정은 표준 프로파일 정본 값 문면 개정이므로 본 개정 범위 밖이며 Advisor 판단 대상으로 남긴다(미해소).
+
+(`uaf-verified:` 위 표·항목의 값·배선 주장은 `discovery-data/policy/default-policy.yaml`·`lightweight-policy.yaml` 두 파일의 키 트리·값 직접 대조, `entry/adapters/claude/entry-registry.json` `decisionRows` 8행 `policy` 전수 판독, `entry_resolve.py` 판독(`load_registry`·`verify_determinism`·`resolve` — `policy` 는 행 값을 그대로 방출하며 `ref` 값 도메인 검증·프로파일 파일 적재는 코드에 0), `.claude/skills/discovery-interview/SKILL.md` 커버리지 맵·침묵 생략 조항 판독, 그리고 `entry_resolve.py --entry continue` brownfield 실행 1건(exit 0 · `policy.ref == lightweight` · `matchedRow` 6)·`pytest entry/adapters/claude/tests` 전건 Pass·`git diff --stat` 상 `entry_resolve.py`·`discovery/specs/02-discovery.md`·`SKILL.md` hunk 0 실측으로 얻었다. **검색 범위 = 위 6파일 + 02 spec `§3.7`/`§3.11`/`§3.13`/`§3.14`/`§3.15` 절 판독 + 저장소 전체 `default-policy`·`policy.ref` grep**이며, 그 밖(실제 인터뷰 세션에서의 문항 수 실측·소비 프로젝트 실 run 왕복·`entry-binding.md` 표 행 B 문면 정합)은 이 개정의 실측 범위 밖이다.)
+
 ---
 
 ## §10. DP-X6 해소 — Provenance 컨테이너 내부 형식 (done 9)
@@ -267,7 +299,7 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 | 경로 (`uahf/framework/adapters/claude/discovery-data/`) | 실측 상태 |
 |---|---|
 | `events/` | 실재 — run 디렉터리 `brownfield-r004/`·`brownfield-r005/`(각 `discovery-request.yaml`·`events.jsonl`) |
-| `policy/` | 실재 — `default-policy.yaml`(§8.2 값 표의 물리 직렬화) |
+| `policy/` | 실재 — 프로파일 **2종**: `default-policy.yaml`(§8.2 값 표의 물리 직렬화) · `lightweight-policy.yaml`(§8.3 경량 열의 물리 직렬화) |
 | `contracts/uahf/` | 실재 — `project-contract.v1.md`·`v2.md`·`v3.md`(정본 = contract-binding §4.2) |
 | `e2e-greenfield-project/` | 미실재 — §4.1 트리 선언만 있고 물리 생성은 E2E Task 소관 |
 
@@ -292,4 +324,5 @@ contract-binding §6은 Contract 인스턴스 front-matter 내 분리 네임스�
 
 ## §15. 개정 이력
 
+- **2026-07-27 (정합) 절차 비례화 트랙 Wave 4** — Discovery 경량 프로파일 신설 + Entry 참조 배선 1행. `policy/lightweight-policy.yaml` 신설(`budget` total 20/soft 15/hard 20/perDimension 5·5·3·3·4(합 20)/reentryTopUpMax 5 = 사용자 확정 Q-5 + 표준의 산술 절반·비율 보존 · `thresholds` 5축 전부 존재·표준과 **동일 값**(θ 하향 0·차원 삭제 0) · `termination`·`conflictGate` 표준과 동일 문면 — 필수 코어 필드 면제 문면 0). **§8.3 신설**(무침습 append — §8.1·§8.2 문면 무변경·§10 이하 절 번호 보존): ref 해소 규약 `<ref>` → `policy/<ref>-policy.yaml`(기존 `default` 에서 귀납·창설 0) · 프로파일 2종 값 대조표 · 설계된 트레이드오프(예산 절반 × θ 동일 → hard 경계 시 T20/T15 정상 경로) · 미해소 3항(문항 수 직접 감소 아님·침묵 생략 금지 무약화·§8.2 (가) θ 드리프트 미정정). 동반 정정 = §2 D5 행·§13 표의 `policy/` 실재 상태를 프로파일 2종으로 갱신(L-07 실측 서술). 데이터 배선 = `entry/adapters/claude/entry-registry.json` 행 6(brownfield) `policy.ref` `default` → `lightweight`(값 1개 교체·행 6 외 무촉) + 그 값에 결합된 테스트 단정 1줄 동기(`test_entry_resolve.py` `test_case3`). 실측: `entry_resolve.py --entry continue` brownfield 실행 exit 0(`matchedRow` 6 · `policy.ref` `lightweight`) · `pytest entry/.../tests` 22 passed exit 0 · `entry_resolve.py`·`discovery/specs/02-discovery.md`·`discovery-interview/SKILL.md` diff hunk **0**. 02 spec 수정 0(계약 무변경·가법). 사용자 확정 Q-5(2026-07-26). | Worker (Advisor 위임)
 - **2026-07-26 (정합) md 슬림화 Wave 4** — 비계약 격리 개정: 메타 템플릿·해소 OQ·경위 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c. Advisor 위임. 동반 정정 = §2·§4·§8·§13의 `discovery-data/` 미존재 서술을 실측 상태로 갱신(§13 표).

@@ -142,13 +142,16 @@ def test_case2_existing_contract_present_incremental(reg, tmp_path):
 
 # --------------------------------------------------------------------------
 # ③ 기존 폴더 + contract 무 + repo 유 + /continue → 행 6 brownfield · 게이트 없음.
+#   policy.ref = "lightweight"(경량 프로파일 — 절차 비례화 트랙 Wave 4·사용자 확정 Q-5). 이 단정은
+#   Registry 데이터 값의 회귀 가드일 뿐이며 게이트 판정(ref == user-confirmation-gate)과 무관하다.
+#   ref 해소 규약 = discovery-binding.md §8.3(`<ref>` → `discovery-data/policy/<ref>-policy.yaml`).
 # --------------------------------------------------------------------------
 def test_case3_existing_no_contract_brownfield(reg, tmp_path):
     folder = make_folder(tmp_path, contract=False, repo=True)  # contract 무·repo 유.
     result = resolve(reg, "/continue", folder, intent="existing")
     assert result["matchedRow"] == 6
     assert result["mode"] == "brownfield"
-    assert result["policy"]["ref"] == "default"
+    assert result["policy"]["ref"] == "lightweight"
     assert result["gate"] is False
 
 

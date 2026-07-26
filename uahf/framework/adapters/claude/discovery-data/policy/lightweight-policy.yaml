@@ -1,0 +1,65 @@
+# Discovery Policy — 경량 프로파일 (Policy as Data — discovery/specs/02-discovery.md §3.13·§3.15)
+# 정본 값 문면: discovery/adapters/claude/discovery-binding.md §8.3 (프로파일 2종 값표)
+# 값 조정 = 데이터 정정 — 엔진·정본 계약 무변경 (02 §3.15 "정책 값 변경은 엔진 변경을 요구하지 않는다")
+#
+# 이 파일은 무엇인가:
+#   절차 비례화 트랙(docs/proportionality-track-ledger.md §4 Wave 4)의 경량 레인용 Discovery 정책
+#   프로파일이다. 표준 프로파일(default-policy.yaml)과의 **유일한 차이 = (나) 예산 정책의 수치**이며
+#   (가) 임계값 θ·(다) 종료 규칙·(라) 충돌 게이트는 표준과 **동일 값·동일 문면**이다.
+#   경량 = **질문 예산 축소만**이다 — 확신 임계(품질 하한)·완결 기준·게이트는 줄이지 않는다.
+#
+# 왜 전 절을 담는 완결 파일인가(사본이 아니라 프로파일인 이유):
+#   Discovery Policy 소비는 규약 절차(형태 A — discovery-binding §7.1 Orchestrator·레퍼런스 Provider)이며
+#   두 정책 파일을 병합하는 오버레이·include 기구가 없다. 참조는 단일 프로파일 1건을 가리키므로
+#   (Discovery Request 의 policy 요소 = 단일 참조 — 01 §3.2-B) 시드·참조되는 파일은 완결이어야 한다.
+#   두 프로파일 공통 절의 **값 정본은 바인딩 §8.2·§8.3**이며, 표준 프로파일 개정 시 이 파일의 공통 절도
+#   동기 갱신 대상이다(드리프트 통제 지점 — solution-design-binding §7.2 경량 프로파일 관례 동형).
+policyId: lightweight-policy
+
+# (가) 임계값 정책 — 차원별 Confidence 포화·Ready 임계 θ (02 §3.11 5차원 · §3.12 [0,1] 스칼라)
+# **표준 프로파일과 동일 값**(θ 하향 0 · 차원 삭제 0 — 5축 전부 존재).
+#   근거: θ는 "물어본 것에 대한 확신"의 하한이며 예산은 "얼마나 묻는가"다. 경량 레인은 후자만 줄인다.
+#   §DC-5 깊이 보완 대안 A(+0.05 상향·사용자 결정 2026-07-19)를 그대로 승계한다.
+#   귀결(설계된 트레이드오프): 예산이 절반이므로 θ 미충족 상태에서 hard 경계에 닿는 빈도가 표준보다
+#   높다 → 그 경로는 (다) 종료 규칙대로 ReadyWithAssumptions(Assumption Ledger 필수) 또는 Escalated 로
+#   귀결한다. 필수 코어 필드 Completeness 는 어느 경로에서도 타협되지 않는다(02 §3.7 축1·DISC-INV-5).
+thresholds:
+  intent: 0.85
+  requirement: 0.80
+  constraint: 0.75
+  risk: 0.75
+  architecture: 0.80
+
+# (나) 예산 정책 — Question Budget (02 §3.14) — **경량 프로파일의 차이 지점**.
+# 사용자 확정 Q-5(2026-07-26): total 20 · soft 15 · hard 20.
+# perDimension = 표준의 산술 절반(비율 보존 · 합 20 = total). reentryTopUpMax 도 동일 절반(10 → 5).
+budget:
+  total: 20
+  perDimension:
+    intent: 5         # 표준 10 의 절반
+    requirement: 5    # 표준 10 의 절반
+    constraint: 3     # 표준 6 의 절반
+    risk: 3           # 표준 6 의 절반
+    architecture: 4   # 표준 8 의 절반
+  soft: 15            # 총량의 75% — 초과 시 적응 압박, 잔여 예산 > 0이면 Eliciting 계속 (T8)
+  hard: 20            # 총량 — 소진 시 강제 Synthesize 전이 (T11)
+  reentryTopUpMax: 5  # 총량의 25% — T17 수정 요청 재진입 보충 상한 (02 §3.14-A)
+
+# (다) 종료 규칙 정책 (02 §3.6 · §3.7) — **표준 프로파일과 동일 문면**(완결 기준 완화 0).
+# 필수 코어 필드 면제·Completeness 예외는 이 프로파일에 **0**이다(02 §3.7 축1 불가침·DISC-INV-5).
+termination:
+  ready: "Completeness ∧ 전 5차원 θ 충족 ∧ 사용자 승인 → Ready (02 §3.7, T19)"
+  budgetExhausted: "필수 코어 필드 가정 충족 가능 → ReadyWithAssumptions (T20, Assumption Ledger 필수) / 가정으로도 충족 불가 → Escalated (T15)"
+
+# (라) 충돌 게이트 정책 (02 §3.15 · P-D5) — **표준 프로파일과 동일 문면**(게이트 완화 0).
+conflictGate: "충돌·모호 입력 감지 시 사용자 확인 게이트 필수 (Validating 경유 — discovery-binding.md §5 G2/D2 채널). 게이트 통과 없이 진행 불가."
+
+# 미해소(이 프로파일이 해소하지 **않는** 것 — 해소 주장 금지):
+#   실제 문항 수를 좌우하는 **필수 커버리지 축 목록**은 `.claude/skills/discovery-interview/SKILL.md`
+#   Part 1 커버리지 맵(body 하드코딩)이 소유하며 Policy 데이터가 아니다. 따라서 이 프로파일의 예산 축소는
+#   **예산 상한만** 낮추고 커버리지 축 수(= 최소 심문 대상)를 낮추지 않는다 — 문항 수 직접 감소가 아니다.
+#   커버리지 축의 Policy 데이터화는 별 트랙 소관이다(좌표 = 메모리 `uaf-coverage-enforcement-gap` ·
+#   docs/proportionality-track-ledger.md §4 Wave 4 done 6 · discovery-binding.md §8.3 미해소 항).
+#   또한 스킬 body 의 **침묵 생략 금지** 규율(축을 조용히 지나치는 것은 제외가 아니라 미심문)은 이
+#   프로파일로 약화되지 않는다 — 예산 소진은 축 제외의 사유가 되지 못하며, 제외는 여전히 사유 기록 +
+#   게이트 표면화를 요구한다(SKILL.md Part 1 head·⑦·⑪).

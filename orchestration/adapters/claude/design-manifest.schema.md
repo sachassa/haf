@@ -247,3 +247,50 @@ produced, `screen-design` 1종만 사용자 확인을 받아 정당화 제외되
 
 접점·연계 미선언이지만 두 클래스 드롭이 `classExclusions{reason,confirmedBy}` 로 확인되었고 always 6종이
 전부 produced 이므로 게이트 통과다. `classExclusions` 가 없으면(조용한 제외) 체커가 차단한다.
+
+## 예시 — 경량 프로파일(통합 설계 문서 1종) · `path` 실동작 예시 (절차 비례화 트랙 W1-b)
+
+절차 비례화 트랙(`docs/proportionality-track-ledger.md` §4 W1-b)의 **경량 레인**은 필수 산출물이
+**통합 설계 문서 1종**(`id: solution-design`·`requirement: always`)이다. 정책 파일 =
+`uahf/framework/adapters/claude/solution-design-data/policy/lightweight-policy.yaml`, 값표 정본 =
+`planning/adapters/claude/solution-design-binding.md` §7.2 (다) 경량 프로파일, 워크스페이스 시드 절차 =
+같은 문서 §7A.2-S. 본문 경로 규약 정본 = 같은 문서 §7A.2.
+
+**이 절이 무엇을 정정하는가.** 위 두 예시의 `path` 값(`docs/project-plan.md` 등)은 **매니페스트가
+워크스페이스 루트에 있을 때**의 표기다. 그러나 이 문서 §배치 위치가 정한 실제 배치는
+`<workspace>/.claude/solution-design/design-manifest.json` 이므로 `manifest_dir` =
+`<workspace>/.claude/solution-design/` 이고, `path` 해석식(`절대경로면 그대로 · 아니면 매니페스트
+디렉터리 기준 상대`)에 따라 `docs/solution-design.md` 는
+`<workspace>/.claude/solution-design/docs/solution-design.md` 로 해석된다. 본문 배치 규약은
+`<workspace>/docs/*.md`(binding §7A.2)이므로 그 경로에는 파일이 없고 체커는 `path 부재` 오류로
+차단한다. **실동작 값은 두 단계를 올라가는 `../../docs/<id>.md` 다.**
+
+```json
+{
+  "declaredTouchpoints": [],
+  "declaredInterfaces": [],
+  "artifacts": [
+    { "id": "solution-design", "status": "produced", "path": "../../docs/solution-design.md" }
+  ]
+}
+```
+
+| 항목 | 값 | 근거 |
+|---|---|---|
+| 매니페스트 실경로 | `<workspace>/.claude/solution-design/design-manifest.json` | 이 문서 §배치 위치 |
+| `manifest_dir` | `<workspace>/.claude/solution-design/` | `design_completeness.check_design_completeness` — `manifest_path.resolve().parent` |
+| 본문 실경로 | `<workspace>/docs/solution-design.md` | binding §7A.2 배치 스코프 · 경량 레인 본문 경로 규약 |
+| 실동작 `path` | `../../docs/solution-design.md` | 위 두 값의 상대차 2단 |
+| 틀린 `path` | `docs/solution-design.md` | `<workspace>/.claude/solution-design/docs/solution-design.md` 로 해석 → 부재 오류 |
+| `classExclusions` | 불요 | 경량 정책 `defaultRequiredSet` 에 `touchpoint`/`interface` 클래스 항목이 0이므로 클래스 전체 제외 규칙이 미발화(위 §클래스 전체 제외 규칙 표 3행 "정책에 클래스 항목 없음 → 무조건 통과") |
+
+**소비 측 접합.** 이 `path` 가 해석되는 절대경로는 엔진 seed 프롬프트가 SD 입력으로 가정하는 경로
+(`orchestration/adapters/claude/contract_to_graph.py` `_solution_design_path` = `<project_root>/docs/solution-design.md`,
+`project_root` = `config.workspace_dir` = 소비 프로젝트 루트)와 **동일 파일을 지목한다**. 즉 경량 레인은
+`contract_to_graph.py` 개정 없이 산출 측과 소비 측이 정합한다.
+
+**표준 레인은 미해소다.** 위 두 예시(13종·6종)의 `docs/*.md` 표기는 이 개정에서 **고치지 않았다** —
+표준 레인의 동일 결함(메모리 `uaf-design-manifest-path-defect` 발견 2)은 W1-b 범위 밖이며 후속 트랙
+소관이다. 좌표 = `docs/proportionality-track-ledger.md` §4 W1-b done 5 · 위 예시 2종의 `artifacts[].path` 값.
+
+uaf-verified: 위 표의 경로·해석식 주장은 (1) `design_completeness.py` 의 `manifest_dir = manifest_path.resolve().parent` 와 `target = p if p.is_absolute() else (manifest_dir / path)` 2지점 판독, (2) `contract_to_graph.py` `_solution_design_path` 및 `compile`→`build_seed_graph` 의 `project_root` 전달 경로 판독, (3) 임시 워크스페이스에 경량 정책·본문·매니페스트를 실제로 배치해 체커를 2회 실행한 실측(`path: ../../docs/solution-design.md` → `[DESIGN-COMPLETE]` exit 0 / `path: docs/solution-design.md` → `[DESIGN-INCOMPLETE]` exit 2 · 오류 문면 "path 부재: docs/solution-design.md"), (4) 두 경로 문자열의 `resolve()` 후 문자 단위 동일 대조(len 168 == 168 · True) 로 얻었다. 검색 범위 = 위 2개 python 파일 + 경량 policy 1파일 + 임시 워크스페이스 1건이며, 소비 프로젝트에서의 엔진 run 경유 실왕복과 표준 레인 예시 2종의 정정은 이 개정의 실측 범위 밖이다(미검증·미해소).

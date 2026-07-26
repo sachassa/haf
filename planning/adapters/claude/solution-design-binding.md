@@ -20,6 +20,7 @@
 | 2026-07-19 | v1.4 (정합) | **Visual Contract 트랙** — 디자인 필수 요소 강제 + mock 수렴 규약. §7.2 (다) `defaultRequiredSet`에 `design-tokens`·`screen-mock`·`mock-convergence-record` 3종 가법(touchpoint·소유 디자이너, 10→13)·(나) `artifactOwnership` 3종 추가. §7.2 (바) `designElements`(screenScope 5·projectScope 3·`appliesWhen: touchpoint`·요소 단위 silentOmission 금지) 값 문면 신설 = Policy+게이트 강제(책임 있는 자율 (a)). §7C(mock 생성·사용자 수렴 규약 — 정본/파생 규율·톤 3안 수렴·`mock-convergence-record` 종료·환경 표면) 신설(무침습·§8~§14 번호 보존). 04 §3.9(무수정) 물리화·재정의 0. policy yaml stale 포인터(uahf 미실재) planning 정정. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
 | 2026-07-26 | (정합) | md 슬림화 Wave 4 — 비계약 격리 개정+값 모순 단일소스화(정본 = default-policy.yaml·binding §7.2), 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
 | 2026-07-26 | v1.4 (정합) | **절차 비례화 트랙 W1-a** — SD 경량 프로파일 신설 + workspace policy 시드 절차 물리화. `policy/lightweight-policy.yaml` 신설(`defaultRequiredSet` 1종 = `solution-design`/통합 설계 문서/`always` · `artifactOwnership` 1:1 owner PM · `requirementClasses` 3종·`exclusionRule`·(가)(나)(라)(바)(사) 표준과 동일 값 — 검증 하한·요소 강제·심의 축소 0). §7.2 (다)에 프로파일 2종 값표 append(표준 13 vs 경량 1·완결 프로파일 근거·드리프트 통제 지점 = §7.2). §7A.2에 **§7A.2-S**(workspace policy 시드 3항 — 표준/경량 이진 선택 → `<workspace>/.claude/solution-design/policy/default-policy.yaml` 배치 → `MaturationRunStarted`/`provenance` policy 참조 원장 기록·이탈 사유 기록) 신설(무침습 — §7A.3 이하 절 번호 보존). 실측: 경량 policy × 1종 산출 매니페스트 exit 0 · 미산출 매니페스트 exit 2(음성 대조) · `solution_design_resolve` 적재 exit 0. python 4파일·`design-manifest.schema.md`·04 spec 수정 0(계약 요소 무변경·가법). 사용자 확정 Q-1(2026-07-26). | Worker (Advisor 위임) |
+| 2026-07-26 | v1.4 (정합) | **절차 비례화 트랙 W1-b** — 경량 프로파일 통합 문서 1종 ↔ seed 프롬프트 입력 가정의 접합부 정합. §7A.2에 **§7A.2-L**(경량 본문 경로 규약 1항 — 본문 `<workspace>/docs/solution-design.md` · 매니페스트 `path` = `../../docs/solution-design.md` · 쓰지 않는 값 `docs/solution-design.md` · 코드 개정 0 · 표준 레인 미해소 명시) 신설(무침습 — §7A.3 이하 절 번호 보존 · §7A.2-S 무변경). `design-manifest.schema.md`에 경량 프로파일 `path` 실동작 예시 절 append(JSON 1건 + 해석식 대조표 + 소비 측 접합 + 표준 레인 미해소 좌표). §7.2 (나) `artifactOwnership` 행에 "(표준 프로파일 기준)" 한정어 1구 삽입(경량 도입으로 13이 표준 전용 계수가 됨 — 상태 서술 정합·삽입 1구 외 문면 무변). 실측: 경량 매니페스트 `path: ../../docs/…` exit 0(실재 파일 해석) · `path: docs/…` exit 2(음성 대조 — 발견 2 실재 증명) · `_solution_design_path` 절대경로 대 매니페스트 해석 경로 문자 단위 일치(len 168) · `contract_to_graph.py` diff hunk 0. python 수정 0 · 04 spec 수정 0 · 표준 레인 발견 2 미해소(후속 트랙). | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — UAF 관행 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. `uaf-allow-legacy:` 기존 행은 작성 당시의 종수·값·절 구성 표기를 그대로 보존한다(문면 불변 = append-only 원칙) — 현행 값은 §7.2와 policy yaml이 소유한다.)
 
@@ -208,7 +209,7 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 | 기본 역할 구성 (`defaultComposition`) | **강제 기본값(이탈 시 사유 기록)** — `coverageFloor`(커버리지 바닥 실현) + `baseSpecialists`(기획·아키텍처) + `conditionalSpecialists`(디자이너/`touchpoint` · DBA/`dataComplex` · 보안/`regulated` — 보안은 심의 참여·산출물 미소유). 조건부 역할은 사람용 산문 `when`과 **기계 신호 `whenSignal`을 병기**하며, form-B 로더(§7A.5)는 산문을 파싱하지 않고 **`whenSignal`을 기계 대조 매칭**해 결정적으로 활성/제외를 계산한다(산문 파싱 금지·결정성). 이는 **책임 있는 자율**(루트 §6 원칙 11 (a)(b))의 물리 실현 — 기본 구성을 비정본 부록이 아니라 **Policy 기본값으로 강제**하되 그것이 **강제 고정팀은 아니다**(`fixedTeam=금지`와 무모순·SP-INV 8 존치). 역할명은 개방 네임스페이스 예시·configurable(§DC-6)이며 예시 해설은 비정본 부록(expert-role-catalog.md §3.5) 소관이다(강제 근거 아님·SP-INV 5). |
 | 이탈 규칙 (`deviationRule`) | **silentOmission 금지**(책임 있는 자율 (b)(c)) — 기본 구성에서 역할 추가/제거 시 **사유 기록**(`events/maturation-<run-id>/`) + **Validating 게이트 표면화·사용자 확인**(고임팩트 이탈은 즉시). "기본값이니 조용히 이탈"을 폐기한다. |
 | 전체 커버리지 바닥 (`wholeScopeCoverage=required`) | **필수 바닥** — 선언된 전체 프로젝트 범위를 관장하는 커버리지 capability를 반드시 포함한다(04 §3.3·SP-INV 9). 최소 할당(SP-INV 8)의 예외가 아니라 그 위의 필수 바닥이며 전문 역할 상한에 **불산입**된다 — 두 원칙은 **층위가 다르다**(04 §3.3: 최소 할당은 좁은 관심사에 전문 역할을 필요 이상 늘리지 않음을, 커버리지 바닥은 선언 범위 전체가 관장 없이 비지 않음을 규율 — 모순 아님). 커버리지 capability도 고정 역할명이 아니라 Capability 선언으로 표현된다(SP-INV 5). |
-| 역할→산출물 소유 맵 (`artifactOwnership`) | 각 `defaultRequiredSet` id의 소유 역할(작성 책임) — `defaultComposition`과 동일 개방 네임스페이스로 **(다) 13 id를 1:1 매핑**(소유 매핑 부재 = form-B 로더 `PolicyError`·교차 정합 강제). 조건부 보조(예: 데이터 복잡 시 `table-def` 정밀화 보조)는 소유가 아니다. 생산 프로토콜은 §7A. |
+| 역할→산출물 소유 맵 (`artifactOwnership`) | 각 `defaultRequiredSet` id의 소유 역할(작성 책임) — `defaultComposition`과 동일 개방 네임스페이스로 **(다) 13 id를 1:1 매핑**(표준 프로파일 기준)(소유 매핑 부재 = form-B 로더 `PolicyError`·교차 정합 강제). 조건부 보조(예: 데이터 복잡 시 `table-def` 정밀화 보조)는 소유가 아니다. 생산 프로토콜은 §7A. |
 | 고정 팀 열거 (`fixedTeam`) | **금지** — 역할명은 개방 네임스페이스, 고정 역할 카탈로그 0(SP-INV 5·UAF-INV ⑥). `defaultComposition`은 이 금지의 예외가 아니라 "이탈 가능한 기본값"이므로 무모순. |
 
 **(다) Projection 선택 정책 (04 §3.5 — 동적 선택 = 기본값 opt-out·전 유형 강제 금지·SP-INV 9 기본 필수 세트):**
@@ -362,6 +363,22 @@ Solution Design이 **기본 필수 Projection 세트(§7.2 (다))를 어떻게 �
 | (S3) | **원장 기록** | 시드한 프로파일을 성숙 run 원장에 남긴다 — `MaturationRunStarted`의 "사용한 policy 참조"(§4.3)와 성숙 인스턴스 `provenance`의 "Policy 참조"(§8.1)에 **원본 프로파일 파일명 + 프로파일 종류(표준/경량)**를 기록한다. 신규 레코드 종류·신규 필드는 0이다. 기록 없는 시드는 금지다(설계 산출 원장 기록 의무). 표준 기본값에서 경량으로 이탈한 경우는 `deviationRule` 동형으로 **사유를 함께 기록**하고 `Validating` 게이트에서 표면화한다(silentOmission 금지·§7A.4 (iii)). |
 
 (`uaf-verified:` 고정 상대경로 주장은 `orchestration/adapters/claude/resolve_gate.py`의 `SD_DATA_REL` 상수와 `pretooluse_design_guard.py`의 동일 문면 상수, 그리고 `design_completeness.py` `_load_policy_required`의 정책 부재 차단 분기를 직접 판독해 얻었다 — 두 상수는 별도 선언이며 config 키·환경변수 경유 재정의 지점은 두 파일에서 발견되지 않았다. **검색 범위 = 위 3파일 + `solution_design_resolve.py` `load_policy`**이며, 소비 프로젝트 워크스페이스에서의 실제 시드 실행은 이 개정의 실측 범위 밖이다(미검증).)
+
+**§7A.2-L — 경량 프로파일 본문 경로 규약 (절차 항 · form-A · 절차 비례화 트랙 W1-b 신설).**
+
+경량 프로파일(§7.2 (다) 경량 값표 · 시드 절차 §7A.2-S)의 필수 산출물 1종 `solution-design` 의 **본문 경로와 매니페스트 `path` 값**을 확정한다. 위 배치 스코프의 특수화 1항이며 새 규약을 창설하지 않는다.
+
+| 항목 | 값 |
+|---|---|
+| 본문 실경로 | `<workspace>/docs/solution-design.md` — 위 배치 스코프(`<workspace>/docs/*.md`)의 파일명 = id + `.md`. 이 절대경로는 엔진 seed 프롬프트가 SD 입력으로 가정하는 경로(`orchestration/adapters/claude/contract_to_graph.py` `_solution_design_path` = `<project_root>/docs/solution-design.md` · `project_root` = `config.workspace_dir`)와 **동일 파일을 지목**한다 — 접합부 정합. |
+| 매니페스트 `path` 값 | **`../../docs/solution-design.md`** — `path` 해석은 매니페스트 디렉터리 기준 상대이며(`design-manifest.schema.md`) 매니페스트는 `<workspace>/.claude/solution-design/` 에 있으므로 본문까지 2단 상향이다. |
+| 쓰지 않는 값 | `docs/solution-design.md` — `<workspace>/.claude/solution-design/docs/solution-design.md` 로 해석되어 `design_completeness` 가 `path 부재` 로 차단한다(실측 exit 2). 스키마 구예시 표기이며 이 배치에서는 틀린 값이다. |
+| 코드 개정 | **0** — 경량 레인은 `contract_to_graph.py` 무수정으로 정합한다(diff hunk 0 실측). |
+| 표준 레인 | **미해소** — 표준 프로파일 13종의 동일 결함은 이 항의 범위 밖이다(후속 트랙 소관 · 좌표 = `docs/proportionality-track-ledger.md` §4 W1-b done 5 · `design-manifest.schema.md` 예시 2종의 `artifacts[].path`). 이 항은 경량 레인만 정합시킨다. |
+
+실동작 예시(JSON 1건)와 해석식 대조표의 정본은 `orchestration/adapters/claude/design-manifest.schema.md` §경량 프로파일 예시이며, 본 절은 값의 사본을 두지 않고 **경로 규약만** 확정한다(단일 소스 규율·§7.2 머리 동형).
+
+(`uaf-verified:` 위 표의 경로·차단 주장은 임시 워크스페이스 1건(경량 policy 시드 + `docs/solution-design.md` 실물 + 매니페스트)에 `design_completeness.py` 를 2회 실행한 실측(`../../docs/…` → `[DESIGN-COMPLETE]` exit 0 / `docs/…` → `[DESIGN-INCOMPLETE]` exit 2)과, `contract_to_graph._solution_design_path` 산출 절대경로 대 매니페스트 `path` 해석 절대경로의 문자 단위 동일 대조(True·len 168), 그리고 `git diff --stat` 상 `contract_to_graph.py` hunk 0 확인으로 얻었다. **검색 범위 = `design_completeness.py`·`contract_to_graph.py`·경량 policy 1파일 + 임시 워크스페이스 1건**이며, 소비 프로젝트에서의 엔진 run 경유 실왕복과 표준 레인 정정은 이 개정의 실측 범위 밖이다(미검증·미해소).)
 
 ### §7A.3 검증 3층 (CP1→CP2→CP3 + 사용자 게이트)
 

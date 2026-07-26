@@ -36,7 +36,7 @@
 - **정본은 framework/runtime/step-hosting-protocol.md(§2~§7)와 인용 spec(03/02/07/06/04) §3 계약이다.** 이 문서는 그 계약의 **claude 환경 실현 매핑**이며 계약 요소(위상·Step 직렬화 축·상태 파생 규칙·SH-INV·Autonomy 어휘·게이트 등급 분리)를 **재정의·확장하지 않는다** — **이 재정의 0 선언은 문서 전체에 대해 여기 1곳에서만 두며**, 이하 각 절은 반복 없이 정본 §만 지목한다.
 - **소관 지점.** 프로토콜 §7.2 가 "직렬화 형식·run 데이터 백엔드 경로·정지 신호 값·Autonomy 실값·provider 실행 옵션 매핑·슬롯 지정 의미는 Adapter Binding 소관"이라며 미룬 자리를 이 문서가 확정한다.
 - **격리 지점(C-3 비적용).** Core 경계와 중립 Module(`framework/loop/step-host/`)은 provider·실행 옵션 토큰 0건이어야 하지만(structure.md §5, SH-INV-7), 이 문서는 그 **반대편**이다 — 구체 토큰의 사용이 허용되며 그 격리가 이 경계의 존재 이유다.
-- **`--dangerously-skip-permissions` 문자열의 유일 소재(정본 선언).** 이 권한 생략 플래그 문자열이 **문서 층에서 등장하도록 허용되는 유일한 자리는 이 문서**이며, 코드 층에서는 `framework/adapters/claude/step-invoker/` 뿐이다. Core·프로토콜·`framework/loop/step-host/` 에는 0건이다(§4.2·§6, SH-INV-7). **정정(2026-07-26):** 전수 스캔 결과 상위 오케스트레이션 바인딩(`orchestration/adapters/claude/project-orchestration-binding.md`)에도 1건 존재한다 — 같은 Adapter 격리 층이 이 매핑을 인용한 것으로, Core·프로토콜·step-host 0건이라는 불가침 축은 무손상이다. `uaf-verified: 저장소 전수 grep(dangerously-skip-permissions) — 4파일 12건(이 문서·step-invoker 코드/테스트·project-orchestration-binding)`
+- **`--dangerously-skip-permissions` 문자열의 유일 소재(정본 선언).** 이 권한 생략 플래그 문자열이 **문서 층에서 등장하도록 허용되는 유일한 자리는 이 문서**이며, 코드 층에서는 `framework/adapters/claude/step-invoker/` 뿐이다. Core·프로토콜·`framework/loop/step-host/` 에는 0건이다(§4.2·§6, SH-INV-7). **정정(2026-07-26, 2차):** 상위 오케스트레이션 바인딩에 있던 1건은 같은 날 md 슬림화 Wave 4b에서 이 문서 §0·§4.2 포인터로 대체되어 제거됐다 — 문서 층 소재는 다시 이 문서뿐이다. `uaf-verified: 저장소 전수 grep(dangerously-skip-permissions) — 3파일 11건(이 문서·step-invoker 코드/테스트), Core·프로토콜·step-host 0건 불변`
 - **창설 금지.** 프로토콜 §7.2 표를 넘어서는 새 바인딩 계약·새 상태·새 필드·새 개입 조건·새 불변 규칙을 만들지 않는다.
 - **하네스 상태 전제(Bootstrap).** 형태 B Step Hosting 은 **실행 코드가 실재**하는 첫 산출물이다 — 중립 Host 와 claude invoker 가 실재하고 자체 테스트가 통과하며(§6), 실 CLI dogfooding E2E(W3)로 run 데이터 백엔드도 실재화됐다(§3.2·§6 정정 지점).
 - 용어는 specs/00-glossary.md 정본만 사용한다. "Step Host"·"Step Contract"·"형태 A/B" 는 프로토콜·structure.md 의 서술 라벨이다.
@@ -107,7 +107,7 @@ step-hosting-protocol.md §7.2 표(바인딩 지점 7행)를 claude 환경 실�
 |---|---|---|
 | `interactive`(**기본값**) | 별도 권한 생략 플래그 없음(`-p` headless 기본 실행) | 도구 실행 승인 프롬프트 유지 축. |
 | `auto_approve` | `--permission-mode acceptEdits` | 선언된 허용 범위(편집) 내 자동 승인. 필요 시 `--allowedTools` 로 허용 범위를 함께 선언한다. |
-| `unrestricted` | `--dangerously-skip-permissions` | 승인 프롬프트 전면 생략. **이 플래그 문자열의 소재는 §0이 전수 스캔 결과로 소유한다**(문서 층 = 이 문서 + 상위 오케스트레이션 바인딩 1건 · 코드 층 = `step-invoker/` · Core·프로토콜·step-host 0건). |
+| `unrestricted` | `--dangerously-skip-permissions` | 승인 프롬프트 전면 생략. **이 플래그 문자열의 소재는 §0이 전수 스캔 결과로 소유한다**(문서 층 = 이 문서뿐(2026-07-26 2차 정정 — §0) · 코드 층 = `step-invoker/` · Core·프로토콜·step-host 0건). |
 
 - **게이트 등급 분리(불가침 — SH-INV-4 명기).** 위 매핑은 **도구 실행 승인 프롬프트 축만** 제어한다. **Human Decision Gate — Contract 변경·중대 Architecture Decision·파괴적 작업·해결 불가 불확실성(03 §3.1-D 조건 2~5 + UAF 레벨 게이트) — 는 어떤 policy 값에서도 `Escalated` 정지로 보존**된다. `unrestricted` 에서도 이 게이트는 정지하며 **CP2 를 우회하지 않는다**. 이 강제는 **중립 Host 코드가 소유**한다(host.py — policy 무관하게 CP2 를 별도 디스패치하고 Escalated 시 정지). `ClaudeInvoker` 는 policy 를 CLI 플래그로 매핑만 하며 이 게이트를 우회할 수 없다. 자체 테스트로 실증됨(step-host 시나리오 ⑦ — §6).
 

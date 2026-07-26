@@ -10,7 +10,7 @@
 > - `docs/v1.2.1-repository-refactoring-brief.md@cd9247b` — 원칙 #3(`:29` — 최상위 `.claude`=Global Default, Layer 하위=Override) · `:142`(`.claude` override 모델 연결) · §C 상태 분리(`:166`–`:171`)
 > - `docs/v1.2.1-context-and-design.md@cd9247b` — §7 미착수 관찰(`:130`) · §7.1 stale-allow 마이그레이션 노트(`:137`–`:149`) · Tier 2 트랙 목록(`:173`)
 > - `uahf/framework/core/structure.md` §2(`:74` Adapter 경계 — 구체 환경 토큰 허용) · §4(형태 A/B 서술 라벨)
-> - `uahf/framework/adapters/claude/entry-binding.md` §3(`:84`–`:93` — 두 진입 명령 확정 · `:87` `uaf-` 접두 DP-X1 · `:91` uahf-status 골격 준거)
+> - `uahf/framework/adapters/claude/entry-binding.md` §3(두 진입 명령 확정 · `uaf-` 접두 DP-X1 · uahf-status 골격 준거 — 행 번호 인용은 2026-07-26 슬림화로 폐기, § 좌표만 사용)
 >
 > 이 문서 = **override 계약·귀속 설계** / 브리프 = 사용자 지시 정본 · 실행 기록 / context-and-design = v1.2.1 통합 이해. 상호보완.
 >

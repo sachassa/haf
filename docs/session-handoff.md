@@ -600,6 +600,26 @@
 > - **★ 다음 착수 = 순위 미배정(사용자 결정 대기)**: 사용자 확정 순서 3건이 위와 같이 소진됐다. 열린 후보(갱신(16) ⑤ 유지) = 커버리지 강제(θ≠커버리지) · SD manifest 배선 3건 · SD 스킵 브리지 · Q·R 기계 강제 · §DC-8(a)·02 개정 · 상류 바인딩 2차 / (제품 트랙) yt-stt M4-b 판단 · auto-percenty plan 확정. 하네스 개선분의 실 run 실증(위 관측 좌표)도 착수 후보다.
 > - **실 run 실증의 구체 후보(사용자 발화 2026-07-26·착수 확정은 새 세션)**: auto-percenty **keyword search 이어가기**를 엔진 run 으로 수행하며 겸증. **성립 조건 2** = ① 엔진 경유(`/uaf-implement` — Advisor 직접 위임으로 돌리면 실증 불성립·원장 없는 디스패치 금지 규율 동일) ② 새 세션 첫 행동 = `auto-percenty/START-HERE.md` 필독(메모리 ⛔ 경고). **관측 체크리스트** — (자동 발화) heartbeat 실기 갱신 · `[INVOKES] total=` 정상 · 게이트 렌더의 gate_id 상시 지목 · Planner 의 milestone 상호 대조 AC·실출력 픽스처 규율·timeout 선택 키 실준수(impl-plan 문면) · Verifier AC 적정성 축(CP2 verdict 문면) / (조건 발화 — 억지로 유발하지 않고 미발화면 「미관측」으로 기록) `--response` 조건 주입(조건부 승인할 일이 실제로 있을 때) · `[REWORK-NOTE]`(rework 실발생 시) · per-unit timeout 재기입(plan 에 timeout 지정 단위가 있을 때). 제품 측 참고 = 메모리 `coupang-403-profile-poisoning`(쿠키당 17검색 예산)·`tool-insane-search`(`PYTHONUTF8=1`).
 
+> **🔴 갱신 2026-07-26(21) — auto-percenty UAF 정식 편입(Contract v1·SD 7종) + 첫 엔진 run `impl-auto-percenty-p1` 완주 = 갱신(20) 실 run 실증 소화. 신규 결함 후보 2 + 절차 비례화 트랙 신설. ★다음 순위 = Advisor 배정(사용자 위임).**
+>
+> 성립 조건 2 이행: ① 엔진 경유(`/uaf-implement` — Advisor 직접 위임 디스패치 0) ② 첫 행동 = `auto-percenty/START-HERE.md` 전문 정독.
+>
+> **파이프라인 전 구간 실주행**: Entry(형태 B 로더·행 6 brownfield — Contract 부재 실측) → Brownfield Discovery(`discovery-data/events/brownfield-r005/` — 스캔[Advisor 정독+Explore digest]·인터뷰 4문/40[카드 묶음]·G2 승인) → **Contract v1 발행**(`auto-percenty/.claude/project-contract/project-contract.v1.md` · pc-auto-percenty-001 — 키워드 영역 한정·하루 100상품 유지·목표↔상한 충돌 = RISK-1·미결 판단 8건 run 이월, 사용자 결정 4건) → **SD**(`solution-design-data/events/maturation-auto-percenty-r001/` — 단일 Worker 위임 7종 docs·Advisor CP2 Pass·화면 6종 classExclusions 사용자 확인·design_completeness exit 0 — B-3 옵션 B 원장 의무 첫 실사용) → **엔진 run**(proposal→user 게이트→4 task 승격→5단위 Passed 5/5·invokes 9·완주 exit 0). Advisor 독립 재검증 = milestone 5검사 재실행 PASS·audit 회귀 exit 3(위반 1/25 = 기지 B뿐 — 신규 3축 기존 원장 오탐 0)·probe-usage 40/100 불변(**run 중 쿠팡 실접속 0**). 산출(제품) = 모델명 기계 게이트·audit 정합화(스펙수치·ACCESSORY·모델명)·A/B 실험 하네스(라이브 미실행). `uaf-verified:` 판정 근거 = 런처 로그 2본·heartbeat 실기 2회·invoke 원장 16파일·milestone/audit Advisor 재실행·probe-usage 대조. 스윕 범위 = run 원장 + auto-percenty 워킹트리.
+>
+> **관측 체크리스트 판정** — 자동 발화 5종 = **5/5 관측**: heartbeat 실기 갱신 ✅ · `[INVOKES] total=` 정상(4→9) ✅ · 게이트 렌더 gate_id 상시 지목 ✅(자동 출력 문면 복사 실행으로 해소 성공) · Planner 3규율 ✅(milestone 상호 대조 AC 3검사 실구현·실출력 픽스처[T20 실캡처+PROVENANCE+미검증 신고 3항]·timeout 선택 키[ab 단위 5400 — 대형 단위 판별 타당]) · **Verifier AC 적정성 축 ✅ 실 Fail 1건**(proposal done "문자열 존재만 검사" 지적 → 실호출·값 assert 재작업 = 백로그 O 실증). 조건 발화 3종: `[REWORK-NOTE]` **실발화 ✅**(재작업 단위 열거·지시 인용·스윕 힌트 = 백로그 M 실증) · `--response` 조건 주입 = **미관측**(사용자 조건 없음 승인 — 억지 유발 금지) · per-unit timeout 재기입 = 조건 발화 ✅·**재기입 값 판정 불가**(아래 결함 ②).
+>
+> **신규 결함 후보 2**: **① Planner seed sentinel 문면 미고정** — proposal이 delegation 참조형 sentinel을 변형 문면("상위(부모) task 필드 전문과 동일…")으로 산출 → `resolve_gate` 검증-먼저 fail-closed 차단(원장 무오염 — 게이트 정확 작동) → Advisor 수기 정규화 필요(백업+provenance = `auto-percenty/impl-plan.SENTINEL-FIX-PROVENANCE.md`). 수정 후보 = `contract_to_graph.py` seed 프롬프트에 정확 sentinel 문면(`위 task 필드와 동일`/`위 done 필드와 동일`) 고정. **② UnitTimeoutInvoker 재기입 관측 신호 부재** — invoke 원장(`logs/invoke-*.json`)에 request.timeout 미기록이라 재기입 값의 라이브 실증이 원장으로 불가(갱신(18) 미검증 축이 이 부재로 잔존). 수정 후보 = invoke 기록에 timeout 필드 1개 추가.
+>
+> **★ 절차 비례화(Process Proportionality) 트랙 신설(사용자 피드백 2026-07-26)**: "단순 수정·단순 테스트에 풀 프로세스는 가성비·시간효율 문제 — 경량 프로젝트 간소 절차/엔터프라이즈 복잡 절차". 정본 = 메모리 `feedback-uaf-process-proportionality`. 방향 = 불변(원장 0건 금지·게이트 확정 권위·검증 하한) 유지·**절차 두께만 Policy as Data 레버로 비례화**(변경 등급 신호→경량 레인[경량 원장+직접 위임+스크립트 AC]·SD defaultRequiredSet 복잡도 프로파일·CP2 차등[cp2ModelSlots 기존 장치]·성숙 brownfield 인터뷰 최소). 실측 근거 = 본 세션(경량 코드 작업에 Entry→Discovery→Contract→SD 7종→엔진 고정비가 본작업보다 큼 — 단 Contract·SD는 1회성 셋업이라 차회부터 재사용).
+>
+> **★ 다음 착수 순위 = Advisor 배정(사용자 위임 2026-07-26 "순서 너가 정하는데로 할게")**:
+> 1. **경량 정비 묶음** — 신규 결함 ①(seed sentinel 문면 고정)+②(invoke 원장 timeout 필드). 수정 소폭·다음 실 run이 즉시 재검증.
+> 2. **절차 비례화 트랙** — 사용자 피드백 직결·최대 임팩트. 레인 기준(변경 등급 신호)은 사용자 게이트로 확정.
+> 3. **SD 스킵 브리지**(스킵↔구현 게이트 충돌 — 경량 레인의 전제) → 4. **SD manifest 배선 3건**(같은 SD 계열) → 5. **커버리지 강제**(θ≠커버리지) → 6. **.claude md 슬림화 실행**(분석 완결분·무게 절감 계열) → 7. **Q·R 기계 강제** → 8. **§DC-8(a)·02 개정** → 9. **상류 바인딩 2차**.
+> (제품 트랙 별축 — 사용자 참여 시 최우선 인터럽트: **auto-percenty 웨이브 실전 ≤30상품**[선행 = 미결 판단 8건 카드·정본 = auto-percenty/docs/project-plan.md §4 표]+**A/B 라이브 실측**[예산 안·두 카드 동시 금지] · yt-stt M4-b 판단.)
+>
+> 커밋: auto-percenty(Contract·SD·run 산출·provenance) + 본 저장소(discovery r005·SD r001 원장·run 원장·본 갱신). auto-percenty는 원격 없음(푸시 대기 유지).
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.

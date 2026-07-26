@@ -1,0 +1,17 @@
+# Discovery Request (Entry Resolution 산출 — 구조화 레코드)
+# 직렬화 형식 정본 = entry-binding.md §5.1 / 기록 위치 정본 = discovery-binding.md §4.2 (DP-X8)
+# Entry Resolution 실수행 기록: 2026-07-26, 형태 B 로더(entry/adapters/claude/entry_resolve.py) 1회 호출 — 주 세션(Advisor)
+#   호출: --entry continue --folder C:/my-claude-project/auto-percenty --intent existing (/uaf-continue 발화)
+#   관측: contract-presence 무 · repository-presence 유 → 결정 테이블 행 6 매칭 · gate=false → mode=brownfield 방출
+# 대상 워크스페이스: C:\my-claude-project\auto-percenty\ — 실재(git repo · 키워드 파이프라인 코드·문서·실행 원장 실질 콘텐츠).
+#   배경: 2026-07-23 /uaf-new(greenfield) 진입 이력 있으나 Contract 미확정·Discovery 산출물 0(.claude/ 빈 상태 실측).
+#   사용자 지시(2026-07-26 /uaf-continue 인자): auto-percenty keyword search 이어가기를 엔진 run(/uaf-implement 경유)으로
+#   수행 + 하네스 실 run 실증 겸증(session-handoff.md 갱신(20) 성립 조건 2·관측 체크리스트). 엔진 run은 확정 Contract가
+#   전제(uaf-implement.md §1)이므로 본 Brownfield Full Discovery(최초 Contract 생성)가 선행된다.
+mode: brownfield
+inputs:
+  - sourceType: contract-presence
+    observed: 무
+  - sourceType: repository-presence
+    observed: 유
+policy: default-policy   # discovery-data/policy/default-policy.yaml 참조 (Policy as Data)

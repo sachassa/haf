@@ -116,7 +116,7 @@ Remove의 R1(잔여물 0, plugin-lifecycle.md §3.5 R1 / 10 INV-3)을 이 환경
 1. **설치 이전 스냅샷.** Install 착수 **전**, 영향 경계 전체의 파일 목록을 스냅샷으로 확보한다 — 최소한 `framework/plugins/`(기준선 = {`module-manifest.md`, `plugin-manifest.md`, `plugin-lifecycle.md`}), Activate가 등록 표면으로 쓴 `.claude/{agents,commands,hooks,skills}`, (AI 의존 시) `.claude/` 산출물 경로. 이것이 "본체의 설치 이전 상태"(10 INV-3)다.
 2. **제거 후 재열거.** Remove 수행 후 동일 경계의 파일 목록을 다시 열거한다.
 3. **전수 대조.** 두 목록의 차집합을 계산한다. **차집합이 0**(제거 후 목록 = 설치 이전 스냅샷)이면 R1 = 예(잔여물 0). 설치본 디렉터리·등록 정의 파일·배선·(AI 의존 시) `.claude/` 산출물이 모두 사라지고 `framework/plugins/`는 3문서만 잔존한다.
-4. **전 부류 전수(정직).** 추가 산출물의 **전 부류**(등록 Module·배치 파일·배선)를 스캔한다 — 한 부류(예: 등록 Module)만 제거 확인하고 다른 부류(배치 파일·배선)를 통과로 간주하지 않는다(좁은 대리 지표 금지, plugin-lifecycle.md §3.5 검사 범위 정직). 차집합이 0이 아니면 R1 = 아니오, reason=ResidueDetected, `location` = 잔여물 지점.
+4. **전 부류 전수(정직).** 추가 산출물의 **전 부류**(등록 Module·배치 파일·배선)를 스캔한다 — 한 부류(예: 등록 Module)만 제거 확인하고 다른 부류(배치 파일·배선)를 통과로 간주하지 않는다(좁은 대리 지표 금지, plugin-lifecycle.md §3.1 검사 범위 정직 — 2026-07-26 §3.5 개별 조항의 §3.1 전역 통합에 따른 좌표 갱신). 차집합이 0이 아니면 R1 = 아니오, reason=ResidueDetected, `location` = 잔여물 지점.
 5. **검증 정합.** 이 절차는 10 §7 검증 방법("Verifier가 Remove 후 잔여물 스캔 = 0을 확인")의 물리 실현이며, 파일 시스템 목록 대조로 예/아니오가 결정된다.
 
 ### §3.4 DP-E6 결정 기록 — 설치본 배치와 01 §4.1 Frozen 문면 (done 5)

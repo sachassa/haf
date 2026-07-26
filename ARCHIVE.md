@@ -30,3 +30,4 @@
 | `docs/post-tuning-improvement-backlog.md` 해소 항목 9건의 상세 해소 서술 + 2026-07-14 Dogfooding Evidence 표 (문서는 live 유지·해소분 서술만 제거) | `90ca19c` | evidence | 항목 B·C·J·K·L·M·N·O·P 해소 경위·검증 근거 서술 및 v1.7 실사용 dogfooding 실측 표 — 해소분 정본은 각 바인딩 §가 소유하므로 백로그 파일에는 해소 1줄 요약만 유지 | 2026-07-26 |
 | `docs/proportionality-track-w3-b-worker-1.md` (1파일) | `64ebd49` | evidence | 절차 비례화 W3-b 완료 보고 전문(보고-파일 역전 규약의 첫 셀프 적용 표본) — 미결 2건은 트랙 원장 §8.11 항 10·11로 승격 완료. 현행 규약 정본 = docs/delegation-protocol.md §2.2/§2.3/§3.2·역할 정의 3종 "출력" 절 | 2026-07-27 |
 | `docs/proportionality-track-w4-worker-1.md` (1파일) | `b7294bc` | evidence | 절차 비례화 W4 완료 보고 전문 — 미결 4건(OQ-W4-1~4)은 트랙 원장 §6.3 항 8~10으로 승격 완료. 현행 정본 = discovery-binding §8.3·lightweight-policy.yaml·entry-registry 행 6 | 2026-07-27 |
+| `docs/proportionality-track-w5-worker-1.md` (1파일) | `e802317` | evidence | 절차 비례화 W5 완료 보고 전문(E2E 8지점 로그·이탈 5건·미해소 전량 열거) — OQ 5건은 트랙 원장 헤더 실행 상태 항의 Advisor 판정으로 승격 완료 | 2026-07-27 |

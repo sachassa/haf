@@ -17,6 +17,8 @@
 
 착수 편성(Advisor): Wave 1·2 = 최소 성립 집합 우선 착수(K-10) · W1-a↔W1-b는 같은 문서(§7A.2) append 충돌 회피를 위해 **순차**(W1-a → W1-b — 병렬 집합 문면 중 동시 실행만 조정·브리프 내용 무변) · Wave 2는 W2-a ∥ W2-b 병렬(파일 무교차·lane 어휘 "standard"|"lightweight" 고정 선전달).
 
+**트랙 실행 상태(2026-07-27): Wave 1~5 전부 완주 — 전 단위 Worker done 전항 + Advisor 독립 재실행 검증.** 커밋 = W1-a `cc446cc` · W1-b `b59c3c9` · W2-a `b8a8a49` · W2-b `4fb8dc4` · W3-a `4f6184d` · W3-b `64ebd49` · W4 `b7294bc` · W5 `e802317`. W5 OQ 판정(Advisor): OQ-1 핸드오프 갱신 = Advisor 수행 완료 · OQ-2 E2E 픽스처의 SD 원장 = 소비 프로젝트 아님(simulated 라벨) — 실운용 첫 경량 run 의 §7A.2-S (S3) 기록이 관측 대상(핸드오프 B-1) · OQ-3 표준 baseline 재검증 = OQ-PO-B7 해소와 함께 후속 · OQ-4 원장 상태 갱신 = 본 항 · OQ-5 절감 폭 = 실전 적용 후 측정(Measurement First — 수치 발명 0). 잔여 = §6.3·§8.11 미해소 목록(후속 트랙 소관) + 실전 실증(다음 소비 프로젝트 경량 작업).
+
 `uaf-verified:` 본 초안의 사실 주장은 아래 §0 근거 표의 파일을 직접 판독하고, 코드 경로 4건(`design_completeness.py`·`resolve_gate.py`·`contract_to_graph.py`·`gates.py`)과 정책 데이터 3건(`solution-design-data/policy/default-policy.yaml`·`discovery-data/policy/default-policy.yaml`·`orchestration-data/e2e/policy/allocation.json`)을 좌표 단위로 대조해 얻었다. **스윕 범위 = 위임 §조사 대상 표면 + 그로부터 파생 추적된 호출·참조 지점**이며, 그 밖(소비 프로젝트 워킹트리·`uahf/specs/` 00~13 전문·테스트 스위트 실행)은 이 초안의 범위 밖이다. 범위 밖 항목은 §7 미검증 축 목록에 열거한다.
 
 ---

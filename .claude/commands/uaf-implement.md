@@ -50,9 +50,10 @@ python orchestration/adapters/claude/orchestrate_project.py <project_root> --pha
 - **제시:** 주 세션 Advisor가 `logs/stop-signal.json`을 읽어 각 대기 게이트를 사용자에게 표면화한다(gateKind·대상 단위·scoped_question). CP2는 게이트가 아니라 상시 하한(우회 없음)이며, CP3는 `approval_required`(Advisor 경계 승인)로 큐에 오른다.
 - **해소:** 게이트별 적격 actor만 해소한다(자격은 코드 소유·우회 금지):
   ```
-  python orchestration/adapters/claude/resolve_gate.py <run_dir> --gate-kind {user_decision|escalation|approval-escalation} --actor {human|Advisor} [--response "<원문>"]
+  python orchestration/adapters/claude/resolve_gate.py <run_dir> --gate-kind {user_decision|escalation|approval-escalation} --actor {human|Advisor} [--gate-id <gate_id>] [--response "<원문>"]
   ```
   `user_decision_required`는 **사용자(human)만** 해소한다(확정 권위·UAF-INV ⑤). 구조 게이트 해소 시 산출(impl-plan.json)을 먼저 검증하고, 통과 시에만 해소 이벤트 append + 구현 task 승격(task_added revision).
+  `--gate-id`는 해소 대상 게이트를 지목한다. 같은 gateKind 게이트가 **2건 이상 동시에 pending**이면 지목이 필수다 — 무지목 호출은 후보를 열거하고 원장 무변경으로 비영 종료한다(binding §3.4). `render_gates.py`가 내는 게이트별 해소 명령에는 그 게이트의 `--gate-id`가 이미 채워져 있으므로 **복사해 그대로 실행**하면 된다.
 - **재개:**
   ```
   python orchestration/adapters/claude/orchestrate_project.py <project_root> --resume --run-id <run_id> [--retry-limit N]

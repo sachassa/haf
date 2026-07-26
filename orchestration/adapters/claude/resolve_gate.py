@@ -17,11 +17,13 @@
 사용법:
   python orchestration/adapters/claude/resolve_gate.py <run_dir> \
       --gate-kind {user_decision|escalation|approval-escalation} \
-      --actor {human|Advisor} [--response "<원문>"]
+      --actor {human|Advisor} [--response "<원문>"] [--gate-id <gate_id>]
 
 동작 요약:
   - stop-signal.json 에서 해소 대상 gate_id·gateKind 복원(계약 =
     {stop_reason, stopped_tasks, pending_gates:[{gate_id,gateKind,target,scoped_question,since}]}).
+    같은 gateKind 가 여러 건 pending 이면 `--gate-id` 지목이 필수다 — 무지목이면 후보를
+    열거하고 원장 무변경으로 비영 종료한다(침묵 첫-선택 금지).
   - 구조 게이트(user_decision_required, impl-plan 방출 후):
       1) run_dir/workspace/impl-plan.json 을 **먼저** validate_impl_plan 으로 검증.
          실패 시 오류 열거 + 비영 종료 · **원장 무변경**(해소/revision append 0).
@@ -293,17 +295,53 @@ def derive_proposing_step_ref(run_dir: Path) -> str:
 # ==========================================================================
 # stop-signal.json 에서 해소 대상 gate_id·gateKind 복원 (추측 0)
 # ==========================================================================
-def recover_gate(run_dir: Path, wanted_kind: str):
-    """stop-signal.json 의 pending_gates 에서 wanted_kind 게이트 gate_id 를 복원한다.
+def format_gate_candidates(gates) -> str:
+    """후보 게이트 목록을 사람이 지목할 수 있는 형태로 열거한다(gate_id·target·since)."""
+    lines = []
+    for g in gates:
+        lines.append(
+            "  - gate_id=%s target=%s since=%s"
+            % (
+                g.get("gate_id"),
+                json.dumps(g.get("target"), ensure_ascii=False),
+                g.get("since"),
+            )
+        )
+    return "\n".join(lines)
+
+
+def recover_gate(run_dir: Path, wanted_kind: str, gate_id=None):
+    """stop-signal.json 의 pending_gates 에서 해소 대상 gate_id 를 복원한다.
 
     계약 = {stop_reason, stopped_tasks, pending_gates:[{gate_id,gateKind,target,
-    scoped_question,since}]}. 해당 gateKind 게이트가 없으면 (None, 목록) 반환(추측 금지).
+    scoped_question,since}]}. 반환 = (gate_id|None, pending 목록).
+
+    - `gate_id` 지정(특정 지목): pending 에서 gate_id 일치 **그리고** gateKind == wanted_kind
+      인 게이트만 수용한다. 부재이거나 kind 가 다르면 (None, pending) — 호출부가 사유를
+      구분해 출력하고 원장 무변경으로 비영 종료한다(추측 0).
+    - `gate_id` 미지정: wanted_kind 매칭 0건이면 (None, pending). 정확히 1건이면 그것.
+      **2건 이상이면 ValueError** — 어느 게이트를 해소하는지가 결정 불가한데 침묵으로 첫
+      번째를 고르면 사용자가 의도하지 않은 게이트를 해소하게 된다(§3.4 다중 escalation
+      순차 해소). 메시지에 후보(gate_id·target·since)를 열거하고 `--gate-id` 지목을 안내한다.
     """
     stop = load_json(run_dir / "logs" / "stop-signal.json")
     pending = stop.get("pending_gates") or []
+
+    if gate_id is not None:
+        for g in pending:
+            if g.get("gate_id") == gate_id and g.get("gateKind") == wanted_kind:
+                return gate_id, pending
+        return None, pending
+
     matches = [g for g in pending if g.get("gateKind") == wanted_kind]
     if not matches:
         return None, pending
+    if len(matches) > 1:
+        raise ValueError(
+            "정지 신호에 %s 게이트가 %d 건 동시에 pending 이다 — 어느 것을 해소할지 "
+            "추측하지 않는다. `--gate-id <gate_id>` 로 특정 지목하라.\n%s"
+            % (wanted_kind, len(matches), format_gate_candidates(matches))
+        )
     return matches[0]["gate_id"], pending
 
 
@@ -537,14 +575,40 @@ def main(argv=None) -> int:
         "--response", default="",
         help="해소 응답 원문(선택·기록용). 시뮬레이션 아님.",
     )
+    parser.add_argument(
+        "--gate-id", default=None,
+        help="해소 대상 게이트를 특정 지목한다(선택). 같은 gateKind 게이트가 여러 건 동시에 "
+             "pending 이면 지목이 필수다 — 무지목 다중 매칭은 후보를 열거하고 비영 종료한다.",
+    )
     args = parser.parse_args(argv)
 
     run_dir = Path(args.run_dir).resolve()
     wanted_kind = GATE_KIND_MAP[args.gate_kind]
 
-    gate_id, pending = recover_gate(run_dir, wanted_kind)
+    try:
+        gate_id, pending = recover_gate(run_dir, wanted_kind, gate_id=args.gate_id)
+    except ValueError as exc:
+        # 다중 pending 동일 gateKind — 침묵 선택 금지·원장 무변경으로 비영 종료.
+        print("[ERR] %s" % exc, file=sys.stderr)
+        return 1
     if gate_id is None:
-        print("[ERR] 정지 신호에 %s 게이트가 없다 — 해소 불가." % wanted_kind, file=sys.stderr)
+        if args.gate_id is not None:
+            named = [g for g in pending if g.get("gate_id") == args.gate_id]
+            if named:
+                print(
+                    "[ERR] --gate-id %r 는 정지 신호에 있으나 gateKind 가 요청과 다르다 — 해소 불가"
+                    "(지목 게이트 gateKind=%r · 요청 --gate-kind=%s → %s)."
+                    % (args.gate_id, named[0].get("gateKind"), args.gate_kind, wanted_kind),
+                    file=sys.stderr,
+                )
+            else:
+                print(
+                    "[ERR] --gate-id %r 가 정지 신호 pending_gates 에 없다 — 해소 불가."
+                    % (args.gate_id,),
+                    file=sys.stderr,
+                )
+        else:
+            print("[ERR] 정지 신호에 %s 게이트가 없다 — 해소 불가." % wanted_kind, file=sys.stderr)
         print("      pending=%s" % json.dumps(pending, ensure_ascii=False), file=sys.stderr)
         return 1
 

@@ -254,5 +254,140 @@ class TestErrors(unittest.TestCase):
             self.assertEqual(rc, 1)
 
 
+# ==========================================================================
+# r7 — resolve_command 의 --gate-id 지목 (렌더 ↔ resolve_gate 접합 정합)
+# --------------------------------------------------------------------------
+# resolve_gate 는 같은 gateKind 가 2건 이상 pending 이면 무지목 호출을 차단한다(binding §3.4).
+# 따라서 항목별 렌더 명령은 그 게이트의 gate_id 를 항상 실어야 **그대로 실행 가능**하다.
+# ==========================================================================
+def _seed_stop_signal(run: Path) -> list:
+    """렌더와 같은 파생 뷰로 logs/stop-signal.json 을 시드한다(런처 계약 동형·resolve_gate 입력).
+
+    렌더 자체는 stop-signal 을 읽지 않는다(원장 직접 파생) — 이 파일은 **resolve_gate 쪽**
+    입력이다. 왕복 테스트가 두 접합면을 같은 run 에서 잇기 위해 필요하다.
+    """
+    pending, _policy = rgd.load_pending(run)
+    (run / "logs").mkdir(parents=True, exist_ok=True)
+    (run / "logs" / "stop-signal.json").write_text(
+        json.dumps({"stop_reason": "gate", "stopped_tasks": [g["gate_id"] for g in pending],
+                    "pending_gates": pending}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    return pending
+
+
+def _executable_argv(command: str, run_dir: Path) -> list:
+    """렌더가 낸 명령 문자열을 **그대로** 받아 resolve_gate.main 이 먹는 argv 로 만든다.
+
+    치환은 문서화된 자리표시자 관례 2가지뿐이다 — `<run_dir>` → 실제 경로 · 대괄호로 감싼
+    선택 인자(`[--response "…"]`)는 제거. 옵션 이름·순서·`--gate-id` 값은 손대지 않는다.
+    """
+    import re
+    import shlex
+
+    text = re.sub(r"\[[^\]]*\]", "", command).strip()
+    tokens = shlex.split(text)
+    assert tokens[0] == "python" and tokens[1] == rgd.RESOLVE_SCRIPT, tokens
+    return [str(run_dir) if t == "<run_dir>" else t for t in tokens[2:]]
+
+
+class TestResolveCommandNamesGate(unittest.TestCase):
+    def test_r7a_text_and_json_commands_carry_gate_id(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _seed_run(Path(td), [
+                ("g-user", GATE_USER_DECISION_REQUIRED),
+                ("g-esc", GATE_ESCALATION_REQUIRED),
+            ])
+            # 텍스트 모드 — 각 블록의 해소 명령에 그 게이트의 gate_id 가 실린다.
+            rc, out = _run_main([str(run)])
+            self.assertEqual(rc, 0)
+            self.assertIn("--gate-kind user_decision --actor human --gate-id g-user", out)
+            self.assertIn("--gate-kind escalation --actor Advisor --gate-id g-esc", out)
+
+            # JSON 모드 — 항목별 resolve_command 가 자기 gate_id 만 지목한다(교차 오염 0).
+            rc, out = _run_main([str(run), "--json"])
+            self.assertEqual(rc, 0)
+            by_id = {it["gate_id"]: it for it in json.loads(out)}
+            for gid, other in (("g-user", "g-esc"), ("g-esc", "g-user")):
+                cmd = by_id[gid]["resolve_command"]
+                self.assertIn("--gate-id %s" % gid, cmd)
+                self.assertNotIn(other, cmd)
+
+    def test_r7b_unit_contract_of_resolve_command(self):
+        policy = GatePolicy.from_dict({})
+        # gate_id 미지정(일반형) = 종전 문면 — 가법 보장.
+        plain = rgd.resolve_command(GATE_ESCALATION_REQUIRED, policy)
+        self.assertNotIn("--gate-id", plain)
+        # 엔진 파생 gate_id(`::` 포함)는 인용 없이 그대로 실린다.
+        named = rgd.resolve_command(GATE_ESCALATION_REQUIRED, policy,
+                                    "gate-unit-impl-1::exec-escalation")
+        self.assertIn("--gate-id gate-unit-impl-1::exec-escalation", named)
+        # 공백 등 안전 집합 밖 문자는 인용된다(셸 토큰 분해 방지).
+        quoted = rgd.resolve_command(GATE_ESCALATION_REQUIRED, policy, "gate id with space")
+        self.assertIn('--gate-id "gate id with space"', quoted)
+        # 미지 gateKind 는 종전대로 명령을 구성하지 않는다.
+        self.assertIn("미지 gateKind", rgd.resolve_command("nope", policy, "g-x"))
+
+    def test_r7c_roundtrip_multi_pending_each_command_resolves_own_gate(self):
+        """접합부 왕복 — 다중 pending run 에서 렌더 명령을 그대로 실행해 자기 게이트만 해소."""
+        import resolve_gate as rg  # noqa: E402  (같은 어댑터 경계)
+        from gates import is_resolved  # noqa: E402
+
+        with tempfile.TemporaryDirectory() as td:
+            run = _seed_run(Path(td), [
+                ("gate-unit-a::exec-escalation", GATE_ESCALATION_REQUIRED),
+                ("gate-unit-b::exec-escalation", GATE_ESCALATION_REQUIRED),
+            ])
+            pending = _seed_stop_signal(run)
+            self.assertEqual(len(pending), 2, "전제: 동일 kind 2건 pending")
+            policy = GatePolicy.from_dict({})
+
+            rc, out = _run_main([str(run), "--json"])
+            self.assertEqual(rc, 0)
+            items = json.loads(out)
+
+            # 첫 명령을 그대로 실행 → 자기 게이트만 해소되고 나머지는 pending 유지.
+            first, second = items[0], items[1]
+            argv = _executable_argv(first["resolve_command"], run)
+            self.assertIn("--gate-id", argv, "렌더 명령이 지목을 싣지 않으면 다중 pending 에서 차단된다")
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                code = rg.main(argv)
+            self.assertEqual(code, 0, buf.getvalue())
+
+            events = [json.loads(l) for l in
+                      (run / "events.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+            self.assertTrue(is_resolved(events, first["gate_id"], GATE_ESCALATION_REQUIRED, policy))
+            self.assertFalse(is_resolved(events, second["gate_id"], GATE_ESCALATION_REQUIRED, policy),
+                             "지목하지 않은 게이트는 미해소로 남는다")
+
+            # 두 번째 명령도 그대로 실행 → 나머지 게이트 해소(잔여 pending 0).
+            _seed_stop_signal(run)
+            buf2 = io.StringIO()
+            with redirect_stdout(buf2):
+                code2 = rg.main(_executable_argv(second["resolve_command"], run))
+            self.assertEqual(code2, 0, buf2.getvalue())
+            rc, out = _run_main([str(run)])
+            self.assertEqual(out.strip(), "미해소 정지 게이트 없음")
+
+    def test_r7d_roundtrip_single_pending_command_executes(self):
+        """단일 pending 에서도 렌더 명령(지목 포함)이 그대로 실행된다 — 회귀 방지."""
+        import resolve_gate as rg  # noqa: E402
+
+        with tempfile.TemporaryDirectory() as td:
+            run = _seed_run(Path(td), [("g-solo-esc", GATE_ESCALATION_REQUIRED)])
+            _seed_stop_signal(run)
+            rc, out = _run_main([str(run), "--json"])
+            self.assertEqual(rc, 0)
+            item = json.loads(out)[0]
+
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                code = rg.main(_executable_argv(item["resolve_command"], run))
+            self.assertEqual(code, 0, buf.getvalue())
+            _, out = _run_main([str(run)])
+            self.assertEqual(out.strip(), "미해소 정지 게이트 없음")
+
+
 if __name__ == "__main__":
     unittest.main()

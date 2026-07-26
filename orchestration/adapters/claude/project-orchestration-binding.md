@@ -68,7 +68,7 @@
   - `target` — 어느 단위·전이·artifact class 에 걸렸는가(descriptor).
   - `scoped_question` — 무엇을 결정/해소해야 하는가(gates.py 가 실은 구조화 힌트 `{unitId, gateKind}`; 사람 친화 문면 렌더는 이 제시 채널이 담당).
   - `since` — 요구 순번.
-- **정확한 표면 문법·렌더 템플릿 — 확정(§DC-9·2026-07-19).** 최종 렌더 문법은 `orchestration/adapters/claude/render_gates.py`(형태 B·결정적·LLM 0·읽기 전용)가 소유한다. 위 구조 제안 bullet(라벨·`target`·`scoped_question`·`since`)은 확정분으로 유지되며, `render_gates.py`가 항목당 블록으로 물리화한다: 라벨 표(`user_decision_required`→"사용자 결정 대기(확정 권위)"·`escalation_required`→"Advisor/사람 해소 대기")는 **어댑터 소유 데이터**(모듈 상단 상수 dict)이며 **다국어·문면 조정은 이 표 교체가 확장점**이다(정책-as-데이터 동형·렌더 로직 본문 무변경). 진리원천은 `pending_gates(events, policy)` 파생 뷰이며 `stop-signal.json`에 의존하지 않고 원장(events.jsonl + gate_policy.json)에서 **직접 파생**한다 — 부분 해소 후 재렌더도 정확하다(해소 이벤트 append 시 파생 뷰가 자동 제외). 적격 해소 actor·해소 명령(`resolve_gate.py` CLI 1줄)은 정책 데이터에서 파생한다(하드코딩 0). 제시 겸용: 런처(`orchestrate_project.py run_and_map`)가 정지 게이트 시 기존 `[STOP]`/`[PENDING-GATES]` 라인·`stop-signal.json`을 바이트 보존한 뒤 이 렌더 함수를 재사용해 **자동 출력**하고(렌더 실패는 정지 신호를 깨지 않는 부가 표면), 주 세션 Advisor 는 `render_gates.py <run_dir>` 로 **수동 재렌더**할 수 있다. `--json` 은 구조화 출력(원 필드 + label + eligible_resolvers + resolve_command). **원장 무변경(읽기 전용)** — 어떤 파일도 쓰지 않는다.
+- **정확한 표면 문법·렌더 템플릿 — 확정(§DC-9·2026-07-19).** 최종 렌더 문법은 `orchestration/adapters/claude/render_gates.py`(형태 B·결정적·LLM 0·읽기 전용)가 소유한다. 위 구조 제안 bullet(라벨·`target`·`scoped_question`·`since`)은 확정분으로 유지되며, `render_gates.py`가 항목당 블록으로 물리화한다: 라벨 표(`user_decision_required`→"사용자 결정 대기(확정 권위)"·`escalation_required`→"Advisor/사람 해소 대기")는 **어댑터 소유 데이터**(모듈 상단 상수 dict)이며 **다국어·문면 조정은 이 표 교체가 확장점**이다(정책-as-데이터 동형·렌더 로직 본문 무변경). 진리원천은 `pending_gates(events, policy)` 파생 뷰이며 `stop-signal.json`에 의존하지 않고 원장(events.jsonl + gate_policy.json)에서 **직접 파생**한다 — 부분 해소 후 재렌더도 정확하다(해소 이벤트 append 시 파생 뷰가 자동 제외). 적격 해소 actor·해소 명령(`resolve_gate.py` CLI 1줄)은 정책 데이터에서 파생한다(하드코딩 0). **항목별 해소 명령에는 그 게이트의 `--gate-id <gate_id>`가 채워진다(2026-07-26)** — 같은 gateKind 가 다중 pending 이면 무지목 호출이 차단되므로(§3.4), 지목을 항상 실어 렌더 명령이 단일·다중 어느 상황에서도 **복사해 그대로 실행**되게 한다. 값이 셸 안전 문자 집합을 벗어나면 큰따옴표로 인용한다(결정적 규칙). 제시 겸용: 런처(`orchestrate_project.py run_and_map`)가 정지 게이트 시 기존 `[STOP]`/`[PENDING-GATES]` 라인·`stop-signal.json`을 바이트 보존한 뒤 이 렌더 함수를 재사용해 **자동 출력**하고(렌더 실패는 정지 신호를 깨지 않는 부가 표면), 주 세션 Advisor 는 `render_gates.py <run_dir>` 로 **수동 재렌더**할 수 있다. `--json` 은 구조화 출력(원 필드 + label + eligible_resolvers + resolve_command). **원장 무변경(읽기 전용)** — 어떤 파일도 쓰지 않는다.
 
 ### §3.3 해소 응답 → 게이트 해소 이벤트 append 물리 관례
 
@@ -111,6 +111,14 @@
   --response "<재작업 지시>"`. 적격성 판정은 §3.3 표 그대로이며(`escalationResolvers`) 이
   스크립트가 우회하지 않는다. `--response` 원문은 해소 이벤트 `ref.response` 에 **동봉**된다
   (미지정 시 ref 형태는 종전과 동일 — 가법).
+- **해소 대상 지목 `--gate-id` (2026-07-26).** `resolve_gate.py <run_dir> --gate-kind escalation
+  --actor <Advisor|human> --gate-id <gate_id>` 로 해소 대상 게이트를 **특정 지목**한다. 같은
+  gateKind 게이트가 **2건 이상 동시에 pending** 이면 지목이 필수다 — 무지목 호출은 후보
+  (`gate_id`·`target`·`since`)를 열거하고 **원장 무변경으로 비영 종료**한다. 이전 판은 첫
+  매칭을 침묵 선택했고, 그 결과 사용자가 지목하지 않은 단위의 게이트가 해소될 수 있었다.
+  지목한 `gate_id` 가 pending 에 없거나 그 게이트의 gateKind 가 `--gate-kind` 와 다르면
+  사유를 구분해 출력하고 역시 비영 종료한다(원장 무변경). 지목 없이 매칭이 **정확히 1건**인
+  단일 게이트 경로의 거동은 종전과 같다(가법).
 - **재디스패치(재개).** `orchestrate_project.py <project_root> --resume` 재기동 시 엔진이
   적격 해소(해소 at > 마지막 escalated at)를 소비해 그 단위 사이클에 **되돌림 이벤트**를
   1건 append 한다(`outcome=fail`·`trigger=재작업 되돌림(에스컬레이션 해소)`·
@@ -292,6 +300,21 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 ---
 
 ## §8. 개정 이력
+
+- **2026-07-26 (해소 대상 특정 지목 `--gate-id` — 백로그 §J 잔여 해소).** `resolve_gate.py` 의
+  `recover_gate(run_dir, wanted_kind, gate_id=None)` 가 다중 pending 동일 gateKind 에서 첫
+  매칭을 침묵 선택하던 것을 제거했다: 무지목 다중 매칭은 `ValueError`(후보 `gate_id`·`target`
+  ·`since` 열거 + 지목 안내) → CLI 가 stderr 출력 + exit 1(원장 append 0). `--gate-id` 지정
+  시 gate_id·gateKind **양쪽** 일치만 수용하고, 부재/kind 불일치를 구분해 보고한다. 기본
+  인자로 기존 2-튜플 반환 계약·단일 게이트 경로 거동을 보존했다(호출부 무수정). §3.4 에 CLI
+  행 추가. 신규 테스트 `test_resolve_gate.py` 5케이스(무지목 다중 차단·지목 해소 격리·부재
+  id·kind 불일치·`recover_gate` 단위 계약). 게이트 적격 판정(`gates.py`)·해소 의미론
+  (`resolve_structural`/`resolve_escalation`)·05 spec·`orchestration/framework/**`·`uahf/**`
+  무접촉(재정의 0). **동일 트랙 후속:** `render_gates.resolve_command(gate_kind, policy,
+  gate_id=None)` 이 항목별 명령에 `--gate-id` 를 싣도록 확장(텍스트·JSON 양쪽·셸 안전 인용
+  규칙 포함·렌더는 판독 전용 유지)하고 `.claude/commands/uaf-implement.md` CLI 문면을
+  동기화했다. 신규 테스트 `test_render_gates.py` 4케이스(텍스트/JSON 지목·단위 계약·다중
+  pending 왕복 실행·단일 pending 왕복 실행).
 
 - **2026-07-26 (백로그 §L 핵심 + §P 해소 — Run 관측 계약).** 런처(`orchestrate_project.py`)에 관측 계약 물리화: `HeartbeatInvoker` 데코레이터(invoke 시작 전·종료 후 `logs/heartbeat.json` 덮어쓰기·계약 필드 5종·인터페이스 투과로 `invoke_count` 보존) · 구동 경로 top-level 예외 포착 → `logs/failure.json`(계약 필드 6종) 기록 후 **재raise**(스택트레이스 stderr 보존·은폐 0·기존 `[ERR]` return 1 경로 무변) · `--resume` 대상 부재 시 RUNS_DIR 실존 후보 목록(수정시각 최신순·최대 10) 제시(기존 `[ERR]` 라인 바이트 보존 후 가법). 슬러그 길이 상한 공통 규칙 `contract_to_graph.fold_slug`(48자 초과 시 앞 48자 + `-<sha8>`·48자 이하 바이트 동일) 신설 후 `_slug`·`slugify_run_id` 양쪽 적용(§P 크래시·§L 4-b 원장 커밋 불가 해소). 두 기록 모두 failure-isolated(`[HEARTBEAT-SKIP]`·`[FAILURE-SKIP]`). `.claude/commands/uaf-implement.md` §2 재개 예시 `--resume --run-id` 정정 + 종료 코드 표 + 관측 파일 소개. §5.8 신설(§ 번호 불이동·§5 하위 append). 신규 테스트: `test_orchestrate_project.py` 14케이스(하트비트 3·failure 2·슬러그 4·resume 힌트 2·문서 왕복 3) · `test_contract_to_graph.py` 3케이스 = 17건(어댑터 트리 97→114 실측). **05 spec 계약 본문·게이트 어휘·`orchestration/framework/**`(gates.py·orchestrator.py)·PO-INV·Frozen·`uahf/**` 무접촉(재정의 0).** 미해소 이월 = 백로그 §L Desired 4(per-unit timeout).
 - **2026-07-26 (백로그 §J 본체 해소 — 실행 에스컬레이션 해소 채널).** Host 의 Escalated 정지에 원장 좌표를 부여하고 해소→재디스패치 경로를 물리화. 엔진(`orchestrator.py`): escalated 정지 시 `escalation_required` 요구 append(gate_id = `gate-unit-<id>::exec-escalation`·cause `execution_escalated`)+`pending_gates` 탑재·멱등·재에스컬레이션 시 새 요구 append·적격 해소 소비 시 되돌림 이벤트(`ref.kind=gate-rework`) 1건 append → 추가 디스패치 1회. `gates.py`: `latest_eligible_resolution`/`resolution_response` 신설(순수 판독)·`append_gate_resolution(response=...)` 가법(미지정 시 ref 형태 종전과 동일). 런처: escalated 정지도 gate 분기와 같은 계약 형태로 `stop-signal.json` 기록+`[PENDING-GATES]`+렌더(기존 라인·gate 분기 출력·exit 매핑 무변), `--resume` 의 `--retry-limit` override 를 config 에 반영. `resolve_gate.py`: 해소 응답 동봉 + 재개 명령 안내 출력. §3.4 신설. 신규 테스트: `test_orchestrator.py` 7케이스(좌표 발급·멱등·레거시 보존·되돌림/응답 전파·부적격/선행 해소 무효·재에스컬레이션)·`test_gates.py` 3케이스·`test_orchestrate_project.py` 4케이스(정지 신호 계약·레거시 note·접합부 왕복·resume override)·`test_resolve_gate.py` 3케이스. **05 spec 계약 본문·게이트 어휘·해소 적격성·03 10필드·PO-INV·Frozen·`uahf/**` 무접촉(재정의 0).**

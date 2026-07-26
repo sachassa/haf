@@ -98,6 +98,24 @@ Advisor 권고 = **B**(원장 의무만). 근거: B-3의 실측 피해는 "우�
 
 ---
 
+## §5-A. RCA 트랙 잔여 착수 (같은 세션 연장 — 갱신(15) ⑥ 권고 ③)
+
+### recover_gate --gate-id (Worker 위임 2026-07-26)
+
+- 결함 실측 좌표: `resolve_gate.py` `recover_gate` 가 다중 pending 동일 gateKind 에서 `matches[0]` **침묵 선택**. 사양 = `--gate-id` 특정 지목 + 무지목 다중 매칭 시 명시 오류(후보 열거). 외부 호출부 2곳 실측(main + `test_orchestrate_project.py:440` 2-튜플) — 기본값 인자로 계약 보존.
+
+**위임 보고 승격(회수 직후 — 주장 인용·판정은 CP2)**: `uaf-allow-legacy: 수치·완전성 문구는 수임 보고 인용이다 — 판정은 아래 CP2.` 3파일(+76/-6·+160/-0·+19/-0)·신규 g1~g5 pass·3트리 134+175+42 pass·기존 문면 삭제 0 주장. 접합부 왕복 3면을 **런처 실산출 stop-signal**(`run_and_map` 실행·`gates.pending_gates` 동일 산출 경로)로 수행 주장 — 왕복 불가 접합부 없음 주장. **이탈 1건 신고**: binding §8 개정 이력 1항 추가(문서 관례 — 파일 경계는 준수). **미검증 축 신고 2건**: 실 LLM run 미수행 · `render_gates.py` 의 `resolve_command` 렌더 미검사. **open_questions 2건**: ① 렌더 명령이 `--gate-id` 없이 나오면 다중 pending 에서 사용자 복사 명령이 차단됨 — 렌더에 gate_id 포함 제안 ② `.claude/commands/uaf-implement.md:53` CLI 문면 미반영. 귀속 후보 없음(브리프 좌표 실측 일치 주장).
+
+**후속 위임(open_questions 2건 채택) 보고 승격(회수 직후 — 주장 인용)**: `uaf-allow-legacy: 수치·완전성 문구는 수임 보고 인용 — 판정은 아래 CP2.` 렌더 항목별 `resolve_command` 에 `--gate-id` 상시 포함(가법 — `gate_id=None` 일반형은 종전 문면)·결정적 셸 인용 규칙(`_cli_token`) · 신규 r7a~r7d 4케이스 · 3트리 138+175+42 pass · **기존 assert 갱신 0건**(인자 배치를 `--actor` 뒤로 선택해 기존 부분 문자열 단언 보존) · 실 런처가 자동 출력한 렌더 문면 → argv → resolve → 재렌더 "미해소 0건" 물리 왕복 · `uaf-implement.md` CLI 문면 반영 주장. 이탈 1건(binding §8 이력 관례 — 직전과 동형) · 미검증 축 2건(실 LLM run·한글 gate_id 인용 거동) 신고.
+
+**Advisor CP2 — recover_gate 트랙 2차 + CP3 (2026-07-26)**: `uaf-verified:` 3트리 직접 재실행 138+175+42 pass·EXIT=0×3 + `render_gates.py`·`resolve_gate.py` diff 정독(침묵 첫-선택 제거·kind 불일치/부재 구분 오류 문면·항목별 gate_id 전달·가법 보존). 검색 범위 = 3트리 + 두 파일 diff. **판정 = Pass·CP3 승인.** 이탈(§8 이력 추가) 2건 = 수용(문서 관례 정합). 미검증 축 2건은 이월로 기록(실 LLM run = 다음 실 run 관측 좌표·한글 gate_id = 엔진 파생 규칙상 발생 시 재심).
+
+### per-unit timeout — 설계 조사 완료·구현 이월 (Advisor 결정)
+
+- `uaf-verified:` 코드 정독 조사 — `contract_to_graph.py` `DEFAULT_TIMEOUT=2400` 전역 config → `orchestrator.py` `self.timeout` → ① StepHost 생성자(`_new_host`·host 전역) ② `_dispatch_gate_step` 의 `InvokeRequest(timeout=self.timeout)`. **`InvokeRequest` 에는 per-request `timeout` 필드가 실재**(`uahf/framework/loop/step-host/invoker.py:52`). 검색 범위 = orchestration 트리 + uahf step-host 트리의 timeout 토큰 grep + 해당 지점 정독.
+- **이월 사유(이진)**: StepHost 는 uahf 무수정 경계(orchestrator 주석 "무수정 import·재정의 0")이며 host 전역 timeout 만 받는다. per-unit 화의 무접촉 경로 = **orchestration 층 래퍼 invoker**(`_effective_invoker()` 훅 실재)가 step 계약의 단위별 timeout 으로 request.timeout 을 재기입 — 단 `Step.from_dict` 가 임의 필드(timeout)를 보존하는지 미확인(`uaf-assumed:` Step 클래스 본문 미열람) + impl-plan 스키마 필드 신설·검증 규칙이 필요해 **별도 설계 사이클 대상**이다. 오늘 세션 잔여 시간에 밀어넣지 않는다(엔진 변경 품질 규율).
+- Q·R 기계 강제 = 백로그 원장의 기존 미도입 사유 행 유지(각각 브리프 렌더 결합·Verifier 판정 축 확장 — 별도 트랙). 이 세션에서 변경 0.
+
 ## §5. 본 세션 검증·이탈 기록 (정직 기록)
 
 - B-1·B-4 배선은 Advisor 직접 산출(거버넌스 문서 층 — 선례: B-0·B-2·B-5·RCA 처방 3 전부 Advisor 직접). 문서 저술이므로 CP2 독립 판정 대신 아래 자가 검증 + 커밋 전 재검으로 갈음하되, 이 갈음 자체를 이탈로 기록한다(자가 검증은 독립 판정이 아니다).

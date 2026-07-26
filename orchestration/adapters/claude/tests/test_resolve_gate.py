@@ -1160,5 +1160,165 @@ class TestContractPointerIntegrity(unittest.TestCase):
         self.assertIn("project-plan", errors[0])
 
 
+# ==========================================================================
+# 다중 pending 동일 gateKind 특정 지목 (--gate-id) — 침묵 첫-선택 제거
+# --------------------------------------------------------------------------
+# 결함: recover_gate 가 matches[0] 를 조용히 골라 사용자가 의도하지 않은 게이트를 해소했다.
+# 사양: --gate-id 지목 + 무지목 다중 매칭 시 명시 오류(후보 열거)·원장 무변경.
+# 기존 단일 게이트 경로(무지목 1건 매칭)는 위 기존 케이스들이 무수정 통과로 증명한다.
+# ==========================================================================
+def _add_pending_gate(run: Path, gate_kind: str, gate_id: str, unit_id: str) -> None:
+    """기존 run 에 정지 게이트 요구를 1건 더 append 하고 stop-signal 을 재파생한다(가법 헬퍼).
+
+    stop-signal 의 pending_gates 는 런처(`orchestrate_project.run_and_map`)와 동일하게
+    `gates.pending_gates(events, policy)` 파생 결과를 그대로 싣는다 — 픽스처가 손으로
+    만든 형태가 아니라 실물 계약(binding §3.4 4필드)과 같은 산출 경로다.
+    """
+    log = EventLog(JsonlEventStore(str(run / "events.jsonl")))
+    append_gate_requirement(
+        log, gate_id, gate_kind,
+        target={"unitId": unit_id},
+        scoped_question={"unitId": unit_id, "gateKind": gate_kind,
+                         "cause": "execution_escalated"},
+    )
+    pend = pending_gates(log.all_events(), GatePolicy.from_dict({}))
+    sig = run / "logs" / "stop-signal.json"
+    stop = json.loads(sig.read_text(encoding="utf-8"))
+    stop["pending_gates"] = pend
+    sig.write_text(json.dumps(stop, ensure_ascii=False), encoding="utf-8")
+
+
+def _stop_pending(run: Path):
+    return json.loads(
+        (run / "logs" / "stop-signal.json").read_text(encoding="utf-8")
+    )["pending_gates"]
+
+
+class TestMultiPendingGateSelection(unittest.TestCase):
+    def _two_escalation_run(self, td) -> Path:
+        run = _build_run(Path(td), GATE_ESCALATION_REQUIRED, "gate-unit-a::exec-escalation")
+        _add_pending_gate(run, GATE_ESCALATION_REQUIRED,
+                          "gate-unit-b::exec-escalation", "unit-b")
+        self.assertEqual(len(_stop_pending(run)), 2, "픽스처 전제: 동일 kind 2건 pending")
+        return run
+
+    def _run_cli(self, argv):
+        import io
+        from contextlib import redirect_stderr, redirect_stdout
+
+        err, out = io.StringIO(), io.StringIO()
+        with redirect_stderr(err), redirect_stdout(out):
+            rc = rg.main(argv)
+        return rc, out.getvalue(), err.getvalue()
+
+    # g1 — 동일 kind 2건 pending + 무지목 → 비영 종료 · 원장 무변경 · 후보 열거.
+    def test_g1_multiple_pending_without_gate_id_blocks(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = self._two_escalation_run(td)
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+
+            rc, _out, err = self._run_cli(
+                [str(run), "--gate-kind", "escalation", "--actor", "Advisor"])
+
+            self.assertNotEqual(rc, 0, "다중 매칭 무지목은 비영 종료여야 한다(침묵 첫-선택 금지)")
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before, "events.jsonl 바이트 무변경")
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before, "revisions.jsonl 무변경")
+            # 후보 열거 + 지목 안내가 stderr 에 있다.
+            self.assertIn("gate-unit-a::exec-escalation", err)
+            self.assertIn("gate-unit-b::exec-escalation", err)
+            self.assertIn("--gate-id", err)
+            self.assertIn("since=", err)
+
+    # g2 — --gate-id 로 두 번째 게이트 지목 → 그 게이트만 해소(첫 게이트 pending 유지).
+    def test_g2_gate_id_resolves_only_the_named_gate(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = self._two_escalation_run(td)
+            pend = _stop_pending(run)
+            target = pend[1]["gate_id"]
+            other = pend[0]["gate_id"]
+
+            rc, out, err = self._run_cli(
+                [str(run), "--gate-kind", "escalation", "--actor", "Advisor",
+                 "--gate-id", target, "--response", "b 단위만 재작업하라"])
+            self.assertEqual(rc, 0, err)
+            self.assertIn(target, out)
+
+            # 해소 이벤트의 gate_id 로 확증 — 지목한 게이트에만 append 됐다.
+            resolved = [e for e in _events(run)
+                        if (e.get("ref") or {}).get("kind") == "gate-resolved"]
+            self.assertEqual([e["ref"]["gate_id"] for e in resolved], [target])
+
+            policy = GatePolicy.from_dict({})
+            self.assertTrue(is_resolved(_events(run), target, GATE_ESCALATION_REQUIRED, policy))
+            self.assertFalse(is_resolved(_events(run), other, GATE_ESCALATION_REQUIRED, policy),
+                             "지목하지 않은 게이트는 미해소로 남는다")
+            # 파생 큐에도 나머지 1건만 남는다.
+            self.assertEqual([g["gate_id"] for g in pending_gates(_events(run), policy)], [other])
+
+    # g3 — --gate-id 가 pending 에 없는 id → 비영 종료 · 원장 무변경.
+    def test_g3_absent_gate_id_blocks(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_ESCALATION_REQUIRED, "g-esc-only")
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+
+            rc, _out, err = self._run_cli(
+                [str(run), "--gate-kind", "escalation", "--actor", "Advisor",
+                 "--gate-id", "gate-does-not-exist"])
+
+            self.assertNotEqual(rc, 0)
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before, "events.jsonl 바이트 무변경")
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before, "revisions.jsonl 무변경")
+            self.assertIn("gate-does-not-exist", err)
+            self.assertIn("pending_gates 에 없다", err)
+
+    # g4 — --gate-id 는 실재하나 gateKind 불일치 → 비영 종료 · 사유 문면 · 원장 무변경.
+    def test_g4_gate_id_kind_mismatch_blocks(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = _build_run(Path(td), GATE_USER_DECISION_REQUIRED, "g-struct",
+                             plan=_valid_plan())
+            _add_pending_gate(run, GATE_ESCALATION_REQUIRED, "g-esc-other", "unit-b")
+            ev_before, rev_before = _sha(run / "events.jsonl"), _sha(run / "revisions.jsonl")
+
+            # escalation 을 요청하면서 user_decision 게이트를 지목했다.
+            rc, _out, err = self._run_cli(
+                [str(run), "--gate-kind", "escalation", "--actor", "Advisor",
+                 "--gate-id", "g-struct"])
+
+            self.assertNotEqual(rc, 0)
+            self.assertEqual(_sha(run / "events.jsonl"), ev_before, "events.jsonl 바이트 무변경")
+            self.assertEqual(_sha(run / "revisions.jsonl"), rev_before, "revisions.jsonl 무변경")
+            self.assertIn("gateKind 가 요청과 다르다", err)
+            self.assertIn(GATE_USER_DECISION_REQUIRED, err)
+
+    # g5 — recover_gate 단위: 다중 매칭은 ValueError(후보 포함) · 지목/미지목 반환 계약.
+    def test_g5_recover_gate_unit_contract(self):
+        with tempfile.TemporaryDirectory() as td:
+            run = self._two_escalation_run(td)
+
+            with self.assertRaises(ValueError) as ctx:
+                rg.recover_gate(run, GATE_ESCALATION_REQUIRED)
+            msg = str(ctx.exception)
+            self.assertIn("gate-unit-a::exec-escalation", msg)
+            self.assertIn("gate-unit-b::exec-escalation", msg)
+            self.assertIn("--gate-id", msg)
+
+            # 지목하면 그 gate_id 를 그대로 돌려준다.
+            gid, pend = rg.recover_gate(run, GATE_ESCALATION_REQUIRED,
+                                        gate_id="gate-unit-b::exec-escalation")
+            self.assertEqual(gid, "gate-unit-b::exec-escalation")
+            self.assertEqual(len(pend), 2)
+
+            # 부재 id·kind 불일치는 (None, pending) — raise 아님.
+            self.assertEqual(rg.recover_gate(run, GATE_ESCALATION_REQUIRED, gate_id="nope")[0],
+                             None)
+            self.assertEqual(
+                rg.recover_gate(run, GATE_USER_DECISION_REQUIRED,
+                                gate_id="gate-unit-a::exec-escalation")[0],
+                None)
+
+            # 매칭 0건(다른 kind)은 기존대로 (None, pending) — 기본 인자 계약 보존.
+            self.assertEqual(rg.recover_gate(run, GATE_USER_DECISION_REQUIRED)[0], None)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -558,6 +558,14 @@
 >
 > **미해소 이월**: B-4 실시간 전파(환경 제약·수임 Agent 간 통신 표면 등장 시 재심) · B-3 기계 차단(SD 실행 호스팅 도입 시 엔진 게이트 승격 재심) · 갱신(15) ⑤ 목록 중 K·B-1·B-3·B-4 를 제외한 나머지 유지.
 
+> **🔴 갱신 2026-07-26(17) — RCA 잔여 부분 소화: `recover_gate --gate-id` 해소(접합 3면 포함). per-unit timeout = 설계 조사 후 이월.**
+>
+> - **`recover_gate --gate-id` 해소**(Worker 위임 2건·각 Advisor CP2 Pass·CP3 승인): ① `resolve_gate.py` — 다중 pending 동일 gateKind 의 **침묵 첫-선택 제거**(무지목 다중 매칭 = 후보 열거·원장 무변경 비영 종료) + `--gate-id` 특정 지목(부재/kind 불일치 사유 구분 출력) ② `render_gates.py` — 항목별 `resolve_command` 가 자기 gate_id 를 상시 지목(결정적 셸 인용 규칙·가법) ③ `uaf-implement.md`·binding §3.2/§3.4 문면 동기화. `uaf-verified:` 접합부 왕복 = 런처 실산출 stop-signal → 렌더 자동 출력 문면 → 실제 argv 실행 → 재렌더 "미해소 0건"(수임 실행 + Advisor 3트리 재실행 138+175+42·diff 정독으로 재확인). 신규 테스트 9건(g1~g5·r7a~r7d)·기존 케이스 문면 수정 0.
+> - **per-unit timeout(백로그 L §4) = 설계 조사 완료·구현 이월**: `InvokeRequest.timeout` per-request 필드 실재 확인·StepHost 는 uahf 무수정 경계 → **orchestration 층 래퍼 invoker(`_effective_invoker()`) 경로가 무접촉 해법 후보**. 미확인 = `Step.from_dict` 임의 필드 보존 여부 + impl-plan 스키마 신설·검증 규칙 — 별도 설계 사이클 대상(좌표 = 원장 §5-A·백로그 L 잔여 행).
+> - **Q·R 기계 강제** = 변경 0(백로그 기존 미도입 사유 행 유지 — 각각 브리프 렌더 결합·Verifier 판정 축 확장의 별도 트랙).
+> - **미검증 축 이월 2건**(수임 신고·Advisor 수용): 실 LLM invoker 경유 다중 escalation run 미수행(다음 실 run 관측 좌표에 추가) · 한글 gate_id 셸 인용 거동 미실측(엔진 파생 규칙상 ASCII — 발생 시 재심).
+> - **다음 착수**: per-unit timeout 설계 사이클(위 좌표에서 시작 — Step 필드 보존 확인이 첫 단계) · 그 외 갱신(16) ⑤ 목록 유지.
+
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 
 용도: 아래 항목을 다른 세션에서 하나씩 수정한다. **§DC-1이 1순위.** 근거는 2026-07-18 세션 실측.

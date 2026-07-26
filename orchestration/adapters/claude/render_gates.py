@@ -94,20 +94,43 @@ def eligible_resolvers(gate_kind, policy: GatePolicy) -> list:
     return []
 
 
-def resolve_command(gate_kind, policy: GatePolicy) -> str:
+# --gate-id 값에 인용이 필요 없는 문자 집합(엔진 파생 gate_id 는 `gate-unit-<id>::exec-escalation`
+# 형태라 통상 이 집합에 든다). 벗어나면 큰따옴표로 감싼다 — 렌더 명령을 그대로 붙여 넣어도
+# 셸이 토큰을 쪼개지 않게 하는 결정적 규칙이다.
+_SAFE_CLI_CHARS = set(
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" "-_.:/@+=,"
+)
+
+
+def _cli_token(value) -> str:
+    """CLI 인자 값 1개를 셸 안전 토큰으로 만든다(결정적·안전 문자면 그대로)."""
+    text = str(value)
+    if text and all(ch in _SAFE_CLI_CHARS for ch in text):
+        return text
+    return '"%s"' % text.replace('"', '\\"')
+
+
+def resolve_command(gate_kind, policy: GatePolicy, gate_id=None) -> str:
     """이 게이트를 해소하는 resolve_gate.py 실제 CLI 1줄(적격 actor 예시 채움).
 
     <run_dir> 는 호출자가 채우는 자리표시자다(렌더는 run_dir 절대경로를 강제하지 않는다).
     actor 예시 = 적격 목록의 첫 값(정책 데이터 파생). 미지 gateKind 는 명령을 구성하지 않는다.
+
+    `gate_id` 를 주면 `--gate-id <gate_id>` 를 **항상** 싣는다(항목별 렌더는 언제나 준다).
+    이유 = resolve_gate 는 같은 gateKind 가 2건 이상 pending 이면 무지목 호출을 차단하므로
+    (binding §3.4), 지목 없는 명령은 다중 pending 상황에서 그대로 실행되지 않는다. 지목을
+    항상 실어 두면 단일/다중 어느 상황에서도 렌더 명령이 그대로 실행된다. `gate_id=None`
+    (게이트 문맥 없는 일반형 조회)이면 종전 문면 그대로다 — 가법.
     """
     cli = GATE_KIND_TO_CLI.get(gate_kind)
     if cli is None:
         return "(해소 명령 없음 — 미지 gateKind: %s)" % gate_kind
     resolvers = eligible_resolvers(gate_kind, policy)
     actor = resolvers[0] if resolvers else "<actor>"
+    named = "" if gate_id is None else (" --gate-id %s" % _cli_token(gate_id))
     return (
-        "python %s <run_dir> --gate-kind %s --actor %s [--response \"<응답 원문>\"]"
-        % (RESOLVE_SCRIPT, cli, actor)
+        "python %s <run_dir> --gate-kind %s --actor %s%s [--response \"<응답 원문>\"]"
+        % (RESOLVE_SCRIPT, cli, actor, named)
     )
 
 
@@ -131,7 +154,7 @@ def _json_item(pend: dict, policy: GatePolicy) -> dict:
     item = dict(pend)  # 원 필드 보존(gate_id·gateKind·target·scoped_question·since).
     item["label"] = _label(gate_kind)
     item["eligible_resolvers"] = eligible_resolvers(gate_kind, policy)
-    item["resolve_command"] = resolve_command(gate_kind, policy)
+    item["resolve_command"] = resolve_command(gate_kind, policy, pend.get("gate_id"))
     return item
 
 
@@ -177,7 +200,7 @@ def render_pending(pending: list, policy: GatePolicy) -> str:
         lines.append("- 적격 해소 actor: %s" % ", ".join(str(r) for r in resolvers))
         lines.append("- 해소 명령:")
         lines.append("  ```")
-        lines.append("  %s" % resolve_command(gate_kind, policy))
+        lines.append("  %s" % resolve_command(gate_kind, policy, gate_id))
         lines.append("  ```")
         lines.append("")
     # 말미 개행 정리 — 결정적 산출을 위해 후행 빈 줄 1개로 정규화.

@@ -564,7 +564,8 @@
 > - **per-unit timeout(백로그 L §4) = 설계 조사 완료·구현 이월**: `InvokeRequest.timeout` per-request 필드 실재 확인·StepHost 는 uahf 무수정 경계 → **orchestration 층 래퍼 invoker(`_effective_invoker()`) 경로가 무접촉 해법 후보**. 미확인 = `Step.from_dict` 임의 필드 보존 여부 + impl-plan 스키마 신설·검증 규칙 — 별도 설계 사이클 대상(좌표 = 원장 §5-A·백로그 L 잔여 행).
 > - **Q·R 기계 강제** = 변경 0(백로그 기존 미도입 사유 행 유지 — 각각 브리프 렌더 결합·Verifier 판정 축 확장의 별도 트랙).
 > - **미검증 축 이월 2건**(수임 신고·Advisor 수용): 실 LLM invoker 경유 다중 escalation run 미수행(다음 실 run 관측 좌표에 추가) · 한글 gate_id 셸 인용 거동 미실측(엔진 파생 규칙상 ASCII — 발생 시 재심).
-> - **다음 착수**: per-unit timeout 설계 사이클(위 좌표에서 시작 — Step 필드 보존 확인이 첫 단계) · 그 외 갱신(16) ⑤ 목록 유지.
+> - **★ 다음 착수 = 사용자 확정 2026-07-26(본 세션 마감 지시: "권고 순서대로 per-unit timeout부터 새 세션에서")**: **① per-unit timeout 설계 사이클 ② 백로그 N(조건부 승인 하류 전달) ③ 백로그 M·O(검증 구조 계열)** — Advisor 권고 순서를 사용자가 채택. 그 외 갱신(16) ⑤ 목록은 순위 미배정 유지.
+> - **per-unit timeout 착수 좌표(선행 확인 1건은 본 세션에서 해소)**: `uaf-verified:` `uahf/framework/loop/step-host/step.py` `Step.from_dict`(:65) 정독 — **명시 화이트리스트 로드라 그래프 노드의 `timeout` 필드는 Step 에서 탈락한다**(보존 필드 = id·task·done·interfaceContract·ownedBoundary·dependsOn·delegation·role·capability·model). 따라서 설계는 **orchestration 층 래퍼 invoker 가 그래프 노드 맵(step id → timeout)을 닫아 들고 `request.bundle.step_contract.id` 로 매칭해 `request.timeout` 을 재기입**하는 형태다(uahf 무접촉·delegation dict 에 끼워 넣는 우회는 02 8필드 계약 오염이라 배제). 남은 설계 결정 = impl-plan task 의 선택 `timeout` 필드 스키마·검증 규칙(양의 정수·검증 지점 = `validate_impl_plan`)·seed proposal 노드 값·전역 fallback 유지. 최소 read-set = 원장 `docs/backlog-k-delegation-b-ledger.md` §5-A + 백로그 L §4 잔여 행 + `orchestrator.py` `_effective_invoker()`/`_new_host`/`_dispatch_gate_step`.
 
 ## §DC. 활성 트랙 (최우선) — UAF 설계 완성도·산출물 강제 (Design Completeness Enforcement)
 

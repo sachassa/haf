@@ -19,6 +19,7 @@
 | 2026-07-19 | v1.4 (정합) | **Visual Contract 트랙 Wave 2** — Figma UI 디자인 원칙 7종 통합. §7.2 (바)에 `accessibility-floor.criteria`(접근성 실값·정보성·체커 미판정) 문면 추가·(사) `designPrinciples` 7종(hierarchy·progressive-disclosure·consistency·contrast·accessibility·proximity·alignment·`{id,name,gist}`) 값표 신설. §7A.1 디자이너 브리프 원칙 주입 + 화면설계서 원칙별 근거 기록 요구(silentOmission 금지). §7C.3a mock 리뷰 차원 = `designPrinciples` 대조 신설. brief-template `{DESIGN_PRINCIPLES}` 슬롯·매핑 추가. 체커 판정 로직 무변경(criteria·designPrinciples tolerant 실측). policy `designElements.accessibility-floor.criteria`·`designPrinciples` 데이터. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
 | 2026-07-19 | v1.4 (정합) | **Visual Contract 트랙** — 디자인 필수 요소 강제 + mock 수렴 규약. §7.2 (다) `defaultRequiredSet`에 `design-tokens`·`screen-mock`·`mock-convergence-record` 3종 가법(touchpoint·소유 디자이너, 10→13)·(나) `artifactOwnership` 3종 추가. §7.2 (바) `designElements`(screenScope 5·projectScope 3·`appliesWhen: touchpoint`·요소 단위 silentOmission 금지) 값 문면 신설 = Policy+게이트 강제(책임 있는 자율 (a)). §7C(mock 생성·사용자 수렴 규약 — 정본/파생 규율·톤 3안 수렴·`mock-convergence-record` 종료·환경 표면) 신설(무침습·§8~§14 번호 보존). 04 §3.9(무수정) 물리화·재정의 0. policy yaml stale 포인터(uahf 미실재) planning 정정. 사용자 결정 2026-07-19. | Worker (Advisor 위임) |
 | 2026-07-26 | (정합) | md 슬림화 Wave 4 — 비계약 격리 개정+값 모순 단일소스화(정본 = default-policy.yaml·binding §7.2), 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
+| 2026-07-26 | v1.4 (정합) | **절차 비례화 트랙 W1-a** — SD 경량 프로파일 신설 + workspace policy 시드 절차 물리화. `policy/lightweight-policy.yaml` 신설(`defaultRequiredSet` 1종 = `solution-design`/통합 설계 문서/`always` · `artifactOwnership` 1:1 owner PM · `requirementClasses` 3종·`exclusionRule`·(가)(나)(라)(바)(사) 표준과 동일 값 — 검증 하한·요소 강제·심의 축소 0). §7.2 (다)에 프로파일 2종 값표 append(표준 13 vs 경량 1·완결 프로파일 근거·드리프트 통제 지점 = §7.2). §7A.2에 **§7A.2-S**(workspace policy 시드 3항 — 표준/경량 이진 선택 → `<workspace>/.claude/solution-design/policy/default-policy.yaml` 배치 → `MaturationRunStarted`/`provenance` policy 참조 원장 기록·이탈 사유 기록) 신설(무침습 — §7A.3 이하 절 번호 보존). 실측: 경량 policy × 1종 산출 매니페스트 exit 0 · 미산출 매니페스트 exit 2(음성 대조) · `solution_design_resolve` 적재 exit 0. python 4파일·`design-manifest.schema.md`·04 spec 수정 0(계약 요소 무변경·가법). 사용자 확정 Q-1(2026-07-26). | Worker (Advisor 위임) |
 
 (이력 절은 문서 머리에 둔다 — UAF 관행 동형. 절 번호는 §9지만 배치는 머리다. 이후 개정은 이 표에 append-only로 기록한다. `uaf-allow-legacy:` 기존 행은 작성 당시의 종수·값·절 구성 표기를 그대로 보존한다(문면 불변 = append-only 원칙) — 현행 값은 §7.2와 policy yaml이 소유한다.)
 
@@ -255,6 +256,25 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 | `classExclusionOnNonDeclaration` | 표면화 — `declaredTouchpoints`/`declaredInterfaces` 공집합으로 클래스가 제외되면 매니페스트 `classExclusions.<class>{reason,confirmedBy}` 필수. **조용한 자동 N/A 금지**(silentOmission 금지 동형). |
 | `manualExclude` | `always` 클래스 제외 시 사유 기록 + 사용자 확인 — 성숙 run 기록(`events/maturation-<run-id>/`)에 남긴다 |
 
+**경량 프로파일 (`lightweight-policy.yaml` — 절차 비례화 트랙 W1-a · 사용자 확정 Q-1):**
+
+Solution Design Policy 프로파일은 **2종**이다 — 표준 `policy/default-policy.yaml`(위 13종) · 경량 `policy/lightweight-policy.yaml`(통합 설계 문서 1종). 둘 중 어느 파일을 대상 워크스페이스에 두는가의 절차는 **§7A.2-S**(workspace policy 시드)가 소유한다. 두 프로파일 공통 절의 **값 정본은 본 §7.2**이며, 표준 프로파일 값 개정 시 경량 파일의 공통 절도 동기 갱신 대상이다(드리프트 통제 지점).
+
+| 항목 | 표준 프로파일 | 경량 프로파일 |
+|---|---|---|
+| `projectionSelection.defaultRequiredSet` 항목 수 | 13 | **1** |
+| 그 항목 | 위 13종 표 | `{ id: solution-design, name: 통합 설계 문서, requirement: always }` |
+| `artifactOwnership` | 13 id와 1:1 | **1 id와 1:1** — `solution-design` owner = `PM`(`coverageFloor` 역할 — 통합 문서가 선언 전체 범위를 한 문서로 관장하므로 전체 커버리지 관장 역할 소유·04 §3.3·SP-INV 9). 전문 역할은 소유 0·절 단위 기고·심의 참여 |
+| `requirementClasses` | `always`·`touchpoint`·`interface` 3종 | **3종 동일 문면**(정의 삭제 0 — 경량 세트에 touchpoint/interface 클래스 항목이 0이라 두 클래스는 미발화하나, 프로젝트 policy 사본이 선언-조건부 항목을 가법 등재할 때 그대로 소비된다((바) 말미 편입 패턴)) |
+| `exclusionRule` | `silentOmission` 금지 · `classExclusionOnNonDeclaration` 표면화 · `manualExclude` | **동일 문면**(제외 규칙 완화 0) |
+| (가) 판정 신호 · (나) 역할 선택 · (라) 심의 · (바) 디자인 요소 · (사) 원칙 | 위 각 절의 값 | **표준과 동일 값**(신호·역할·상한·라운드·요소·원칙 축소 0) |
+
+- **경량 = 산출물 종수 축소만이다.** 검증 하한은 무변경 — 경량 레인에서도 `design_completeness` **동일 체커**가 동일 규칙(침묵 누락 차단·정당화 제외 요건)으로 판정하며 새 체커·병행 게이트를 두지 않는다. 접점을 선언하면 (바) `designElements` 요소 단위 강제가 그대로 발화한다(통합 문서 1종 체제에서는 요소 `covered`의 `pointer`가 그 문서의 절을 지목한다).
+- **id `solution-design`의 본문 경로 = `<workspace>/docs/solution-design.md`** (배치 규약 §7A.2). 이 값은 seed 프롬프트가 가정하는 SD 입력 경로와 정합한다(접합부 정합 판정은 W1-b 소관).
+- **프로파일 파일은 완결이어야 한다(사본이 아니라 프로파일인 이유).** 체커·로더는 워크스페이스 고정 상대경로의 **단일 정책 파일**만 읽고 두 파일을 병합하지 않으며, 오버레이·include 기구가 코드에 **0**이다. `roleSelection`·`artifactOwnership` 부재는 `solution_design_resolve`의 `PolicyError`로 즉시 실패한다. 따라서 공통 절의 물리 중복은 회피 불가다.
+
+(`uaf-verified:` 위 표·항목의 코드·데이터 주장은 `policy/default-policy.yaml`과 `policy/lightweight-policy.yaml` 키 트리 대조, `orchestration/adapters/claude/design_completeness.py`(`_load_policy_required`·`_check_design_elements`·클래스 제외 블록)와 `planning/adapters/claude/solution_design_resolve.py`(`load_policy`·`_compute_role_composition`·`_build_owner_map`·`_compute_artifact_plan`) 판독, 그리고 경량 프로파일 × 1종 매니페스트 실행 2건(산출 → `[DESIGN-COMPLETE]` exit 0 / 미산출 → `[DESIGN-INCOMPLETE]` exit 2)과 로더 실행 1건(exit 0·`artifactPlan` 1항·owner PM) 실측으로 얻었다. **검색 범위 = 위 4파일 + 두 policy 파일**이며, 그 밖(소비 프로젝트 워크스페이스 실 시드·엔진 run 경유 왕복·`pretooluse_design_guard` 라이브 발화)은 이 개정의 실측 범위 밖이다.)
+
 **(라) 다라운드 심의 정책 (04 §3.4-C — §7B 규약 절차의 policy 측 파라미터·§DC-5):**
 
 여기 (라)가 `deliberation` 실값의 정본 값 문면이며, **§7B.4는 소비 지점(어느 절이 어느 키를 읽는지)만** 둔다(분업: 소비 지점 표 = §7B.4 / 값 = 여기).
@@ -330,6 +350,18 @@ Solution Design이 **기본 필수 Projection 세트(§7.2 (다))를 어떻게 �
 - **기계 색인 = `design-manifest.json`.** 산출/제외 상태의 기계 판독 색인은 `design-manifest.json`(`orchestration/adapters/claude/design-manifest.schema.md` 스키마)이며 `artifacts[].id`는 `defaultRequiredSet[].id`와 대응한다. 소유 역할 매핑의 정본은 Policy `artifactOwnership`이고 매니페스트는 각 id의 `produced`/`excluded` 상태를 기록한다(체커 소비 표면).
 - **구조화 사이드카 = 다운스트림 소비 시에만.** 구조화 사이드카(예: `table-def`의 `schema.json`)는 **다운스트림 코드생성이 실제 소비할 때에만** 산출한다(불필요 산출 방지·Markdown 본문이 1차 정본).
 - **배치 스코프(SP-INV 7 워크스페이스 귀속).** 본문은 `<workspace>/docs/`, 매니페스트는 `<workspace>/.claude/solution-design/design-manifest.json`에 둔다 — **대상 워크스페이스 귀속**이며 성숙 run 디렉터리가 아니다(04 §3.7). run 디렉터리에는 실행 메타·이벤트 로그만(§3·§4).
+
+**§7A.2-S — workspace policy 시드 (절차 항 · form-A · 절차 비례화 트랙 W1-a 신설).**
+
+체커·로더는 정책을 워크스페이스 **고정 상대경로**에서 읽고 그 경로는 config 키·환경변수로 바꿀 수 없다. 그러므로 프로파일 선택은 **그 자리에 어느 프로파일 파일을 놓는가**로 환원된다. 성숙 run 착수 전에 주 세션이 아래 3항을 수행한다.
+
+| # | 항 | 내용 |
+|---|---|---|
+| (S1) | **표준/경량 선택** | 프로파일은 2종 중 하나다 — 레인 값 `standard` → 표준 `uahf/framework/adapters/claude/solution-design-data/policy/default-policy.yaml`(13종) · 레인 값 `lightweight` → 경량 `.../policy/lightweight-policy.yaml`(통합 설계 문서 1종·§7.2 (다) 경량 값표). 선택은 이진이며 제3의 값을 두지 않는다. 선택 주체·판별식은 레인 판별 소관(이 절은 판별하지 않고 **소비**한다)이고 미판정·선언 부재는 `standard`로 귀결한다(안전측). |
+| (S2) | **대상 경로에 배치** | 선택한 프로파일 파일을 `<workspace>/.claude/solution-design/policy/default-policy.yaml`에 **파일명 `default-policy.yaml`으로** 둔다(체커·로더가 읽는 고정 상대경로 — 경량을 선택해도 원본 파일명 `lightweight-policy.yaml`을 그 자리에 쓰지 않는다). 배치 후 `design_completeness.py <그 경로> <design-manifest.json>` 이 정책 부재로 차단하지 않음을 확인한다. |
+| (S3) | **원장 기록** | 시드한 프로파일을 성숙 run 원장에 남긴다 — `MaturationRunStarted`의 "사용한 policy 참조"(§4.3)와 성숙 인스턴스 `provenance`의 "Policy 참조"(§8.1)에 **원본 프로파일 파일명 + 프로파일 종류(표준/경량)**를 기록한다. 신규 레코드 종류·신규 필드는 0이다. 기록 없는 시드는 금지다(설계 산출 원장 기록 의무). 표준 기본값에서 경량으로 이탈한 경우는 `deviationRule` 동형으로 **사유를 함께 기록**하고 `Validating` 게이트에서 표면화한다(silentOmission 금지·§7A.4 (iii)). |
+
+(`uaf-verified:` 고정 상대경로 주장은 `orchestration/adapters/claude/resolve_gate.py`의 `SD_DATA_REL` 상수와 `pretooluse_design_guard.py`의 동일 문면 상수, 그리고 `design_completeness.py` `_load_policy_required`의 정책 부재 차단 분기를 직접 판독해 얻었다 — 두 상수는 별도 선언이며 config 키·환경변수 경유 재정의 지점은 두 파일에서 발견되지 않았다. **검색 범위 = 위 3파일 + `solution_design_resolve.py` `load_policy`**이며, 소비 프로젝트 워크스페이스에서의 실제 시드 실행은 이 개정의 실측 범위 밖이다(미검증).)
 
 ### §7A.3 검증 3층 (CP1→CP2→CP3 + 사용자 게이트)
 

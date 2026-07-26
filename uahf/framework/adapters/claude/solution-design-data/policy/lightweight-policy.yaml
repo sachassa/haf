@@ -1,0 +1,146 @@
+# Solution Design Policy — 경량 프로파일 (Policy as Data — planning/specs/04-solution-design.md §3.2·§3.5)
+# 정본 값 문면: planning/adapters/claude/solution-design-binding.md §7.2 (다) 경량 프로파일 값표
+# 값 조정 = 데이터 정정 — 규약 절차·정본 계약 무변경 (04 §3.2·§3.5 "기본 세트의 구체 유형 목록은 Policy 소관")
+#
+# 이 파일은 무엇인가:
+#   절차 비례화 트랙(docs/proportionality-track-ledger.md §1.4·§4 W1-a)의 경량 레인용 SD 정책 프로파일.
+#   표준 프로파일(default-policy.yaml)과의 유일한 차이 = projectionSelection.defaultRequiredSet 을
+#   **통합 설계 문서 1종**으로 축소하고 artifactOwnership 을 그 1종에 1:1 대응시킨 것이다.
+#   그 외 절((가) 성숙/스킵 판정·(나) 역할 선택·(마) 다라운드 심의·(바) 디자인 필수 요소·(사) 디자인
+#   원칙)의 값은 표준 프로파일과 동일하다 — 경량 레인은 **산출물 종수만 줄이고 판정·역할·심의·요소
+#   강제는 줄이지 않는다**(검증 하한 유지).
+#
+# 왜 전 절을 담는 완결 파일인가(사본이 아니라 프로파일인 이유):
+#   체커·로더는 워크스페이스 고정 상대경로의 **단일 정책 파일**만 읽고 두 파일을 병합하지 않는다
+#   (orchestration/adapters/claude/resolve_gate.py:107-109 · pretooluse_design_guard.py:51-52 ·
+#    design_completeness.py _load_policy_required · planning/adapters/claude/solution_design_resolve.py
+#    load_policy). 오버레이·include 기구가 코드에 0이므로 시드되는 파일은 완결이어야 하며,
+#   roleSelection·artifactOwnership 부재는 solution_design_resolve.PolicyError 로 즉시 실패한다.
+#   따라서 공통 절의 물리 중복은 회피 불가다. 두 프로파일 공통 절의 **값 정본은 바인딩 §7.2**이며,
+#   표준 프로파일 개정 시 이 파일의 공통 절도 동기 갱신 대상이다(드리프트 통제 지점).
+policyId: lightweight-policy
+
+# (가) 성숙/스킵 판정 기준 (04 §3.2) — 표준 프로파일과 동일 값(축소 0).
+maturationSignals:
+  - "architectureDirection.open 비공집합 (미결 설계 결정 존재)"      # 03 §3.2-A 그룹 6
+  - "readiness.openQuestions 비공집합 (미해결 질문 존재)"            # 03 §3.2-A 그룹 8
+  - "assumptionLedger 비공집합 (미해결 가정 — ReadyWithAssumptions)" # 03 §3.2-A 그룹 7
+  - "다관심사 지표 (설계 관심사 2개 이상 교차)"
+skipRule: "위 신호 전부 부재 ∧ 단일 관심사 → 스킵 (T2 Assessing→Validating · T9 확인→Skipped · 경량 사용자 확인 D6)"
+
+# (나) 역할 선택 규칙 (04 §3.3) — 표준 프로파일과 동일 값(역할·상한·이탈 규칙 축소 0).
+# 경량 레인에서도 역할 파생·심의·커버리지 바닥은 유지된다. 산출물 소유는 (라) 1종에 집중된다.
+roleSelection:
+  basis: "판정 근거가 식별한 설계 관심사에서 파생"
+  perConcern: 1
+  wholeScopeCoverage: required
+  maxSpecialistRoles: 5
+  fixedTeam: "금지"
+
+  defaultComposition:
+    coverageFloor: PM
+    baseSpecialists: [기획, 아키텍처]
+    conditionalSpecialists:
+      - { role: 디자이너, when: "touchpoint(접점) 선언 시", whenSignal: touchpoint }
+      - { role: DBA,     when: "데이터 복잡 시",          whenSignal: dataComplex }
+      - { role: 보안,     when: "규제·컴플라이언스 신호 시", whenSignal: regulated }
+
+  deviationRule:
+    trigger: "기본 구성(defaultComposition)에서 역할 추가/제거 시"
+    record:  "사유 기록 — 성숙 run 기록(events/maturation-<run-id>/)에 남김"
+    surface: "Validating 게이트에서 표면화·사용자 확인 (고임팩트 이탈은 즉시)"
+
+# (다) Projection 선택 정책 (04 §3.5) — **경량 프로파일의 차이 지점**.
+projectionSelection:
+  typeCatalog: open-registry
+  mode: "프로젝트 유형·복잡도에 따라 동적 선택"
+  forceAllTypes: "금지"
+  existingCanonical: "대상 워크스페이스에 해당 유형 정본 실재 시 신규 강제 0"
+
+  # requirement 클래스 정의 (SP-INV 9) — 표준 프로파일과 동일 문면 3종.
+  # 경량 defaultRequiredSet 에는 touchpoint/interface 클래스 항목이 0이므로 두 클래스는 미발화하나,
+  # 클래스 정의 자체는 삭제하지 않는다(정의 삭제 = 의미 변경·비호환. 프로젝트 policy 사본이 선언-조건부
+  # 항목을 가법 등재할 때 그대로 소비된다 — 바인딩 §7.2 (바) 말미 편입 패턴).
+  requirementClasses:
+    always:     "항상 default-required — 제외는 설계단계 명시 결정 + 사유 기록 + 사용자 확인만"
+    touchpoint: "접점(웹·앱·포털) 선언 시 required — 미선언 시 클래스 제외: 표면화·확인 필요(classExclusions)"
+    interface:  "외부 연계 선언 시 required — 미선언 시 클래스 제외: 표면화·확인 필요(classExclusions)"
+
+  # 기본 필수 Projection 세트 — **통합 설계 문서 1종**(사용자 확정 Q-1 · 원장 §게이트 확정 기록).
+  # id `solution-design` 은 seed 프롬프트가 가정하는 SD 입력 경로 <workspace>/docs/solution-design.md
+  # 와 정합한다(원장 F-9·§1.4). 본문 경로 규약 = 바인딩 §7A.2.
+  defaultRequiredSet:
+    - { id: solution-design, name: "통합 설계 문서", requirement: always }
+
+  # 제외 규칙 (SP-INV 9 — 침묵 누락 금지) — 표준 프로파일과 동일 값.
+  exclusionRule:
+    silentOmission: "금지"
+    classExclusionOnNonDeclaration: "표면화 — declaredTouchpoints/declaredInterfaces 공집합으로 클래스가 제외되면 매니페스트 classExclusions.<class>{reason,confirmedBy} 필수. 조용한 자동 N/A 금지(silentOmission 금지 동형)."
+    manualExclude:  "always 클래스 제외 시 사유 기록 + 사용자 확인 — 성숙 run 기록(events/maturation-<run-id>/)에 남김"
+
+# (라) 역할→산출물 소유 맵 — projectionSelection.defaultRequiredSet 1 id 와 1:1 대응(1항).
+# 소유 = PM(coverageFloor) — 통합 설계 문서는 선언 전체 범위를 한 문서로 관장하므로 전체 커버리지
+# 관장 역할이 소유한다(04 §3.3 커버리지 바닥·SP-INV 9). 전문 역할은 소유 없이 심의·기고로 참여한다.
+# 소유 매핑 부재 = solution_design_resolve._compute_artifact_plan PolicyError(교차 정합 강제).
+artifactOwnership:
+  - { id: solution-design, owner: PM, note: "통합 설계 문서 1종 — 요구·프로세스·기능·데이터·테스트 축을 한 문서로 관장(전체 커버리지 관장 역할 소유). 전문 역할은 절 단위 기고·심의 참여" }
+
+# (마) 다라운드 심의 정책 (04 §3.4-C) — 표준 프로파일과 동일 값(라운드 상한·수렴 기준 축소 0).
+deliberation:
+  maxRounds: 3
+  convergence: unresolvedConflictsZero
+  peerVisibility: conflictParties
+
+  deviationRule:
+    trigger: "심의 기본값(maxRounds·convergence·peerVisibility)에서 이탈 시"
+    record:  "사유 기록 — 성숙 run 기록(events/maturation-<run-id>/)에 남김"
+    surface: "Validating 게이트에서 표면화·사용자 확인 (고임팩트 이탈은 즉시)"
+
+# (바) 디자인 필수 요소 정책 — 표준 프로파일과 동일 값(요소 강제 축소 0).
+# 경량 레인이라도 접점을 선언하면 요소 단위 강제는 그대로 발화한다(design_completeness (7)).
+# 통합 설계 문서 1종 체제에서는 요소 covered 의 pointer 가 그 문서의 절을 지목한다.
+designElements:
+  appliesWhen: touchpoint
+  screenScope:
+    - { id: layout-structure,  name: "레이아웃 구조(그리드·주요 영역 구획)" }
+    - { id: navigation,        name: "네비게이션 위치·진입/이탈 경로" }
+    - { id: component-states,  name: "컴포넌트 상태 5종(기본·로딩·빈·오류·비활성)" }
+    - { id: data-rules,        name: "데이터 표시 규칙(정렬·페이징·포맷)" }
+    - { id: responsive,        name: "반응형 기준(브레이크포인트 최소 1)" }
+    - { id: error-recovery,    name: "오류 복구 경로(실패 시 이동·되돌리기)" }
+    - { id: feedback-rules,    name: "피드백 규칙(로딩·성공·실패 알림 방식)" }
+  projectScope:
+    - { id: design-tokens-values, name: "디자인 토큰 실값" }
+    - { id: tone-and-manner,      name: "톤앤매너 확정(스케일 선택·레퍼런스 앵커·금지 목록)" }
+    - { id: user-journey-map,     name: "핵심 사용자 여정 맵(주요 태스크별 진입→완료 단계)" }
+    - id: accessibility-floor
+      name: "접근성 최소선(명도 대비·포커스 표시·터치 타겟)"
+      criteria:
+        - "본문 명도 대비 ≥ 4.5:1 (WCAG AA)"
+        - "대형 텍스트(18pt+/14pt bold+) 명도 대비 ≥ 3:1"
+        - "터치 타겟 ≥ 44×44px"
+        - "키보드 탐색 가능·포커스 표시 실재"
+        - "의미 있는 이미지 대체 텍스트"
+  exclusionRule:
+    silentOmission: "금지"
+
+# (사) UI·사용성 원칙 17종 — 표준 프로파일과 동일 값(종수 축소 0).
+# 디자이너 역할 브리프 주입·mock 리뷰 대조 차원(바인딩 §7A.1·§7C.3a)이 전체를 참조한다.
+designPrinciples:
+  - { id: hierarchy,              name: "계층 구조",   gist: "크기·두께·색·간격으로 정보 우선순위를 시각적으로 유도한다." }
+  - { id: progressive-disclosure, name: "점진적 공개", gist: "단계당 적정 정보량만 노출하고 진행 상황을 명시한다(한 번에 과부하 금지)." }
+  - { id: consistency,           name: "일관성",     gist: "패턴을 전체에서 동일하게 유지하고, 이탈은 근거를 요구한다." }
+  - { id: contrast,              name: "대비",       gist: "중요 동작·정보에 시각적 우선순위를 부여해 눈에 띄게 한다." }
+  - { id: accessibility,         name: "접근성",     gist: "모두가 지각·조작 가능하게 한다. 기계 판정 가능분은 designElements.projectScope.accessibility-floor.criteria 로 물리화(상호 참조)." }
+  - { id: proximity,             name: "근접성",     gist: "관련 있는 요소를 가까이 배치해 관계를 드러낸다." }
+  - { id: alignment,             name: "정렬",       gist: "그리드 기반으로 요소를 정렬해 질서와 스캔 가능성을 만든다." }
+  - { id: visibility-of-system-status, name: "시스템 상태 가시성", gist: "지금 무슨 일이 일어나는지 적시 피드백으로 알린다." }
+  - { id: match-real-world,            name: "실세계 일치",       gist: "사용자 언어·개념·순서로 말한다(시스템 용어 강요 금지)." }
+  - { id: user-control-freedom,        name: "사용자 제어와 자유", gist: "실수 후 나갈 비상구·되돌리기/다시하기를 제공한다." }
+  - { id: consistency-standards,       name: "일관성과 표준",     gist: "같은 것을 같게 표현하고 플랫폼 관례를 따른다." }
+  - { id: error-prevention,            name: "오류 예방",         gist: "오류 메시지보다, 오류가 나지 않도록 설계로 막는다." }
+  - { id: recognition-over-recall,     name: "회상보다 인지",     gist: "필요 정보를 노출해 기억 부담을 줄인다." }
+  - { id: flexibility-efficiency,      name: "유연성과 효율",     gist: "초보·숙련 모두를 위해 단축 경로를 제공한다." }
+  - { id: aesthetic-minimalism,        name: "미니멀리즘",        gist: "관련 없는 정보를 덜어 신호 대 잡음을 높인다." }
+  - { id: error-recognition-recovery,  name: "오류 인식·진단·복구", gist: "오류를 평이한 말로 알리고 원인·해결책을 제시한다." }
+  - { id: help-documentation,          name: "도움말·문서",       gist: "필요 시 찾기 쉬운 도움말·구체 절차를 제공한다." }

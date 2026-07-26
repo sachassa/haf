@@ -4,7 +4,7 @@ description: UAHF 하네스의 현재 상태(현재 마일스톤·최신 세션 
 
 # /uahf-status — UAHF 하네스 상태 표면화 (Presentation 진입 명령)
 
-상태: v0.9 Baseline
+상태: v0.9 Baseline · 2026-07-26 형태 B 로더 도입
 상위 규약: .claude/AGENT.md
 
 ---
@@ -13,6 +13,7 @@ description: UAHF 하네스의 현재 상태(현재 마일스톤·최신 세션 
 
 - **Presentation 진입 표면** — 확장 Module 표면(계약 = uahf/specs/01-runtime.md §4.1 · uahf/framework/adapters/claude/runtime-binding.md §2 #3). `.claude/commands/`는 환경 의존 격리 표면이므로 구체 환경 토큰 사용이 허용된다(structure.md §2).
 - **형태 A(문서 명령) — 실행 코드 0 · 정본 재정의 0.** 상태 값·계약을 스스로 확정하지 않고, 아래 항목을 정본(특히 최신 세션 핸드오프)에서 회수해 표면화하도록 안내한다.
+- **형태 A/B 공존(2026-07-26 추가).** 이 파일 자체는 여전히 실행 코드 0이며, 표면화 판독은 (i) 형태 B 로더 `adapters/claude/uahf_status.py`(권장 경로 — §2) 또는 (ii) 주 세션이 §2 절차를 직접 실수행하는 형태 A 폴백으로 실현된다. 두 경로의 표면화 항목 계약은 동일하다(structure.md §7 C-1 동형).
 
 ---
 
@@ -23,6 +24,20 @@ description: UAHF 하네스의 현재 상태(현재 마일스톤·최신 세션 
 ---
 
 ## §2. 표면화 항목 (invoke 시 표면화)
+
+### 형태 B 로더 호출 (권장 경로)
+
+```
+PYTHONIOENCODING=utf-8 python adapters/claude/uahf_status.py
+```
+
+- 로더는 LLM 을 호출하지 않는 **결정적·읽기 전용 판독**이다 — git 상태(브랜치·HEAD) + `docs/session-handoff.md` 의 머리 지위 줄·§A 첫 요약 문단·★ 다음 착수 순위 블록·§B 하위 절 목록·§DC 잔여 유무·§D 정본 포인터 표 + `ARCHIVE.md` 데이터 행 수를 heading 기반으로 추출해 방출한다. 핸드오프 전문을 정독하는 LLM 턴을 제거한다(선례 = `entry/adapters/claude/entry_resolve.py`).
+- 값을 하드코딩하지 않는다 — 추출원은 라이브 정본이며 문서 문면이 바뀌면 출력도 따라 바뀐다(재정의 0).
+- **fail-soft** — 절·파일이 부재해도 크래시하지 않고 폴백 줄을 출력하며 종료 코드는 0이다. 폴백 줄이 보이면 해당 항목만 원본 직접 정독으로 메운다. 경로 재정의 = `UAHF_STATUS_HANDOFF`·`UAHF_STATUS_ARCHIVE`·`UAHF_STATUS_ROOT`.
+- **형태 A 폴백 공존** — 로더가 가용하지 않으면 아래 절차(형태 A)를 주 세션이 직접 실수행한다.
+- `uaf-verified:` 로더 동작은 이 저장소 실행으로 실측했다(정상 판독 exit 0·부재 경로 지정 시 fail-soft exit 0). 검사 범위 = 이 저장소의 현행 `docs/session-handoff.md`·`ARCHIVE.md` 문면 1부이며, 다른 heading 관행의 문서에 대한 일반 보장은 아니다.
+
+### 형태 A 절차 (로더 미가용 시 폴백)
 
 호출되면 다음을 순서대로 표면화한다. 각 항목은 **정본(라이브)에서 회수**한다.
 
@@ -58,6 +73,8 @@ description: UAHF 하네스의 현재 상태(현재 마일스톤·최신 세션 
 | 신규 참여자 안내 | `docs/getting-started.md` |
 | Presentation 표면 계약 | `uahf/specs/01-runtime.md` §4.1 · `uahf/framework/adapters/claude/runtime-binding.md` §2 #3 |
 | 용어 | `uahf/specs/00-glossary.md` |
+| 형태 B 로더 (판독 실행체) | `adapters/claude/uahf_status.py` |
+| 거버넌스 실행 스크립트 물리 홈 | 루트 `ARCHITECTURE.md` §5 |
 | 상위 규약 | `.claude/AGENT.md` |
 
 이 명령 문서는 정본을 재정의하지 않는다. 발견되는 충돌은 Advisor에게 보고한다(상위 규약 관행).

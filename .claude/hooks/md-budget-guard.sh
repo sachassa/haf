@@ -7,7 +7,8 @@ set -eu
 
 HANDOFF="docs/session-handoff.md"
 BUDGET_HANDOFF="${BUDGET_HANDOFF:-25000}"   # 핸드오프 단일 파일 바이트 예산
-BUDGET_TOTAL="${BUDGET_TOTAL:-2700000}"     # git 추적 *.md 총 바이트 워터마크
+# 워터마크 하향 2,700,000 -> 2,500,000 (compaction 트랙 2026-07-27 — 이력 절 제거로 확보한 여유를 재퇴적 여지로 남기지 않는다).
+BUDGET_TOTAL="${BUDGET_TOTAL:-2500000}"     # git 추적 *.md 총 바이트 워터마크
 
 # --- 검사 1: 핸드오프 단일 파일 예산 -----------------------------------------
 # 부재 시 조용히 skip(무해) — 다른 머신/클론·부분 체크아웃 대비.

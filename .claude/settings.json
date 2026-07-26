@@ -24,6 +24,13 @@
             "command": "bash .claude/hooks/md-budget-guard.sh",
             "timeout": 10,
             "statusMessage": "md 예산 가드"
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "bash .claude/hooks/history-reaccum-guard.sh",
+            "timeout": 20,
+            "statusMessage": "이력 재퇴적 가드"
           }
         ]
       }

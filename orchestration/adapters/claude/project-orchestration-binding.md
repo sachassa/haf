@@ -3,40 +3,16 @@
 작성일: 2026-07-13
 상태: 05 계약(§3.3 Gate Policy·§3.5 Model Selection·§3.6 Artifact Record·§2.2 게이트 큐)의 claude 환경 물리 실현 매핑 — 게이트 큐 제시 채널(§3)·Model Selection 실값 매핑·OQ-SH-4 해소(§4)·직렬화·capability→물리 호출 매핑·run 데이터 백엔드·AgentSpec 실값 레지스트리·Artifact Record 직렬화(§5) 확정. 축소판 종단 dogfooding E2E(시나리오 j)로 실증.
 상위 규약: AGENT.md
-근거 정본:
-
-- `orchestration/specs/05-project-orchestration.md` (S1 확정) — Project Orchestration provider-중립 계약 정본. 본 문서가 물리 실현으로 인스턴스화하는 대상. 특히 **§3.3 Gate Policy**(5종 어휘·기존 계약 매핑·게이트 단조성·Autonomy 직교)·§2.2(게이트 큐 = `Escalated` 이벤트 + gateKind + scoped question 의 파생 뷰·headless·사용자 채널 분리)·§5(Adapter 바인딩 지점 — 게이트 큐 제시 채널 행). 재정의하지 않고 § 포인터로만 인용한다.
-- `orchestration/framework/orchestrator/gates.py` (S3 신설 — 중립 게이트 평가기) — 본 문서가 제시 채널을 붙이는 중립 코드. `pending_gates(events, policy)` 파생 뷰·게이트 이벤트 필드 관례(`gate::<gate_id>` cycle 네임스페이스·ref 의 gate_id/gateKind/target/scoped_question·`append_gate_requirement`/`append_gate_resolution`)·해소 적격성(`is_resolved`·user_decision=사용자 actor 클래스만·escalation=허용 resolver 집합)·`gate_policy_schema.json`. 본 문서는 그 추상을 claude 실값으로 바인딩한다.
-- `orchestration/framework/orchestrator/orchestrator.py` (S2·S3) — `_process_gates`(배치 종단 단위 경계 게이트 처리)·`OrchestrationResult.pending_gates`(정지 게이트 큐 반환)·정지 신호(`stop_reason="gate"`). 본 문서 §3 이 그 정지·재개의 물리 채널을 확정한다.
-- `uahf/specs/03-loop.md` §3.1-D(사람 개입 5조건 — 코드 소유 하한의 정본)·§3.2-A(전이 이벤트 10필드 — actor 필드) — 게이트 요구·해소 이벤트가 무수정 재사용하는 이벤트 스키마·개입 조건. § 포인터로만 참조(재정의 0).
-- `uahf/framework/adapters/claude/step-hosting-binding.md` (v1.5 Baseline) — 자매 Adapter Binding. 문서 관례(§9 이력 머리·§0 정본 경계·격리 지점 방향 반전·형태 A/B 정직 구분·§ 근거 정본·실측 대조·L-07)의 선행 표본. 물리 정지 신호(종료 코드 2)·Autonomy→CLI 권한 플래그 매핑·run 데이터 백엔드 이원화는 이 문서가 이미 확정했고, 본 문서는 그 위에 게이트 큐 제시 채널을 얹는다.
-- `uahf/framework/adapters/claude/loop-binding.md`·`verifier-binding.md` — 사람 개입 채널(03 §3.1-D 사람 승인 요청이 Claude Code 세션에서 사용자에게 제시된다)·역할 = 서브에이전트 디스패치 관례의 선행 표본.
-- `uahf/framework/core/structure.md` §4·§5 — Adapter 경계 = 격리 지점(C-3 비적용·구체 토큰 허용)의 근거.
-
-거버넌스: 이 문서는 `orchestration/adapters/claude/` 소속 **Adapter Binding 문서**다 — orchestration 레이어 자신의 Claude 어댑터 바인딩이며 `orchestration/specs/05-project-orchestration.md`(§3.3 등)와 `orchestration/framework/orchestrator/gates.py`를 바인딩한다. 이 경계는 중립 계약(05·gates.py)을 특정 실행 환경·AI·직렬화 형식에 바인딩한 산출물을 **격리**하는 지점이며(structure.md §2·§5), 구체 AI·환경·직렬화 형식·물리 경로·실행 옵션 토큰의 사용이 **허용**된다(여기가 격리 지점이다 — C-3 비적용·자매 바인딩 §0 동형). 단 이 문서는 05·gates.py 의 계약을 **재정의하지 않는다** — 계약은 § 포인터로만 인용한다. 개정은 Advisor 승인으로 이뤄진다.
+근거 정본: `orchestration/specs/05-project-orchestration.md`(S1 확정 — 특히 §2.2 게이트 큐 파생 뷰·§3.3 Gate Policy·§3.5 Model Selection·§3.6 Artifact Record·§5 Adapter 바인딩 지점) · `orchestration/framework/orchestrator/gates.py`(중립 게이트 평가기 — `pending_gates`·게이트 이벤트 필드 관례·해소 적격성·`gate_policy_schema.json`) · `orchestration/framework/orchestrator/orchestrator.py`(`_process_gates`·`OrchestrationResult.pending_gates`·`stop_reason="gate"`) · `uahf/specs/03-loop.md` §3.1-D·§3.2-A(무수정 재사용하는 개입 조건·이벤트 10필드) · `uahf/framework/adapters/claude/step-hosting-binding.md`(자매 바인딩·문서 관례 선행 표본·§2 상속분 소재) · `uahf/framework/adapters/claude/loop-binding.md`·`verifier-binding.md`(사람 개입 채널·역할 디스패치 선례) · `uahf/framework/core/structure.md` §4·§5 · `uahf/specs/00-glossary.md`. 계약은 § 포인터·심볼 참조로만 인용하며 재정의하지 않는다.
 
 ---
 
 ## §0. 이 문서의 위치와 정본 경계
 
-- **정본은 `orchestration/specs/05-project-orchestration.md`(§3.3)와 `orchestration/framework/orchestrator/gates.py`다.** 이 문서는 그 계약의 **claude 환경 실현 매핑**이며, 계약 요소(gateKind 5종·심각도 전순서·게이트 단조성·해소 적격성·게이트 이벤트 필드 관례)를 **재정의·확장하지 않는다**. 계약 요소는 정본 § 포인터·심볼 참조로만 인용한다.
-- 이 문서는 `orchestration/adapters/claude/` 소속 **Adapter Binding 문서**다. 05 §5 가 "게이트 큐 제시 채널·직렬화 형식·capability→물리 호출 매핑·run 데이터 백엔드 경로·정책 실값은 Adapter Binding 문서 소관"이라며 미룬 지점이 실재하는(확정되는) 자리다.
-- **격리 지점의 방향 반전(C-3 비적용).** 중립 경계(`orchestration/framework/orchestrator/`·05 본문)는 특정 AI·provider·실행 옵션 토큰이 0건이어야 한다(PO-INV 8). 이 문서는 그 **반대편**이다 — 구체 토큰(`claude` CLI·세션 표면·종료 코드·물리 경로)의 사용이 허용되며, 그 격리가 이 경계의 존재 이유다(자매 바인딩 §0 동형).
-- **범위 = 다섯 책임 전부 확정(S5).** 이 문서는 §3(게이트 큐 제시 채널)·§4(Model Selection 실값 매핑·OQ-SH-4 해소)에 더해 **§5(직렬화·capability→물리 호출 매핑·run 데이터 백엔드·AgentSpec 실값 레지스트리·Artifact Record 직렬화)를 확정**한다. §5 는 축소판 종단 dogfooding E2E(시나리오 j)로 **실 데이터 실증**되었다 — 데이터·물리 실현이 실재하며 그 실측 상태는 §6 이 정직하게 대조한다(L-07). 미실증분은 §7 OQ 로 남긴다.
-- **창설 금지.** 이 문서는 05 §3.3·§5·gates.py 를 **넘어서는 새 바인딩 계약을 창설하지 않는다**. 새 gateKind·새 상태·새 개입 조건·새 이벤트 필드를 만들지 않는다. 게이트 이벤트는 03 §3.2-A 10필드 무수정 재사용이다.
-- 용어는 `uahf/specs/00-glossary.md` 정본만 사용한다. "게이트 큐"·"제시 채널"·"정지 게이트" 는 05·gates.py 의 서술 라벨이다. 본 문서는 새 용어를 신설하지 않는다.
-
----
-
-## §1. 목적
-
-이 문서는 05(§3.3 Gate Policy·§3.5 Model Selection·§3.6 Artifact Record·§2.2 게이트 큐)와 중립 코드(`gates.py`·`allocation.py`·`artifacts.py`·`orchestrator.py`)를 claude 환경 위에 **S5 시점의 구체 물리 실현**으로 매핑한다. **다섯 책임 전부 확정**한다:
-
-- **확정(§3).** `pending_gates` 파생 뷰의 사용자 제시 채널 + 해소 응답의 이벤트 append 물리 관례.
-- **확정(§4).** Model Selection 정책 실값(불투명 슬롯 → claude 모델 별칭) 매핑 관례 + CP2 독립 슬롯(`cp2ModelSlot`) → `--model` 전달 경로 + OQ-SH-4 해소 기록.
-- **확정(§5).** 정책·이벤트·revision·**artifact 선언**·초기 그래프 직렬화 형식 · capability→물리 호출 매핑(step-invoker 무수정 재사용) · run 데이터 백엔드 경로 · AgentSpec 실값 레지스트리 관례 · **Artifact Record 직렬화·파생 인덱스**. 축소판 종단 dogfooding E2E(시나리오 j·§5.6)로 실 데이터 실증.
-
-이 문서는 05·중립 코드의 어떤 계약 요소도 재정의·확장하지 않는다.
+- **바인딩 대상 정본 = `orchestration/specs/05-project-orchestration.md`(§2.2·§3.3·§3.5·§3.6·§5)와 `orchestration/framework/orchestrator/gates.py`.** 이 문서는 그 계약의 **claude 환경 실현 매핑**이며 계약 요소(gateKind 5종·심각도 전순서·게이트 단조성·해소 적격성·게이트 이벤트 필드 관례)를 재정의·확장하지 않는다. 05 §5가 "게이트 큐 제시 채널·직렬화 형식·capability→물리 호출 매핑·run 데이터 백엔드 경로·정책 실값은 Adapter Binding 문서 소관"이라며 미룬 지점이 확정되는 자리다.
+- **격리 지점의 방향 반전(C-3 비적용).** 중립 경계(`orchestration/framework/orchestrator/`·05 본문)는 특정 AI·provider·실행 옵션 토큰이 0건이어야 한다(PO-INV 8). 이 문서는 그 **반대편**이다 — 구체 토큰(`claude` CLI·세션 표면·종료 코드·물리 경로)의 사용이 허용되며 그 격리가 이 경계의 존재 이유다(structure.md §2·§5·자매 바인딩 §0 동형).
+- **범위.** §3(게이트 큐 제시 채널·해소 물리 관례)·§4(Model Selection 실값 매핑·OQ-SH-4 해소)·§5(직렬화·capability→물리 호출 매핑·run 데이터 백엔드·AgentSpec 실값 레지스트리·Artifact Record 직렬화·Run 관측 계약)를 확정하고, 물리 실측 상태는 §6이 대조한다(L-07). 미해소분은 §7 OQ로 남긴다.
+- **창설 금지.** 05 §3.3·§5·gates.py를 넘어서는 새 바인딩 계약·새 gateKind·새 상태·새 개입 조건·새 이벤트 필드를 만들지 않는다. 게이트 이벤트는 03 §3.2-A 10필드 무수정 재사용이며 용어는 `uahf/specs/00-glossary.md` 정본만 쓴다("게이트 큐"·"제시 채널"·"정지 게이트"는 05·gates.py의 서술 라벨).
 
 ---
 
@@ -47,7 +23,7 @@
 | 항목 | 소재(정본) | 게이트 축에서의 의미 |
 |---|---|---|
 | 물리 정지 신호 = 프로세스 종료 코드 **2** | step-hosting-binding §5.3 | 정지 게이트(`escalation_required`/`user_decision_required`)로 `_process_gates` 가 `status="stopped"` 를 반환할 때, orchestration 런처는 종료 코드 2("사람/상위 개입 대기")로 종료한다. 게이트 정지도 Step Host 의 Escalated 정지와 같은 신호를 쓴다(신설 0). |
-| Autonomy → CLI 권한 플래그 매핑(`interactive`/`auto_approve`=`--permission-mode acceptEdits`/`unrestricted`=`--dangerously-skip-permissions`) | step-hosting-binding §4.2 | **게이트 등급 분리(불가침).** 이 매핑은 도구 실행 승인 프롬프트 축만 제어하며 게이트 축과 **직교**한다(05 §3.3·PO-INV 4). `unrestricted` 에서도 5종 게이트는 전부 작동하고 정지 게이트는 `stopped` 정지로 보존된다 — orchestrator 의 게이트 **결정** 로직(gateKind 평가·must_stop·해소 적격성)은 `self.policy`(autonomy) 를 참조하지 않는다(서브단위 실행에는 동일 autonomy 전달만 — 중립 코드가 소유하는 강제). `--dangerously-skip-permissions` 는 claude 세션(도구 승인) 경계에만 적용되고 게이트 정지를 우회하지 못한다. |
+| Autonomy → CLI 권한 플래그 매핑(권한 플래그 문자열의 유일 허용 소재 = step-hosting-binding.md §0·§4.2 — 본 문서는 문자열을 재기재하지 않고 그 § 을 가리킨다) | step-hosting-binding §0·§4.2 | **게이트 등급 분리(불가침).** 이 매핑은 도구 실행 승인 프롬프트 축만 제어하며 게이트 축과 **직교**한다(05 §3.3·PO-INV 4). 최상위 autonomy 등급에서도 5종 게이트는 전부 작동하고 정지 게이트는 `stopped` 정지로 보존된다 — orchestrator 의 게이트 **결정** 로직(gateKind 평가·must_stop·해소 적격성)은 `self.policy`(autonomy) 를 참조하지 않는다(서브단위 실행에는 동일 autonomy 전달만 — 중립 코드가 소유하는 강제). 권한 생략 플래그는 claude 세션(도구 승인) 경계에만 적용되고 게이트 정지를 우회하지 못한다. |
 | 이벤트 로그 = JSONL(1행 1이벤트·03 §3.2-A 10필드) | step-hosting-binding §3.1 | 게이트 요구·해소 이벤트도 같은 run 이벤트 로그에 append 된다 — 별도 백엔드 신설 0. `gate::<gate_id>` cycle 네임스페이스라 step 상태 파생에 간섭하지 않는다(gates.py `is_gate_event`). |
 | 역할 = 서브에이전트/fresh 세션 디스패치(Worker/Verifier/Advisor) | step-hosting-binding §5.1·§5.2 | `review_required` 의 추가 리뷰(role=Verifier)·`approval_required` 의 CP3(role=Advisor)는 이 역할 디스패치 물리 형태를 그대로 쓴다(신설 0). |
 
@@ -68,7 +44,11 @@
   - `target` — 어느 단위·전이·artifact class 에 걸렸는가(descriptor).
   - `scoped_question` — 무엇을 결정/해소해야 하는가(gates.py 가 실은 구조화 힌트 `{unitId, gateKind}`; 사람 친화 문면 렌더는 이 제시 채널이 담당).
   - `since` — 요구 순번.
-- **정확한 표면 문법·렌더 템플릿 — 확정(§DC-9·2026-07-19).** 최종 렌더 문법은 `orchestration/adapters/claude/render_gates.py`(형태 B·결정적·LLM 0·읽기 전용)가 소유한다. 위 구조 제안 bullet(라벨·`target`·`scoped_question`·`since`)은 확정분으로 유지되며, `render_gates.py`가 항목당 블록으로 물리화한다: 라벨 표(`user_decision_required`→"사용자 결정 대기(확정 권위)"·`escalation_required`→"Advisor/사람 해소 대기")는 **어댑터 소유 데이터**(모듈 상단 상수 dict)이며 **다국어·문면 조정은 이 표 교체가 확장점**이다(정책-as-데이터 동형·렌더 로직 본문 무변경). 진리원천은 `pending_gates(events, policy)` 파생 뷰이며 `stop-signal.json`에 의존하지 않고 원장(events.jsonl + gate_policy.json)에서 **직접 파생**한다 — 부분 해소 후 재렌더도 정확하다(해소 이벤트 append 시 파생 뷰가 자동 제외). 적격 해소 actor·해소 명령(`resolve_gate.py` CLI 1줄)은 정책 데이터에서 파생한다(하드코딩 0). **항목별 해소 명령에는 그 게이트의 `--gate-id <gate_id>`가 채워진다(2026-07-26)** — 같은 gateKind 가 다중 pending 이면 무지목 호출이 차단되므로(§3.4), 지목을 항상 실어 렌더 명령이 단일·다중 어느 상황에서도 **복사해 그대로 실행**되게 한다. 값이 셸 안전 문자 집합을 벗어나면 큰따옴표로 인용한다(결정적 규칙). 제시 겸용: 런처(`orchestrate_project.py run_and_map`)가 정지 게이트 시 기존 `[STOP]`/`[PENDING-GATES]` 라인·`stop-signal.json`을 바이트 보존한 뒤 이 렌더 함수를 재사용해 **자동 출력**하고(렌더 실패는 정지 신호를 깨지 않는 부가 표면), 주 세션 Advisor 는 `render_gates.py <run_dir>` 로 **수동 재렌더**할 수 있다. `--json` 은 구조화 출력(원 필드 + label + eligible_resolvers + resolve_command). **원장 무변경(읽기 전용)** — 어떤 파일도 쓰지 않는다.
+- **표면 문법·렌더 템플릿 — 확정.** 최종 렌더 문법은 `orchestration/adapters/claude/render_gates.py`(형태 B·결정적·LLM 0·읽기 전용)가 소유하며, 위 구조 제안 bullet을 항목당 블록으로 물리화한다. 계약:
+  - **라벨 표**(`user_decision_required`→"사용자 결정 대기(확정 권위)"·`escalation_required`→"Advisor/사람 해소 대기") = **어댑터 소유 데이터**(모듈 상단 상수 dict). 다국어·문면 조정은 이 표 교체가 확장점이다(정책-as-데이터 동형·렌더 로직 본문 무변경).
+  - **진리원천 = `pending_gates(events, policy)` 파생 뷰.** `stop-signal.json`에 의존하지 않고 원장(`events.jsonl` + `gate_policy.json`)에서 직접 파생하므로 일부 게이트만 해소된 뒤 재렌더해도 정확하다(해소 이벤트 append 시 파생 뷰가 자동 제외).
+  - **해소 명령·적격 actor는 정책 데이터 파생**(하드코딩 0). 항목별 해소 명령에는 그 게이트의 `--gate-id <gate_id>`가 채워지며(무지목 다중 호출은 §3.4가 차단하므로 단일·다중 어느 상황에서도 복사해 그대로 실행된다), 값이 셸 안전 문자 집합을 벗어나면 큰따옴표로 인용한다(결정적 규칙).
+  - **출력 경로 2종.** 런처(`orchestrate_project.py run_and_map`)가 정지 시 기존 `[STOP]`/`[PENDING-GATES]` 라인·`stop-signal.json`을 바이트 보존한 뒤 이 렌더를 재사용해 자동 출력하고(렌더 실패는 정지 신호를 깨지 않는 부가 표면), 주 세션 Advisor는 `render_gates.py <run_dir>`로 수동 재렌더한다. `--json` = 구조화 출력(원 필드 + label + eligible_resolvers + resolve_command). **원장 무변경(읽기 전용)** — 어떤 파일도 쓰지 않는다.
 
 ### §3.3 해소 응답 → 게이트 해소 이벤트 append 물리 관례
 
@@ -81,22 +61,20 @@
   | `escalation_required` | actor ∈ 정책 `escalationResolvers`(기본 `Advisor`·`human`) | Advisor 역할(주 세션) 또는 사용자가 해소. actor=`Advisor` 또는 `human` 해소 이벤트로 append. |
 
 - **부적격 해소의 물리 무효.** 부적격 actor 로 append 된 해소 이벤트도 로그에 남지만(append-only·은폐 0), `is_resolved` 가 적격성 판정에서 배제하므로 게이트는 여전히 pending 이다. 이는 코드가 소유하는 강제이며 제시 채널이 우회할 수 없다.
-- **조건부 승인의 하류 전달 — `--response` 는 기록 전용이 아니다(백로그 §N·2026-07-26).** 사용자가 게이트를 "조건부"로 승인하면(예: "로그 마스킹 적용 후 진행"), 그 조건은 원장에만 남고 실행 단위에는 닿지 않았다 — 조건이 승인의 일부인데 하류 계약에 반영되지 않는 **침묵 탈락**이다. 이 판부터 **구조 게이트(`user_decision_required`) 해소 시 비공백 `--response` 는 승격되는 모든 task 의 `delegation.context` 에 조건 항목으로 주입된다**(`resolve_gate.build_promotion_payloads`).
-  - **문면(결정적).** `[게이트 조건 — <gate_id> 해소(actor=<actor>)] <response>` 단일 문자열 항목. `gate_id`·`actor` 로 provenance 이벤트와 상호 추적하며, **타임스탬프를 넣지 않는다** — 시각은 이벤트가 소유하고 payload 는 결정적이어야 한다(같은 두 원장 재생 → 같은 바이트).
-  - **원장 분리 보존.** `impl-plan.json`(원 산출)은 **바이트 무변조**이고, 조건 **원문**은 provenance 이벤트(`gate-resolution-provenance`·`ref.response`)가 계속 소유하며, 주입본은 revision payload(하류 소비 뷰)에만 실린다. 세 원장이 각자의 역할을 유지한다.
-  - **적용 범위 = 승격 전 task 균일(D-N4).** task 별 조건 라우팅은 도입하지 않는다 — 응답이 단일 원문이므로 분배 근거가 없다. 하류 단위가 자기에게 해당하는 조건을 스스로 식별한다(브리프 자족 원칙).
-  - **타입 규칙·fail-closed(D-N3).** `context` 가 리스트면 사본에 append, 문자열이면 `[원문, 조건]` 으로 승격, **부재/`null`이면 `[조건]` 신설**(빈 채널). 그 외 형(객체 등)이면 조건을 담을 곳이 없으므로 **비영 종료·원장 무오염**으로 차단한다 — 채널 자신이 조건의 침묵 탈락을 재생산하지 않는다. 주입 payload 선구성은 **어떤 원장 append 보다 앞서** 수행된다(검증-먼저 패턴 동형).
-  - **context 신설의 관측 신호.** context 부재로 조건만 담아 신설한 단위는 `[CONDITION-NOTE]` 라인에 **id 로 열거**된다 — 그 단위는 종전이라면 Host 가 디스패치 직전 `missing_fields`(`delegation.context`)로 잡아 Escalated 시켰을 단위이고, 주입으로 디스패치 가능해지기 때문이다. 조건부 승인이 **별개 결함(위임 context 누락)을 가리지 않도록** 표면화하는 것이며 **차단이 아니다**(rc 무변). 차단하지 않는 근거: 어댑터 검증기가 애초에 `delegation.context` 를 요구하지 않아 부재 계획은 조건 없이도 승격 가능하므로, 조건부 승인만 더 엄격하게 만드는 것은 비일관이다.
-  - **관측(D-N7).** 주입 시 `[CONDITION]` 라인이 주입 건수와 원문 출처(provenance 이벤트)를 명시한다. 응답이 공백(기본)이면 주입 0 이고 이 라인도 없다 — 종전 거동 바이트 동일.
-  - **하류 도달 경로.** 승격 payload → fold(`_copy_task`) → `Step.from_dict` → `assemble_bundle` 의 `memory_material`(Worker fresh-context 번들) · CP2 `verify_bundle` 의 `step_contract.delegation`(Verifier). escalation 게이트의 `--response` 는 종전대로 해소 이벤트 ref 동봉·재작업 지시 전파 경로다(§3.4).
+- **조건부 승인의 하류 전달 — `--response` 는 기록 전용이 아니다.** **구조 게이트(`user_decision_required`) 해소 시 비공백 `--response` 는 승격되는 모든 task 의 `delegation.context` 에 조건 항목으로 주입된다**(`resolve_gate.build_promotion_payloads`). 조건은 승인의 일부이므로 원장에만 남고 실행 단위에 닿지 않는 침묵 탈락을 허용하지 않는다.
+  - **문면(결정적).** `[게이트 조건 — <gate_id> 해소(actor=<actor>)] <response>` 단일 문자열 항목. `gate_id`·`actor` 로 provenance 이벤트와 상호 추적하며 **타임스탬프를 넣지 않는다**(시각은 이벤트 소유·payload 는 결정적 — 같은 두 원장 재생 → 같은 바이트).
+  - **원장 분리 보존.** `impl-plan.json`(원 산출)은 바이트 무변조, 조건 **원문**은 provenance 이벤트(`gate-resolution-provenance`·`ref.response`) 소유, 주입본은 revision payload(하류 소비 뷰)에만 실린다.
+  - **적용 범위 = 승격 전 task 균일.** task 별 조건 라우팅은 도입하지 않는다(응답이 단일 원문이라 분배 근거 0) — 하류 단위가 자기에게 해당하는 조건을 스스로 식별한다(브리프 자족 원칙).
+  - **타입 규칙·fail-closed.** `context` 가 리스트면 사본에 append, 문자열이면 `[원문, 조건]` 으로 승격, **부재/`null`이면 `[조건]` 신설**. 그 외 형(객체 등)은 조건을 담을 곳이 없으므로 **비영 종료·원장 무오염**으로 차단한다. 주입 payload 선구성은 **어떤 원장 append 보다 앞서** 수행된다(검증-먼저 패턴).
+  - **관측 라인 2종.** 주입 시 `[CONDITION]` 이 주입 건수·원문 출처(provenance 이벤트)를 명시하고, context 부재로 신설한 단위는 `[CONDITION-NOTE]` 에 **id 로 열거**된다 — 조건부 승인이 별개 결함(위임 context 누락)을 가리지 않게 하는 표면화이며 **차단이 아니다**(rc 무변). 응답이 공백(기본)이면 주입 0·두 라인 없음 = 종전 거동 바이트 동일.
+  - **하류 도달 경로.** 승격 payload → fold(`_copy_task`) → `Step.from_dict` → `assemble_bundle` 의 `memory_material`(Worker fresh-context 번들) · CP2 `verify_bundle` 의 `step_contract.delegation`(Verifier). escalation 게이트의 `--response` 는 해소 이벤트 ref 동봉·재작업 지시 전파 경로다(§3.4).
 - **해소 어휘의 현행 형태(인용).** orchestration 해소 어휘는 재시도 예산 비계수를 이미 충족한다 — `append_gate_resolution`(03 10필드 재사용·`ref.kind=gate-resolved`·outcome=pass·retry_count=0)은 step 재시도 예산(`outcome=fail` 계수)을 소모하지 않는다(§7 OQ-PO-B2 해소). UAHF step-host 층의 해소=fail 계수 결합(OQ-SH-5·step-hosting-binding §7)은 무수정 경계상 별도 트랙 소관이며, 해소 취소(revoke) 어휘는 OQ-PO-B6 저순위 이월이다.
 
-### §3.4 실행 에스컬레이션(Escalated 정지)의 해소 채널 (백로그 §J 본체 해소·2026-07-26)
+### §3.4 실행 에스컬레이션(Escalated 정지)의 해소 채널
 
 §3.3 은 `_process_gates` 가 발화한 정지 게이트(단위 경계)의 해소를 다룬다. 이 절은 그 앞단 —
 **Step Host 가 실행 중 낸 Escalated 정지**(재시도 한도 초과·차단 선언·SH-INV-4)의 해소를
-같은 채널로 물리화한다. 이전 판에서 이 정지는 gate_id 가 없어 해소 이벤트를 append 할
-대상 자체가 없었고, 그래서 `--resume` 이 대상 단위를 재디스패치하지 못했다(백로그 §J ①②).
+같은 채널로 물리화한다(경위 = git 앵커 90ca19c).
 
 - **좌표 발급(엔진).** `orchestrator.run()` 이 Host 의 `stopped/escalated` 를 받으면,
   `gate_policy` 가 있을 때 각 정지 단위에 대해 `escalation_required` **게이트 요구**를
@@ -119,11 +97,10 @@
   --response "<재작업 지시>"`. 적격성 판정은 §3.3 표 그대로이며(`escalationResolvers`) 이
   스크립트가 우회하지 않는다. `--response` 원문은 해소 이벤트 `ref.response` 에 **동봉**된다
   (미지정 시 ref 형태는 종전과 동일 — 가법).
-- **해소 대상 지목 `--gate-id` (2026-07-26).** `resolve_gate.py <run_dir> --gate-kind escalation
+- **해소 대상 지목 `--gate-id`.** `resolve_gate.py <run_dir> --gate-kind escalation
   --actor <Advisor|human> --gate-id <gate_id>` 로 해소 대상 게이트를 **특정 지목**한다. 같은
   gateKind 게이트가 **2건 이상 동시에 pending** 이면 지목이 필수다 — 무지목 호출은 후보
-  (`gate_id`·`target`·`since`)를 열거하고 **원장 무변경으로 비영 종료**한다. 이전 판은 첫
-  매칭을 침묵 선택했고, 그 결과 사용자가 지목하지 않은 단위의 게이트가 해소될 수 있었다.
+  (`gate_id`·`target`·`since`)를 열거하고 **원장 무변경으로 비영 종료**한다(첫 매칭 침묵 선택 금지).
   지목한 `gate_id` 가 pending 에 없거나 그 게이트의 gateKind 가 `--gate-kind` 와 다르면
   사유를 구분해 출력하고 역시 비영 종료한다(원장 무변경). 지목 없이 매칭이 **정확히 1건**인
   단일 게이트 경로의 거동은 종전과 같다(가법).
@@ -134,15 +111,12 @@
   Escalated → Failed 로 바뀌어 `ready_set` 이 그 단위를 다시 포함하고, Host 는 한도를
   **실패 시점에만** 판정하므로 정확히 1회의 추가 디스패치가 일어난다. 해소 응답은 그 되돌림
   ref 를 거쳐 재디스패치 번들의 `feedback` 으로 실행 단위에 도달한다(테스트로 실측).
-- **레거시 run 의 회복 경로.** 좌표 없이 Escalated 로 멈춰 있던 기존 run 도 `--resume` 1회면
-  요구 이벤트가 생성되어(정지 유지·재실행 0) 그 다음부터 위 해소 절차를 쓸 수 있다.
-- **`--retry-limit` 의 위치.** `--resume` 에서도 이 override 가 `config.json` 에 반영되고
-  이전→새 값이 출력된다. 되돌림은 한도와 무관하게 추가 시도 1회를 부여하므로 이 플래그는
-  편의이지 해소의 전제가 아니다.
-- **다중 escalation 의 순차 해소.** 여러 단위가 동시에 Escalated 이면 그중 하나의 해소는 그
-  단위에 되돌림 이벤트를 append 하되, 다른 단위가 Escalated 로 남아 Host 가 정지하므로
-  **추가 디스패치는 나머지 해소 이후에 실행된다**(SH-INV-4 보존의 귀결·정보 손실 없음 —
-  되돌림은 원장에 이미 기록돼 있어 다음 재개가 소비한다).
+- **레거시 run·플래그·다중 escalation.** 좌표 없이 Escalated 로 멈춰 있던 기존 run 도 `--resume`
+  1회로 요구 이벤트가 생성되어(정지 유지·재실행 0) 위 절차를 쓸 수 있다. `--retry-limit`
+  override 는 `--resume` 에서도 `config.json` 에 반영되나(이전→새 값 출력) 되돌림이 한도와
+  무관하게 추가 시도 1회를 부여하므로 해소의 전제가 아니다. 여러 단위가 동시에 Escalated 이면
+  한 건의 해소는 그 단위에 되돌림을 append 하되 나머지가 Escalated 로 남아 Host 가 정지하므로
+  **추가 디스패치는 나머지 해소 이후**다(SH-INV-4 보존의 귀결·되돌림은 원장에 남아 다음 재개가 소비).
 
 ---
 
@@ -168,9 +142,7 @@
 
 ### §4.3 OQ-SH-4 해소 기록 (step-hosting-binding §7 OQ-SH-4)
 
-- **OQ-SH-4 — 해소됨 (본 트랙 S4, 2026-07-13).** step-hosting-binding §7 OQ-SH-4(중립 Host `host.py _dispatch_cp2` 가 CP2 를 `model=step.model` 로 디스패치해 검증 전용 모델 독립 지정 불가)는 본 트랙 S4 에서 **중립 Host 최소 개정으로 해소**되었다. 개정 = `StepHost` 생성자에 `cp2_model` 파라미터 추가(기본 `None`)·`_dispatch_cp2` 의 CP2 모델을 `self.cp2_model if self.cp2_model is not None else step.model` 로 변경(1개소). **기본값 `None` 시 기존 거동(model=step.model) 바이트 동일 보존** — 기존 step-host 회귀 전건 무손상. `config_schema.json` 에 선택 필드 `cp2_model`(불투명 슬롯·형태만) 추가. 계약 무변(02 §4 슬롯 의미 그대로)·중립 Host 는 슬롯 값을 해석하지 않는다(SH-INV-8 동형).
-- **정본 문면 갱신 위치.** step-hosting-binding §7 OQ-SH-4 문면 자체의 상태 갱신은 **트랙 종단 정합 소관**이며 본 문서가 대신 갱신하지 않는다(무수정 경계 — 05 §6). 해소 사실은 이 § 이 기록한다.
-- **`uahf/` 트리 접촉(본 트랙).** `uahf/framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(+`config_schema.json`·step-host 테스트) — OQ-SH-4 해소. 그 외 `uahf/` 정본·중립 코드·append-only 데이터 무촉(형상 관리 상태 조회로 확인·§6 실측 대조).
+- **OQ-SH-4 — 해소됨.** step-hosting-binding §7 OQ-SH-4(중립 Host 가 CP2 를 `model=step.model` 로 디스패치해 검증 전용 모델 독립 지정 불가)는 중립 Host 최소 개정으로 해소되었다 — `StepHost` 생성자 `cp2_model` 파라미터(기본 `None`)·`_dispatch_cp2` 의 CP2 모델을 `self.cp2_model if self.cp2_model is not None else step.model` 로 변경(1개소)·`config_schema.json` 선택 필드 `cp2_model` 추가. 기본값 `None` 시 기존 거동 바이트 동일 보존·계약 무변(02 §4 슬롯 의미)·중립 Host 는 슬롯 값을 해석하지 않는다(SH-INV-8 동형). step-hosting-binding §7 OQ-SH-4 문면 자체의 상태 갱신은 그 문서 소관이며 본 문서가 대신 갱신하지 않는다(무수정 경계 — 05 §6). `uahf/` 접촉 = `host.py` 1개소 + `config_schema.json` + step-host 테스트뿐이다(§6 실측 대조).
 
 ---
 
@@ -221,33 +193,23 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 
 ### §5.6 축소판 종단 dogfooding E2E (시나리오 j — 실 CLI 실증)
 
-`orchestration-data/e2e/` 드라이버가 실 claude CLI headless(haiku·**5 세션**)로 종단 흐름을 실증했다(run 데이터 = `runs/orch-j-e2e/@cd9247b` — 산출물 수명 정책에 따라 아카이브, ARCHIVE.md 원장):
+`orchestration-data/e2e/` 드라이버(비프로덕션)가 실 claude CLI headless(haiku·5 세션)로 종단 흐름을 실증했다 — 설계 단위 실행(Worker+CP2) → `user_decision` 게이트 물리 정지(exit 2·pending_gates 기록) → 시뮬레이션 라벨을 append-only 로그(`annotation::sim`)·`gate-resolution-record.json` 에 명시 기록한 뒤 사용자 actor(`human`) 해소 이벤트 append(L-07 실 사용자 위장 금지) → 구현 단위 revision(basis.gateEventRef) → fresh 프로세스 재개로 구현 단위 실행·`review_required` 추가 리뷰(Verifier)·완주(exit 0). deterministic resume replay(2회 stdout 동일)·최종 레지스트리 approvalState 파생(user_approved/verified)·실 세션 stdout·argv 캡처(`logs/invoke-*.json`·은폐 0·O5)까지 실 데이터로 남았다. run 데이터 = `runs/orch-j-e2e/@cd9247b`(아카이브·ARCHIVE.md 원장).
 
-- 초기 그래프 = 설계 단위 d1(user_decision 게이트) → d1 실행(Worker+CP2)·Passed → **user_decision 게이트 물리 정지(exit 2·pending_gates 기록)**(j1).
-- 드라이버가 **시뮬레이션 라벨을 append-only 로그(`annotation::sim`)와 `gate-resolution-record.json` 에 명시 기록**한 뒤 사용자 actor(`human`) 해소 이벤트 append(j2 — L-07 실 사용자 위장 금지)·구현 단위 revision(basis.gateEventRef = 해소 게이트) append.
-- 재개(fresh 프로세스): 구현 단위 impl 실행(Worker+CP2)·`review_required` 추가 리뷰(Verifier)·완주(exit 0). 이벤트 로그 cycle = {d1·impl·gate::·annotation::sim}뿐 — **상류 Discovery/성숙 재실행 흔적 0**(입력 Contract 는 읽기 전용 참조).
-- **deterministic resume replay**: `replay_check.py` 2회 실행 stdout 동일(active_graph·states·ready_set·graph_fingerprint). 최종 레지스트리: `design-decision.md` v1 = **user_approved**(사용자 게이트 해소)·`impl-note.txt` v1 = **verified**(derivedFrom `[design-decision.md]`).
-- **실 CLI 실패 은폐 0(O5).** 실 세션 stdout·argv·session_id 는 `logs/invoke-*.json` 에 그대로 캡처된다.
+### §5.7 프로덕션 실 run — 임의 소비 프로젝트 구동 (배선 수정 트랙)
 
-### §5.7 프로덕션 실 run — tms-system Contract v2 (배선 수정 트랙·2026-07-18)
-
-§5.6 시나리오 j 가 비프로덕션 e2e 드라이버(시뮬 사용자 게이트·픽스처 구현 제안)였던 것과 달리, **프로덕션 런처**가 임의 소비 프로젝트를 실 claude CLI headless 로 구동한 첫 실 run 이다. 신설 어댑터 3종(전부 `orchestration/adapters/claude/`·중립 `orchestration/framework/`·`uahf/` 무수정 import 재사용):
+§5.6이 비프로덕션 드라이버(시뮬 사용자 게이트·픽스처 구현 제안)인 것과 달리, **프로덕션 런처**가 임의 소비 프로젝트를 실 claude CLI headless 로 구동하는 경로다. 신설 어댑터 3종(전부 `orchestration/adapters/claude/`·중립 `orchestration/framework/`·`uahf/` 무수정 import 재사용):
 
 - **`contract_to_graph.py`** — Contract vN(파일명 버전 최대·내용 파싱 0) → 초기 Work Graph(단일 seed proposal 단위) + gate_policy(proposal→user_decision·implementation→review·milestone→approval) + config 결정적 컴파일. seed 프롬프트가 런타임 실 LLM 에 Phase 분해(implementation N + milestone 1·DAG 종단·오프라인 안전 done AC)를 위임(05 §3.1 "고정 파이프라인 하드코딩 금지").
 - **`orchestrate_project.py`** — `<project_root>`를 컴파일→run_dir 물리화(소비 프로젝트 워크스페이스 무삭제·RUNS_DIR 직속 삭제가드)→중립 `build_orchestrator_k` 무수정 재사용→`orch.run()`→exit-code 매핑(§2 종료 코드 2 상속). `--model`(seed 티어)·`--policy`(기본 `auto_approve` — headless 쓰기·게이트와 직교) override.
 - **`resolve_gate.py`** — 게이트 해소: impl-plan 어댑터 검증(F4 계약 수용 = `unitType∈{implementation,milestone}`·milestone≥1·implementation≥1·milestone DAG 종단·`resolve_w` 구조 헬퍼 동일 강도 재사용) **먼저**(실패 시 원장 무변경) → `append_gate_resolution(actor=…)` → 각 구현 task `accept_revision(task_added·basis.gateEventRef)`.
 
-**tms-system(pc-tms-001 v2) 실 run 실측(run 데이터 = `runs/orch-tms-phase1-smoke/` — tms 트랙 종료로 앵커 전환 `4934bc8`·ARCHIVE.md·2026-07-19):**
+**실 run 실측(첫 프로덕션 run 데이터 = `runs/orch-tms-phase1-smoke/` — 소비 프로젝트 트랙 종료로 앵커 전환 `4934bc8`·ARCHIVE.md):** Stage A = seed proposal 단위(실 LLM)가 Contract + solution-design 정독 후 `impl-plan.json`(implementation N + milestone 1·DAG 종단) 산출 → CP2(`cp2-pass` 이벤트·상시 하한) → `user_decision_required` 게이트 물리 정지(exit 2·`logs/stop-signal.json` pending_gates 기록) → `resolve_gate.py` 가 impl-plan 어댑터 검증 통과 후 실 사용자(actor=`human`·simulated=false) 해소 이벤트 append → 각 구현 task `task_added` revision(basis.proposingStepRef·gateEventRef) 승격 → active_graph fold·ready_set = 선행 impl 단위(결정적 재개 준비).
 
-- Stage A: seed proposal 단위(실 LLM·`haiku`)가 Contract v2 + solution-design 정독 후 `impl-plan.json`(6 task = implementation 5 + milestone 1·DAG 종단) 산출 → CP2(`cp2-pass` 이벤트·상시 하한) → **`user_decision_required` 게이트 물리 정지(exit 2·`logs/stop-signal.json` pending_gates 기록)**.
-- 게이트 해소: `resolve_gate.py` 가 impl-plan 어댑터 검증 통과 후 **실 사용자(actor=`human`·simulated=false)** 해소 이벤트 append → 6 `task_added` revision(basis.proposingStepRef=impl-plan-phase1·gateEventRef=해소 게이트) 승격. events.jsonl 5(dispatch·cp2-pass·gate-required·resolution-provenance·gate-resolved)·revisions.jsonl 6·artifacts.jsonl 1·active_graph 7노드(fold)·ready_set=선행 impl 단위(결정적 재개 준비).
-- **정직 대조(L-07).** 이 run 은 §5.6 픽스처를 넘어선 **실 LLM 제안 step + 실 사용자 게이트 해소**다(OQ-PO-B4). milestone 단위(→`approval_required`·CP3)의 물리 CP3 정지·해소는 구현 단위 resume 시 발화하며, 본 run 에서는 gate_policy 파생 평가로 도달성만 실증했다(라이브 CP3 발화·실 코드 산출 = 후속 resume 소관·사용자 선택 defer). e2e 드라이버(§5.3)는 여전히 비프로덕션이며, 이 프로덕션 런처가 그 상위 발화 경로다.
+**정직 대조(L-07).** 이 경로는 §5.6 픽스처를 넘어선 **실 LLM 제안 step + 실 사용자 게이트 해소**다(§7 OQ-PO-B4). milestone 단위(→`approval_required`·CP3)의 물리 CP3 정지·해소는 구현 단위 resume 시 발화하며 첫 run 에서는 gate_policy 파생 평가로 도달성만 확인했다(라이브 CP3 발화·실 코드 산출 = 후속 resume 소관). e2e 드라이버(§5.3)는 비프로덕션이며 이 프로덕션 런처가 그 상위 발화 경로다.
 
-### §5.8 Run 관측 계약 — heartbeat · failure record · 종료 코드 (백로그 §L·§P·2026-07-26)
+### §5.8 Run 관측 계약 — heartbeat · failure record · 종료 코드
 
-§5.3 run 데이터 레이아웃의 `logs/`에 **런처 소유 관측 산출 2종**을 가법한다. 기존 `logs/` 항목(`invoke-*.json`·`stop-signal.json`·`gate-resolution-record.json`·`host.pid`)과 §2 종료 코드 매핑은 무변경이며, 아래는 그 위에 얹는 절이다(재정의 0). 생산자는 `orchestration/adapters/claude/orchestrate_project.py` 하나뿐이고 중립 코드(`orchestration/framework/**`)·`uahf/**`는 무촉이다.
-
-**왜 필요한가.** 실패 모드 3종의 관측 난이도가 다르다 — F1(죽음)은 프로세스가 끝나므로 종료로 드러나고, F3(오해석)은 종료 코드 규약으로 해소되지만, **F2(hang·무한대기)는 종료 이벤트가 원리적으로 발생하지 않는다.** 엔진 stdout은 버퍼링돼 실행 중에는 비어 있으므로 로그 tail도 대체가 되지 않는다(실측 2026-07-24). 따라서 정체 판정에는 **진행의 능동적 증거**가 필요하다.
+§5.3 run 데이터 레이아웃의 `logs/`에 **런처 소유 관측 산출 2종**을 가법한다. 기존 `logs/` 항목(`invoke-*.json`·`stop-signal.json`·`gate-resolution-record.json`·`host.pid`)과 §2 종료 코드 매핑은 무변경이며 아래는 그 위에 얹는 절이다(재정의 0). 생산자는 `orchestration/adapters/claude/orchestrate_project.py` 하나뿐이고 중립 코드(`orchestration/framework/**`)·`uahf/**`는 무촉이다. hang(무한대기)은 종료 이벤트가 원리적으로 발생하지 않고 엔진 stdout 은 버퍼링돼 실행 중 비어 있으므로, 정체 판정 근거는 **진행의 능동적 증거**(a)여야 한다.
 
 **(a) `logs/heartbeat.json` — 계약 필드 5종·덮어쓰기**
 
@@ -278,13 +240,13 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 | `3` | halted | 원장 조사 |
 | `1` | 런처 실패(정직 실패 또는 미처리 예외 — 후자는 `failure.json` 동반) | 메시지 조사 |
 
-**(e) 슬러그 길이 상한(백로그 §P·§L 4-b 해소).** 컴파일러 `_slug`(seed unit id)와 런처 `slugify_run_id`(run_id)가 **공통 규칙**(`contract_to_graph.fold_slug`)을 쓴다 — 정규화 결과가 48자를 넘으면 `앞 48자 + "-" + sha256(원문)[:8]`(최대 57자)로 접는다. 48자 이하는 바이트 동일이라 기존 run 디렉터리·unit id는 하위호환된다. 근거 = unit id가 `steps/<unitId>.json`·`logs/invoke-NN-<Role>-<unitId>.json` 파일명이 되므로 상한이 없으면 (i) 긴 ASCII `--phase`에서 Windows 경로 한계 크래시(§P 실측)·(ii) git `Filename too long`으로 **run 원장을 커밋할 수 없다**(§L 4-b 실측 — 파일명 239자·경로 367자). 두 함수가 서로 다른 상한을 쓰면 `--resume`의 슬러그 재파생이 실물 run_dir과 어긋나므로 규칙을 하나로 둔다.
+**(e) 슬러그 길이 상한.** 컴파일러 `_slug`(seed unit id)와 런처 `slugify_run_id`(run_id)가 **공통 규칙**(`contract_to_graph.fold_slug`)을 쓴다 — 정규화 결과가 48자를 넘으면 `앞 48자 + "-" + sha256(원문)[:8]`(최대 57자)로 접는다. 48자 이하는 바이트 동일이라 기존 run 디렉터리·unit id는 하위호환된다. 근거 = unit id가 `steps/<unitId>.json`·`logs/invoke-NN-<Role>-<unitId>.json` 파일명이 되므로 상한이 없으면 (i) 긴 ASCII `--phase`에서 Windows 경로 한계 크래시·(ii) git `Filename too long`으로 run 원장을 커밋할 수 없다(실측 경위 = git 앵커 90ca19c). 두 함수가 서로 다른 상한을 쓰면 `--resume`의 슬러그 재파생이 실물 run_dir과 어긋나므로 규칙을 하나로 둔다.
 
-**(f) 문서 접합부.** `.claude/commands/uaf-implement.md` §2의 재개 예시를 `--resume --run-id <run_id>` 형태로 정정하고 위 종료 코드 표를 실었다 — 종전 예시(`--resume`만 표기)는 런처의 슬러그 재파생 계약과 어긋나 `--run-id`를 준 run에서 반드시 실패했다(백로그 §L 5 재발 실측).
+**(f) 문서 접합부.** `.claude/commands/uaf-implement.md` §2 재개 예시 = `--resume --run-id <run_id>` 형태이며 위 종료 코드 표를 싣는다(`--resume`만 표기하는 예시는 슬러그 재파생 계약과 어긋나 `--run-id`를 준 run에서 실패한다).
 
-**(g) per-unit timeout — 단위별 실행 예산(백로그 §L Desired 4 해소·2026-07-26)**
+**(g) per-unit timeout — 단위별 실행 예산**
 
-전역 `timeout` 하나(§4 config `timeout` → `Orchestrator.timeout`)는 규모가 크게 다른 단위를 같은 예산에 묶는다. 이를 **단위 단위의 선택 값**으로 세분한다. 관측 계약(a·b)이 정체를 *보이게* 하는 장치라면 이 항은 정체의 한 원인(예산 부적합)을 *줄이는* 장치이며, 종료 코드 표(d)·기존 로그 산출은 무변경이다.
+전역 `timeout` 하나(§4 config `timeout` → `Orchestrator.timeout`)는 규모가 크게 다른 단위를 같은 예산에 묶으므로, 이를 **단위 단위의 선택 값**으로 세분한다. 종료 코드 표(d)·기존 로그 산출은 무변경이다.
 
 | 층 | 계약 |
 |---|---|
@@ -296,11 +258,11 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 | 거동 보존 | 맵 공집합(= `timeout` 을 쓴 단위 0)이면 **래핑 자체가 없다** — 기존 반환·기존 요청 객체 그대로다(`allocation=None`·`artifact_store=None` 패턴 동형). seed proposal 노드는 timeout 미부여(컴파일 시점에 단위 규모 정보가 없고 값을 발명하지 않는다) |
 | Planner 지시 | `contract_to_graph._seed_prompt` 구현 task 구성 규칙에 선택 키 안내 1항(양의 정수·초·명백히 대형인 단위에만·미지정 = 전역 기본). `_done_ac` 는 11키만 검사하므로 무변 |
 
-`uaf-verified:` 값이 실제 프로세스 예산에 닿는 경로 = `request.timeout` → 실 CLI invoker 의 subprocess timeout(`step-invoker/claude_invoker.py`). 검색 범위 = orchestration 2트리 + uahf step-host/step-invoker 트리의 해당 지점 정독이며, 실 LLM run 관측은 아직 없다(오프라인 stub 통합·접합부 왕복 테스트까지가 현 근거).
+`uaf-verified:` 값이 실제 프로세스 예산에 닿는 경로 = `request.timeout` → 실 CLI invoker 의 subprocess timeout(`step-invoker/claude_invoker.py`) — 검색 범위 = orchestration 2트리 + uahf step-host/step-invoker 트리의 해당 지점 정독이며, **실 LLM run 관측은 아직 없다**(현 근거 = 오프라인 stub 통합·접합부 왕복 테스트까지).
 
-**(h) 횡단 결함 검지 — `[REWORK-NOTE]` 관측 라인 + `sweep_units.py` 스윕 도구 (백로그 §M D-M2·2026-07-26)**
+**(h) 횡단 결함 검지 — `[REWORK-NOTE]` 관측 라인 + `sweep_units.py` 스윕 도구**
 
-CP2 재작업은 **그 단위만의 결함 신호가 아니다.** 같은 API 오용·같은 잘못된 관례가 동료 단위에 복제돼 있어도 각 단위의 done AC는 자기 산출만 보므로 통과한다 — 개별 단위 합격의 합이 phase 완결과 같지 않은 구조적 이유다. (a)·(b)가 *정체*를 보이게 하는 장치라면 이 항은 *복제된 결함*을 보이게 하는 장치이며, 종료 코드 표(d)·기존 로그 산출·기존 종료 라인은 무변경이다.
+CP2 재작업은 **그 단위만의 결함 신호가 아니다** — 같은 오용이 동료 단위에 복제돼 있어도 각 단위의 done AC는 자기 산출만 보므로 통과한다. 이 항은 복제된 결함을 보이게 하는 장치이며 종료 코드 표(d)·기존 로그 산출·기존 종료 라인은 무변경이다.
 
 **경계(불가침) — 판단 0.** 어떤 패턴이 결함인지, 적중을 어떻게 조치할지는 **전부 사람/Advisor 소유**다(PO-INV 1). 런처와 도구는 기계 파생·기계 스캔·권고까지만 한다. 자동 되돌림은 **미도입**이다(D-M3 — 결함 패턴 추출은 내용 판단이라 엔진이 소유할 수 없고, Passed 단위의 기계 되돌림은 상태 어휘 변경 또는 supersede 의미론 신설을 요구한다).
 
@@ -324,34 +286,41 @@ CP2 재작업은 **그 단위만의 결함 신호가 아니다.** 같은 API 오
 | `2` | **히트 존재**(단위별 `file:line` 보고) |
 | `1` | 오류 — `run_dir` 부재/비디렉터리 · `--pattern` 무지정(도구는 패턴을 발명하지 않는다) · 정규식 컴파일 실패 · **불완전 run_dir**(`precheck` 부재 항목 — 생성 0) · 그래프/원장 판독 불가 |
 
-**Planner 지시 짝(D-M1).** `contract_to_graph._seed_prompt` milestone 규칙에 두 항을 가법했다 — (i) milestone done AC는 **단위 간 계약 정합 검사를 최소 1건 포함**한다(개별 파일 존재 나열만으로는 불충분·최소 1건은 둘 이상의 단위를 상호 대조. 오프라인 안전형 예 = 선행 `produces`↔후행 `consumes` 경로 상호 대조·모듈 경계 참조 무결·공유 계약 데이터 키 집합 일치) (ii) milestone task 문면에 **횡단 관점** 지시(한 단위에서 발견된 결함 패턴을 동료 단위에 같은 기준으로 대조하고 그 결과를 보고). 기존 문면(오프라인 AC 허용 3종·금지 목록·11키·per-unit `timeout` 선택 키 항)은 무변이다.
+**Planner 지시 짝.** `contract_to_graph._seed_prompt` milestone 규칙은 두 항을 싣는다 — (i) milestone done AC는 **단위 간 계약 정합 검사를 최소 1건 포함**한다(개별 파일 존재 나열만으로는 불충분·최소 1건은 둘 이상의 단위를 상호 대조. 오프라인 안전형 예 = 선행 `produces`↔후행 `consumes` 경로 상호 대조·모듈 경계 참조 무결·공유 계약 데이터 키 집합 일치) (ii) milestone task 문면에 **횡단 관점** 지시(한 단위에서 발견된 결함 패턴을 동료 단위에 같은 기준으로 대조하고 결과를 보고).
 
-**미해소 이월(정직 구분).** 백로그 §L 1의 `current_unit`·`elapsed_s` 필드는 `request_hint` 하나로 축약했다(런처가 단위 경계를 소유하지 않으므로 요청에서 파생 가능한 값만 싣는다). §M의 자동 되돌림(D-M3)은 위 경계 사유로 미도입 — 재심 좌표 = Verifier 구조화 verdict(`sweep_patterns` 필드) 도입 시.
+**미해소 이월(정직 구분).** hang 관측의 `current_unit`·`elapsed_s` 필드는 `request_hint` 하나로 축약했다(런처가 단위 경계를 소유하지 않으므로 요청에서 파생 가능한 값만 싣는다). 자동 되돌림(D-M3)은 위 경계 사유로 미도입 — 재심 좌표 = Verifier 구조화 verdict(`sweep_patterns` 필드) 도입 시.
 
 ---
 
 ## §6. 실측 대조 (L-07)
 
-- **중립 코드 실재 (S5).** S5 는 `orchestration/framework/orchestrator/artifacts.py`·`artifact_record_schema.json`·`tests/test_artifacts.py` 를 신설하고, `orchestrator.py`(선택 `artifact_store`·투명 포집 래퍼 배선·`artifact_registry()`/`resolve_references()` 파생 메서드)를 최소 개정했다(`artifact_store=None` 기본 시 S2~S4 거동 바이트 동일 보존). 자체 테스트는 표준 라이브러리 `unittest` 만으로 통과한다 — **orchestration 126건(신규 32 + S2~S4 회귀 94)·step-host 20건·step-invoker 19건 = 전건 Pass**(실행 출력 실측).
-- **PO-INV 8(중립성) 실측.** `orchestration/framework/orchestrator/`(artifacts.py 포함 전 `.py`·전 `.json`·테스트)에 provider·모델·CLI 옵션 토큰 0건(전수 스캔). approvalState 어휘(draft/verified/approved/user_approved)·verdict `Pass` 는 05 §3.6·06 계약 어휘다. 구체 토큰(`claude`·모델 별칭 `haiku`/`sonnet`/`opus`·`--model`·권한 플래그)은 이 바인딩 문서·step-invoker 코드·`orchestration-data/e2e/` 드라이버(격리 지점)에만 존재한다.
-- **축소판 종단 E2E 실측 (시나리오 j).** `orchestration-data/e2e/`(비프로덕션 드라이버) 실 claude CLI headless **5 세션**(haiku)로 종단 흐름 실증 — Phase 1(exit 2 게이트 정지·2 세션)·Phase 2(exit 0 완주·3 세션). run 데이터 = `runs/orch-j-e2e/@cd9247b`(events.jsonl 8 이벤트·revisions.jsonl 1·artifacts.jsonl 2·워크스페이스 실 산출 2 — 아카이브 보존, 열람 `git show`/ARCHIVE.md). 상류 재실행 흔적 0·replay 2회 동일·최종 레지스트리 approvalState 파생(user_approved/verified) 실측. 실 세션 stdout·argv 는 `logs/invoke-*.json` 에 캡처(은폐 0·O5).
-- **`uahf/` 접촉 실측(본 트랙 누계).** (i) `uahf/framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(S4·**S5 무촉**·`cp2_model=None` 시 기존 거동). (ii) `uahf/framework/adapters/claude/orchestration-data/` **신설**(run 데이터 백엔드·E2E 드라이버 — 2차 산출물 디커플링 트랙까지 `uahf/` 잔류). 그 외 `uahf/` 정본·중립 코드·append-only 데이터(discovery-data·solution-design-data·step-data·memory-data·loop-data) 무촉(형상 관리 상태 조회로 확인·git 실측).
-- **정직 구분 (L-07).** 시나리오 j 의 사용자 게이트 해소·구현 단위 제안은 **드라이버 픽스처**이며 실 사용자·실 LLM 제안 step 이 아니다(§5.6·`gate-resolution-record.json`·`annotation::sim` 이벤트에 명시). 실증 대상은 게이트 물리 정지·사용자 actor 적격성·revision 인과 사슬·deterministic 재개이며 그 축들은 실 데이터로 남는다. 산출 내용은 CP2 재현성을 위해 정확 내용으로 고정한 픽스처다(설계 메모를 exact-content 설계 결정 레코드로 축약).
+- **중립 코드 실재.** `orchestration/framework/orchestrator/`에 `artifacts.py`·`artifact_record_schema.json`·`tests/`가 실재하고 `orchestrator.py`가 선택 `artifact_store`·투명 포집 래퍼·`artifact_registry()`/`resolve_references()` 파생 메서드를 갖는다(`artifact_store=None` 기본 시 종전 거동 바이트 동일 보존). 자체 테스트는 표준 라이브러리 `unittest` 만으로 통과한다.
+- **PO-INV 8(중립성).** `orchestration/framework/orchestrator/`의 코드·스키마·테스트에 provider·모델·CLI 옵션 토큰 0건이다(스윕 범위 = 그 디렉터리의 `.py`·`.json` 전 파일 grep). approvalState 어휘(draft/verified/approved/user_approved)·verdict `Pass` 는 05 §3.6·06 계약 어휘다. 구체 토큰(`claude`·모델 별칭·`--model`·권한 플래그)은 이 바인딩 문서·step-invoker 코드·`orchestration-data/e2e/` 드라이버(격리 지점)에만 둔다.
+- **`uahf/` 접촉.** (i) `uahf/framework/loop/step-host/host.py` `_dispatch_cp2` 1개소(§4.3·`cp2_model=None` 시 기존 거동). (ii) `uahf/framework/adapters/claude/orchestration-data/` 신설(run 데이터 백엔드·E2E 드라이버 — 2차 산출물 디커플링 트랙까지 `uahf/` 잔류). 그 외 `uahf/` 정본·중립 코드·append-only 데이터(discovery-data·solution-design-data·step-data·memory-data·loop-data)는 무촉이다(형상 관리 상태 조회로 확인).
+- **정직 구분 (L-07).** §5.6 시나리오 j 의 사용자 게이트 해소·구현 단위 제안은 **드라이버 픽스처**이며 실 사용자·실 LLM 제안 step 이 아니다(`gate-resolution-record.json`·`annotation::sim` 이벤트에 명시). 그 run 의 실증 대상은 게이트 물리 정지·사용자 actor 적격성·revision 인과 사슬·deterministic 재개이며, 실 LLM 제안 + 실 사용자 해소는 §5.7 프로덕션 run 이 남긴다.
 
 ---
 
 ## §7. Open Questions (본 판 이월)
 
-- **OQ-PO-B1 (게이트 큐 제시 표면 문법) — 해소(2026-07-19·§DC-9).** 물리 형태 확정: `orchestration/adapters/claude/render_gates.py`(형태 B·결정적·LLM 0·읽기 전용)가 `pending_gates` 파생 뷰를 사람 친화 한국어 마크다운(기본)·`--json`(구조화)으로 렌더한다. 라벨 표는 어댑터 소유 데이터(다국어 = 표 교체 확장점)이며, 진리원천은 원장 직접 파생(stop-signal 비의존)이라 부분 해소 후 재렌더도 정확하다. 런처(`orchestrate_project.py`)가 정지 시 기존 라인·`stop-signal.json` 바이트 보존 후 자동 출력하고(부가 표면·렌더 실패는 정지 신호 불변), 주 세션 Advisor 수동 재렌더 겸용. 상세 = §3.2.
-- **OQ-PO-B2 (해소 어휘 성숙) — 해소(2026-07-19·문서·설계 수준 종결).** 2축 분리로 종결한다. **(1) 재시도 예산 비계수 = orchestration 엔진 이미 충족.** 엔진의 해소 어휘는 전용이다 — `append_gate_resolution` 이 `ref.kind=gate-resolved`·`outcome=pass`·`retry_count=0` 으로, 요구 이벤트도 `outcome=escalated`·`retry_count=0` 으로 append 하므로(gates.py) 게이트 해소가 step 재시도 예산(`outcome=fail` 계수)을 소모하지 않는다. OQ-SH-5 의 "해소=fail 계수 결합" 결함은 `outcome=fail` 을 재사용하는 UAHF step-host(`uahf/framework/loop/step-host/`) 층에 국한되며, orchestration 은 자체 `gate-resolved`/`pass` 어휘를 쓰므로 그 결함을 상속하지 않는다 — UAHF 층 자체 해소는 무수정 경계(§6·05 §262)상 별도 트랙(OQ-SH-5·step-hosting-binding §7) 소관이다. **(2) 해소 취소(revoke)** = 저임팩트·실사용 오용 관측 0 의 투기적 잔여로, OQ-PO-B6 으로 정밀 재스코프해 저순위 이월한다. 본 판은 `append_gate_resolution` 현행 형태만 바인딩한다(엔진 코드·계약 변경 0). (구 이월 포인터 "05 §9 OQ 3" 은 05 spec §9 가 순수 이력표이고 OQ 절이 부재함을 전수 실측 확인해 정정 — 05 엔 OQ 3 부재.)
-- **OQ-PO-B3 (headless 런처 ↔ 사용자 세션 제시 브리지) — 해소(production·2026-07-18).** 물리 브리지 형태 확정: 프로덕션 런처(`orchestrate_project.py`)가 정지 게이트 시 **종료 코드 2 + `logs/stop-signal.json`(pending_gates)** 를 기록 → 주 세션 Advisor 가 그 파일을 읽어 게이트 큐를 사용자 대화 세션에 표면화(§3.2 headless·채널 분리 유지) → 사용자/Advisor 해소를 `resolve_gate.py <run_dir> --gate-kind … --actor …` 로 게이트-해소 이벤트 append(적격성 = gates.py `is_eligible_resolver` 코드 소유) → `orchestrate_project.py --resume` 로 결정적 재개(원장 fold). §5.7 tms-system 실 run 으로 실증. (사람 친화 렌더 최종 문법 = OQ-PO-B1 이월.)
-- **OQ-PO-B4 (실 LLM 제안 step·비픽스처 성숙 run) — 해소(제안·승격 사이클·production·2026-07-18).** §5.7 tms-system 실 run 에서 확정 설계(Contract v2·solution-design)를 **실 LLM(haiku) 제안 step** 이 소비해 구현 task 6개(implementation 5 + milestone 1)를 제안하고, **실 사용자 게이트 해소**(actor=human·simulated=false)로 revision 승격했다 — 드라이버 픽스처(§5.6 j)가 아닌 실 LLM 제안 + 실 사용자 해소. 잔여(후속 트랙): 승격된 구현 단위의 **resume 실 코드 산출**(형태 A 완전 성숙 run·BPD-20 동형)은 사용자 선택으로 후속 세션 defer — 제안·게이트·승격 사이클은 본 run 으로 실증됐고 코드 산출 축만 이월된다.
-- **OQ-PO-B5 (엔진 `accept_revision` 게이트-pass 재검증의 actor 미검사) — 해소(2026-07-19·§DC-9).** `orchestrator._gate_event_exists`(→ `_event_grounds_gate`)를 강화해 방어적 이중화의 **엔진 측을 완성**했다. 강화 규칙: 매칭 pass 이벤트가 **정지 게이트 해소로 자신을 선언**하고(`ref.kind == REF_KIND_RESOLVED` **그리고** `ref.gateKind ∈ STOPPING_GATES`) `self.gate_policy is not None`이면, 그 해소 actor 가 `gate_policy.is_eligible_resolver(gateKind, actor)` 로 적격일 때만 revision 을 근거지을 수 있다(05 §3.3 확정 권위 정합 — user_decision = 사용자 actor 클래스만·escalation = 허용 resolver 집합만). 부적격 actor 의 pass 해소 이벤트는 로그에 남아도 승격 근거가 되지 못한다. **거동 보존 3면(불가침):** (a) 레거시 이벤트(`ref.kind == "gate"`·gateKind 부재·S2 관례) = 실재-만 검증 유지 · (b) 비정지 gateKind(`review_required`/`approval_required` 등) gate-resolved 이벤트 = 실재-만 검증 유지(`is_eligible_resolver` 는 비정지에 False 라 일괄 적용 시 rework 근거 패턴이 깨진다 — 적용 범위를 `STOPPING_GATES` 로 한정하는 이유) · (c) `gate_policy is None`(S2 조립) = 실재-만 검증. **적용 시점:** `_gate_event_exists` 는 `accept_revision`(수용)과 `_grounded_revisions`(재개 fold 필터) 양쪽에서 쓰이므로 이 강화는 **수용 시점과 재개(fold) 시점 모두**에 걸린다. 프로덕션 resolver(`resolve_gate.py`)의 상류 append 거부(독성 pass 이벤트 미생성)와 함께 이중 방어를 이룬다. `orchestration/framework/**` provider·모델 토큰 0(PO-INV 8·`STOPPING_GATES`·`REF_KIND_RESOLVED` 중립 어휘만 가법 import).
-- **OQ-PO-B6 (해소 취소 어휘 부재 — 저순위·OQ-PO-B2 에서 재스코프).** append-only 원장에서 오append 된 게이트 해소 이벤트를 되돌리는 전용 어휘·연산이 없다(실사용 오용 관측 0·투기적). 도입 시 필요 설계: 취소 actor 적격성(누가 취소 가능한가·`is_eligible_resolver` 정합)·취소 후 게이트 재-pending 전이 의미·원장 fold 에서 취소가 선행 해소를 무효화하는 규칙(append-only 보존·보상 이벤트 형태). 현행 미도입 — 필요 관측 시 착수.
+해소된 OQ 4건은 결론만 남긴다(경위·판정 근거 = git 앵커 90ca19c).
+
+- **OQ-PO-B1 (게이트 큐 제시 표면 문법) — 해소.** 물리 형태 = `render_gates.py`(형태 B·결정적·읽기 전용). 계약 상세 = §3.2.
+- **OQ-PO-B2 (해소 어휘 성숙) — 해소(2축 분리·엔진 코드 변경 0).** (1) 재시도 예산 비계수는 orchestration 엔진이 전용 어휘(`gate-resolved`/`outcome=pass`/`retry_count=0`)로 이미 충족한다 — OQ-SH-5 의 "해소=fail 계수 결합" 결함은 `outcome=fail` 을 재사용하는 UAHF step-host 층 국한이며 그 층의 해소는 무수정 경계상 별도 트랙(step-hosting-binding §7) 소관이다(§3.3 말미 인용). (2) 해소 취소(revoke)는 OQ-PO-B6 으로 재스코프·저순위 이월.
+- **OQ-PO-B3 (headless 런처 ↔ 사용자 세션 제시 브리지) — 해소.** 브리지 = 종료 코드 2 + `logs/stop-signal.json`(pending_gates) 기록 → 주 세션 Advisor 표면화(§3.2 채널 분리 유지) → `resolve_gate.py` 해소 이벤트 append(적격성 = gates.py 코드 소유) → `--resume` 결정적 재개(원장 fold). §5.7 실 run 으로 실증.
+- **OQ-PO-B4 (실 LLM 제안 step·비픽스처 run) — 해소.** §5.7 이 실 LLM 제안 step + 실 사용자 게이트 해소·revision 승격을 남겼다. 잔여 = 승격된 구현 단위의 resume 실 코드 산출(후속 트랙 이월).
+- **OQ-PO-B5 (엔진 `accept_revision` 게이트-pass 재검증의 actor 미검사) — 해소.** `orchestrator._gate_event_exists`(→ `_event_grounds_gate`) 강화로 엔진 측 방어를 완성했다. 규칙: 매칭 pass 이벤트가 정지 게이트 해소로 자신을 선언하고(`ref.kind == REF_KIND_RESOLVED` **그리고** `ref.gateKind ∈ STOPPING_GATES`) `self.gate_policy is not None` 이면, 그 해소 actor 가 `gate_policy.is_eligible_resolver(gateKind, actor)` 로 적격일 때만 revision 을 근거지을 수 있다(05 §3.3 확정 권위 정합). 부적격 actor 의 pass 해소 이벤트는 로그에 남아도 승격 근거가 되지 못한다. **거동 보존 3면(불가침):** (a) 레거시 이벤트(`ref.kind == "gate"`·gateKind 부재) = 실재-만 검증 · (b) 비정지 gateKind gate-resolved 이벤트 = 실재-만 검증(`is_eligible_resolver` 는 비정지에 False 라 일괄 적용 시 rework 근거 패턴이 깨진다) · (c) `gate_policy is None` = 실재-만 검증. **적용 시점** = `accept_revision`(수용)과 `_grounded_revisions`(재개 fold 필터) 양쪽이며, 프로덕션 resolver 의 상류 append 거부와 함께 이중 방어를 이룬다.
+- **OQ-PO-B6 (해소 취소 어휘 부재 — 저순위·미해소).** append-only 원장에서 오append 된 게이트 해소 이벤트를 되돌리는 전용 어휘·연산이 없다(실사용 오용 관측 0·투기적). 도입 시 필요 설계: 취소 actor 적격성(`is_eligible_resolver` 정합)·취소 후 게이트 재-pending 전이 의미·원장 fold 에서 취소가 선행 해소를 무효화하는 규칙(append-only 보존·보상 이벤트 형태). 현행 미도입 — 필요 관측 시 착수.
 
 ---
 
 ## §8. 개정 이력
+
+(기재는 최신 항목이 위에 오는 역순 관례를 유지한다 — 아래 기존 기재는 무수정이다.)
+
+- **2026-07-26 (정합) md 슬림화 Wave 4** — 비계약 격리 개정: 메타 템플릿·해소 OQ·경위 서술 압축,
+  계약 문면 무변경. 종전 = git 앵커 90ca19c. Advisor 위임. 동반 정정 = §2 표의 권한 플래그
+  문자열을 제거하고 유일 소재(step-hosting-binding.md §0·§4.2) 포인터로 대체.
 
 - **2026-07-26 (AC 실출력 픽스처 규율·자기출제 — 백로그 §O 해소·D-O1·D-O2·D-O3).** AC 를 스스로
   출제한 단위가 합성 입력으로 통과시킨 검사를 외부 도구 계약의 검증으로 주장할 수 있던 결함을 두

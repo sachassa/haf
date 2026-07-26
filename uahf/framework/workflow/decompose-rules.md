@@ -31,6 +31,7 @@
 | 2026-07-06 | v0.7 Draft | 최초 작성. Decompose 연산(07 §3.1-A)의 입력·출력·완료 조건 3건·실패 reason 4종을 인터페이스 인스턴스로 정본 그대로 보존(§2, 재정의·확장 0). 완료 조건 3건을 예/아니오 판정 가능한 검사 규칙 4개(C1 완료 조건 보유→`MissingCompletionCriteria` · C2 인터페이스 계약 보유→`MissingInterfaceContract` · C3 소유 경계 비중첩→`OwnershipOverlap` · C4 의존 비순환→`DependencyCycle`)로 전개하고, 각 검사 실패를 해당 reason 코드에 1:1 결합(§3, verifier-protocol §2 관례 동형 — 검사 규칙↔완료 조건·불변·reason 대응표 + 각 검사 예/아니오 절차·검사 범위). 병렬 집합 도출 문면(07 §3.2-A 말미) 보존 + 검사 가능 전개(D1 상호 비의존·D2 경계 비중첩, 새 reason 신설 0 — §4). Work Graph·Task·공통 Failure Report 포맷은 work-graph.md §2·§3·§4를 § 포인터로만 소비(필드 표 재게재·재정의 0, 이중 갱신 방지 — §5). Dispatch(07 §3.1-B)·Merge(07 §3.1-C)는 비소관(별도 인스턴스 문서 소관, 동시 작성 형제 불인용 — 07 R2), 물리 실현(분해 수행 주체 물리 채널·직렬화·물리 위치)은 Adapter Binding 소관 포인터. 07·02 계약 재정의 0, Glossary 밖 새 용어 0, 금지 토큰 0(자가 전수 스캔 — §6). | Worker (Advisor 위임, Task WF3) |
 | 2026-07-06 | v0.7 Baseline | v0.7 마일스톤 사용자 승인 — 기준선 확정 (CP2 Pass — 첫 판정 Pass·재작업 0회, 충족 29/위반 0/판정 불가 0; CP3 Advisor 승인). | Advisor |
 | 2026-07-17 | (상태 유지) | 산출물 수명 정책 제정(docs/artifact-lifecycle-policy.md) 정합 — 핸드오프 판례 인용 제거(안정 근거 유지) — 삭제 산출물 참조 없음(앵커 전환 해당 없음). 계약·규범 무변경. | Worker (Advisor 위임, 사용자 결정 2026-07-17) |
+| 2026-07-26 | (정합) | md 슬림화 Wave 3 — 비계약 격리 개정: 경계 중복·표-산문 이중·감사 서술 압축, 계약 문면 무변경. 종전 = git 앵커 90ca19c | Advisor 위임 |
 
 (이력 절은 문서 머리에 둔다 — 거버넌스 추적 대상 문서 관행. 이후 개정은 이 표에 append-only로 기록한다.)
 
@@ -60,9 +61,9 @@
 - **완료 조건 검사 규칙** — 완료 조건 3건을 각각 **예/아니오로 판정 가능한 검사 규칙**(C1~C4)으로 전개하고, 각 검사 실패를 해당 실패 reason 코드에 1:1 결합한다(§3, verifier-protocol §2 관례 동형).
 - **병렬 집합 도출 규칙** — 07 §3.2-A 말미의 병렬 집합 도출 문면을 보존하고, 검사 가능한 운용 규칙(상호 비의존·경계 비중첩)으로 전개한다(§4).
 
-이 규격은 07 §3.1-A Decompose 연산 계약의 **인스턴스**다. 연산·완료 조건·실패 reason을 재정의·확장하지 않는다. 형태 A(문서)에서 형태 B(실행 코드)로 전환되어도 07 §3 Core Contract 변경은 0이며, 위반(형태 B가 07 §3 계약을 바꾸어야만 성립하는 경우)이 발견되면 구현하지 않고 Advisor에게 보고한다(structure.md §7 C-1과 같은 불변 원칙).
+경계·인스턴스 지위 선언은 §0(1벌)과 §6이 소유한다 — 본 절은 중복 선언을 두지 않는다.
 
-이 규격의 규칙은 이 프로젝트의 spec 병렬 작성 Wave가 이미 실증한 분해와 동형이다 — 07 §8 예1(00/01/02를 선행 Task로, 03~13을 병렬 Task로 분해)이 아래 검사 규칙(완료 조건 보유·경계 비중첩·비순환)을 실제로 밟은 분해다. 본 문서는 그 사례를 재정의하지 않고 규칙의 실증 근거로만 가리킨다.
+실증 = 07 §8 예1(00/01/02를 선행 Task로, 03~13을 병렬 Task로 분해 — 아래 검사 규칙을 실제로 밟은 분해). 본 문서는 그 사례를 재정의하지 않고 규칙의 실증 근거로만 가리킨다.
 
 ---
 
@@ -96,42 +97,31 @@ Decompose는 큰 작업 하나를 Work Graph 하나로 분해하는 연산이다
 | **C3. 소유 경계 비중첩** | 각 병렬 집합 내 모든 Task 쌍의 `ownedBoundary` 교집합이 0인가? | 완료 조건 (2) · 07 INV-2 | Task `ownedBoundary` · Work Graph `parallelSets` (07 §3.2-A/B / work-graph.md §2·§3) | `OwnershipOverlap` |
 | **C4. 의존 비순환** | `dependencies`를 방향 그래프로 볼 때 방향 순환이 없는가? | 완료 조건 (3) | Work Graph `dependencies` (07 §3.2-A / work-graph.md §2) | `DependencyCycle` |
 
-- 이 표가 done의 "INV-1·INV-2 검사·순환 검출이 각각 예/아니오 판정 가능한 검사 규칙으로 전개되고 각 검사 실패가 해당 reason 코드로 연결된다"의 대조 지점이다(verifier-protocol §2.1 관례 동형). 각 검사 상세는 §3.2~§3.5다.
+- 이 표가 done의 "INV-1·INV-2 검사·순환 검출이 각각 예/아니오 판정 가능한 검사 규칙으로 전개되고 각 검사 실패가 해당 reason 코드로 연결된다"의 대조 지점이다(verifier-protocol §2.1 관례 동형). §3.2~§3.5는 표에 없는 **검사 고유 사항만** 둔다(표 셀의 산문 재서술 없음).
+- **검사 범위(정직) — 전역 1줄, C1~C4·D1~D2 공통 적용.** 각 검사의 검사 범위는 대상 집합 전건이다 — `tasks` 전건(C1·C2), 각 병렬 집합 내 Task 쌍 전건(C3·D1), `dependencies` 관계 전체(C4). 표본 하나·대표 한 쌍·일부 경로로 넓은 결론을 내지 않는다(좁은 대리 지표 금지 — 06 §8 예1의 "검사 범위 부족" 유형 회피). uaf-allow-legacy: 이 문장은 검사에 요구되는 범위를 규정하는 규범 문면이며 본 개정이 무언가를 훑었다는 사실 주장이 아니다.
 - **판정 결합 소유 경계.** 위 표의 마지막 두 열(판정 대상 필드·reason)에서, 필드 스키마와 reason 열거의 **소유·정본**은 07 §3.2-A/B/E와 work-graph.md §2·§3·§4에 있다. 본 표가 소유하는 것은 **검사↔완료 조건↔reason의 결합**이며, 이는 work-graph.md §4가 "규칙 인스턴스 문서 소관"으로 이연한 지점의 Decompose 몫이다(§0).
 - **결정성.** 각 검사는 동일 Work Graph에 대해 동일한 "예/아니오"를 낸다 — 재량 개입이 없다. 이는 검사가 예/아니오 판정 규칙이라는 사실의 귀결이며, 도출 규칙의 결정성이지 검사 도구·실행 환경의 물리 결정성이 아니다(물리 실행은 Adapter Binding 소관, §6).
 - **다중 실패 처리.** 한 Work Graph에서 둘 이상의 검사가 "아니오"일 수 있다. 이 경우 각 실패 지점마다 공통 Failure Report 1건씩을 산출하며, `location` 필드(work-graph.md §4)에 실패 지점(Task `id`·경계 항목·참조 위치)을 담는다. reason별 `location`의 지시 대상은 각 검사 상세(§3.2~§3.5)가 규정한다.
 
 ### §3.2 C1 — 완료 조건 보유 검사 (→ `MissingCompletionCriteria`)
 
-1. **대상.** Work Graph의 `tasks` 전체(07 §3.2-A `tasks` — 분해된 하위 작업 전부, work-graph.md §2).
-2. **절차(예/아니오).** 각 Task `t`에 대해, `t`가 `done`(완료 조건 — 검증 가능한 형태) 필드를 가지고 그 값이 비어 있지 않은가? — Task별 예/아니오.
-3. **판정.** `tasks`의 모든 Task가 "예" → C1 = 예. 하나라도 "아니오"인 Task가 있으면 → C1 = 아니오.
-4. **실패 결합.** C1 = 아니오이면 Decompose 실패. reason = `MissingCompletionCriteria`, `location` = `done`이 없는 Task의 `id`. 그 Work Graph는 디스패치되지 않는다(07 INV-1 — `done`·`interfaceContract` 중 하나라도 없으면 디스패치되지 않는다). 재분해로 누락 Task에 `done`을 부여한 뒤 재검사한다(07 §6 Decompose 행).
-5. **검사 범위(정직).** `tasks` **전수**(모든 Task). 표본 Task 하나가 `done`을 가진다는 사실로 전체가 가진다는 결론을 내지 않는다(좁은 대리 지표 금지).
+- **판정 단위.** Task별로 `done`(검증 가능한 형태) 필드가 있고 그 값이 비어 있지 않은가를 본다. `tasks`의 각 Task가 "예"일 때만 C1 = 예.
+- **실패 결합.** `location` = `done`이 없는 Task의 `id`. 그 Work Graph는 디스패치되지 않는다(07 INV-1). 재분해로 누락 Task에 `done`을 부여한 뒤 재검사한다(07 §6 Decompose 행).
 
 ### §3.3 C2 — 인터페이스 계약 보유 검사 (→ `MissingInterfaceContract`)
 
-1. **대상.** Work Graph의 `tasks` 전체(work-graph.md §2).
-2. **절차(예/아니오).** 각 Task `t`에 대해, `t`가 `interfaceContract`(제공·소비하는 확정된 계약) 필드를 가지고 그 값이 비어 있지 않은가? — Task별 예/아니오.
-3. **판정.** 모든 Task가 "예" → C2 = 예. 하나라도 "아니오" → C2 = 아니오.
-4. **실패 결합.** C2 = 아니오이면 Decompose 실패. reason = `MissingInterfaceContract`, `location` = `interfaceContract`가 없는 Task의 `id`. 디스패치 차단(07 INV-1). 재분해로 누락 Task에 `interfaceContract`를 부여한 뒤 재검사(07 §6).
-5. **검사 범위(정직).** `tasks` 전수. C1과 마찬가지로 표본 하나로 넓은 결론을 내지 않는다.
+- **판정 단위.** Task별로 `interfaceContract`(제공·소비하는 확정된 계약) 필드가 있고 그 값이 비어 있지 않은가를 본다. `tasks`의 각 Task가 "예"일 때만 C2 = 예.
+- **실패 결합.** `location` = `interfaceContract`가 없는 Task의 `id`. 디스패치 차단(07 INV-1). 재분해로 부여한 뒤 재검사(07 §6).
 
 ### §3.4 C3 — 소유 경계 비중첩 검사 (→ `OwnershipOverlap`)
 
-1. **대상.** Work Graph의 `parallelSets` 각 병렬 집합 `P`와, `P`에 속한 Task들의 `ownedBoundary`(07 §3.2-A/B — work-graph.md §2·§3).
-2. **절차(예/아니오).** 각 병렬 집합 `P`에 대해, `P`에 속한 서로 다른 Task 쌍 `(a, b)` **전부**에 대해 `ownedBoundary`(a) ∩ `ownedBoundary`(b) = 공집합인가? — 쌍별 예/아니오.
-3. **판정.** 모든 병렬 집합의 모든 Task 쌍이 "예" → C3 = 예. 어느 한 쌍이라도 교집합이 공집합이 아니면 → C3 = 아니오.
-4. **실패 결합.** C3 = 아니오이면 Decompose 실패. reason = `OwnershipOverlap`, `location` = 중첩된 경계 항목·해당 Task 쌍. 재분해로 경계를 분리한다(07 §6 — reason=OwnershipOverlap, 재분해로 경계 분리, 07 INV-2).
-5. **검사 범위(정직).** 각 병렬 집합 내 **쌍별 전수**(모든 Task 쌍의 교집합). 대표 한 쌍만 검사하고 나머지를 통과로 간주하지 않는다 — 좁은 대리 지표 하나로 넓은 결론을 내면 경계 중첩을 놓친다(06 §8 예1이 규정한 "검사 범위 부족" 유형의 회피). 병렬 집합이 셋 이상의 Task를 가지면 교집합 검사는 모든 쌍에 대해 수행한다.
+- **판정 단위.** 각 병렬 집합 `P`의 서로 다른 Task 쌍 `(a, b)`마다 `ownedBoundary`(a) ∩ `ownedBoundary`(b) = 공집합인가를 본다. 어느 한 쌍이라도 교집합이 공집합이 아니면 C3 = 아니오. 병렬 집합이 셋 이상의 Task를 가지면 교집합 검사는 모든 쌍에 대해 수행한다.
+- **실패 결합.** `location` = 중첩된 경계 항목·해당 Task 쌍. 재분해로 경계를 분리한다(07 §6, 07 INV-2).
 
 ### §3.5 C4 — 의존 비순환 검사 (→ `DependencyCycle`)
 
-1. **대상.** Work Graph의 `dependencies`(선행 Task id → 후행 Task id, 07 §3.2-A — work-graph.md §2).
-2. **절차(예/아니오).** `dependencies`를 방향 그래프(선행 → 후행)로 볼 때, 어떤 Task에서 출발해 선행 관계를 따라가 자기 자신으로 되돌아오는 방향 순환이 존재하는가? 동치로: 모든 Task를 "선행이 후행보다 앞선다"는 조건으로 일렬로 세우는 순서가 존재하는가? — 그래프 전체에 대해 예/아니오.
-3. **판정.** 방향 순환 없음(그런 순서가 존재) → C4 = 예. 방향 순환 존재(그런 순서가 존재하지 않음) → C4 = 아니오.
-4. **실패 결합.** C4 = 아니오이면 Decompose 실패. reason = `DependencyCycle`, `location` = 순환에 포함된 Task 참조. 재분해로 순환을 끊은 뒤 재검사(07 §6 — reason=DependencyCycle).
-5. **검사 범위(정직).** `dependencies` 관계 **전체**. 일부 경로만 보고 비순환으로 결론 내지 않는다.
+- **판정 단위.** `dependencies`를 방향 그래프(선행 → 후행)로 볼 때 자기 자신으로 되돌아오는 방향 순환이 존재하는가를 본다. 동치로: 모든 Task를 "선행이 후행보다 앞선다"는 조건으로 일렬로 세우는 순서가 존재하는가. 순환 없음(그 순서가 존재) → C4 = 예.
+- **실패 결합.** `location` = 순환에 포함된 Task 참조. 재분해로 순환을 끊은 뒤 재검사(07 §6).
 
 ### §3.6 검사 물리 실행 경계
 
@@ -156,7 +146,7 @@ Decompose는 큰 작업 하나를 Work Graph 하나로 분해하는 연산이다
 - D1이 "아니오"(상호 의존하는 두 Task가 한 병렬 집합에 있음)이면 병렬 집합이 **잘못 도출된 것**이며, 재도출로 교정한다(의존하는 Task는 같은 집합에 두지 않는다 — 07 §3.2-A). 07 §3.1-A 실패 reason 4종은 이 상호 의존 자체를 위한 별도 코드를 두지 않으므로, 본 문서는 이를 위한 **새 reason을 신설하지 않는다**(정본 열거 보존). 상호 의존은 도출 규칙 위반으로서 재도출 대상이며, 그에 수반하는 소유 경계 중첩은 C3 → `OwnershipOverlap`으로, 의존 관계의 순환은 C4 → `DependencyCycle`로 각각 보고된다.
 - 즉 병렬 집합 도출 규칙은 **올바른 도출을 위한 구성·정합 규칙**이고, 완료 조건 실패의 reason 산출은 §3의 C1~C4가 담당한다. 두 절은 층위가 다르며(도출 vs 완료 조건 판정) 모순 없이 접속한다.
 
-**실증.** 이 도출 규칙은 07 §8 예1이 실증한다 — 00/01/02는 03~13의 공통 선행이므로 선행(직렬) Task로 두고, 03~13은 그 공통 선행이 모두 완료된 뒤 하나의 병렬 집합을 이룬다(도출 자격 (ii)). 각 병렬 Task의 소유 경계(자기 spec 파일 하나)가 겹치지 않아(D2 = C3) 병렬 집합이 정합하게 도출되었다. 본 문서는 그 사례를 재정의하지 않고 규칙의 실증으로 가리킨다.
+**실증.** 07 §8 예1 — 00/01/02는 03~13의 공통 선행이므로 선행(직렬) Task, 03~13은 그 선행 완료 후 하나의 병렬 집합(도출 자격 (ii))이며 각 병렬 Task의 소유 경계가 겹치지 않아(D2 = C3) 정합하게 도출되었다.
 
 ---
 
@@ -170,32 +160,17 @@ Decompose는 큰 작업 하나를 Work Graph 하나로 분해하는 연산이다
 | Task 포맷 (`id`/`task`/`done`/`interfaceContract`/`ownedBoundary`/`dependsOn`/`delegation`) | work-graph.md §3 | 07 §3.2-B | §3(C1·C2·C3 판정 대상 — `done`·`interfaceContract`·`ownedBoundary`), §4 도출 자격(`dependsOn`) |
 | 공통 Failure Report 포맷 (`operation`/`target`/`reason`/`location`) + reason 9종 열거 | work-graph.md §4 | 07 §3.2-E | §3 실패 결합(Decompose 4종 reason 산출·`location` 지시) |
 
-- **필드 표 비재게재.** 위 세 포맷의 필드 표(5필드·7필드·4필드)와 reason 9종 열거는 work-graph.md §2·§3·§4가 단일 소유한다. 본 문서는 검사·도출에 필요한 **필드명**을 § 포인터로 인용할 뿐, 필드 표를 다시 그리지 않는다.
-- **reason 결합 소유는 본 문서.** 포맷의 reason 열거(9종) 소유는 work-graph.md §4이나, **Decompose 4종 reason이 어느 완료 조건 검사에서 산출되는가**의 결합은 본 문서 §3이 소유한다(§0 — work-graph.md §4가 규칙 인스턴스 문서로 이연한 지점). 본 문서는 4종을 값으로 인용할 뿐 새 reason 코드를 신설하지 않는다.
-- **`delegation` 정본.** 분해가 산출한 각 Task의 `delegation` 매핑(위임 메시지)의 정본은 02 §3.2-B다(07 INV-3). 본 문서는 이를 재정의하지 않으며, `delegation`을 실제 디스패치에 사용하는 규칙은 Dispatch 연산(07 §3.1-B, 별도 인스턴스 문서 소관)이 소비한다.
+- **필드 표 비재게재 / reason 결합 소유.** 세 포맷의 필드 표와 reason 9종 열거는 work-graph.md §2·§3·§4가 단일 소유하고, **Decompose 4종 reason이 어느 완료 조건 검사에서 산출되는가**의 결합은 본 문서 §3이 소유한다(§0 — work-graph.md §4가 규칙 인스턴스 문서로 이연한 지점). 본 문서는 4종을 값으로 인용할 뿐 새 reason 코드를 신설하지 않는다.
+- **`delegation` 정본.** 분해가 산출한 각 Task의 `delegation` 매핑의 정본은 02 §3.2-B다(07 INV-3). `delegation`을 실제 디스패치에 사용하는 규칙은 Dispatch 연산(07 §3.1-B, 별도 인스턴스 문서 소관)이 소비한다.
 
 ---
 
 ## §6. 경계와 비의존 (재정의 0 · 07 R2 · 금지 토큰 · Glossary)
 
-본 문서가 준수하는 경계를 한자리에 모은다. 검증 대조 지점이다.
+본 문서가 준수하는 경계를 한자리에 모은다. 검증 대조 지점이다. 선언 1벌은 §0이며 본 절은 그 대조 항목만 열거한다.
 
-- **07·02 계약 재정의·확장 0.** §2~§4의 모든 연산 인터페이스·검사 규칙·도출 규칙은 07 §3.1-A·§3.2-A의 인스턴스이며 § 포인터로만 참조한다. 완료 조건 3건·실패 reason 4종·병렬 집합 도출 문면은 정본을 그대로 보존했다(새 완료 조건·새 reason·새 도출 규칙 0). `delegation`의 위임 메시지 정본(02 §3.2-B)도 재정의하지 않았다(07 INV-3). 진위 판정 기준은 07 §3.1-A·§3.2-A/B/E와 02 §3.2-B가 유지한다. 위반(형태 B가 07·02 계약을 바꾸어야만 성립하는 경우)이 발견되면 구현하지 않고 Advisor에게 보고한다.
-- **인스턴스화 대상 경계.** 본 문서의 인스턴스화 대상은 Decompose 연산(07 §3.1-A)과 병렬 집합 도출 문면(07 §3.2-A 말미)이다. **Dispatch(07 §3.1-B)·Merge(07 §3.1-C) 연산 규칙은 대상이 아니며**, 각각 07 §3.1-B·§3.1-C 소관 별도 인스턴스 문서 소관으로 일반 포인터만 두었다.
-- **포맷 비재게재(이중 갱신 방지).** Work Graph·Task·공통 Failure Report 포맷은 work-graph.md §2·§3·§4를 § 포인터로만 소비했고 필드 표를 재게재·재정의하지 않았다(§5). reason 열거의 소유는 work-graph.md §4, Decompose reason↔검사 결합의 소유는 본 문서 §3이다.
-- **07 R2 경계 — 동시 작성 형제 불인용.** 같은 Wave(v0.7)에서 동시 작성 중인 형제 산출물(Dispatch 프로토콜 인스턴스·Merge 규칙 인스턴스)의 미완성 내용은 인용·추측하지 않았다. 확정된 정본(07·02 spec, structure.md, Glossary)과 확정 인터페이스(work-graph.md WF1 확정본)만 참조했다. Dispatch·Merge는 "07 §3.1-B/§3.1-C 소관 별도 인스턴스 문서" 수준의 일반 포인터로만 지시했다.
-- **물리 실현 비서술.** 분해를 수행하는 주체의 물리 채널, 산출된 Work Graph의 직렬화 형식·물리 위치, 검사 규칙의 물리 실행 방식은 서술하지 않고 **Adapter Binding 문서 소관**(07 §4.1 Work Graph 직렬화 행·§4.2 이식 교체 지점) 포인터로만 처리했다. 특정 Adapter Binding 문서명을 두지 않았으며, 필요한 자리에는 소관 포인터만 두었다.
-- **금지 토큰 비의존(structure.md §5 C-3 확장, 07 INV-9) — 자가 전수 스캔 수행.** 본문 전체를 다음 후보 부류 **전체**로 전수 스캔하여 실증 0건임을 확인했다(단일 토큰 검색에 국한하지 않고 부류별 전수 대조) — { 특정 AI 이름·모델명·제품 기능명 } ∪ { 프로그래밍 언어명·툴체인명 } ∪ { 직렬화 형식명·확장자·OS 토큰 } ∪ { 물리 경로·Adapter 하위 인스턴스 토큰·특정 Adapter Binding 문서명 }. 물리 실현이 필요한 자리에는 구체 토큰 대신 "Adapter Binding 문서 소관(07 §4.1·§4.2)" 포인터를 두었다 — 금지 토큰의 예시조차 본문에 나열하지 않았다(mention/use 경계). 다음은 금지 토큰이 아니다: (i) 연산명(Decompose/Dispatch/Merge)·reason 열거 값(`MissingCompletionCriteria`·`MissingInterfaceContract`·`OwnershipOverlap`·`DependencyCycle` 및 07 §3.2-E의 나머지 reason 명칭) — 07 §3 정본의 평이한 열거 값; (ii) Glossary·AGENT.md 정본 어휘 — Work Graph·Task·병렬 집합·소유 경계·인터페이스 계약(Glossary §3.2-J J-07)과 역할 명칭(Advisor/Planner/Worker/Verifier); (iii) 계약 필드명 백틱 표기(`goal`·`tasks`·`dependencies`·`parallelSets`·`done`·`interfaceContract`·`ownedBoundary`·`dependsOn`·`delegation`·`operation`·`target`·`reason`·`location` — 07 §3.2 정본 어휘); (iv) 저장소 문서 식별자(`specs/…`·`framework/…`·`docs/…` 상호 참조 및 본 문서 자신의 식별자 `framework/workflow/decompose-rules.md`) — 문서 식별자이며 직렬화 형식·물리 경로 토큰이 아니다(work-graph.md §5·loop-protocol.md §7 분류 선례 동형). 검사·도출 라벨(C1~C4·D1~D2)은 본 문서 서술 편의의 명명 규칙이며 계약 용어·금지 토큰이 아니다.
-- **Glossary 정본.** 사용 용어는 전부 specs/00-glossary.md §3.2-J(J-07) 정본 또는 Glossary 기존 어휘이거나 평이한 열거 값이다. 새 용어를 신설하지 않았다. "Decompose·공통 Failure Report·reason 사유 코드·병렬 집합 도출"은 07 §3 정본이 정의한 연산·포맷·서술 명칭이며 본 문서 신설 용어가 아니다.
-
----
-
-## §7. 요약 (규격 한눈에 보기)
-
-- 이 문서 = **Decompose 연산(07 §3.1-A)의 규칙 인스턴스**. 정본 = 07 §3.1-A(본 문서는 인스턴스, 재정의 아님 — C-1). 소비하는 포맷의 확정 인터페이스 = work-graph.md(WF1 확정본) §2·§3·§4.
-- **연산 인터페이스(§2)** — 입력=큰 작업 1건(목표·범위), 출력=Work Graph 1건, 완료 조건 3건(모든 Task가 `done`·`interfaceContract` 보유 / 병렬 집합 내 소유 경계 비중첩 / 의존 비순환), 실패 reason 4종(`MissingCompletionCriteria`·`MissingInterfaceContract`·`OwnershipOverlap`·`DependencyCycle`). 정본 그대로 보존.
-- **검사 규칙(§3)** — 완료 조건 3건 → 예/아니오 검사 4개. C1 완료 조건 보유→`MissingCompletionCriteria`, C2 인터페이스 계약 보유→`MissingInterfaceContract`(완료 조건 (1)이 두 요소·두 reason으로 분기), C3 소유 경계 쌍별 전수 비중첩→`OwnershipOverlap`, C4 의존 방향 비순환→`DependencyCycle`. Decompose 성립 = C1∧C2∧C3∧C4 전부 예. 각 검사는 전수 범위·결정적 판정. reason↔검사 결합이 본 문서 소유(work-graph.md §4가 이연한 지점).
-- **병렬 집합 도출 규칙(§4)** — 07 §3.2-A 말미 문면 보존 + 검사 가능 전개(도출 자격 (i)·(ii), 정합 검사 D1 상호 비의존·D2 경계 비중첩=C3). 상호 의존은 재도출 대상이며 새 reason 신설 0.
-- **포맷 소비(§5)** — Work Graph·Task·공통 Failure Report 포맷은 work-graph.md §2·§3·§4를 § 포인터로만 소비(필드 표 재게재·재정의 0). `delegation` 정본은 02 §3.2-B(07 INV-3).
-- **경계(§6)** — 07·02 재정의·확장 0, Dispatch·Merge 비소관(07 R2 형제 불인용), 물리 실현 Adapter Binding 소관(07 §4.1·§4.2), 금지 토큰 0(자가 전수 스캔), Glossary §3.2-J J-07 정본만 사용.
-- 모든 규칙은 07 §3.1-A의 인스턴스이며, 물리 실현은 Adapter Binding 소관이다. 형태 A(문서) → 형태 B(실행 코드) 전환에도 Core Contract 변경은 0이다.
+- **07·02 계약 재정의·확장 0.** §2~§4의 연산 인터페이스·검사 규칙·도출 규칙은 07 §3.1-A·§3.2-A의 인스턴스이며 § 포인터로만 참조한다. 완료 조건 3건·실패 reason 4종·병렬 집합 도출 문면은 정본을 그대로 보존했다(새 완료 조건·새 reason·새 도출 규칙 0). `delegation`의 위임 메시지 정본(02 §3.2-B)도 재정의하지 않았다(07 INV-3). 위반(형태 B가 07·02 계약을 바꾸어야만 성립하는 경우)이 발견되면 구현하지 않고 Advisor에게 보고한다.
+- **인스턴스화 대상 경계.** 대상은 Decompose 연산(07 §3.1-A)과 병렬 집합 도출 문면(07 §3.2-A 말미)이다. **Dispatch(07 §3.1-B)·Merge(07 §3.1-C) 연산 규칙은 대상이 아니며** 각 소관 별도 인스턴스 문서로 일반 포인터만 둔다.
+- **포맷 비재게재(이중 갱신 방지).** Work Graph·Task·공통 Failure Report 포맷은 work-graph.md §2·§3·§4를 § 포인터로만 소비하고 필드 표를 재게재하지 않는다(§5).
+- **물리 실현 비서술.** 분해 수행 주체의 물리 채널, 산출된 Work Graph의 직렬화 형식·물리 위치, 검사 규칙의 물리 실행 방식은 서술하지 않고 **Adapter Binding 문서 소관**(07 §4.1·§4.2) 포인터로만 처리한다. 특정 Adapter Binding 문서명을 두지 않는다.
+- **금지 토큰·Glossary 경계.** 금지 토큰 규칙과 정당 매치 분류(연산명·reason 열거 값·계약 필드명·Glossary §3.2-J J-07 표제어·역할 명칭·저장소 문서 식별자)의 판정 기준은 framework/core/structure.md §5 C-3 확장이 소유한다(07 INV-9). 용어는 specs/00-glossary.md §3.2-J(J-07) 정본만 사용하며 새 용어를 신설하지 않는다. 검사·도출 라벨(C1~C4·D1~D2)은 본 문서 서술 편의의 명명 규칙이며 계약 용어가 아니다.

@@ -315,5 +315,81 @@ class ShadowVerification(unittest.TestCase):
             self.assertIn("error", entries[0])
 
 
+# ==========================================================================
+# invoke 원장 timeout 관측 — per-unit timeout 재기입 값의 원장 실증(실 CLI 0)
+# ==========================================================================
+class _NoSubprocessLogging(LoggingClaudeInvoker):
+    """subprocess 만 우회하고 로깅 훅 실경로(build_command → parse_result)는 그대로 탄다."""
+
+    def __init__(self, stdout, **kw):
+        super().__init__(**kw)
+        self._stdout = stdout
+
+    def invoke(self, request):
+        self.build_command(request)          # _bundle_ctx 캡처 경로.
+        return self.parse_result(self._stdout, 0)   # _write_log 경로.
+
+
+_OK_STDOUT = json.dumps(
+    {"session_id": "sess-1", "result": json.dumps({"artifacts": ["a.py"]})},
+    ensure_ascii=False,
+)
+
+
+def _worker_req(timeout=None):
+    return InvokeRequest(
+        bundle={"step_contract": {"id": "s1"}},
+        role=ROLE_WORKER,
+        model="m",
+        timeout=timeout,
+    )
+
+
+def _only_log(dirpath):
+    names = [n for n in os.listdir(dirpath) if n.startswith("invoke-") and n.endswith(".json")]
+    assert len(names) == 1, names
+    with open(os.path.join(dirpath, names[0]), encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+class InvokeLogTimeoutField(unittest.TestCase):
+    def test_timeout_value_recorded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            inv = _NoSubprocessLogging(_OK_STDOUT, logs_dir=tmp)
+            inv.invoke(_worker_req(timeout=5400))
+            entry = _only_log(tmp)
+            self.assertEqual(entry["timeout"], 5400)
+
+    def test_timeout_absent_recorded_as_none(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            inv = _NoSubprocessLogging(_OK_STDOUT, logs_dir=tmp)
+            inv.invoke(_worker_req())
+            entry = _only_log(tmp)
+            self.assertIn("timeout", entry)          # 키는 항상 실린다(관측 경로 유실 금지).
+            self.assertIsNone(entry["timeout"])
+
+    def test_unit_timeout_rewrite_is_observable_in_log(self):
+        """UnitTimeoutInvoker 재기입 값이 원장에 실린다 — 최외곽 래핑 실증(중립 코드 무수정)."""
+        from orchestrator import UnitTimeoutInvoker   # 중립 엔진(무수정·sys.path 배선됨).
+
+        with tempfile.TemporaryDirectory() as tmp:
+            inner = _NoSubprocessLogging(_OK_STDOUT, logs_dir=tmp)
+            wrapped = UnitTimeoutInvoker(inner, {"s1": 7200})
+            req = _worker_req(timeout=600)           # 전역 예산.
+            wrapped.invoke(req)
+            entry = _only_log(tmp)
+            self.assertEqual(entry["timeout"], 7200)  # 단위 예산으로 재기입된 값.
+            self.assertEqual(req.timeout, 600)        # 원본 request 무변조(순수 재기입).
+
+    def test_unmatched_unit_keeps_global_budget_in_log(self):
+        from orchestrator import UnitTimeoutInvoker
+
+        with tempfile.TemporaryDirectory() as tmp:
+            inner = _NoSubprocessLogging(_OK_STDOUT, logs_dir=tmp)
+            wrapped = UnitTimeoutInvoker(inner, {"other-unit": 7200})
+            wrapped.invoke(_worker_req(timeout=600))
+            self.assertEqual(_only_log(tmp)["timeout"], 600)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

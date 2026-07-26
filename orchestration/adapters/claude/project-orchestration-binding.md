@@ -246,13 +246,14 @@ E2E 드라이버(`orchestration-data/e2e/`)는 **비프로덕션** dogfooding �
 
 **(g) per-unit timeout — 단위별 실행 예산**
 
-전역 `timeout` 하나(§4 config `timeout` → `Orchestrator.timeout`)는 규모가 크게 다른 단위를 같은 예산에 묶으므로, 이를 **단위 단위의 선택 값**으로 세분한다. 종료 코드 표(d)·기존 로그 산출은 무변경이다.
+전역 `timeout` 하나(§4 config `timeout` → `Orchestrator.timeout`)는 규모가 크게 다른 단위를 같은 예산에 묶으므로, 이를 **단위 단위의 선택 값**으로 세분한다. 종료 코드 표(d)는 무변경이다. 로그 산출은 invoke 원장(`logs/invoke-*.json`)에 `timeout` 필드 **1개가 가법**된 것 외에는 무변경이다(기존 키·파일명 규칙·다른 원장 무변 — 아래 관측 행).
 
 | 층 | 계약 |
 |---|---|
 | 스키마 | impl-plan task 의 **선택 키** `timeout`(11키 밖·12번째) = 실행 예산 **초 단위 양의 정수**. 부재 = 전역 fallback. `REQUIRED_TASK_KEYS` 11키는 무변(필수 승격 아님 — 기존 run·플랜 하위호환) |
 | 검증 | `resolve_gate.validate_impl_plan_adapter` — 키가 있으면 양의 정수만 수용하고 그 외(bool·0·음수·실수·문자열)는 오류 목록에 올린다. 판정 불가는 통과가 아니다(fail-closed·원장 무오염 — 불량값이 `task_added` 로 승격되지 않는다) |
 | 재기입 | 중립 엔진(`orchestrator.UnitTimeoutInvoker`) — `{단위 id: timeout}` 맵을 들고 `request.bundle["step_contract"]["id"]` 매칭 시 `dataclasses.replace` 로 `request.timeout` 을 재기입한다. 원본 request 무변조(순수)·비매칭은 원 객체 그대로·`__getattr__` 속성 투과(`HeartbeatInvoker` 선례 동형) |
+| 관측 | 재기입된 **실효 예산**은 invoke 원장 `logs/invoke-*.json` 의 `timeout` 필드로 관측된다 — E2E 하네스 `LoggingClaudeInvoker._bundle_ctx` 가 `request.timeout` 을 캡처하고 `_write_log` entry 에 싣는다. `UnitTimeoutInvoker` 는 최외곽 래핑이라 로깅 래퍼가 받는 요청은 재기입 **후** 객체이므로, 이 필드가 곧 재기입 값의 원장 실증이다(비매칭 단위·미지정 단위는 전역 예산값·`null` 이 실린다). `uaf-verified:` 래핑 순서 = `orchestration/framework/orchestrator/orchestrator.py` `_effective_invoker` 정독 + 단위 테스트 실측(`orchestration-data/e2e/tests/test_t3_t4.py::InvokeLogTimeoutField` — 재기입 값 7200 이 원장에 실림·비매칭 시 전역 600 유지·원본 request 무변조), 검색 범위 = 해당 2파일 및 e2e 로깅 경로. 실 LLM run 원장 관측은 이 가법 이후 첫 run 에서 확인 대상이다 |
 | 맵 원천 | `active_graph()` 파생 하나뿐(PO-INV 3 — 제2 진리원천 0). 유효값만 편입하고 불량값은 편입하지 않는다(차단은 검증 게이트 소유·래퍼는 기계 재기입만·판단 0) |
 | 적용 범위 | 한 단위의 **exec·CP2·게이트 디스패치 3경로 전부**가 그 단위의 예산을 받는다(균일 규칙). `_effective_invoker()` 는 맵이 비어 있지 않을 때만 최외곽 래핑하고, `_dispatch_gate_step` 은 같은 맵으로 timeout 래핑만 경유한다(산출물 포집 래퍼를 게이트 경로에 새로 끼우지 않는다) |
 | 거동 보존 | 맵 공집합(= `timeout` 을 쓴 단위 0)이면 **래핑 자체가 없다** — 기존 반환·기존 요청 객체 그대로다(`allocation=None`·`artifact_store=None` 패턴 동형). seed proposal 노드는 timeout 미부여(컴파일 시점에 단위 규모 정보가 없고 값을 발명하지 않는다) |

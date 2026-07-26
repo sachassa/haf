@@ -8,9 +8,9 @@
 
 ---
 
-## §A. 현행 상태 (갱신 2026-07-26(21))
+## §A. 현행 상태 (갱신 2026-07-26(22))
 
-**auto-percenty UAF 정식 편입(Contract v1·SD 7종) + 첫 엔진 run `impl-auto-percenty-p1` 완주 = 갱신(20) 실 run 실증 소화. 신규 결함 후보 2 + 절차 비례화 트랙 신설. ★다음 순위 = Advisor 배정(사용자 위임).**
+**auto-percenty UAF 정식 편입(Contract v1·SD 7종) + 첫 엔진 run `impl-auto-percenty-p1` 완주 = 갱신(20) 실 run 실증 소화. 신규 결함 후보 2 = 갱신(22) 경량 정비 묶음으로 해소(실 run 실증 대기·아래). 절차 비례화 트랙 신설. ★다음 = 절차 비례화(사용자 게이트).**
 
 성립 조건 2 이행: ① 엔진 경유(`/uaf-implement` — Advisor 직접 위임 디스패치 0) ② 첫 행동 = `auto-percenty/START-HERE.md` 전문 정독.
 
@@ -18,15 +18,16 @@
 
 **관측 체크리스트 판정** — 자동 발화 5종 = **5/5 관측**: heartbeat 실기 갱신 ✅ · `[INVOKES] total=` 정상(4→9) ✅ · 게이트 렌더 gate_id 상시 지목 ✅(자동 출력 문면 복사 실행으로 해소 성공) · Planner 3규율 ✅(milestone 상호 대조 AC 3검사 실구현·실출력 픽스처[T20 실캡처+PROVENANCE+미검증 신고 3항]·timeout 선택 키[ab 단위 5400 — 대형 단위 판별 타당]) · **Verifier AC 적정성 축 ✅ 실 Fail 1건**(proposal done "문자열 존재만 검사" 지적 → 실호출·값 assert 재작업 = 백로그 O 실증). 조건 발화 3종: `[REWORK-NOTE]` **실발화 ✅**(재작업 단위 열거·지시 인용·스윕 힌트 = 백로그 M 실증) · `--response` 조건 주입 = **미관측**(사용자 조건 없음 승인 — 억지 유발 금지) · per-unit timeout 재기입 = 조건 발화 ✅·**재기입 값 판정 불가**(아래 결함 ②).
 
-**신규 결함 후보 2**: **① Planner seed sentinel 문면 미고정** — proposal이 delegation 참조형 sentinel을 변형 문면("상위(부모) task 필드 전문과 동일…")으로 산출 → `resolve_gate` 검증-먼저 fail-closed 차단(원장 무오염 — 게이트 정확 작동) → Advisor 수기 정규화 필요(백업+provenance = `auto-percenty/impl-plan.SENTINEL-FIX-PROVENANCE.md`). 수정 후보 = `contract_to_graph.py` seed 프롬프트에 정확 sentinel 문면(`위 task 필드와 동일`/`위 done 필드와 동일`) 고정. **② UnitTimeoutInvoker 재기입 관측 신호 부재** — invoke 원장(`logs/invoke-*.json`)에 request.timeout 미기록이라 재기입 값의 라이브 실증이 원장으로 불가(갱신(18) 미검증 축이 이 부재로 잔존). 수정 후보 = invoke 기록에 timeout 필드 1개 추가.
+**신규 결함 2 = 갱신(22) 경량 정비 묶음으로 해소(Worker 위임·Advisor 독립 검증·커밋 참조)**: **①** seed 프롬프트 delegation 항 재작성(`contract_to_graph.py`) — 근본 원인 실측 = sentinel 문면은 최초 커밋부터 존재했으나 괄호 밀집 서술에 묻혀 리터럴로 읽히지 않음(`git log -L` 대조). 전용 행 분리·문자열 리터럴 단독 행·실측 반례("상위(부모) task 필드 전문과 동일" = run p1 차단 사례) 명시. 계약 무협소(sentinel/바이트 동일 전재 두 형태 유지·`delegation_check.py` 무수정). **②** invoke 원장 `timeout` 필드 가법(`_orch_common.py` `LoggingClaudeInvoker` — `UnitTimeoutInvoker` 최외곽 재기입 **후** request를 캡처하므로 이 필드가 곧 재기입 값의 원장 실증)·단위 테스트 4케이스(`test_t3_t4.py::InvokeLogTimeoutField`)·바인딩 §5.8(g) "기존 로그 산출 무변경" 문구 정정+관측 행 가법. `uaf-verified:` 검증 = Advisor 독립 재실행 — pytest e2e 39·adapter+orchestrator 65·`run_all_tests.py` 272 전건 Pass(각 EXIT=0)·sentinel 렌더 assert 4건(리터럴 행=`delegation_check` 상수 동등·들여쓰기 복사 통과·반례 실차단·전재 형태 유지). 스윕 범위 = 변경 4파일 diff 전문+테스트 3스위트. **실 LLM run 실증(Planner 변형 재발 0·원장 timeout 실물)은 다음 run 관측 대상(B-1).**
 
 **★ 절차 비례화(Process Proportionality) 트랙 신설(사용자 피드백 2026-07-26)**: "단순 수정·단순 테스트에 풀 프로세스는 가성비·시간효율 문제 — 경량 프로젝트 간소 절차/엔터프라이즈 복잡 절차". 정본 = 메모리 `feedback-uaf-process-proportionality`. 방향 = 불변(원장 0건 금지·게이트 확정 권위·검증 하한) 유지·**절차 두께만 Policy as Data 레버로 비례화**(변경 등급 신호→경량 레인[경량 원장+직접 위임+스크립트 AC]·SD defaultRequiredSet 복잡도 프로파일·CP2 차등[cp2ModelSlots 기존 장치]·성숙 brownfield 인터뷰 최소). 실측 근거 = 갱신(21) 세션(경량 코드 작업에 Entry→Discovery→Contract→SD 7종→엔진 고정비가 본작업보다 큼 — 단 Contract·SD는 1회성 셋업이라 차회부터 재사용).
 
 ### ★ 다음 착수 순위 = Advisor 배정(사용자 위임 2026-07-26 "순서 너가 정하는데로 할게")
 
-1. **경량 정비 묶음** — 신규 결함 ①(seed sentinel 문면 고정)+②(invoke 원장 timeout 필드). 수정 소폭·다음 실 run이 즉시 재검증.
-2. **절차 비례화 트랙** — 사용자 피드백 직결·최대 임팩트. 레인 기준(변경 등급 신호)은 사용자 게이트로 확정.
-3. **SD 스킵 브리지**(스킵↔구현 게이트 충돌 — 경량 레인의 전제) → 4. **SD manifest 배선 3건**(같은 SD 계열) → 5. **커버리지 강제**(θ≠커버리지) → 6. **.claude md 슬림화 실행**(분석 완결분·무게 절감 계열) → 7. **Q·R 기계 강제** → 8. **§DC-8(a)·02 개정** → 9. **상류 바인딩 2차**.
+1. **절차 비례화 트랙** — 사용자 피드백 직결·최대 임팩트. 레인 기준(변경 등급 신호)은 사용자 게이트로 확정.
+2. **SD 스킵 브리지**(스킵↔구현 게이트 충돌 — 경량 레인의 전제) → 3. **SD manifest 배선 3건**(같은 SD 계열) → 4. **커버리지 강제**(θ≠커버리지) → 5. **Q·R 기계 강제** → 6. **§DC-8(a)·02 개정** → 7. **상류 바인딩 2차**.
+
+(갱신(22)에서 목록 소화 2건: 경량 정비 묶음 = 해소(§A) · .claude md 슬림화 실행 = 트랙 완결이라 제거 — 근거 = 메모리 `uaf-claude-md-slimming-backlog`·병합 푸시 90ca19c..a8f0219.)
 
 (제품 트랙 별축 — 사용자 참여 시 최우선 인터럽트: **auto-percenty 웨이브 실전 ≤30상품**[선행 = 미결 판단 8건 카드·정본 = auto-percenty/docs/project-plan.md §4 표]+**A/B 라이브 실측**[예산 안·두 카드 동시 금지] · yt-stt M4-b 판단.)
 
@@ -38,7 +39,7 @@
 
 ### B-1. 다음 실 run 관측 좌표 (하네스 개선분의 라이브 실증)
 
-- 갱신(21) run 에서 **미관측**으로 남은 축: `--response` 조건 주입(조건부 승인할 일이 실제로 있을 때만 — 억지 유발 금지) · per-unit timeout **재기입 값** 실증(원장 신호 부재 = 신규 결함 후보 ②가 선결).
+- 갱신(21) run 에서 **미관측**으로 남은 축: `--response` 조건 주입(조건부 승인할 일이 실제로 있을 때만 — 억지 유발 금지) · per-unit timeout **재기입 값 실물**(갱신(22)에서 원장 `timeout` 필드 배선 완료 — 다음 run 의 `logs/invoke-*.json` 로 관측) · **seed sentinel 프롬프트 강제 효과**(갱신(22) 개정분 — Planner 변형 문면 재발 0 여부).
 - 갱신(19) N 트랙 미검증 축: 조건의 **실 프롬프트 렌더 문면** · Worker 조건 실준수(판정 축은 백로그 R 계열로 유보) · `render_gates` 표면에 "조건부 승인 가능" 인지 경로 부재(저임팩트) · 조건 **누적** 시나리오(현행 구조 게이트 1회 해소 전제) · 소비 프로젝트 레거시 run 혼재.
 - 갱신(20) M·O 트랙 미검증 축: 대형 워크스페이스 스윕 성능 · 다단위 run 의 `[REWORK-NOTE]`↔스윕 연결 · `--append-system-prompt` argv 길이 한계.
 - 갱신(17)~(18) 잔여: 실 LLM invoker 경유 **다중 escalation** run 미수행 · 한글 `gate_id` 셸 인용 거동 미실측(엔진 파생 규칙상 ASCII — 발생 시 재심) · Planner 의 `timeout` 선택 키 판별 타당성(갱신(21)에서 1건 관측·표본 1).
@@ -53,6 +54,8 @@
 - **위임 규율 잔여 2건** — B-4 **실시간 전파**(fresh-context 수임 Agent 간 통신 채널 부재 = 환경 제약. 회수 시점 대조로 갈음·재심 = 통신 표면 등장 시) · B-3 **기계 차단**(설계 산출 Write 의 결정적 식별 불가 = 미도입 사유 기록. 재심 = SD 실행 호스팅 도입 시 엔진 게이트 승격). B-0~B-5 6건은 종결 — 메모리 `uaf-delegation-enforcement-gap`.
 - **메모리 소급 감사** — "강제 필요한데 메모리에만 있는" 항목 재검토(갱신(15) 미완 항 — 앵커 `90ca19c` 승계). 「강제 없는 규율 신설 금지」 불변은 신설만 막고, 기존 메모리의 소급 감사는 별도 미착수 작업이다.
 - **명명 금지 규범(AI·모델·제품 기능 축) 정본 소유 공백** — structure.md §5 C-3이 Adapter 경계를 명시 제외해 각 바인딩의 문서 소유 규범으로 병존 중(사용자 결정 2026-07-26 = 현상 유지). 재심 좌표 = structure.md §5 차기 계약 개정 시 Adapter 경계 조항으로 승격 검토(유형 A 절차).
+- **e2e 러너 커버리지 갭(저임팩트)** — `run_all_tests.py` 의 `TEST_TREES` 4트리에 `orchestration/adapters/claude/tests` 미포함이라 그 스위트는 별도 pytest 로 돌려야 한다(uaf-verified: `run_all_tests.py` TEST_TREES 목록 직접 정독 — 갱신(22)). 러너 결과만으로 어댑터 스위트까지 통과로 단정하지 않는다.
+- **PreToolUse 훅 상대경로 ↔ Bash 지속 CWD 취약(갱신(22) 실측)** — Bash 도구의 `cd` 가 지속되면 상대경로 배선 훅이 다른 CWD 에서 실행돼 스크립트를 못 찾고, 이 경우 침묵 통과가 아니라 **Write/Edit 차단**으로 나타난다(uaf-verified: e2e 디렉터리 `cd` 직후 Edit 가 훅 에러로 차단·루트 복귀 후 동일 Edit 통과 — 라이브 재현 1회). 임시 규율 = `cd` 는 서브셸 `(cd … && cmd)` 로 한정. 항구 수정(훅 경로 견고화) = 미착수.
 
 ### B-3. §DC 트랙 잔여 (완결 항목은 본 파일에서 제거 — 앵커 `90ca19c`)
 

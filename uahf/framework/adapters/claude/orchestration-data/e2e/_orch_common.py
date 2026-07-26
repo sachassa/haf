@@ -47,7 +47,8 @@ from invoker import InvokeRequest, InvokeResult, ROLE_VERIFIER  # noqa: E402
 
 class LoggingClaudeInvoker(ClaudeInvoker):
     """ClaudeInvoker 상속 로깅 래퍼 — 실제 코드 경로를 super() 로 그대로 실행하고
-    각 invoke 의 조립 argv·원출력·종료 코드·판정 kind·session_id 를 logs/ 에 캡처한다.
+    각 invoke 의 조립 argv·원출력·종료 코드·판정 kind·session_id·실행 예산(timeout)을
+    logs/ 에 캡처한다.
 
     커밋된 claude_invoker.py 는 무수정이다. 이 래퍼는 orchestration-data/e2e/ 경계 소속이다.
 
@@ -87,6 +88,9 @@ class LoggingClaudeInvoker(ClaudeInvoker):
             "gate_id": gate.get("gate_id"),
             "model": request.model,
             "policy": request.policy,
+            # 단위별 실행 예산(초) — UnitTimeoutInvoker 가 최외곽에서 재기입한 뒤의 값이다
+            # (재기입 값의 원장 실증 지점). 전역 fallback 이면 그 전역값, 미설정이면 None.
+            "timeout": request.timeout,
             "feedback": request.bundle.get("feedback"),
         }
 
@@ -126,6 +130,7 @@ class LoggingClaudeInvoker(ClaudeInvoker):
             "gate_id": ctx.get("gate_id"),
             "model": ctx.get("model"),
             "policy": ctx.get("policy"),
+            "timeout": ctx.get("timeout"),
             "feedback_present": ctx.get("feedback") is not None,
             "argv": ctx.get("argv"),
             "returncode": returncode,

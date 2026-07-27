@@ -68,7 +68,7 @@ python verify_run.py <run-dir>... [--replay] [--git-hygiene] [-o <출력 디렉�
 `validate_impl_plan` — artifact 실재 시)·(d) delegation 정합(`delegation_check`·W4 공유)·
 (e) 계수 정합(`derive_registry` 대조)·[--replay] (f) k 계열 replay 결정성·[--git-hygiene] (g)
 git porcelain. **결정적 검사는 러너가 산출하고 LLM CP2 는 의미 축을 전담**한다(T3 분리·SH-INV-4
-무촉 — CP2 자체는 제거하지 않는다). Baseline 3+1 run 실행 결과 전건 pass·run 파일 mtime 불변.
+무촉 — CP2 자체는 제거하지 않는다).
 
 ### policy/allocation.json — Risk-based Model Routing (W2·opt-in·하위호환)
 
@@ -82,15 +82,13 @@ git porcelain. **결정적 검사는 러너가 산출하고 LLM CP2 는 의미 �
 `config.shadow_verify = {enabled, model, log_path?}` 로 켜면 `LoggingClaudeInvoker` 가 Verifier
 invoke(criteria 실재)를 지정 상위 모델로 **병행 재호출**해 두 판정 일치 여부를 섀도 로그에
 기록한다. **주 판정만 run 에 반영**(섀도는 관측 전용·실패해도 run 무영향·best-effort). 기본
-off 시 invoke 거동 byte 동일. 이번 트랙은 실 기동 없이 합성 스텁 단위 테스트로만 확인
-(LLM 비용 미발생).
+off 시 invoke 거동 byte 동일.
 
 ### delegation 참조형 표준 (W4/T4-①)
 
 `delegation_check.py` 가 3면(시나리오 프롬프트·`validate_*` 검증기·`verify_run` (d))의 단일
 규칙 소유다. delegation.task/done 은 **참조형 sentinel**(`"위 task 필드와 동일"`·
-`"위 done 필드와 동일"`·권장) **또는 상위 원문 전재**만 유효하고 요약·변형은 실패한다. m 성숙
-run(sentinel)·w 구현 run(원문 전재) baseline 이 둘 다 통과한다(무회귀). Verifier 브리프도
+`"위 done 필드와 동일"`·권장) **또는 상위 원문 전재**만 유효하고 요약·변형은 실패한다. Verifier 브리프도
 "참조형 sentinel 은 계약 위반 아님·결정적 리포트 재구현 금지"를 명기한다.
 
 ### 테스트
@@ -100,8 +98,6 @@ run(sentinel)·w 구현 run(원문 전재) baseline 이 둘 다 통과한다(무
 - e2e 트리: `e2e/tests/`(delegation 경계·러너 위생 검사·섀도 스텁·번들 payload 계측 — 실 CLI 0).
 
 ### 전체 테스트 정본 호출 (R3 · 4-트리 러너 · deterministic·Skill 아님)
-
-R3 의 목적 = 매 단계 4경로 명령을 재도출하는 수고 제거(튜닝 Before/After 효과 주장은 불포함).
 
 정본 호출 = 이 러너 **또는** 아래 원 명령(4경로 병기) 중 택일 — 두 형태는 동일 트리를 실행한다:
 
@@ -119,10 +115,3 @@ python -m pytest \
 
 러너는 pytest 종료코드를 그대로 반환한다. **기대 통과 수는 여기에 하드코딩하지 않는다**(트랙
 진행에 따라 증가 — stale 방지). 실측 통과 수는 실행 출력으로 확인한다.
-
-## 실측 (2026-07-13)
-
-실 claude CLI headless(haiku·**5 세션**) 실증: Phase 1(exit 2·2 세션)·Phase 2(exit 0·3 세션).
-run 데이터 = `runs/orch-j-e2e/`. replay 2회 동일. 최종 레지스트리:
-`design-decision.md` v1 = user_approved · `impl-note.txt` v1 = verified(derivedFrom
-`[design-decision.md]`).

@@ -6,7 +6,7 @@
 근거 정본:
 
 - 사용자 승인 v1.1 실행 계획 (Project Discovery & Entry Layer Architecture) — 본 문서가 확정하는 내용(Entry 추상·Entry Descriptor 등록 모델·결정 테이블·판별 규칙·Evidence Source 확장 스키마)의 상위 정본. 특히 §"설계 골격 > uaf/specs/01-entry.md" 절과 결정 D3(Entry 판별)·D5(P1~P5)·D6-C1(Entry Resolution 확장성).
-- ARCHITECTURE.md (v1.3) — UAF 상위 구조 정본. 특히 §2(구조·의존 방향)·§6(설계 원칙 10종)·§7(P1~P5·상시 불변 확인)·§8(UAF-INV 6건)·§10(책임 경계표)·§12(용어)·§12.2(Discovery Request 인터페이스 추상). **본 문서는 이 정본을 재정의·확장하지 않고 § 포인터로만 참조한다.**
+- ARCHITECTURE.md — UAF 상위 구조 정본. 특히 §2(구조·의존 방향)·§6(설계 원칙 12종)·§7(P1~P5·상시 불변 확인)·§8(UAF-INV 6건)·§10(책임 경계표)·§12(용어)·§12.2(Discovery Request 인터페이스 추상). **본 문서는 이 정본을 재정의·확장하지 않고 § 포인터로만 참조한다.**
 - uahf/specs/00-glossary.md 0.2 (UAHF 용어 정본) — INV-3(Layer 정확히 6개)·용어 네임스페이스 분리의 근거. § 포인터로만 참조하며 UAHF 정본을 재정의하지 않는다.
 - uahf/specs/TEMPLATE.md 0.1 — spec 문서 구조(§0~§9) 관행 참고.
 

@@ -6,7 +6,7 @@
 근거 정본:
 
 - 사용자 승인 v1.1 실행 계획 (Project Discovery & Entry Layer Architecture) — 본 문서가 확정하는 내용(지위·논리 스키마·필수 코어 필드·Dimension→필드 매핑·버저닝 전략·인스턴스 거버넌스·역참조 금지 불변·UAHF Interface)의 상위 정본. 특히 §"설계 골격 > uaf/specs/03-project-contract.md" 절과 결정 **D5-P3**(Stable Contract)·**D6-C2**(Contract Versioning)·**D2④**(UAHF 하위 호환 — Contract=선택 입력).
-- ARCHITECTURE.md (v1.3) — UAF 상위 구조 정본. 특히 §2.2(6요소 구조)·§2.5(의존 방향 단방향)·§6(설계 원칙 10종)·§7 P3(§7)·§7.1(상시 불변 확인 2건)·§8 UAF-INV ①②③⑤(§8)·§10(책임 경계표)·§11(Non-Goals)·§12.1·§12.2(Discovery Request 추상). **본 문서는 이 정본을 재정의·확장하지 않고 § 포인터로만 참조한다.**
+- ARCHITECTURE.md — UAF 상위 구조 정본. 특히 §2.2(6요소 구조)·§2.5(의존 방향 단방향)·§6(설계 원칙 12종)·§7 P3(§7)·§7.1(상시 불변 확인 2건)·§8 UAF-INV ①②③⑤(§8)·§10(책임 경계표)·§11(Non-Goals)·§12.1·§12.2(Discovery Request 추상). **본 문서는 이 정본을 재정의·확장하지 않고 § 포인터로만 참조한다.**
 - discovery/specs/02-discovery.md (v1.1 Draft) — Project Discovery 정본. 특히 §3.1(Compiler·불완전 출력 금지)·§3.3-A(mode 분기)·§3.7(Execution Ready 2축 판정·Readiness 선언 구성·필수 코어 필드 추상 참조)·§3.11(Discovery Dimension 5·"Contract 매핑은 W4 소유" 위임). Discovery의 산출인 본 Contract의 완결 기준을 소비하는 상류 계약.
 - entry/specs/01-entry.md (v1.1 Draft) — Entry Layer & Entry Resolution 정본. 특히 §3.1·§3.2-C(contract-presence)·EN-INV 2 — Entry는 Project Contract를 **유/무 증거로만 관측**하고 스키마·내용을 다루지 않는다.
 - uahf/specs/00-glossary.md 0.2 — UAHF 용어 정본. 네임스페이스 분리의 근거. 특히 §3.2-C(Memory Service Interface)·§3.2-E(Agent 역할)·§3.2-F(Agent Lifecycle의 Consult)·§3.2-G(Spec Status: Frozen). UAHF 용어는 § 포인터로만 참조한다.

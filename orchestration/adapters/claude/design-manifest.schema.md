@@ -117,10 +117,6 @@
 
 ### Contract 포인터 정합 규칙 (백로그 K)
 
-Solution Design 성숙이 superseding Contract 인스턴스(`v(N+1)`)를 발행해도, 이미 산출된 Projection 문서
-헤더의 정본 포인터는 옛 인스턴스를 가리킨 채 남는다. 계보가 append-only 라 옛 파일이 실재하므로 경로
-존재 검사는 통과한다 — 실패 신호 없이 틀린 정본을 지목하는 상태다. 이 규칙이 그것을 결정적으로 표면화한다.
-
 **활성 조건.** `contract_dir`(체커 3번째 선택 인자 · 미지정 시 매니페스트 기준 파생
 `<manifest 부모의 부모>/project-contract`, 즉 배치 규약상 `<workspace>/.claude/project-contract/`)에
 `project-contract.v<N>.md` 형태 파일이 1건 이상 실재할 때 활성이다. 파일명 관례 정본 =
@@ -256,15 +252,7 @@ produced, `screen-design` 1종만 사용자 확인을 받아 정당화 제외되
 `planning/adapters/claude/solution-design-binding.md` §7.2 (다) 경량 프로파일, 워크스페이스 시드 절차 =
 같은 문서 §7A.2-S. 본문 경로 규약 정본 = 같은 문서 §7A.2.
 
-**이 절이 무엇을 정정하는가.** 위 두 예시의 `path` 값은 원래 `docs/<id>.md` 표기였고, 그것은
-**매니페스트가 워크스페이스 루트에 있을 때**의 표기였다(uaf-allow-legacy: 정정 전 표기의 이력 인용 —
-정정 경위 보존이 목적이며 현재 예시 문면은 아래 실동작 값으로 교체됐다). 그러나 이 문서 §배치 위치가 정한 실제 배치는
-`<workspace>/.claude/solution-design/design-manifest.json` 이므로 `manifest_dir` =
-`<workspace>/.claude/solution-design/` 이고, `path` 해석식(`절대경로면 그대로 · 아니면 매니페스트
-디렉터리 기준 상대`)에 따라 `docs/solution-design.md` 는
-`<workspace>/.claude/solution-design/docs/solution-design.md` 로 해석된다. 본문 배치 규약은
-`<workspace>/docs/*.md`(binding §7A.2)이므로 그 경로에는 파일이 없고 체커는 `path 부재` 오류로
-차단한다. **실동작 값은 두 단계를 올라가는 `../../docs/<id>.md` 다.**
+**실동작 값은 두 단계를 올라가는 `../../docs/<id>.md` 다.**
 
 ```json
 {
@@ -290,14 +278,7 @@ produced, `screen-design` 1종만 사용자 확인을 받아 정당화 제외되
 `project_root` = `config.workspace_dir` = 소비 프로젝트 루트)와 **동일 파일을 지목한다**. 즉 경량 레인은
 `contract_to_graph.py` 개정 없이 산출 측과 소비 측이 정합한다.
 
-**표준 예시 2종의 `path` 정정 (절차 비례화 트랙 Wave 5 · 2026-07-27).** W1-b 시점에는 위 두
-예시(13종·6종)의 `artifacts[].path` 를 고치지 않고 미해소로 남겼으나, Wave 5 에서 **제자리 정정**했다 —
-두 예시의 `artifacts[].path` 전 항목이 `docs/<id>.md` → `../../docs/<id>.md`(`screen-mock` 은
-`mocks/index.html` → `../../mocks/index.html`)로 교체됐다. 정정 방식으로 append 주석이 아니라 제자리
-교체를 택한 근거: 이 문서는 이력 원장이 아니라 **스키마 참조 문서**이고, 예시는 그대로 복사되는 표면이라
-틀린 값을 남겨두면 소비자가 차단당한다(stale 문면 정정 규율 동형). 정정 경위는 이 절이 보존한다.
-
-**남는 것(이 정정의 범위 밖).**
+**남는 것(`path` 표기 정정의 범위 밖).**
 
 - **표준 레인 발견 2(seed 단일파일 가정)는 여전히 미해소다** — `contract_to_graph.py` `_solution_design_path`
   가 SD 입력을 `<project_root>/docs/solution-design.md` 단일 파일로 가정하는 결함은 개별 Projection

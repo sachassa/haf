@@ -24,11 +24,8 @@
 
 ## §1. UAF는 무엇인가
 
-Universal Agentic Framework(UAF)는 AI 에이전트를 위한 범용 Development Operating System을 지향하는 **전체 프레임워크**다 — 특정 AI 모델이나 개발 환경에 종속되지 않는, 재사용 가능한 Agentic Development Framework를 목표로 한다. "설계 → 구현 → 검증 → 학습"이 자동으로 반복되고, 프로젝트가 커질수록 안정적으로 동작하며 실패를 학습해 시간이 지날수록 더 똑똑해지는 것을 지향한다.
-
 - **UAHF와의 관계.** UAF는 프로젝트를 진입부터 실행까지 관통하는 6개 Layer(entry/discovery/planning/orchestration/knowledge/uahf)를 아우르는 상위 프레임워크다. 그중 **UAHF(Universal Agentic Harness Framework)**는 `uahf/` Layer — 파이프라인 하류에서 실행(Execution)을 담당하는 하네스 실행 Layer(구현체)다. UAF는 전체 프레임워크를, UAHF는 그 안의 한 Layer를 가리킨다(정본: ARCHITECTURE.md §0 · README.md — 재정의 아님).
-- 정본: ARCHITECTURE.md (§1 Vision · §6 설계 원칙 · §2·§4 6 Layer + Memory Cross-cutting Service).
-- 설계 원칙 10종(ARCHITECTURE §6): AI-Agnostic · Stable Contract · Stable Core · Layer Separation · Dependency Direction · Event Driven · Capability First · Policy as Data · Future Extensibility · Knowledge Consult. (UAHF 하네스 자체의 설계 원칙 6종은 uahf/ARCHITECTURE.md §3 소관.)
+- 정본: ARCHITECTURE.md (§1 Vision · §6 설계 원칙 · §2·§4 6 Layer + Memory Cross-cutting Service). UAHF 하네스 자체의 설계 원칙은 uahf/ARCHITECTURE.md §3 소관이다.
 
 ---
 
@@ -46,8 +43,6 @@ Universal Agentic Framework(UAF)는 AI 에이전트를 위한 범용 Development
 | `uahf/` | 하네스 실행 Layer(UAHF 구현체) — Core Contract 스펙(`uahf/specs/`)·framework 구현(`uahf/framework/`)·하네스 문서(`uahf/docs/`). | uahf/ARCHITECTURE.md · uahf/specs/00-glossary.md · uahf/framework/core/structure.md §8 |
 | `docs/` | UAF 레벨 운용 문서 — 세션 핸드오프·검증 리포트·프로토콜·정책. | docs/session-handoff.md(최신 핸드오프) · docs/delegation-protocol.md 등 |
 | `.claude/` | Agent 정의(`agents/`)·상위 규약(`AGENT.md`)·Advisor 진입점(`CLAUDE.md`)·확장 표면(`commands`·`hooks`·`skills/`) — 환경 의존(Adapter 경계·Global Default). | ARCHITECTURE.md §5 · .claude/AGENT.md |
-
-- 6 Layer 중 `entry/·discovery/·planning/·orchestration/·uahf/`는 진입→실행 파이프라인을 이루고, `knowledge/`는 그 위를 횡단하는 공용 Base다(ARCHITECTURE §2·§4). UAHF의 Core 경계 문서 본문은 특정 AI·언어·툴체인 토큰 0건을 유지하고, 환경 의존 토큰은 `uahf/framework/adapters/`와 `.claude/`로 격리된다(structure.md §5, ARCHITECTURE §6 AI Agnostic).
 
 ---
 
@@ -84,7 +79,3 @@ Universal Agentic Framework(UAF)는 AI 에이전트를 위한 범용 Development
 
 - 신규 프로젝트 설치 가이드는 **uahf/docs/v0.9-install-guide.md@cd9247b**다 (v0.9 Baseline에서 확정 완료 — 산출물 수명 정책에 따라 작업 트리에서 아카이브; 열람: `git show cd9247b:uahf/docs/v0.9-install-guide.md`). 이 문서는 그 경로만 안내하며 내용을 인용하지 않는다.
 - 설치·초기화의 계약 정본은 uahf/specs/12-scaffold.md다.
-
----
-
-이 문서는 지도다. 상세·정본은 위 포인터를 따른다. 충돌 시 정본이 우선하며, 충돌을 발견하면 Advisor에게 보고한다.

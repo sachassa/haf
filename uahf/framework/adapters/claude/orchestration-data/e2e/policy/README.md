@@ -52,12 +52,8 @@ Worker 슬롯은 sonnet 그대로다. allocation 은 **model 슬롯을 비운 �
 }
 ```
 
-**해소(follow-up 완결).** 위 `cp2ModelSlots` 는 코드(allocation.py)·단위 테스트로 실증되며,
-`orchestration/framework/orchestrator/model_selection_schema.json` 이 이제 이 필드를 **가법 등재**
-한다(선택·object of strings·최상위 `additionalProperties: false` 닫힌 스키마 유지). 따라서
-`cp2ModelSlots` 를 데이터로 쓰는 allocation.json 도 스키마-유효이며, 위 `allocation.json` 템플릿은
-전역 `cp2ModelSlot`(안전측 폴백)과 함께 `cp2ModelSlots`(capability class 별 CP2 차등)를 실제로 쓴다.
-생략/빈 객체(기본)면 전역 단일 거동을 완전 보존한다(기존 데이터 무회귀).
+`orchestration/framework/orchestrator/model_selection_schema.json` 이 이 필드를 **가법 등재**
+한다(선택·object of strings·최상위 `additionalProperties: false` 닫힌 스키마 유지).
 
 ## allocation-lightweight.json — 경량 레인 프로파일 (비례화 트랙 W3-a)
 

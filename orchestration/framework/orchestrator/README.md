@@ -32,15 +32,15 @@ provider·모델·상류 Layer 고유명 토큰을 두지 않는다(PO-INV 8).
 |---|---|
 | `revision.py` | RevisionEvent · RevisionLedger(append-only, 인메모리+JSONL) · `fold()`(순수·안정 정렬) · `validate_revision()`(순수·07 §3.1-A 사유 코드 재사용). |
 | `orchestrator.py` | ProjectOrchestrator — fold → Step 직렬화 → **StepHost 무수정 구동**(공유 EventStore) → 그래프 성장 확인 → Escalated 즉시 정지. 게이트 근거 실재 검증(PO-INV 5)·결정적 재개. **S3: 단위 경계 게이트 처리(`_process_gates` — 배치 종단 일괄)·정지 게이트 정지·재개**. **S4: Step 직렬화 시점 슬롯 채움(`_build_steps`→`_fill_slots`·명시값 우선)·재선택 차수 파생(`_fallback_level`)·CP2 독립 모델 슬롯 StepHost 전달(`_new_host`)·CP3 비-Pass 정지 배선(`_process_gates` approval 분기)**. **S5: 선택 `artifact_store` 투명 포집 래퍼 배선(`_effective_invoker`)·`artifact_registry()`/`resolve_references()` 파생 메서드(읽기만·mutable 저장 0)**. |
-| `gates.py` | **(S3)** Gate Policy 평가기 — gateKind 5종·심각도 전순서·`GatePolicy.evaluate`(순수·결정적)·게이트 단조성 하한(`floor`·`effective_gate`)·게이트 이벤트 필드 관례 단일 소유(`gate::` 관례 정식화)·`pending_gates` 파생 뷰·해소 적격성. **(S4)** `latest_marker_verdict`(승인/리뷰 마커 verdict **status** 소비·내용 판정 0 — CP3 비-Pass 정지의 소비 함수). |
-| `allocation.py` | **(S4)** Dynamic Allocation + Model Selection Policy — `AgentSpec`(7필드 실행 프로파일)·`AgentSpecRegistry`(버전 있는 데이터·`match` deterministic·불투명 참조)·`ModelSelectionPolicy`(Policy as Data·`select_model` 순수·fallback·CP2 독립 슬롯)·`Allocation` 파사드. |
-| `artifacts.py` | **(S5)** Artifact Record·Registry — `ArtifactRecord`(8필드 계보·provenance)·approvalState 파생 사다리(draft→verified→approved→user_approved·게이트/검증 이벤트 파생 뷰)·Artifact 선언 원장(append-only 인메모리+JSONL)·`ArtifactCapturingInvoker`(완료 보고 artifacts 투명 포집 래퍼)·`derive_registry()`(순수·계보 보존·approvalState 파생)·`resolve_references()`(요구 등급 이상 최신 버전만). **레지스트리는 저장되지 않고 매 호출 파생된다(제2 진리원천 아님).** |
+| `gates.py` | Gate Policy 평가기 — gateKind 5종·심각도 전순서·`GatePolicy.evaluate`(순수·결정적)·게이트 단조성 하한(`floor`·`effective_gate`)·게이트 이벤트 필드 관례 단일 소유(`gate::` 관례 정식화)·`pending_gates` 파생 뷰·해소 적격성. `latest_marker_verdict`(승인/리뷰 마커 verdict **status** 소비·내용 판정 0 — CP3 비-Pass 정지의 소비 함수). |
+| `allocation.py` | Dynamic Allocation + Model Selection Policy — `AgentSpec`(7필드 실행 프로파일)·`AgentSpecRegistry`(버전 있는 데이터·`match` deterministic·불투명 참조)·`ModelSelectionPolicy`(Policy as Data·`select_model` 순수·fallback·CP2 독립 슬롯)·`Allocation` 파사드. |
+| `artifacts.py` | Artifact Record·Registry — `ArtifactRecord`(8필드 계보·provenance)·approvalState 파생 사다리(draft→verified→approved→user_approved·게이트/검증 이벤트 파생 뷰)·Artifact 선언 원장(append-only 인메모리+JSONL)·`ArtifactCapturingInvoker`(완료 보고 artifacts 투명 포집 래퍼)·`derive_registry()`(순수·계보 보존·approvalState 파생)·`resolve_references()`(요구 등급 이상 최신 버전만). **레지스트리는 저장되지 않고 매 호출 파생된다(제2 진리원천 아님).** |
 | `stephost_bridge.py` | `uahf/framework/loop/step-host/` 중립 모듈의 **무수정 import 경로**(평면 import 를 위한 sys.path 조작은 orchestration 쪽에서만). |
 | `revision_schema.json` | RevisionEvent 직렬화 형태 정의(실값 없음 — step-host `config_schema.json` 관례 동형). |
-| `gate_policy_schema.json` | **(S3)** Gate Policy 데이터 형태 정의(실값 없음). **floor 는 스키마가 아니라 코드(`gates.py floor()`) 소유** — 정책 데이터로 하한을 약화 불가(주석 명시). |
-| `allocation_schema.json` | **(S4)** AgentSpec 레지스트리 + 매칭 tie-break 정책 형태(실값 없음). tie-break 스키마 default 는 코드 fallback(`allocation.DEFAULT_TIE_BREAK`)과 일치(단일 진리원천). |
-| `model_selection_schema.json` | **(S4)** Model Selection 정책 형태(실값 없음) — `slots`(class→불투명 슬롯)·`fallbackChain`·`cp2ModelSlot`·`cp2ModelSlots`(class별 CP2 오버라이드·가법)·`defaultSlot`(OQ-SH-4). 실제 모델명은 스키마·중립 코드 밖(Adapter 실값)에만. |
-| `artifact_record_schema.json` | **(S5)** ArtifactRecord 형태 정의(실값 없음) — 8필드·approvalState enum(4등급·코드 사다리와 일치). |
+| `gate_policy_schema.json` | Gate Policy 데이터 형태 정의(실값 없음). **floor 는 스키마가 아니라 코드(`gates.py floor()`) 소유** — 정책 데이터로 하한을 약화 불가(주석 명시). |
+| `allocation_schema.json` | AgentSpec 레지스트리 + 매칭 tie-break 정책 형태(실값 없음). tie-break 스키마 default 는 코드 fallback(`allocation.DEFAULT_TIE_BREAK`)과 일치(단일 진리원천). |
+| `model_selection_schema.json` | Model Selection 정책 형태(실값 없음) — `slots`(class→불투명 슬롯)·`fallbackChain`·`cp2ModelSlot`·`cp2ModelSlots`(class별 CP2 오버라이드·가법)·`defaultSlot`(OQ-SH-4). 실제 모델명은 스키마·중립 코드 밖(Adapter 실값)에만. |
+| `artifact_record_schema.json` | ArtifactRecord 형태 정의(실값 없음) — 8필드·approvalState enum(4등급·코드 사다리와 일치). |
 | `tests/` | 모의 invoker 기반 통합 테스트(외부 의존 0). `test_gates.py`(S3)·`test_allocation.py`(S4)·`test_artifacts.py`(S5) = artifacts 순수 + orchestrator 산출물 계보 통합(시나리오 i). |
 
 ## 할당·모델 선택 (S4 — 05 §3.4·§3.5·PO-INV 6·8)
@@ -102,7 +102,6 @@ provider·모델·상류 Layer 고유명 토큰을 두지 않는다(PO-INV 8).
   approvalState 어휘·verdict `Pass` 는 05 §3.6·06 계약 어휘다.
 
 **아직 없는 것(후속).** 실 LLM 제안 step 기반 비픽스처 성숙 run 은 후속 소관이다(설계 §6·바인딩 §7 OQ-PO-B4).
-루트 라우터 등재는 v1.6 Baseline 으로 완료되었다(루트 `ARCHITECTURE.md` v1.5 §2.1 라우터 표).
 
 ## 게이트 처리 (S3 — 05 §3.3·PO-INV 4)
 
@@ -139,14 +138,12 @@ provider·모델·상류 Layer 고유명 토큰을 두지 않는다(PO-INV 8).
   review(Verifier)·approval(Advisor 역할·CP3 물리화)의 실제 판정은 디스패치된 실행
   단위가 소유하고, orchestrator 는 반환을 소비만 한다.
 
-## 게이트 승인 이벤트(S2 잔여 관례)
+## 게이트 승인 이벤트
 
-S2 단계에서 게이트 승인 이벤트는 **외부(상위/드라이버)가 append 하는 데이터**였고
-orchestrator 는 그 실재만 검증했다(revision 근거·PO-INV 5). S3 는 이 `gate::` 관례를
-`gates.py` 가 단일 소유로 정식화한다. revision 근거 검증(`_gate_event_exists`)은 게이트
-**통과**(outcome=="pass") 이벤트만 인정한다 — S3 게이트 요구 이벤트(outcome=="escalated")는
-미해소이므로 revision 을 근거지어서는 안 된다(강화적 정정·S2 승인 이벤트는 전부 pass 라
-거동 보존).
+게이트 승인 이벤트는 **외부(상위/드라이버)가 append 하는 데이터**이고
+orchestrator 는 그 실재만 검증한다(revision 근거·PO-INV 5). revision 근거 검증(`_gate_event_exists`)은 게이트
+**통과**(outcome=="pass") 이벤트만 인정한다 — 게이트 요구 이벤트(outcome=="escalated")는
+미해소이므로 revision 을 근거지어서는 안 된다.
 
 ## 재사용 경계 (uahf/ 무촉)
 
@@ -184,9 +181,5 @@ python -B -m unittest discover -s orchestration/framework/orchestrator/tests -p 
 
 **테스트 성격 (정직 표기).** `tests/` 는 전부 **모의 invoker 통합 테스트 + 순수 함수
 테스트**다 — 기존 `invoker.py` Invoker 추상을 구현한 중립 stub 으로 설계 §5 S2~S5 시나리오를
-실증한다(S2 제안→게이트→revision→실행·결정적 재개·순환 차단 / S3 게이트 5종·단조성·자율성
-직교 / S4 모델 슬롯·hysteresis·CP2 독립·CP3 정지·tie-break / **S5 ArtifactRecord·approvalState
-파생 사다리·derive_registry 순수·resolve_references·시나리오 i 계보(설계 v1→rework v2
-supersedes·derivedFrom·소비 번들 required_grade·v1 문면 불변 물리 해시)**). 전건 Pass:
-orchestration 126·step-host 20·step-invoker 19. **실 CLI 종단 E2E(시나리오 j)는 Adapter
+실증한다. **실 CLI 종단 E2E(시나리오 j)는 Adapter
 경계의 `orchestration-data/e2e/` 드라이버**가 소유한다(비프로덕션·격리 지점 — 05 §5).

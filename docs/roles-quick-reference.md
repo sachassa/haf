@@ -32,8 +32,6 @@
 
 UAHF는 4개 Agent 역할로 작업을 수행한다 (Glossary §3.2-E).
 
-역할 분담 기준: Architecture 결정 = Advisor, 구현 = Worker, 검증 = Verifier (AGENT.md Delegation).
-
 | 역할 | 책임 | 가진 권한 | 갖지 않는 권한 (경계) |
 |---|---|---|---|
 | Advisor | Architecture·Spec·설계 결정, 검증, 최종 승인 | 계획 채택·승인, Architecture 결정, 위임, 최종 승인 | 불필요한 직접 구현은 하지 않는다 |
@@ -129,5 +127,3 @@ Planner 초안 범위 (AGENT.md Delegation): 작업 계획 · 작업 분해 · W
 | 작업 분해·Task·병렬 집합 | 07 §3.2 |
 | 용어 | uahf/specs/00-glossary.md |
 | 상위 규약 | AGENT.md |
-
-이 문서는 요약이다. 상세·정본은 위 포인터를 따른다. 충돌 시 정본이 우선한다.

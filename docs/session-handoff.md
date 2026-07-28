@@ -8,7 +8,9 @@
 
 ---
 
-## §A. 현행 상태 (갱신 2026-07-27(24))
+## §A. 현행 상태 (갱신 2026-07-28(25))
+
+**갱신(25) K-1 게이트 확정 권위 기계 보호 완결(2026-07-28).** 결함 = `gates.py` `GatePolicy.from_dict` 가 `userActorClass`·`escalationResolvers`·`gateRaiser` 를 무검증 수용 → 정책 데이터가 `"Advisor"` 를 지정하면 AI 가 `user_decision_required` 를 해소하고 `human` 이 오히려 부적격이 되는 **확정 권위 탈취**다(Advisor 실증 3종 = AI 지정·Worker resolver·비문자열 데드락 정책). gateKind 에는 `floor()` 하한이 있으나 actor 클래스에는 하한이 0이었다. **처방** = `floor()` 동형의 **코드 소유 허용 목록**(`ALLOWED_USER_ACTOR_CLASSES=("human",)` · `ALLOWED_ESCALATION_RESOLVERS=("Advisor","human")` · `ALLOWED_GATE_RAISERS=ACTOR_VOCABULARY`) + 검증 지점 = `GatePolicy.__post_init__`(**from_dict 밖** — 생성자 직접 호출·`empty()` 포함 모든 생성 경로가 통과) + 위반은 사유를 담은 `ValueError` 로 거부(자동 보정·기본값 치환 0) + import 시점 기본값 자기 정합 검사(`assert` 아닌 `raise` — `python -O` 무력화 방지). 어휘 근거 = `uahf/specs/03-loop.md` §3.2-A 닫힌 열거이며 코드가 actor 를 발명하지 않는다(PO-INV 8 무촉). 스키마 3필드 enum + `minItems:1` 가법·소유자가 코드임을 description 에 명시. spec·`uahf/` 무수정. Worker 위임 1건 + Advisor 독립 검증. `uaf-verified:` 판정 근거 = Advisor 재실행 — 어댑터 스위트 243·러너 285·`test_gates` OK 각 EXIT=0 · 음성 대조 8종 거부/양성 3종 통과를 직접 실행 · 실 `gate_policy.json` 24건 로드 성공(스윕 범위 = 리포 재귀 glob `**/gate_policy.json`) · 축자 잠금 무력화 프로브(토큰 변조→FAIL→원복→PASS·파일 바이트 복구 확인). **부수 해소** = `test_allocation_wiring.py::GateFloorUntouchedTests::test_git_diff_hunk_zero` 제거 — `git diff HEAD` 기반이라 워킹트리 미커밋 변경에 항상 실패하는 **시점 의존 스코프 가드**였고, 자기 트랙 무촉 증명이라는 소임이 끝난 뒤에도 남아 `gates.py` 를 정당하게 고치는 트랙마다 가짜 실패를 냈다. 실질(하한 상수·`effective_gate` 합성식 보존)은 자매 축자 대조가, `host.py` 는 같은 파일의 SH-INV-4 구조 검사가 소유하므로 보호 손실 0. **교훈 = 스코프 가드는 상태 대조(축자)로 쓰고 diff 대조로 쓰지 않는다** — diff 기반 가드는 소임 종료 시점에 스스로 사라지지 않는다.
 
 **갱신(24) 본문 서사 강판 1차 완결(2026-07-27 — 갱신(23) 트랙의 후속 Wave).** 슬림화 미방문 잔여를 원칙 12 기준으로 강판: 배치 D docs 4종 −4,217B·배치 E orchestration/planning 7종 −4,234B·배치 F scaffold-template −233B(배포물 보수 적용 — 규범 밀도 실측상 무촉이 정답). 예시 심사 축 = "지우면 Worker가 규칙을 다르게 해석하는가" — 나쁜 예 8필드 전량 잔류·중복 좋은 예 삭제. 부수 정합 = 루트 README 상태 라인(v1.2.1→v1.7 현행)·01/03 spec 근거행 stale(10종→12종·v1.3 핀 제거). CP2 독립 검증 Pass — 삭제 93행 전수 분류 규범 0행·죽은 § 포인터 0·schema 계약 HEAD 동일. `uaf-verified:` 판정 근거 = CP2 보고 전문(삭제 행 전수 분류·인바운드 15건 생존 grep) — 스윕 범위 = 변경 10파일 diff + 리포 전역 인바운드 grep. 잔여 = 이미 슬림화를 거친 파일들의 본문 서사 2차 심사(착수 미정·사용자 지시 대기).
 
@@ -62,7 +64,6 @@
 - **e2e 러너 커버리지 갭(저임팩트)** — `run_all_tests.py` 의 `TEST_TREES` 4트리에 `orchestration/adapters/claude/tests` 미포함이라 그 스위트는 별도 pytest 로 돌려야 한다(uaf-verified: `run_all_tests.py` TEST_TREES 목록 직접 정독 — 갱신(22)). 러너 결과만으로 어댑터 스위트까지 통과로 단정하지 않는다.
 - **비례화 트랙 잔여 미해소 승격(원장 아카이브 `af57be0` — §6.3·§8.11 잔존분)** — ① 표준 레인 seed 단일파일 가정(발견 2 표준 측 — `contract_to_graph.py:332` 부근·메모리 `uaf-design-manifest-path-defect`) ② SD 스킵 폐기 **실행**(방향 기확정 Q-4 — 04 유형 A 개정 트랙) ③ 경로 상수 중복(K-5 — `resolve_gate.py`↔`pretooluse_design_guard.py` 동일 문면 별도 선언) ④ floor target 어휘 불일치(K-8 — 컴파일러 기본 정책 target=unitType뿐이라 floor 미발화) ⑤ 01-entry §3.2-D 행 6 policy 열 "기본" 문면 명확화(재심 — Advisor 판정 = 비충돌 클래스 라벨) ⑥ advisor.md 상한 층 적용 여부 ⑦ 보고 표면 2종 병존(invoke 원장↔reports) ⑧ ref 어휘↔policyId 명명 정합. uaf-verified: 원장 §6.3 항 1~10·§8.11 항 8~11 전수 대조로 미해소만 추출 — 스윕 범위 = 그 두 목록.
 - **OQ-PO-B7: provenance `ref.kind` 표기 2종 갈라짐(W2-b 실측 발견 2026-07-27)** — 프로덕션 `resolve_gate.py` = `"gate-resolution-provenance"` vs `verify_run.py` 화이트리스트 = `"user-resolution-provenance"` → 표준 레인 프로덕션 run 에 러너 적용 시 어휘 위반 오탐. 정본·해소 2안 = `project-orchestration-binding.md` §7 OQ-PO-B7(uaf-verified: Advisor grep 실측 — 두 파일 해당 라인 대조).
-- **게이트 확정 권위 기계 보호 결손(K-1 — 비례화 Planner 조사 신규 포착 2026-07-26)** — `gates.py` `from_dict`(:258)가 `userActorClass`를 정책 데이터에서 무하한 수용하고 해소 적격성(:237-238)은 그 값과 단순 비교다. 게이트 **종류**는 floor 클램프(:275-281)가 있으나 **actor 클래스에는 하한 0** → 데이터가 `"Advisor"`면 Advisor가 사용자 구조 게이트를 해소할 수 있다(uaf-verified: Advisor 코드 실물 재확인 — 본 세션 3지점 정독). 비례화 트랙과 독립·전 Wave constraints에 무촉 명시. 강제 후보 = floor 테이블 확장 또는 gate_policy 스키마 enum 고정.
 - **PreToolUse 훅 상대경로 ↔ Bash 지속 CWD 취약(갱신(22) 실측)** — Bash 도구의 `cd` 가 지속되면 상대경로 배선 훅이 다른 CWD 에서 실행돼 스크립트를 못 찾고, 이 경우 침묵 통과가 아니라 **Write/Edit 차단**으로 나타난다(uaf-verified: e2e 디렉터리 `cd` 직후 Edit 가 훅 에러로 차단·루트 복귀 후 동일 Edit 통과 — 라이브 재현 1회). 임시 규율 = `cd` 는 서브셸 `(cd … && cmd)` 로 한정. 항구 수정(훅 경로 견고화) = 미착수.
 
 ### B-3. §DC 트랙 잔여 (완결 항목은 본 파일에서 제거 — 앵커 `90ca19c`)
@@ -119,7 +120,7 @@
 | 아카이브 원장 (앵커 열람) | `ARCHIVE.md` |
 | 하네스 개선 백로그 (A~R) | `docs/post-tuning-improvement-backlog.md` |
 | 오케스트레이션 계약·물리 배선 | `orchestration/specs/05-project-orchestration.md` · `orchestration/adapters/claude/project-orchestration-binding.md` |
-| 측정·검증 도구 (유지 대상) | `orchestration-data/e2e/{run_all_tests.py,collect_metrics.py,verify_run.py,delegation_check.py}` |
+| 측정·검증 도구 (유지 대상) | `uahf/framework/adapters/claude/orchestration-data/e2e/{run_all_tests.py,collect_metrics.py,verify_run.py,delegation_check.py}` (경로 정정 2026-07-28 — 리포 재귀 glob 실측상 `run_all_tests.py` 실재는 이 한 곳뿐이며 종전 표기 `orchestration-data/e2e/…` 는 루트 기준으로 부재) |
 | Risk Routing 정책 | `orchestration-data/e2e/policy/{allocation.json,README.md}` |
 | UAHF Contract | `discovery-data/contracts/uahf/project-contract.v3.md` |
 | 과거 핸드오프·종료 트랙 원장 | git 이력(`git log -- docs/session-handoff.md docs/next-session-prompt.md`) · `ARCHIVE.md` 앵커 |

@@ -21,7 +21,6 @@ from __future__ import annotations
 import ast
 import io
 import json
-import subprocess
 import sys
 import tempfile
 import unittest
@@ -470,21 +469,16 @@ class Cp2NoBypassSourceTests(unittest.TestCase):
 # done 5 — 게이트 하한 상수 무촉
 # ==========================================================================
 class GateFloorUntouchedTests(unittest.TestCase):
-    """gates.py · host.py 를 이 개정이 건드리지 않았다."""
+    """게이트 하한 상수·합성식이 축자 보존된다(커밋 상태와 무관한 영구 잠금).
 
-    _TARGETS = (
-        "orchestration/framework/orchestrator/gates.py",
-        "uahf/framework/loop/step-host/host.py",
-    )
-
-    def test_git_diff_hunk_zero(self) -> None:
-        out = subprocess.run(
-            ["git", "diff", "HEAD", "--"] + list(self._TARGETS),
-            cwd=str(_REPO), capture_output=True, text=True, encoding="utf-8",
-            errors="replace",
-        )
-        self.assertEqual(out.returncode, 0, out.stderr)
-        self.assertEqual(out.stdout.strip(), "", "diff hunk 0 이어야 한다:\n" + out.stdout)
+    종전에는 `git diff HEAD` 로 gates.py·host.py 의 미커밋 변경이 0 인지도 함께 단언했다
+    (test_git_diff_hunk_zero). 그 가드는 **워킹트리 상태에 의존**해서, 자기 트랙의 무촉을
+    증명하는 소임이 끝난 뒤에도 남아 이후 gates.py 를 정당하게 고치는 모든 트랙에서 가짜
+    실패를 냈다(K-1 실측 — 하한 신설 작업이 커밋 전에 이 단언 하나로 스위트를 깼다).
+    제거 근거: 그 가드가 지키려던 실질(하한 상수·effective_gate 합성식 보존)은 아래 축자
+    대조가 커밋 여부와 무관하게 소유하고, host.py 쪽 실질은 같은 파일 위쪽의 SH-INV-4
+    구조 검사(AST 파싱·CP2 디스패치 위치·심볼 혼입 금지)가 소유한다.
+    """
 
     def test_floor_constants_verbatim(self) -> None:
         """git 상태와 무관한 축자 대조(커밋 후에도 유효한 잠금)."""

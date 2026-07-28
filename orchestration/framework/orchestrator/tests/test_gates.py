@@ -244,6 +244,147 @@ class GatePolicyEvaluate(unittest.TestCase):
 
 
 # ==========================================================================
+# actor 클래스 코드 소유 허용 목록 (K-1 — 게이트 해소 권위 하한)
+#
+# floor 가 gateKind 의 하한을 코드에 두듯, **누가 게이트를 해소할 수 있는가**의 하한도
+# 코드가 소유한다. 정책 데이터가 확정 권위를 AI 역할로 옮기거나(권위 탈취), 아무도 해소
+# 못 하는 데드락 정책(빈 resolver 집합)을 세우는 경로를 로드 시점에 차단하는지 실증한다.
+# ==========================================================================
+class ActorClassAllowList(unittest.TestCase):
+    # --- 음성 대조: 위반 정책은 로드 자체가 거부되어야 한다 -------------------
+    def test_user_actor_class_ai_role_rejected(self):
+        # 확정 권위 탈취: Advisor 가 user_decision_required 를 해소하게 되는 정책.
+        with self.assertRaises(ValueError) as ctx:
+            GatePolicy.from_dict({"userActorClass": "Advisor"})
+        self.assertIn("user_actor_class", str(ctx.exception))
+        # 03 actor 어휘의 다른 AI 역할도 동일하게 거부된다(단발 대리 지표 방지).
+        for role in ("Planner", "Worker", "Verifier"):
+            with self.assertRaises(ValueError, msg=role):
+                GatePolicy.from_dict({"userActorClass": role})
+
+    def test_user_actor_class_non_string_rejected(self):
+        # 비문자열 → 아무 actor 도 일치하지 못하는 침묵 데드락 정책.
+        for bad in (12345, None, ["human"], {"a": 1}):
+            with self.assertRaises(ValueError, msg=repr(bad)):
+                GatePolicy.from_dict({"userActorClass": bad})
+
+    def test_escalation_resolvers_disallowed_actor_rejected(self):
+        with self.assertRaises(ValueError) as ctx:
+            GatePolicy.from_dict({"escalationResolvers": ["Worker"]})
+        self.assertIn("escalation_resolvers", str(ctx.exception))
+        # 허용 원소가 섞여 있어도 하나라도 밖이면 거부(부분집합 판정).
+        with self.assertRaises(ValueError):
+            GatePolicy.from_dict({"escalationResolvers": ["Advisor", "Worker"]})
+
+    def test_escalation_resolvers_empty_rejected(self):
+        # 빈 집합 = 아무도 해소 못 하는 침묵 데드락 정책.
+        with self.assertRaises(ValueError) as ctx:
+            GatePolicy.from_dict({"escalationResolvers": []})
+        self.assertIn("비어", str(ctx.exception))
+
+    def test_escalation_resolvers_bad_shape_rejected(self):
+        # 비시퀀스·문자열 스칼라·비문자열 원소 전부 거부(문자열은 문자 시퀀스라 특히 위험).
+        # None(JSON null)은 from_dict 의 **미지정** 신호라 기본값으로 떨어진다(종전 거동 보존).
+        for bad in (12345, "Advisor", ["Advisor", 7], {"a": "human"}):
+            with self.assertRaises(ValueError, msg=repr(bad)):
+                GatePolicy.from_dict({"escalationResolvers": bad})
+        self.assertEqual(
+            GatePolicy.from_dict({"escalationResolvers": None}).escalation_resolvers,
+            DEFAULT_ESCALATION_RESOLVERS,
+        )
+
+    def test_gate_raiser_outside_actor_vocabulary_rejected(self):
+        with self.assertRaises(ValueError) as ctx:
+            GatePolicy.from_dict({"gateRaiser": "bogus"})
+        self.assertIn("gate_raiser", str(ctx.exception))
+        with self.assertRaises(ValueError):
+            GatePolicy.from_dict({"gateRaiser": 12345})
+
+    def test_direct_constructor_path_also_validated(self):
+        # from_dict 뿐 아니라 생성자 직접 호출·empty() 도 같은 하한을 통과해야 한다.
+        with self.assertRaises(ValueError):
+            GatePolicy(user_actor_class="Advisor")
+        with self.assertRaises(ValueError):
+            GatePolicy(escalation_resolvers=())
+        with self.assertRaises(ValueError):
+            GatePolicy(gate_raiser="bogus")
+        # empty()·무인자 생성은 기본값이므로 통과한다.
+        self.assertEqual(GatePolicy.empty().user_actor_class, DEFAULT_USER_ACTOR_CLASS)
+        self.assertEqual(GatePolicy().escalation_resolvers, DEFAULT_ESCALATION_RESOLVERS)
+
+    # --- 양성: 표준값·기본값은 그대로 통과한다(거동 보존) --------------------
+    def test_standard_values_accepted(self):
+        policy = GatePolicy.from_dict({
+            "userActorClass": "human",
+            "escalationResolvers": ["Advisor", "human"],
+            "gateRaiser": "Advisor",
+        })
+        self.assertEqual(policy.user_actor_class, "human")
+        self.assertEqual(policy.escalation_resolvers, ("Advisor", "human"))  # list → tuple 정규화.
+        self.assertEqual(policy.gate_raiser, "Advisor")
+        # 적격성 판정 결과가 종전과 동일(거동 보존).
+        self.assertTrue(policy.is_eligible_resolver(GATE_USER_DECISION_REQUIRED, "human"))
+        self.assertFalse(policy.is_eligible_resolver(GATE_USER_DECISION_REQUIRED, "Advisor"))
+        self.assertTrue(policy.is_eligible_resolver(GATE_ESCALATION_REQUIRED, "Advisor"))
+        self.assertFalse(policy.is_eligible_resolver(GATE_ESCALATION_REQUIRED, "Worker"))
+
+    def test_empty_dict_defaults_accepted(self):
+        policy = GatePolicy.from_dict({})
+        self.assertEqual(policy.user_actor_class, DEFAULT_USER_ACTOR_CLASS)
+        self.assertEqual(policy.escalation_resolvers, DEFAULT_ESCALATION_RESOLVERS)
+        self.assertEqual(policy.gate_raiser, gates.DEFAULT_GATE_RAISER)
+        self.assertIsNotNone(GatePolicy.from_dict(None))
+
+    def test_single_resolver_subset_accepted(self):
+        # 허용 목록의 진부분집합(비어있지 않음)은 정당한 강화다(좁히기 가능).
+        policy = GatePolicy.from_dict({"escalationResolvers": ["human"]})
+        self.assertEqual(policy.escalation_resolvers, ("human",))
+        self.assertFalse(policy.is_eligible_resolver(GATE_ESCALATION_REQUIRED, "Advisor"))
+
+    def test_gate_raiser_accepts_actor_vocabulary(self):
+        for actor in gates.ACTOR_VOCABULARY:
+            self.assertEqual(GatePolicy.from_dict({"gateRaiser": actor}).gate_raiser, actor)
+
+    # --- 정합: 스키마 enum ↔ 코드 허용 목록 대조(사본 drift 차단) -----------
+    def test_schema_enums_match_code_allow_lists(self):
+        schema_path = os.path.join(_ORCH_DIR, "gate_policy_schema.json")
+        with open(schema_path, "r", encoding="utf-8") as fh:
+            schema = json.load(fh)
+        props = schema["properties"]
+        self.assertEqual(
+            tuple(props["userActorClass"]["enum"]), gates.ALLOWED_USER_ACTOR_CLASSES
+        )
+        self.assertEqual(
+            tuple(props["escalationResolvers"]["items"]["enum"]),
+            gates.ALLOWED_ESCALATION_RESOLVERS,
+        )
+        self.assertEqual(tuple(props["gateRaiser"]["enum"]), gates.ALLOWED_GATE_RAISERS)
+        # 빈 집합 금지도 스키마 사본에 반영되어 있어야 한다.
+        self.assertEqual(props["escalationResolvers"]["minItems"], 1)
+        # 기본값은 허용 목록의 원소/부분집합이다(코드 자기 정합).
+        self.assertIn(DEFAULT_USER_ACTOR_CLASS, gates.ALLOWED_USER_ACTOR_CLASSES)
+        self.assertTrue(
+            set(DEFAULT_ESCALATION_RESOLVERS) <= set(gates.ALLOWED_ESCALATION_RESOLVERS)
+        )
+        self.assertIn(gates.DEFAULT_GATE_RAISER, gates.ALLOWED_GATE_RAISERS)
+
+    # --- 회귀: 리포 내 실재 gate_policy.json 전부 로드 성공 ------------------
+    def test_all_repo_gate_policies_load(self):
+        repo_root = os.path.dirname(  # orchestration/framework/orchestrator → repo root
+            os.path.dirname(os.path.dirname(_ORCH_DIR))
+        )
+        found = []
+        for dirpath, dirnames, filenames in os.walk(repo_root):
+            dirnames[:] = [d for d in dirnames if d not in ("__pycache__", ".git")]
+            if "gate_policy.json" in filenames:
+                found.append(os.path.join(dirpath, "gate_policy.json"))
+        self.assertGreater(len(found), 0, "리포 내 gate_policy.json 을 하나도 찾지 못했다")
+        for path in found:
+            with self.subTest(path=path):
+                GatePolicy.from_file(path)  # ValueError 면 실패(고치지 말고 보고 대상).
+
+
+# ==========================================================================
 # 게이트 큐 파생 뷰·해소 적격성 (PO-INV 2 — 파생 뷰·done 5·6)
 # ==========================================================================
 class PendingGatesAndResolution(unittest.TestCase):

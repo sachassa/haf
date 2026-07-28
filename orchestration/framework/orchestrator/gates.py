@@ -9,6 +9,10 @@
     약한 값을 지정해도 effective_gate = max(floor, policy) 로 하한에 클램프된다
     (약화 불가·강화만). floor 는 **스키마가 아니라 코드가 소유**한다(정책 데이터로
     내릴 수 없다).
+  - 해소 actor 클래스 허용 목록(ALLOWED_USER_ACTOR_CLASSES / ALLOWED_ESCALATION_RESOLVERS
+    / ALLOWED_GATE_RAISERS) — floor 와 같은 이유의 **코드 소유 하한**이다. 정책 데이터는
+    목록 안에서 고를 수만 있고 목록을 넓힐 수 없으며, 위반 정책은 로드 시점(GatePolicy.
+    __post_init__)에 ValueError 로 거부된다(자동 보정 0).
   - 게이트 이벤트 필드 관례의 단일 소유 — S2 의 `gate::` 관례를 정식화한다. 게이트
     요구 이벤트·해소 이벤트·리뷰/승인 마커는 03 §3.2-A 전이 이벤트 10필드를 **무수정
     재사용**하고 자유 형식 ref 필드에 gate_id/gateKind 를 싣는다(새 이벤트 스키마 0).
@@ -113,13 +117,53 @@ def floor(target_descriptor: dict[str, Any]) -> str:
 
 
 # ==========================================================================
+# actor 클래스 허용 목록 — **코드 소유 하한**(정책 데이터로 약화 불가·floor 동형)
+#
+# floor() 가 gateKind 의 하한을 코드에 두는 것과 같은 이유로, 게이트를 **누가 해소할 수
+# 있는가**의 하한도 코드가 소유한다. 정책 데이터(gate_policy.json)는 이 목록 안에서만
+# 고를 수 있고 목록 자체를 넓힐 수 없다 — 스키마 enum 은 사본이며 소유자가 아니다.
+#
+# 어휘 정본 = 03 §3.2-A actor 필드("전이를 유발한 역할(Advisor/Planner/Worker/Verifier)
+# 또는 human"). 닫힌 열거이며 이 모듈이 새 actor 를 발명하지 않는다(PO-INV 8 — provider
+# 토큰 아님).
+#
+#  - userActorClass: 확정 권위(UAF-INV ⑤ — user_decision_required 는 **사용자 응답
+#    이벤트만** 해소)는 사람에게 고정된다. 03 어휘에서 사람을 나타내는 값은 'human'
+#    하나뿐이므로 허용 원소도 하나다. 정책 데이터가 AI 역할을 지정해 확정 권위를
+#    탈취하는 경로를 로드 시점에 차단한다.
+#  - escalationResolvers: 03 §3.1-D·05 §3.3 표의 "Advisor/사람"이 정본이다. 빈 집합은
+#    아무 actor 도 해소하지 못하는 **침묵 데드락 정책**이므로 거부한다.
+#  - gateRaiser: 게이트를 **세우는** 권위라 위험 방향이 반대다(권위 탈취가 아니라
+#    게이트 누락 방지). 따라서 좁히지 않고 03 actor 어휘 멤버십만 요구한다.
+#
+# 검증 지점은 GatePolicy.__post_init__ 이다 — from_dict/from_file/empty/생성자 직접
+# 호출까지 **모든 생성 경로**가 통과한다. 위반은 ValueError 로 거부하며 자동 보정·기본값
+# 치환을 하지 않는다(정직 실패).
+# ==========================================================================
+ACTOR_VOCABULARY = ("Advisor", "Planner", "Worker", "Verifier", "human")  # 03 §3.2-A 닫힌 열거
+ALLOWED_USER_ACTOR_CLASSES = ("human",)                  # 확정 권위 = 사람만
+ALLOWED_ESCALATION_RESOLVERS = ("Advisor", "human")      # 03 §3.1-D "Advisor/사람"
+ALLOWED_GATE_RAISERS = ACTOR_VOCABULARY                  # 게이트 제기는 03 어휘 전체
+
+
+# ==========================================================================
 # actor 클래스 기본값 — 기본값은 스키마(gate_policy_schema.json)가 default 로 소유하며,
 # 정책 데이터 미지정 시 아래 중립 fallback 을 쓴다(중립 코드 하드코딩 최소화·03 §3.2-A
 # actor 어휘: Advisor 역할·human). provider 토큰 아님(PO-INV 8).
+# 각 기본값은 바로 위 허용 목록의 **원소**다(아래 자기 정합 검사가 이를 강제한다).
 # ==========================================================================
-DEFAULT_USER_ACTOR_CLASS = "human"          # user_decision_required 를 해소할 수 있는 actor 클래스
-DEFAULT_ESCALATION_RESOLVERS = ("Advisor", "human")  # escalation_required 해소 허용 actor 집합
-DEFAULT_GATE_RAISER = "Advisor"             # 게이트 요구 이벤트를 append 하는 권위 actor
+DEFAULT_USER_ACTOR_CLASS = "human"          # ∈ ALLOWED_USER_ACTOR_CLASSES
+DEFAULT_ESCALATION_RESOLVERS = ("Advisor", "human")  # ⊆ ALLOWED_ESCALATION_RESOLVERS
+DEFAULT_GATE_RAISER = "Advisor"             # ∈ ALLOWED_GATE_RAISERS
+
+# 기본값이 허용 목록에서 이탈하면 import 시점에 즉시 실패한다(조용한 drift 금지).
+# assert 가 아니라 명시 raise 다 — python -O 로도 꺼지지 않는다.
+if DEFAULT_USER_ACTOR_CLASS not in ALLOWED_USER_ACTOR_CLASSES:
+    raise RuntimeError("DEFAULT_USER_ACTOR_CLASS 가 허용 목록 밖이다")
+if not set(DEFAULT_ESCALATION_RESOLVERS) <= set(ALLOWED_ESCALATION_RESOLVERS):
+    raise RuntimeError("DEFAULT_ESCALATION_RESOLVERS 가 허용 목록 밖이다")
+if DEFAULT_GATE_RAISER not in ALLOWED_GATE_RAISERS:
+    raise RuntimeError("DEFAULT_GATE_RAISER 가 허용 목록 밖이다")
 
 
 # ==========================================================================
@@ -192,6 +236,68 @@ class GatePolicy:
     escalation_resolvers: tuple[str, ...] = DEFAULT_ESCALATION_RESOLVERS
     gate_raiser: str = DEFAULT_GATE_RAISER
 
+    # --- 검증 (코드 소유 허용 목록·모든 생성 경로) --------------------------
+    def __post_init__(self) -> None:
+        """actor 클래스 3필드를 코드 소유 허용 목록에 대조한다(GatePolicyEntry 선례 동형).
+
+        from_dict 안이 아니라 여기서 검증하는 이유: 생성자 직접 호출·empty() 등 다른
+        생성 경로도 같은 하한을 통과해야 하기 때문이다. 위반은 ValueError 로 **무엇이 왜**
+        거부됐는지 밝히고 멈춘다 — 자동 보정·기본값 치환은 하지 않는다(정직 실패).
+        """
+        # (a) userActorClass — 확정 권위는 사람에게 고정(UAF-INV ⑤).
+        if not isinstance(self.user_actor_class, str):
+            raise ValueError(
+                "GatePolicy.user_actor_class 는 문자열이어야 한다(03 §3.2-A actor 어휘). 지정="
+                + repr(self.user_actor_class)
+            )
+        if self.user_actor_class not in ALLOWED_USER_ACTOR_CLASSES:
+            raise ValueError(
+                "GatePolicy.user_actor_class 는 사람 actor 만 허용된다(허용="
+                + repr(list(ALLOWED_USER_ACTOR_CLASSES))
+                + "). 지정=" + repr(self.user_actor_class)
+                + " — user_decision_required 의 확정 권위는 정책 데이터로 AI 역할에 이전할 수 없다"
+                  "(UAF-INV ⑤·05 §3.3). 허용 목록은 코드가 소유하며 스키마·정책으로 약화 불가."
+            )
+        # (b) escalationResolvers — 03 §3.1-D "Advisor/사람" 부분집합 + 비공집합.
+        resolvers = self.escalation_resolvers
+        if isinstance(resolvers, str) or not isinstance(resolvers, (list, tuple)):
+            raise ValueError(
+                "GatePolicy.escalation_resolvers 는 문자열 시퀀스(list/tuple)여야 한다. 지정="
+                + repr(resolvers)
+            )
+        non_str = [r for r in resolvers if not isinstance(r, str)]
+        if non_str:
+            raise ValueError(
+                "GatePolicy.escalation_resolvers 의 원소는 모두 문자열이어야 한다. 비문자열="
+                + repr(non_str)
+            )
+        if len(resolvers) == 0:
+            raise ValueError(
+                "GatePolicy.escalation_resolvers 는 비어 있을 수 없다 — 빈 집합은 아무 actor 도"
+                " escalation_required 를 해소하지 못하는 침묵 데드락 정책이다(허용="
+                + repr(list(ALLOWED_ESCALATION_RESOLVERS)) + ")."
+            )
+        unknown = [r for r in resolvers if r not in ALLOWED_ESCALATION_RESOLVERS]
+        if unknown:
+            raise ValueError(
+                "GatePolicy.escalation_resolvers 에 허용되지 않은 actor 가 있다: "
+                + repr(unknown) + " (허용=" + repr(list(ALLOWED_ESCALATION_RESOLVERS))
+                + ") — escalation 해소 권한은 03 §3.1-D·05 §3.3 표의 Advisor/사람에 한정된다."
+            )
+        # 시퀀스 형태만 정규화한다(내용 무변경 — 값 보정 아님). 동치 비교·해시 안정성 목적.
+        self.escalation_resolvers = tuple(resolvers)
+        # (c) gateRaiser — 03 actor 어휘 멤버십(권위 탈취 방향이 아니므로 좁히지 않는다).
+        if not isinstance(self.gate_raiser, str):
+            raise ValueError(
+                "GatePolicy.gate_raiser 는 문자열이어야 한다(03 §3.2-A actor 어휘). 지정="
+                + repr(self.gate_raiser)
+            )
+        if self.gate_raiser not in ALLOWED_GATE_RAISERS:
+            raise ValueError(
+                "GatePolicy.gate_raiser 는 03 §3.2-A actor 어휘여야 한다(허용="
+                + repr(list(ALLOWED_GATE_RAISERS)) + "). 지정=" + repr(self.gate_raiser)
+            )
+
     # --- 평가 -------------------------------------------------------------
     def evaluate(self, target_descriptor: dict[str, Any]) -> str:
         """target descriptor → gateKind(정책 데이터 부분·floor 미적용). 순수·결정적.
@@ -253,11 +359,14 @@ class GatePolicy:
             for e in (data.get("entries") or [])
         ]
         resolvers = data.get("escalationResolvers")
+        # actor 3필드는 **원값 그대로** 생성자에 넘긴다 — 형태 정규화·검증은 __post_init__
+        # (코드 소유 허용 목록)이 단일 소유한다. 여기서 tuple() 등으로 미리 변환하면 비시퀀스
+        # 입력이 TypeError 로 새어 정직한 ValueError 메시지를 가린다.
         return cls(
             entries=entries,
             user_actor_class=data.get("userActorClass", DEFAULT_USER_ACTOR_CLASS),
             escalation_resolvers=(
-                tuple(resolvers) if resolvers is not None else DEFAULT_ESCALATION_RESOLVERS
+                resolvers if resolvers is not None else DEFAULT_ESCALATION_RESOLVERS
             ),
             gate_raiser=data.get("gateRaiser", DEFAULT_GATE_RAISER),
         )

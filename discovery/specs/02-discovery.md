@@ -1,7 +1,7 @@
 # discovery/specs/02-discovery — Project Discovery Specification
 
 작성일: 2026-07-07
-상태: v1.1 Baseline (CP2 첫 판정 Pass 15/0/0 · CP3 승인 · 사용자 승인 2026-07-07) · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c)
+상태: v1.2 Baseline (개정 — §3.7 판정 축 4 Coverage 신설 · §3.8 DISC-INV-10 가법 · §3.3-B T19·T20 Guard 정합 · §3.13·§3.2 P-D3 정합. 개정 유형 (A) 계약 변경 — `docs/spec-versioning-policy.md` §3.2. §4 호환 판정 = **비호환**(기존 Ready 판정식에 필수 조건 추가 = 필수화 계열, §4(b)) → dependents 영향 대조 수행(인바운드 참조 유효·서술 정합 3건은 커버리지 강제 후속 Wave 소관) + **사용자 승인 2026-07-28**로 확정, §3.3) · 직전 확정 = v1.1 Baseline (CP2 첫 판정 Pass 15/0/0 · CP3 승인 · 사용자 승인 2026-07-07) · 2026-07-26 정합(격리 개정 — 슬림화·앵커 90ca19c)
 상위 규약: AGENT.md (INV-1)
 근거 정본:
 
@@ -98,7 +98,7 @@ Discovery는 다음 5원칙을 따른다. 각 원칙은 §3.3~§3.7의 계약으
 
 - **P-D1 One Discovery Many Techniques.** Discovery는 하나이되, 그것을 수행하는 기법(Strategy)은 여럿이며 교체 가능하다. 하나의 State Machine·Event Model이 어떤 기법을 쓰든 동일한 산출로 수렴한다(§3.1 Strategy Invariance, §3.8 DISC-INV-7).
 - **P-D2 Confidence Driven Discovery.** 진행과 종료는 차원별 **Confidence**가 규율한다. 확신이 임계에 이르면 그 차원의 수집을 멈추고, 전 차원이 임계에 이르면 종합으로 넘어간다(§3.3, §3.7). Confidence 척도·근거 등급의 상세는 §3.12.
-- **P-D3 Adaptive Discovery.** 고정 대본이 아니라 적응적으로 진행한다. 남은 예산 대비 확신 이득이 큰 방향을 택하고, 포화한 차원은 건너뛴다. 적응 규칙 상세는 §3.13.
+- **P-D3 Adaptive Discovery.** 고정 대본이 아니라 적응적으로 진행한다. 남은 예산 대비 확신 이득이 큰 방향을 택하고, 포화한 차원은 건너뛴다. **단, 포화 스킵은 커버리지(§3.7 축 4)를 면제하지 않는다** — 스킵은 그 차원의 추가 질문을 멈추는 규칙일 뿐, 미심문 축을 심문됨으로 만들지 않는다(§3.13, DISC-INV-10). 적응 규칙 상세는 §3.13.
 - **P-D4 Minimize Human Intervention.** 일상적 진행은 자동으로 수행하고, 사람 개입은 꼭 필요한 지점(확인·강제)에서만 요구한다. 개입 최소화는 UAHF Loop의 "사람 개입 최소" 관행과 정합한다(uahf/specs/03-loop.md §3.1-D 동형).
 - **P-D5 Preserve Human Authority.** 사람의 권한을 보존한다. **확정 게이트는 사용자 승인**이며(ARCHITECTURE.md §8 UAF-INV ⑤), 사용자는 언제든 `UserOverride`로 진행을 강제(일시중단·종료·에스컬레이션)할 수 있다(§3.3, §3.6).
 
@@ -159,8 +159,8 @@ Discovery의 진행은 **단일 정본 State Machine**으로 정의된다. 이 �
 | T16 | `Validating` | `AnswerReceived` | 사용자 승인 | `Compiling` |
 | T17 | `Validating` | `AnswerReceived` | 사용자 수정 요청(추가 발견 필요) | `Eliciting` |
 | T18 | `Compiling` | `ContractCompiled` | Back-end가 Contract 컴파일 | `Compiling` (self) |
-| T19 | `Compiling` | `ExecutionReadyDeclared` | Completeness ∧ 전 차원 Confidence 임계 ∧ 사용자 승인 | `Ready` |
-| T20 | `Compiling` | `ExecutionReadyDeclared` | Completeness(필수 필드 가정 충족·원장 기재) ∧ 사용자 승인 ∧ 일부 차원 Confidence 미달 | `ReadyWithAssumptions` |
+| T19 | `Compiling` | `ExecutionReadyDeclared` | Completeness ∧ 전 차원 Confidence 임계 ∧ Coverage(미심문 축 0) ∧ 사용자 승인 | `Ready` |
+| T20 | `Compiling` | `ExecutionReadyDeclared` | Completeness(필수 필드 가정 충족·원장 기재) ∧ 사용자 승인 ∧ 일부 차원 Confidence 미달(가정 대체 허용) ∧ Coverage(미심문 축 0 — 가정 대체 불가) | `ReadyWithAssumptions` |
 | T21 | 임의 비종단 | `UserOverride` | 사용자 강제 일시중단 | `Suspended` |
 | T22 | 임의 비종단 | `UserOverride` | 사용자 강제 종료 | `Aborted` |
 | T23 | 임의 비종단 | `UserOverride` | 사용자 강제 에스컬레이션 | `Escalated` |
@@ -223,12 +223,13 @@ Discovery는 반드시 종단에 이른다. 종단에 이르는 경로는 정확
 
 | 경로 | 조건 | 종단 | 전이(§3.3) |
 |---|---|---|---|
-| **① 2축 게이트 충족** | Completeness ∧ 전 차원 Confidence 임계 ∧ 사용자 승인(§3.7). | `Ready` | T19 |
-| **② 예산 소진 + Confidence 미달** | Question Budget 소진, Confidence 임계 미달. 필수 코어 필드가 가정으로 충족되면 `ReadyWithAssumptions`(**Assumption Ledger 필수**), 가정으로도 충족 불가하면 `Escalated`. | `ReadyWithAssumptions` / `Escalated` | T11 → … → T20 / T15 |
+| **① 2축 게이트 충족** | Completeness ∧ 전 차원 Confidence 임계 ∧ Coverage(미심문 축 0) ∧ 사용자 승인(§3.7). | `Ready` | T19 |
+| **② 예산 소진 + Confidence 미달** | Question Budget 소진, Confidence 임계 미달. 필수 코어 필드가 가정으로 충족되면 `ReadyWithAssumptions`(**Assumption Ledger 필수**), 가정으로도 충족 불가하면 `Escalated`. Coverage(미심문 축 0)는 이 경로에서도 가정 대체 불가다(T20 Guard·아래 불릿). | `ReadyWithAssumptions` / `Escalated` | T11 → … → T20 / T15 |
 | **③ 사용자 강제 종료** | 사용자가 `UserOverride`로 진행을 강제한다(Preserve Human Authority, P-D5). | `Suspended` / `Aborted` / `Escalated` | T21 / T22 / T23 |
 | **④ Abort** | 발견이 폐기된다(Contract 미산출). | `Aborted` | T25 (또는 T22) |
 
 - **경로 ②의 Completeness 불가침.** 예산이 소진되어도 Compiler는 불완전 Contract를 내지 않는다. 필수 코어 필드는 실측 또는 **가정**으로 충족되어야 하며, 가정으로 충족한 항목은 Assumption Ledger에 기재된다(§3.7). 어느 쪽으로도 충족 불가하면 Ready 종단이 아니라 `Escalated`다.
+- **경로 ②의 Coverage 불가침(§3.7 축 4).** 예산 소진 경로에서도 커버리지는 가정으로 대체되지 않는다. 예산이 소진된 시점에 미심문 축이 남아 있으면, 그 축은 심문되거나 **사유 기록 제외**로 귀결해야 하며(제외는 축 3 게이트에서 사용자에게 일괄 표면화된다), 어느 쪽으로도 귀결하지 못하면 `ReadyWithAssumptions`가 아니라 `Escalated`다(DISC-INV-10).
 - **일시중단·재개.** `Suspended`는 상태가 보존되어 재개 가능하다. 재개 시맨틱의 물리 실현(직렬화·복원)은 Adapter 소관이다(§4).
 - **종단 보장.** 어떤 경로로도 검증되지 않은 결과가 Ready로 보고되지 않는다(§3.7, DISC-INV-5·DISC-INV-6). 이는 UAHF Loop의 종료 보장 관행과 정합한다(uahf/specs/03-loop.md §3.1-C 동형).
 
@@ -236,31 +237,42 @@ Discovery는 반드시 종단에 이른다. 종단에 이르는 경로는 정확
 
 ### 3.7 Execution Ready 2축 판정 (C3) — [Workflow부]
 
-Discovery의 종단 판정 **Execution Ready**는 다음 판정식으로 정의된다.
+Discovery의 종단 판정 **Execution Ready**는 다음 판정식으로 정의된다. `uaf-allow-legacy: 축 1·2·3의 괄호 주석("필수 코어 필드 전건 충족" 등)은 v1.1 판정식 문면을 문자 그대로 보존한 인용이며, 본 개정은 축 4 열만 가법한다.`
 
 ```
-Ready = Contract Completeness  ∧  Confidence  ∧  사용자 승인
-        (필수 코어 필드 전건 충족)   (전 차원 임계 충족)   (Preserve Human Authority)
+Ready = Contract Completeness  ∧  Confidence  ∧  Coverage  ∧  사용자 승인
+        (필수 코어 필드 전건 충족)   (전 차원 임계 충족)   (미심문 축 0)   (Preserve Human Authority)
 ```
+
+**절 제목의 "2축" 라벨에 대하여.** 이 절의 제목이 담은 "2축"은 v1.1 이전부터 이어진 **역사적 라벨**이며 판정식의 축 수를 세는 표기가 아니다(v1.1 시점에도 판정식의 축은 3이었다). 본 개정은 축 4를 신설하되 제목 문자열과 다른 문서가 인용하는 명칭("Execution Ready 2축 판정"·"2축 게이트")은 **바꾸지 않는다** — 명칭 변경은 이 문서 밖 인바운드 참조의 동시 갱신을 요구하므로 별도 회차의 정합 개정 소관이다. 축 수의 정본은 제목이 아니라 이 절의 판정식이다.
 
 - **축 1 — Contract Completeness (타협 불가).** 필수 코어 필드가 **전건 충족**되어야 한다. 이 축은 **모든 Ready 종단에서 타협 불가**다. `Ready`는 필수 필드를 실측으로 충족하고, `ReadyWithAssumptions`도 필수 필드를 **가정으로 충족**시키고 Assumption Ledger에 기재해야 성립한다. Compiler는 불완전 출력을 내지 않는다(§3.1, DISC-INV-5). 필수 코어 필드의 정의·목록은 `planning/specs/03-project-contract.md`(실재 — v1.2 Baseline) 소관이며, 본 문서는 추상으로만 참조한다.
 - **축 2 — Confidence (가정 대체 허용).** 전 차원 Confidence가 임계를 충족하면 `Ready`다. 예산 소진 등으로 일부 차원이 임계에 미달하면, **Confidence 축에 한해** 가정으로 대체하여 `ReadyWithAssumptions`로 성립한다(축 1은 여전히 충족 필수). Confidence 차원·척도·임계 상세는 §3.11·§3.12·§3.15.
 - **축 3 — 사용자 승인 (게이트).** 사용자 최종 승인 게이트 없이 어떤 Ready 종단에도 도달하지 못한다(ARCHITECTURE.md §8 UAF-INV ⑤, DISC-INV-6). 승인은 `Validating` 상태에서 받고(T16), 그 결과는 Readiness 선언에 기록된다.
+- **축 4 — Coverage (타협 불가 — 축 1 동형).** 정책이 선언한 **필수 질문 축 집합**의 각 원소가 **심문됨(interrogated)** 또는 **사유 기록 제외(excluded — 제외 사유와 확인 주체가 함께 기록된 것)** 중 하나로 귀결해야 하며, **미심문(unasked)이 0**이어야 한다. 이 축은 `Ready`·`ReadyWithAssumptions` **양 종단 모두에서 타협 불가**이며, 축 2(Confidence)와 달리 **가정으로 대체되지 않는다** — 가정 대체를 허용하면 "묻지 않고 가정으로 채우기"가 정당화되어 미심문이 Ready 종단을 통과하기 때문이다. 세부 규칙은 아래와 같다.
+  - **필수 축 집합의 소유.** 축의 명칭·개수·구성은 이 문서가 소유하지 않고 **Discovery Policy 데이터**(§3.15, Policy as Data)가 선언한다. 본 절은 형식 요구만 둔다 — "정책이 선언한 필수 축 집합에 대해 미심문 0". 특정 요구공학 골격을 정본에 박으면 Strategy Provider마다 다른 축 집합을 선언할 수 없게 되어 DISC-INV-7·ARCHITECTURE.md §8 UAF-INV ⑥ 위반이다.
+  - **침묵 생략 ≠ 제외.** 아무 기록 없이 지나간 축은 제외가 아니라 미심문이다(DISC-INV-10).
+  - **추론 충족 불가.** 인접한 답에서 유추해 축을 충족 처리한 것은 근거 등급상 **가정**이며(§3.12 근거 등급: 사용자 진술 > 추론 > 가정), 심문됨이 아니라 미심문으로 계수한다. 심문됨은 그 축을 향한 질문이 제시되고 응답이 도착한 경우다(`QuestionAsked`·`AnswerReceived`, §3.5).
+  - **제외의 표면화 지점.** 기록된 제외는 per-item 상시 질문이 아니라 `Validating`의 **사용자 승인 게이트(축 3)에서 일괄 표면화**되어 확인받는다(P-D4·P-D5 정합, ARCHITECTURE.md §6 설계 원칙 11 책임 있는 자율).
+  - **전이표와의 정합.** §3.3-B 전이 T19·T20의 Guard는 본 절과 **같은 축 집합**(축 1·2·3·4)을 서술하며, T20에서 축 2는 가정 대체 허용·축 4는 대체 불가라는 비대칭도 Guard 문면에 그대로 담긴다. 상태·Event·전이의 정본은 §3.3이고 본 개정은 그 상태·Event·전이 행을 신설·삭제하지 않는다(DISC-INV-2 보존).
 
 **Readiness 선언의 구성.** `ExecutionReadyDeclared`(§3.5)가 선언하는 Readiness는 다음으로 구성된다.
 
 - Completeness 판정(필수 코어 필드 충족 여부·충족 방식[실측/가정]),
 - Confidence Vector(차원별 확신 — 상세 형식은 §3.11·§3.12),
+- **Coverage 원장**(필수 질문 축별 상태[심문됨 / 사유 기록 제외]와 제외 사유·확인 주체의 기록 — 축 4 판정의 근거),
 - Assumption Ledger(가정 원장 — 가정으로 충족한 항목의 기록),
 - 미해결 질문 목록,
 - 사용자 승인 기록.
 
+Coverage 원장의 물리 파일 형식·경로·직렬화는 정의하지 않는다 — Adapter 소관이다(§4).
+
 **Ready vs ReadyWithAssumptions.**
 
-| | Completeness(축 1) | Confidence(축 2) | 사용자 승인(축 3) | Assumption Ledger |
-|---|---|---|---|---|
-| `Ready` | 필수 필드 실측 충족 | 전 차원 임계 충족 | 필수 | 비었거나 무관 |
-| `ReadyWithAssumptions` | 필수 필드 가정 충족(원장 기재) | 일부 차원 미달(가정 대체) | 필수 | **필수(비어 있을 수 없음)** |
+| | Completeness(축 1) | Confidence(축 2) | 사용자 승인(축 3) | Coverage(축 4) | Assumption Ledger |
+|---|---|---|---|---|---|
+| `Ready` | 필수 필드 실측 충족 | 전 차원 임계 충족 | 필수 | **미심문 0**(심문됨 ∨ 사유 기록 제외) | 비었거나 무관 |
+| `ReadyWithAssumptions` | 필수 필드 가정 충족(원장 기재) | 일부 차원 미달(가정 대체) | 필수 | **미심문 0**(가정 대체 불가) | **필수(비어 있을 수 없음)** |
 
 ---
 
@@ -277,6 +289,7 @@ Discovery는 어떤 구현·Strategy에서도 다음을 유지한다. DISC-INV-7
 - **DISC-INV-7 (Strategy Invariance — 상시 불변 ①).** 어떤 Strategy(Front-end)를 쓰든 State Machine·Event는 **동일한 스키마·동일한 완결 기준의 Project Contract**로 수렴한다. Discovery는 언제든 교체 가능하게 유지된다(ARCHITECTURE.md §7.1 ①·§8 UAF-INV ③).
 - **DISC-INV-8 (Stable Contract 정합 — 상시 불변 ②).** Contract 완결 기준은 Project Contract의 Stable Contract 지위와 정합한다. Discovery 내부 개념(질문·전략·예산)이 Contract 코어 스키마나 UAHF 접점으로 **새어나가지 않는다**. 장기 호환성 규칙의 상세 정본은 `planning/specs/03-project-contract.md`(실재 — v1.2 Baseline)가 소유한다(ARCHITECTURE.md §7.1 ②·§8 UAF-INV ①②).
 - **DISC-INV-9 (AI 비의존).** §3의 어떤 계약도 특정 AI 모델·실행 환경에 의존하지 않는다. 환경 바인딩은 §4에 위치한다.
+- **DISC-INV-10 (커버리지 침묵 생략 금지).** 정책이 선언한 필수 질문 축은 **심문됨** 또는 **사유 기록 제외** 중 하나로 귀결한다. 기록 없는 생략(침묵 생략)으로 `Ready`·`ReadyWithAssumptions` 종단에 도달하지 않는다(§3.7 축 4). 이 불변은 축 집합의 내용을 규정하지 않는다 — 축 집합은 Discovery Policy 데이터 소관이며(§3.15) 본 불변은 그 집합에 대한 형식 요구다(DISC-INV-7 보존).
 
 ---
 
@@ -292,7 +305,7 @@ Discovery는 §3.1 Compiler 3부를 실현하는 **7개 모듈**로 구성된다
 | **Evidence Store** | 전 구간 | 증거와 Event 로그를 **append-only**로 보관한다(§3.5, DISC-INV-3). | 증거를 수정·삭제하지 않는다(append-only). 증거를 해석하지 않는다(Confidence Model 소관). | 모든 모듈이 기록·조회. UAHF Memory가 아니다(§5 네임스페이스 구분). |
 | **Confidence Model** | Middle | 수집 증거로 차원별 Confidence(§3.11·§3.12)를 측정·갱신하고 차원 포화를 판정한다. | 질문을 만들지 않고 Contract를 컴파일하지 않는다. 임계값을 소유하지 않는다(Policy 데이터, §3.15). | Evidence Store 소비. `ConfidenceUpdated`·`DimensionSaturated` Event 방출. Confidence Vector를 Question Engine·Orchestrator에 공급. |
 | **Contract Compiler** | Back-end | 종합된 이해를 **단일 타깃 형식(Project Contract)**으로 컴파일한다(§3.1 Back-end). | Strategy·질문·예산 등 Discovery 내부 개념을 Contract 코어 스키마로 내보내지 않는다(DISC-INV-8). 출력 스키마를 정의하지 않는다(`planning/specs/03-project-contract.md` 소유 — 실재, v1.2 Baseline). | Evidence Store·Confidence Model·Assumption Ledger 소비. `ContractCompiled`·`ExecutionReadyDeclared` Event 방출. |
-| **Discovery Policy** | 전 구간(데이터) | 임계값·예산·종료 규칙·충돌 게이트 정책을 **데이터로 외부화**한다(§3.15, Policy as Data). | 실행 로직을 담지 않는다(데이터일 뿐). 엔진 코드에 정책을 하드코딩하지 않는다. | Confidence Model(임계값)·Question Engine(예산)·Orchestrator(종료 규칙)가 참조. |
+| **Discovery Policy** | 전 구간(데이터) | 임계값·예산·종료 규칙·충돌 게이트·**커버리지(필수 질문 축 집합)** 정책을 **데이터로 외부화**한다(§3.15, Policy as Data). | 실행 로직을 담지 않는다(데이터일 뿐). 엔진 코드에 정책을 하드코딩하지 않는다. | Confidence Model(임계값)·Question Engine(예산·필수 축)·Orchestrator(종료 규칙·커버리지 판정)가 참조. |
 
 - **Strategy Invariance 보존(DISC-INV-7).** 교체되는 것은 Strategy Registry에 등록된 Provider뿐이다. Orchestrator·Confidence Model·Contract Compiler·Discovery Policy의 계약과 출력(Project Contract 스키마·완결 기준)은 어떤 Provider에서도 불변이다(§3.1, ARCHITECTURE.md §8 UAF-INV ③).
 - **누출 차단(DISC-INV-8).** Strategy·Capability·질문·예산은 Front-end·집행 모듈(Strategy Registry·Question Engine) 내부에 갇힌다. Contract Compiler는 이 내부 개념을 Contract 코어 스키마나 UAHF 접점으로 내보내지 않는다(ARCHITECTURE.md §7.1 ②).
@@ -368,6 +381,7 @@ Discovery는 고정 대본이 아니라 **적응적으로** 진행한다(P-D3, �
 
 - **기대 확신 이득 최대화.** 단위 Budget당 **기대 Confidence 이득이 가장 큰 방향**을 택한다. Question Engine(§3.9)은 Strategy가 낸 질문 집합 중 확신 이득이 큰 질문을 우선 선택한다.
 - **포화 차원 스킵.** 이미 임계에 도달(포화)한 차원(`DimensionSaturated`, §3.5)은 더 묻지 않고 건너뛴다. 잔여 Budget을 미포화 차원에 집중한다.
+- **포화 스킵과 커버리지의 직교(§3.7 축 4 정합).** 포화는 **Confidence 축(축 2)의 상태**이고 커버리지는 **축 4의 상태**이며, 둘은 **직교**해 서로를 대체하지 않는다. 차원 포화 스킵은 그 차원에 **추가 질문을 멈추는 규칙**일 뿐, 정책이 선언한 필수 질문 축 중 아직 묻지 않은 축을 **심문됨으로 만들지 않는다**. 따라서 얕은 응답으로 차원이 조기 포화해도 미심문 축이 남아 있으면 Ready 종단에 도달하지 못하며, 그 축은 심문되거나 사유 기록 제외로 귀결해야 한다(DISC-INV-10). 커버리지 미충족은 스킵 규칙의 예외가 아니라 **다른 축의 미충족**이다.
 - **규모·리스크별 깊이 조정.** 프로젝트 규모·리스크 수준에 따라 발견 깊이(차원별 목표 임계·예산 배분)를 조정한다. 이 조정 파라미터는 엔진이 아니라 **Discovery Policy 데이터**다(§3.15, Policy as Data).
 - **적응의 무규정 불변.** 적응은 질문 선택 순서·깊이만 바꾼다. 어떤 적응도 §3.3 State Machine·§3.5 Event·Contract 완결 기준을 바꾸지 않는다(DISC-INV-2·7).
 
@@ -401,6 +415,7 @@ Discovery는 고정 대본이 아니라 **적응적으로** 진행한다(P-D3, �
 | **예산 정책** | 총량·차원별 예산, soft/hard 경계, 재진입 재할당·보충 예산(§3.14). | Question Engine |
 | **종료 규칙 정책** | Termination 경로별 조건(§3.6)·깊이 조정 파라미터(§3.13). | Orchestrator |
 | **충돌 게이트 정책** | 충돌·모호 입력의 사용자 확인 게이트 표기(Preserve Human Authority, P-D5). | Orchestrator |
+| **커버리지 정책** | **필수 질문 축 집합**의 선언(축의 명칭·구성)과 제외 기록 요건(§3.7 축 4·DISC-INV-10). 축 집합은 이 정책 데이터가 소유하며 정본 본문은 형식 요구만 둔다 — Strategy Provider마다 다른 축 집합을 선언할 수 있어야 한다(DISC-INV-7·UAF-INV ⑥). | Question Engine · Orchestrator |
 
 - **Policy as Data 불변.** 정책 값 변경은 **엔진(모듈 코드) 변경을 요구하지 않는다**. 임계값·예산·종료 규칙·게이트 정책을 데이터로 바꾸는 것만으로 Discovery 거동이 조정된다.
 - **정책 값 상세의 소재.** 구체 정책 값(수치·경계)은 물리 실현이며 그 데이터 소스·직렬화는 Adapter 소관이다(§4). Discovery Request가 참조로 담는다(ARCHITECTURE.md §12.2).
@@ -476,6 +491,8 @@ Workflow부 범위의 대표 실패 시나리오와 대응이다.
 | 사용자 강제 종료 | `UserOverride`로 `Suspended`/`Aborted`/`Escalated`. | 종단 경로 ③, P-D5 |
 | 조기 Ready 선언(사용자 승인 없이) | 무효·차단. 사용자 승인 게이트 없이는 Ready 불가. | DISC-INV-6 위반 |
 | 불완전 Contract 산출 시도 | 무효·차단. Completeness 타협 불가. | DISC-INV-5 위반 |
+| 필수 질문 축을 묻지 않은 채(기록 없는 생략) Ready 선언 시도 | 무효·차단. 해당 축을 심문하거나 사유 기록 제외로 귀결시킨다. 어느 쪽도 불가하면 `Escalated`. | DISC-INV-10 위반 |
+| 차원 조기 포화를 근거로 미심문 축을 충족 처리 | 무효·교정. 포화(축 2)와 커버리지(축 4)는 직교하며 서로를 대체하지 않는다(§3.13). | DISC-INV-10 위반 |
 | Event 없는 전이 | 무효. 모든 전이는 Event로만. | DISC-INV-1 위반 |
 | Discovery 내부 개념(질문·전략·예산)이 Contract 코어/UAHF 접점에 누출 | 차단·교정. Stable Contract 정합 위반. | DISC-INV-8 위반 |
 
@@ -521,6 +538,12 @@ Workflow부 범위의 대표 실패 시나리오와 대응이다.
 12. 예산·정책(soft/hard 경계·소진 강제 종합·T17 재진입 · 정책 변경 ↔ 엔진 무변경) — §3.14·§3.15
 13. Metrics Event 파생 — §3.16·DISC-INV-4
 14. 누출 0(Strategy·Capability·질문·예산이 코어 스키마·UAHF 접점으로 새지 않음) — DISC-INV-8
+
+**Coverage 완료 기준 (v1.2 가법 — Workflow부·Module부 공통).**
+
+15. Coverage 축 4(양 종단 미심문 0 · 가정 대체 불가 · 제외는 사유·확인 주체 기록 · 제외의 게이트 일괄 표면화) — §3.7 축 4·DISC-INV-10
+16. 필수 축 집합의 Policy 소유(정본 본문에 축 실값 0건 · 형식 요구만) — §3.15 커버리지 정책·DISC-INV-7·UAF-INV ⑥
+17. 포화 스킵과 커버리지의 직교(포화가 미심문을 심문됨으로 만들지 않음) — §3.13·P-D3(§3.2)
 
 ---
 

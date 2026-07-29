@@ -5,7 +5,7 @@
 상위 규약: 루트 `ARCHITECTURE.md` (라우터) · `AGENT.md`
 근거 정본 (각 § 포인터로만 참조 — 재정의·복제 0):
 
-- `discovery/specs/02-discovery.md` — discovery Layer & Project Discovery의 **상세 계약 정본**. 특히 §3.1·§3.2·§3.3·§3.4·§3.5·§3.6·§3.7·§3.8(DISC-INV-1~9)·§3.9~§3.16(Module부)·§4·§5.
+- `discovery/specs/02-discovery.md` — discovery Layer & Project Discovery의 **상세 계약 정본**. 특히 §3.1·§3.2·§3.3·§3.4·§3.5·§3.6·§3.7·§3.8(DISC-INV-1~10)·§3.9~§3.16(Module부)·§4·§5.
 - 루트 `ARCHITECTURE.md` (라우터) — UAF 상위 구조 정본. 특히 §2.1·§2.2·§2.5·§3·§6(원칙 6·7·8)·§7(P2·P4)·§8(UAF-INV ②③⑤⑥)·§10·§11·§12.2.
 - `uahf/specs/00-glossary.md` §3.3 — UAHF 용어 정본. INV-3 무촉 근거.
 
@@ -66,7 +66,7 @@ discovery Layer의 내부는 다음 요소로 구성된다. 각 요소의 상세
 
 ## §5. 불변 (Invariants — 개관)
 
-discovery Layer의 불변은 **DISC-INV-1~9**이며 문면 정본은 `discovery/specs/02-discovery.md` §3.8이 소유한다 — 요지 요약을 이 문서에 복제하지 않는다. 상위 정합 좌표는 루트 §7 P2·P4 · §7.1 상시 불변 확인 2건(DISC-INV-7·8이 그 반영) · §8 UAF-INV ②③⑤⑥다.
+discovery Layer의 불변은 **DISC-INV-1~10**이며 문면 정본은 `discovery/specs/02-discovery.md` §3.8이 소유한다 — 요지 요약을 이 문서에 복제하지 않는다. 상위 정합 좌표는 루트 §7 P2·P4 · §7.1 상시 불변 확인 2건(DISC-INV-7·8이 그 반영) · §8 UAF-INV ②③⑤⑥다.
 
 ---
 
@@ -84,7 +84,7 @@ discovery Layer의 비수행 경계(하류 UAHF 책임 5건 · Entry Resolution 
 |---|---|
 | discovery Layer 상세 계약 전체(Compiler·State Machine·Event·판정식·모듈) | `discovery/specs/02-discovery.md` §3 |
 | Discovery Principles P-D1~P-D5 | `discovery/specs/02-discovery.md` §3.2 |
-| Invariants DISC-INV-1~9 | `discovery/specs/02-discovery.md` §3.8 |
+| Invariants DISC-INV-1~10 | `discovery/specs/02-discovery.md` §3.8 |
 | Adapter Binding(바인딩 지점·이식 교체 지점) | `discovery/specs/02-discovery.md` §4 · `discovery/adapters/<adapter>/discovery-binding.md` |
 | Memory 활용(확장 포인트) | `discovery/specs/02-discovery.md` §5 |
 | 최상위 Layer 지도 · Project Discovery 귀속 | 루트 `ARCHITECTURE.md` §2.1 |

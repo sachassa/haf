@@ -83,13 +83,15 @@ uahf/framework/adapters/claude/
    │  └─ …                                  #   run 단위 격리(<mode>-<run-id>/)
    ├─ policy/                               # D5 — Discovery Policy 데이터 파일(임계·예산·종료 규칙·충돌 게이트; 형식·값 정본 = §8)
    ├─ contracts/uahf/                       # contract-binding §4.2 정본 — 본 저장소 Contract 인스턴스 격리(참조 인용·재정의 0)
-   │  └─ project-contract.v<N>.md           #     (직렬화·저장 위치 정본 = contract-binding §3·§4)
+   │  ├─ project-contract.v<N>.md           #     (직렬화·저장 위치 정본 = contract-binding §3·§4)
+   │  └─ coverage-ledger.json               #     축 4 Coverage 원장 — Contract 인스턴스 디렉터리 병치(coverage-ledger.schema.md §배치 위치)
    └─ e2e-greenfield-project/               # DP-X3 — E2E Greenfield 대상 프로젝트(발견 대상)
 ```
 
 - **`events/`(D1·D6, §3).** run 단위 append-only Event 로그와 증거(Evidence Store 물리 저장)를 보관한다. 위치·형식 정본은 §3.
 - **`policy/`(D5, §8).** Discovery Policy 데이터 파일(임계값·예산·soft/hard 경계·종료 규칙·충돌 게이트)을 둔다. 형식·E2E 최소 실값 정본은 §8. Policy as Data이므로 값 조정은 데이터 정정일 뿐 엔진·계약 무변경이다(02 §3.15).
 - **`contracts/uahf/`(참조 인용 — 재정의 금지).** 본 저장소 dogfooding Contract 인스턴스의 격리 배치 경로·파일명은 **contract-binding §4.2가 소유한 정본**이다. 본 문서는 트리 완결성을 위해 참조 인용만 하며 Contract 직렬화·저장 위치·버저닝을 재정의하지 않는다.
+- **Coverage 원장(축 4)은 Contract 인스턴스 디렉터리에 병치한다.** 물리 형식·경로 규약의 정본은 `discovery/adapters/claude/coverage-ledger.schema.md` §배치 위치이며 본 절은 트리 완결성을 위한 참조 인용이다(재정의 0). 원장은 **`events/` 아래에 두지 않는다** — Contract 쓰기 시점의 결정적 도출(같은 디렉터리·탐색 0)을 성립시키기 위함이며, 그 결속이 기계 강제(`pretooluse_coverage_guard.py`)의 전제다. 이 배치는 §3.4 Event 로그 run 단위 격리를 **무촉**으로 둔다 — 원장은 Event 로그에서 도출된 파생 뷰(현재 상태의 판정 근거 표면)이고 run 이력의 정본은 `events/<mode>-<run-id>/` 가 계속 단독 소유한다. 소비 프로젝트 측 배치(`<workspace>/.claude/project-contract/`)도 같은 규약이며 그 경로의 정본은 contract-binding §4.1이다.
 - **`e2e-greenfield-project/`(DP-X3).** E2E Greenfield 시나리오의 대상 프로젝트다. 이 디렉터리의 물리 생성·내용은 E2E Task 소관이며 본 문서는 트리 위치만 선언한다(§13 실측 — 현재 미실재).
 
 ### §4.2 Discovery Request 기록 위치 확정 (DP-X8 해소 — entry-binding §5.3 위임)
@@ -123,6 +125,7 @@ entry-binding §5.3은 Discovery Request의 물리 기록이 놓일 **백엔드 
 
 - **확정 게이트 = 사용자 승인(불가침).** G2의 사용자 승인은 Execution Ready 확정 게이트다 — 사용자 승인 없이 `Ready`·`ReadyWithAssumptions` 종단에 도달하지 못한다(02 §3.7 2축 판정의 사용자 승인 축·DISC-INV-6·ARCHITECTURE §8 UAF-INV ⑤). 본 채널 바인딩은 게이트를 물리 채널로 실현할 뿐 판정식을 재정의하지 않는다.
 - **개입 기록.** 각 사용자 개입 발생은 D1 로그(§3)에 위 대응 Event 레코드로 남는다(DISC-INV-1·3). 무인 자동 개입 트리거·자동 제시 UI는 형태 B다.
+- **G2 제출물에 Coverage 원장이 포함된다(축 4 표면화 지점).** G2 제시는 종합된 이해·가정·미해결 질문에 더해 **Coverage 원장**(축별 심문됨/제외/미심문 + 제외 사유)을 함께 낸다 — 제외의 기본 표면화 지점이 `Validating` 승인 게이트 **일괄 표면화**이기 때문이다(§8.2 (마) `exclusionSurfacing.default`·인터뷰 규약 ⑪ 「게이트 일괄 표면화」). `highImpact: true` 축의 제외는 이 지점까지 미루지 않고 G1 구간에서 즉시 표면화한다(같은 표 `exclusionSurfacing.highImpact`). 원장의 물리 파일·산출 시점은 인터뷰 수행 측 소관이며(⑪-A) 그 형식·경로 정본은 `coverage-ledger.schema.md` 다 — 본 절은 **어느 개입 지점에서 제출되는가**만 확정한다(재정의 0).
 - **충돌·모호 입력 게이트 정합.** Discovery Request의 충돌·모호 입력에 대한 사용자 확인 게이트(Discovery Policy 충돌 게이트 정책, §8·02 §3.15)도 이 D2 채널(G2 계열 제시)로 실현된다 — 게이트 통과 없이 진행하지 않는다(P-D5).
 - **제시 형식(가독성·구조화).** G1 질문 제시는 추천 답을 **구조화 선택지**로 렌더하고(멀티 선택 가능·'기타(직접)' 항상 포함), 종합·구간 recap은 **시각 형식**(표·흐름·근거 등급 배지)으로 제시한다(프로즈·포인터 나열 지양). G2 사용자 승인은 **명시 최종 확정** 행위로 받는다(승인 전 미확정 — DISC-INV-6). 이는 제시 채널(형태 A)의 물리 실현이며 판정식·출력 계약(02 §3.7·§3.10-B)을 재정의하지 않는다.
 
@@ -212,9 +215,16 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 
 | 경로 (02 §3.6) | 조건 (값) |
 |---|---|
-| ① 2축 게이트 충족 → `Ready` | Completeness ∧ 전 5차원 θ(위 (가)) 충족 ∧ 사용자 승인 (02 §3.7·T19) |
+| ① 2축 게이트 충족 → `Ready` | Completeness ∧ 전 5차원 θ(위 (가)) 충족 ∧ Coverage(미심문 축 0 — 아래 (마)) ∧ 사용자 승인 (02 §3.7·T19) |
 | ② 예산 소진 + Confidence 미달 | 필수 코어 필드 가정 충족 가능 → `ReadyWithAssumptions`(Assumption Ledger 필수, T20); 가정으로도 충족 불가 → `Escalated`(T15) |
 | 깊이 조정 (02 §3.13) | 기본 프로파일 = 위 (가)·(나) 값. 규모·리스크 상향 시 해당 차원 목표 임계·예산 가산은 **Policy 데이터로 조정**(엔진 무변경) |
+
+**종료 규칙의 직렬화 정본 문면(`termination` 키 — 두 프로파일 공통·문자열 동일).** 위 표 ①·②의 물리 직렬화 값은 아래 두 문자열이며, `default-policy.yaml`·`lightweight-policy.yaml` 의 `termination.ready`·`termination.budgetExhausted` 는 이 문자열과 **문자 단위로 동일**해야 한다(드리프트 통제 지점).
+
+```
+ready:           Completeness ∧ 전 5차원 θ 충족 ∧ Coverage(미심문 축 0) ∧ 사용자 승인 → Ready (02 §3.7, T19)
+budgetExhausted: 필수 코어 필드 가정 충족 가능 → ReadyWithAssumptions (T20, Assumption Ledger 필수) / 가정으로도 충족 불가 → Escalated (T15)
+```
 
 **(라) 충돌 게이트 정책 (02 §3.6·§3.15 충돌 게이트·P-D5):**
 
@@ -222,7 +232,25 @@ E2E 구동을 위한 **최소 실값 1세트**를 본 문서의 정본 값 표�
 |---|---|
 | 충돌·모호 입력 게이트 | 충돌·모호 입력 감지 시 **사용자 확인 게이트 필수**(Validating 경유 — §5 G2/D2 채널) — 게이트 통과 없이 진행 불가(Preserve Human Authority, P-D5) |
 
-- **Policy as Data 불변.** 위 값(임계·예산·경계·종료 규칙·게이트)은 전부 데이터이며 값을 바꾸는 것만으로 Discovery 거동이 조정된다 — Confidence Model·Question Engine·Orchestrator 등 엔진이나 정본 계약(State Machine·Event·완결 기준)은 변경되지 않는다(02 §3.15). 이 값 세트는 **E2E 구동을 위한 최소 실값**이며 다른 임계·예산이 필요하면 `policy/` 데이터 정정으로 조정한다.
+**(마) 커버리지 정책 — 필수 질문 축 집합·제외 기록 요건 (02 §3.7 축 4·§3.15 커버리지 정책·DISC-INV-10):**
+
+02 §3.15 표의 「커버리지 정책」 행이 Policy 데이터 소관으로 지정한 값의 정본 문면이다. 축 집합의 **실값 단일 소유자는 정책 데이터 파일**(`policy/*-policy.yaml` 의 `coverage.requiredAxes`)이며, 02 정본 본문에는 축 실값이 0건이다(DISC-INV-7·UAF-INV ⑥ — Strategy Provider마다 다른 축 집합 선언 가능). 본 절은 **구성 요건**(무엇이 선언돼야 하는가)의 정본이고 축 원소의 실값 열거는 데이터가 소유한다.
+
+| 항목 | 값 |
+|---|---|
+| 필수 질문 축 수 | **9** (요구공학 압축 골격 — Discovery 소유분. 하류 위임 산출물 축은 이 집합에 0건) |
+| 축 원소 필드 | `id`(ASCII 안정 기계 키 — 원장·체커 결속 · 라벨 변경이 id 를 바꾸지 않는다) · `label`(사용자 제시 라벨) · `dimension`(02 §3.11 5차원 매핑 — 값 어휘 = `thresholds` 키) · `highImpact`(존재 게이트 축 표시) |
+| 축 상태 어휘 | `심문됨`(interrogated) / `사유 기록 제외`(excluded) / `미심문`(unasked) — 3값 (02 §3.7 축 4) |
+| 통과 조건 | **미심문 0** — `Ready`·`ReadyWithAssumptions` 양 종단 공통·가정 대체 불가(축 2와 비대칭) |
+| 제외 기록 요건 (`exclusionRule`) | `silentOmission: 금지` · `requiredFields: [reason, confirmedBy]`(사유 비공백 + 확인 주체 — 결여 시 제외 불성립) · `inferenceSatisfaction: 금지`(추론 충족은 미심문 계수) · `budgetExhaustion`(예산 소진은 제외 사유가 되지 못함) |
+| 제외 표면화 (`exclusionSurfacing`) | 기본 = `Validating` 승인 게이트 **일괄 표면화**(per-item 상시 질문 아님) · `highImpact: true` 축의 제외 = **즉시 표면화**(원칙 11 (c)) |
+| `highImpact: true` 축 | **1** — 구조·전달 방향(전달 플랫폼·자동화·외부 API 연동 필요 여부 = 실현 가능성·법적 위험 존재 게이트) |
+| 원장 형식·경로 | `discovery/adapters/claude/coverage-ledger.schema.md` 소유(02 §3.7 "Coverage 원장의 물리 파일 형식·경로·직렬화는 Adapter 소관" 위임의 실현) |
+| 판정 소유 | 이 데이터·문면은 **선언**만 담는다. 미심문 0 대조·차단은 체커·Orchestrator 소관이며 본 절은 판정 로직을 소유하지 않는다 |
+
+- **축 집합 사본 금지.** 축 원소의 실값(9개 `id`·`label`·`dimension`·`highImpact`)은 정책 데이터 1곳에만 둔다. 본 절·원장 스키마 문서·02 정본은 **형식·구성 요건**만 규정하며 실값을 재열거하지 않는다(드리프트 지점 신설 금지).
+
+- **Policy as Data 불변.** 위 값(임계·예산·경계·종료 규칙·게이트·커버리지)은 전부 데이터이며 값을 바꾸는 것만으로 Discovery 거동이 조정된다 — Confidence Model·Question Engine·Orchestrator 등 엔진이나 정본 계약(State Machine·Event·완결 기준)은 변경되지 않는다(02 §3.15). 이 값 세트는 **E2E 구동을 위한 최소 실값**이며 다른 임계·예산이 필요하면 `policy/` 데이터 정정으로 조정한다.
 
 ### §8.3 프로파일 2종 값표 — 표준 / 경량 (절차 비례화 트랙 Wave 4 · 사용자 확정 Q-5)
 
@@ -243,6 +271,7 @@ Discovery Policy 프로파일은 **2종**이다 — 표준 `policy/default-polic
 | `thresholds` 값 (Intent / Requirement / Constraint / Risk / Architecture) | 0.85 / 0.80 / 0.75 / 0.75 / 0.80 (§DC-5 대안 A +0.05 상향·사용자 결정 2026-07-19) | **동일 값**(θ 하향 0 — 품질 하한 무변경) |
 | `termination` (ready · budgetExhausted) | §8.2 (다) | **동일 문면**(완결 기준 완화 0 · 필수 코어 필드 면제 문면 **0**) |
 | `conflictGate` | §8.2 (라) | **동일 문면**(게이트 완화 0) |
+| `coverage` (필수 질문 축 집합·제외 기록 요건) | §8.2 (마) — 축 **9**·`highImpact` 축 1 | **동일 값**(축 삭제 0 · 축 수 하향 0 · 제외 요건 완화 0) |
 
 - **경량 = 질문 예산 축소만이다.** θ(확신 하한)·종료 규칙·충돌 게이트·완결 기준은 무변경이다 — 02 §3.7 축1 Completeness 불가침(DISC-INV-5)에 대한 예외·면제는 경량 프로파일에 **0**이며, 경량 레인에서도 동일 판정식이 집행된다. 새 종료 경로·새 상태·새 Event 를 두지 않는다(02 §3.3·§3.5 무촉).
 - **설계된 트레이드오프.** 예산이 절반이고 θ 가 동일하므로 θ 미충족 상태로 hard 경계에 닿는 빈도가 표준보다 높다 → 그 경로는 §8.2 (다) 규칙대로 `ReadyWithAssumptions`(Assumption Ledger 필수, T20) 또는 `Escalated`(T15)로 귀결한다. 이는 우회가 아니라 정본 종료 규칙의 정상 경로이며, 가정 항목은 원장에 남아 게이트에 표면화된다.
@@ -250,7 +279,14 @@ Discovery Policy 프로파일은 **2종**이다 — 표준 `policy/default-polic
 
 **(c) 미해소 — 이 프로파일이 해소하지 않는 것(해소 주장 금지).**
 
-- **문항 수 직접 감소 아님.** 실제 문항 수를 좌우하는 **필수 커버리지 축 목록**은 `.claude/skills/discovery-interview/SKILL.md` Part 1 커버리지 맵(표 10행 = Discovery 소유 9축 + 하류 위임 경계 1행)이 **body 하드코딩**으로 소유하며 Policy 데이터가 아니다. 따라서 경량 프로파일은 **예산 상한만** 낮추고 최소 심문 대상 축 수를 낮추지 못한다. 커버리지 축의 Policy 데이터화·체커화는 별 트랙 소관이다(좌표 = 메모리 `uaf-coverage-enforcement-gap` · `docs/proportionality-track-ledger.md` §4 Wave 4 done 6 · 스킬 body 27행 자기신고 충돌 플래그).
+- **문항 수 직접 감소 아님(유효).** 경량 프로파일은 **예산 상한만** 낮추고 최소 심문 대상 축 수를 낮추지 못한다 — 위 표의 `coverage` 행이 두 프로파일 동일 값임을 확정한다.
+- **커버리지 축의 Policy 데이터화 — 해소(커버리지 강제 트랙 Wave 1).** 축 집합은 이제 정책 데이터(`coverage.requiredAxes`)가 소유하며 정본 문면은 §8.2 (마)다. `uaf-allow-legacy: 직전 상태(축 목록을 SKILL.md Part 1 body 하드코딩이 단독 소유하고 Policy 데이터가 아니었던 상태)의 이력 인용 — 해소 경위 보존이 목적.`
+- **직전 미해소 2건 — 해소(커버리지 강제 트랙 Wave 2~4).** (1) **체커·기계 강제** — 결정적 체커 `discovery/adapters/claude/coverage_check.py` 와 Contract 쓰기 백스톱 `pretooluse_coverage_guard.py`(`.claude/settings.json` PreToolUse 배선)가 미심문 0 을 대조·차단한다. (2) **스킬 body 연결** — SKILL.md Part 1 표는 **기계 판정 축 집합의 정본이 정책 데이터임을 명문화**했고, 표의 「축 id」 열은 원장 기입 키 안내를 위한 통제된 사본이다. `uaf-allow-legacy: 직전 상태(축 목록을 SKILL.md body 가 단독 소유하고 체커가 0이던 상태)의 이력 인용 — 해소 경위 보존이 목적.`
+- **사본 통제 지점(신설).** 축 실값 사본은 2곳뿐이다 — SKILL.md Part 1 「축 id」 열, 그리고 픽스처 원장(`orchestration/adapters/claude/tests/fixtures/consumer-ws/.claude/project-contract/coverage-ledger.json`). 두 사본과 정책 데이터의 드리프트는 `discovery/adapters/claude/tests/test_skill_axis_binding.py` 가 대조한다(id·라벨·순서·프로파일 간 일치 + 픽스처 원장 체커 실판정). 사본을 늘리려면 이 테스트에 대조 축을 함께 추가한다.
+- **원장 산출 주체 = 인터뷰 수행 측(Wave 4).** 원장 파일을 만드는 주체는 인터뷰 수행자이며 그 의무·기입 시점·`evidenceGrade` 규율은 SKILL.md ⑪-A 가 소유한다. 제출 지점(G2)은 §5.2 가 확정한다.
+- **본 저장소 dogfooding Contract 는 원장 미보유 상태로 둔다(Wave 4 결정).** `discovery-data/contracts/uahf/project-contract.v3.md` 에는 Coverage 원장을 소급 산출하지 않는다 — `discovery-data/events/` 에 실재하는 run 은 `brownfield-r004`(대상 = 외부 프로젝트 trade-agent_v1)·`brownfield-r005`(대상 = 외부 프로젝트 auto-percenty) 뿐이고 **uahf 자신의 Contract v1~v3 을 산출한 Discovery run 기록은 0건**이므로, 축별로 "실제로 물었다"를 뒷받침할 증거가 없다. 증거 없이 `interrogated` 로 채우는 것은 이 축이 막으려는 행위 자체다(§8.2 (마) `exclusionRule.inferenceSatisfaction`·DISC-INV-10). 귀결 = **v4 발행 시도는 백스톱에 차단되며 이는 정확한 상태다** — 해소 경로는 다음 발행 전 Discovery 인터뷰를 거쳐 원장을 산출하는 것이다.
+
+(`uaf-verified:` 위 dogfooding 판단은 `discovery-data/events/` 디렉터리 목록(하위 run 2건)과 그 각각의 `events.jsonl` 레코드 전건 판독(r004 18건·r005 13건 — `DiscoveryStarted` payload 의 대상 경로가 각각 외부 프로젝트임, r005 는 `ContractCompiled` artifact 가 auto-percenty 워크스페이스임)으로 확인했다. **검색 범위** = `discovery-data/events/` 트리와 `discovery-data/contracts/uahf/` 의 Contract 3건이며, 이 저장소 밖(외부 프로젝트 워크스페이스)의 원장 실배치는 범위 밖이다.)
 - **침묵 생략 금지 무약화.** 스킬 body 의 침묵 생략 금지 규율(Part 1 head·⑦ (ii)·⑨·⑪ — "축을 조용히 지나치는 것은 제외가 아니라 미심문"·제외는 사유 기록 + 게이트 일괄 표면화)은 이 프로파일로 약화되지 않는다. **예산 소진은 축 제외의 사유가 되지 못한다** — 예산은 질문 수의 상한이고 커버리지는 별개 축이다(θ ≠ 커버리지 역설·SKILL.md ⑦ 말미). 본 개정은 스킬 body 를 수정하지 않는다(diff hunk 0).
 - **§8.2 (가) 표와 데이터 파일의 θ 드리프트 — 해소(2026-07-27 · 절차 비례화 트랙 Wave 5).** Wave 4 시점에는 §8.2 (가) 표가 상향 전 값(0.80/0.75/0.70/0.70/0.75)을 보이고 물리 데이터 `default-policy.yaml` `thresholds` 는 §DC-5 대안 A 적용 후 값(0.85/0.80/0.75/0.75/0.80)이어서 미정정으로 남았다(uaf-allow-legacy: 정정 전 상태의 이력 인용 — 경위 보존). Wave 5 가 §8.2 (가) 표를 물리 데이터 실측값으로 갱신해 드리프트를 없앴다. 본 §8.3 표의 표준 열은 처음부터 실측값이었으므로 무변경이다.
 

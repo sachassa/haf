@@ -1,0 +1,53 @@
+{
+  "schema": "coverage-ledger/v1",
+  "mode": "greenfield",
+  "runId": "fixture-consumer-ws",
+  "policyRef": "default",
+  "axes": [
+    {
+      "id": "why-strategic-motivation",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
+      "id": "scope-boundary",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
+      "id": "who-actors",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
+      "id": "what-activities",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
+      "id": "when-where-context",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
+      "id": "rule-business-logic",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
+      "id": "structure-delivery-direction",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
+      "id": "exception-handling",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
+      "id": "quality-operation",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    }
+  ]
+}

@@ -31,8 +31,46 @@ budget:
 
 # (다) 종료 규칙 정책 (02 §3.6 · §3.7)
 termination:
-  ready: "Completeness ∧ 전 5차원 θ 충족 ∧ 사용자 승인 → Ready (02 §3.7, T19)"
+  ready: "Completeness ∧ 전 5차원 θ 충족 ∧ Coverage(미심문 축 0) ∧ 사용자 승인 → Ready (02 §3.7, T19)"
   budgetExhausted: "필수 코어 필드 가정 충족 가능 → ReadyWithAssumptions (T20, Assumption Ledger 필수) / 가정으로도 충족 불가 → Escalated (T15)"
 
 # (라) 충돌 게이트 정책 (02 §3.15 · P-D5)
 conflictGate: "충돌·모호 입력 감지 시 사용자 확인 게이트 필수 (Validating 경유 — discovery-binding.md §5 G2/D2 채널). 게이트 통과 없이 진행 불가."
+
+# (마) 커버리지 정책 — 필수 질문 축 집합·제외 기록 요건 (02 §3.7 축 4 · §3.15 커버리지 정책 · DISC-INV-10)
+# 정본 값 문면: discovery/adapters/claude/discovery-binding.md §8.2 (마) · §8.3 (b) 커버리지 행.
+# 원장 형식·경로 정본: discovery/adapters/claude/coverage-ledger.schema.md.
+# 축 집합의 단일 소유자는 이 Policy 데이터다 — 02 정본 본문에 축 실값은 0건이며 형식 요구만 둔다
+# (DISC-INV-7·UAF-INV ⑥ 보존 — Strategy Provider마다 다른 축 집합을 선언할 수 있어야 한다).
+# 판정(미심문 0 대조)은 이 데이터가 아니라 체커·Orchestrator 소관이며 여기엔 선언만 둔다(Policy as Data).
+# 이 절은 표준·경량 두 프로파일에서 **동일 값**이다 — 경량은 질문 예산만 줄이고 축 수를 낮추지 않는다.
+coverage:
+  # 각 원소는 심문됨(interrogated) 또는 사유 기록 제외(excluded) 중 하나로 귀결해야 하며 미심문(unasked)은 0이어야 한다.
+  # 이 축은 Ready·ReadyWithAssumptions 양 종단에서 타협 불가이고 가정으로 대체되지 않는다(02 §3.7 축 4).
+  # id         = 기계 키(ASCII 안정 식별자) — 원장·체커가 이 값으로 결속한다. label 변경이 id 를 바꾸지 않는다.
+  # label      = 사용자 제시 라벨(인터뷰 커버리지 맵 표기 대응).
+  # dimension  = 02 §3.11 5차원 매핑. 값 어휘는 위 thresholds 키와 동일하다(축↔차원 관계를 데이터가 소유).
+  # highImpact = 존재 게이트 축 표시. true 면 그 축의 제외는 승인 게이트까지 미루지 않고 즉시 표면화한다(원칙 11 (c)).
+  requiredAxes:
+    - { id: why-strategic-motivation,  label: "WHY 전략 동기",   dimension: intent,       highImpact: false }
+    - { id: scope-boundary,            label: "SCOPE 범위",      dimension: intent,       highImpact: false }
+    - { id: who-actors,                label: "WHO 행위자",      dimension: requirement,  highImpact: false }
+    - { id: what-activities,           label: "WHAT 활동",       dimension: requirement,  highImpact: false }
+    - { id: when-where-context,        label: "WHEN·WHERE",      dimension: requirement,  highImpact: false }
+    - { id: rule-business-logic,       label: "RULE 규칙",       dimension: requirement,  highImpact: false }
+    # 존재 게이트 — 전달 플랫폼·자동화(크롤링·배치)·외부 API 연동 필요 여부는 실현 가능성·법적 위험을 좌우한다.
+    - { id: structure-delivery-direction, label: "구조·전달 방향", dimension: architecture, highImpact: true }
+    - { id: exception-handling,        label: "EXCEPTION 예외",  dimension: risk,         highImpact: false }
+    - { id: quality-operation,         label: "QUALITY·OPERATION", dimension: constraint, highImpact: false }
+
+  # 제외 기록 요건 (DISC-INV-10 — 침묵 생략 금지 · design_completeness exclusionRule 패턴 동형)
+  exclusionRule:
+    silentOmission: "금지"   # 기록 없이 지나간 축은 제외가 아니라 미심문이다 (02 §3.7 축 4·DISC-INV-10)
+    requiredFields: [reason, confirmedBy]   # 제외 1건당 사유(비공백) + 확인 주체 — 둘 중 하나라도 결여면 제외로 성립하지 않는다
+    inferenceSatisfaction: "금지 — 인접 답 유추로 축을 채운 것은 근거 등급상 가정이며(02 §3.12) 심문됨이 아니라 미심문으로 계수한다."
+    budgetExhaustion: "축 제외의 사유가 되지 못한다 — 예산은 질문 수의 상한이고 커버리지는 별개 축이다(02 §3.13 포화 스킵 직교)."
+
+  # 제외의 표면화 지점 (책임 있는 자율 (c) — per-item 상시 질문 아님)
+  exclusionSurfacing:
+    default: "Validating 사용자 승인 게이트에서 일괄 표면화 (02 §3.7 축 4 제외의 표면화 지점·축 3 게이트)"
+    highImpact: "즉시 표면화 — highImpact: true 축의 제외는 승인 게이트까지 미루지 않는다(원칙 11 (c))"

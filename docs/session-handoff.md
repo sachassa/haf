@@ -8,7 +8,19 @@
 
 ---
 
-## §A. 현행 상태 (갱신 2026-07-28(25))
+## §A. 현행 상태 (갱신 2026-07-29(26))
+
+**갱신(26) 커버리지 강제 트랙 완결(2026-07-29 — Wave 0~4 완주·★다음 착수 목록 1번 소화).** 결함 = 인터뷰 필수 질문 축이 어디서도 기계 강제되지 않음(θ≠커버리지 역설 — Confidence 는 **물어본 것에 대해서만** 계산되므로 미심문 축이 확신을 떨어뜨리지 않고, §3.13 포화 스킵이 얕은 조기 포화 시 미탐색 축 스킵을 규약상 정당화). 실사례 = yt-stt 전달 플랫폼 미심문.
+
+**Wave 0**(커밋 `e00b942`) spec 02 v1.2 — Ready 판정 **축 4 Coverage** 신설(양 종단 타협 불가·가정 대체 불가·추론 충족은 미심문 계수) · `DISC-INV-10` 침묵 생략 금지 · §3.3-B T19·T20 Guard 정합(T20 에서 Confidence 대체 허용 ↔ Coverage 대체 불가 비대칭) · §3.13·P-D3 직교 명문화. 축 실값은 spec 에 두지 않고 §3.15 Policy 소관 지정(DISC-INV-7·UAF-INV ⑥ 보존). 개정 유형 (A)·§4 비호환 → **사용자 승인 2026-07-28**.
+**Wave 1** 정책 2종에 `coverage` 절(축 9·ASCII id·`dimension`↔`thresholds` 키 결속·`highImpact` 1건·`exclusionRule`) · `coverage-ledger.schema.md` 신설 · binding §8.2 (마)·§8.3 (a) ref 해소 규약·(b) 값표. **경량 프로파일 축 목록 = 표준과 동일**(경량 = 예산 축소만 — 축을 줄이면 결함이 경량 레인에서 재현).
+**Wave 2** `coverage_check.py`(결정적·LLM 0·**fail-closed** — 원장 부재·판독 실패·정책 부재는 통과가 아니라 exit 2) + 테스트. 변이 실험에서 1차 6종 중 3종 생존(2차 방어선이 잡되 사유가 달라짐) → 사유 문면 대조로 강화 후 12/12 KILLED.
+**Wave 3** `pretooluse_coverage_guard.py` + `.claude/settings.json` 배선. **1차 판정 = (B) 결정적 도출 불가**(Contract 경로에 run 좌표 0 · 내용 파싱은 **피심문 텍스트가 차단 키를 스스로 공급하는 자기신고 구조**) → Advisor 가 후보 ① 채택(원장을 **Contract 디렉터리 병치**)해 재작업. 도출 = `target.parent / "coverage-ledger.json"` 한 줄(탐색·mtime 0) · 스코프 = basename 정규식 단일 · **Contract 내용 0바이트 판독**. 훅 fail-open ↔ 체커 fail-closed 경계 분리.
+**Wave 4** SKILL.md v1.7 ⑪-A 물리 산출 배선(경로·필드는 § 포인터만·재서술 0) · Part 1 표 축 id 열 + 드리프트 대조 테스트 · 픽스처 원장 병치 · dogfooding = **(ii) 차단 유지**(events 판독 결과 이 저장소 자신의 Discovery run 기록이 없어 증거 있는 소급 원장이 불가 — 증거 없는 `interrogated` 기록은 트랙 자기부정이라 금지).
+
+`uaf-verified:` **Advisor 직접 도구 호출 라이브 실증 4회** — ① 원장 부재 → 차단 ② 9축 `interrogated` → 통과 ③ **`structure-delivery-direction` 만 `unasked` → 차단**(축을 이름으로 지목 — yt-stt 사고 형태 재현) ④ 원장 병치 픽스처 Contract `Edit` → 통과. 회귀 = `discovery/adapters/claude/tests` 70 · `orchestration/adapters/claude/tests` 243 · 러너 285 각 EXIT=0. 프로브는 저장소 밖 스크래치패드에서 수행·원복. **스윕 범위** = 변경 파일 diff + 위 3 스위트이며, **실 인터뷰 세션에서 원장이 실제로 산출되는 왕복은 미실증**(다음 실 Discovery 관측 대상 — B-1).
+
+**운용 영향(의도된 마찰)** — 원장 없는 Contract 발행은 이 저장소·외부 소비 워크스페이스 모두에서 차단된다(가드가 하네스 트리에서 정책을 해소하므로 소비 측에서도 발화). 진행 중 프로젝트의 **기존** Contract 소비는 무영향이며, **새 Contract 발행 시점**에 인터뷰 경유 또는 원장 산출이 요구된다. 소급 여부는 프로젝트별 판단(auto-percenty 등 — 미결).
 
 **갱신(25) K-1 게이트 확정 권위 기계 보호 완결(2026-07-28).** 결함 = `gates.py` `GatePolicy.from_dict` 가 `userActorClass`·`escalationResolvers`·`gateRaiser` 를 무검증 수용 → 정책 데이터가 `"Advisor"` 를 지정하면 AI 가 `user_decision_required` 를 해소하고 `human` 이 오히려 부적격이 되는 **확정 권위 탈취**다(Advisor 실증 3종 = AI 지정·Worker resolver·비문자열 데드락 정책). gateKind 에는 `floor()` 하한이 있으나 actor 클래스에는 하한이 0이었다. **처방** = `floor()` 동형의 **코드 소유 허용 목록**(`ALLOWED_USER_ACTOR_CLASSES=("human",)` · `ALLOWED_ESCALATION_RESOLVERS=("Advisor","human")` · `ALLOWED_GATE_RAISERS=ACTOR_VOCABULARY`) + 검증 지점 = `GatePolicy.__post_init__`(**from_dict 밖** — 생성자 직접 호출·`empty()` 포함 모든 생성 경로가 통과) + 위반은 사유를 담은 `ValueError` 로 거부(자동 보정·기본값 치환 0) + import 시점 기본값 자기 정합 검사(`assert` 아닌 `raise` — `python -O` 무력화 방지). 어휘 근거 = `uahf/specs/03-loop.md` §3.2-A 닫힌 열거이며 코드가 actor 를 발명하지 않는다(PO-INV 8 무촉). 스키마 3필드 enum + `minItems:1` 가법·소유자가 코드임을 description 에 명시. spec·`uahf/` 무수정. Worker 위임 1건 + Advisor 독립 검증. `uaf-verified:` 판정 근거 = Advisor 재실행 — 어댑터 스위트 243·러너 285·`test_gates` OK 각 EXIT=0 · 음성 대조 8종 거부/양성 3종 통과를 직접 실행 · 실 `gate_policy.json` 24건 로드 성공(스윕 범위 = 리포 재귀 glob `**/gate_policy.json`) · 축자 잠금 무력화 프로브(토큰 변조→FAIL→원복→PASS·파일 바이트 복구 확인). **부수 해소** = `test_allocation_wiring.py::GateFloorUntouchedTests::test_git_diff_hunk_zero` 제거 — `git diff HEAD` 기반이라 워킹트리 미커밋 변경에 항상 실패하는 **시점 의존 스코프 가드**였고, 자기 트랙 무촉 증명이라는 소임이 끝난 뒤에도 남아 `gates.py` 를 정당하게 고치는 트랙마다 가짜 실패를 냈다. 실질(하한 상수·`effective_gate` 합성식 보존)은 자매 축자 대조가, `host.py` 는 같은 파일의 SH-INV-4 구조 검사가 소유하므로 보호 손실 0. **교훈 = 스코프 가드는 상태 대조(축자)로 쓰고 diff 대조로 쓰지 않는다** — diff 기반 가드는 소임 종료 시점에 스스로 사라지지 않는다.
 
@@ -31,7 +43,9 @@
 ### ★ 다음 착수 순위 = Advisor 배정(사용자 위임 2026-07-26 "순서 너가 정하는데로 할게")
 
 0. **절차 비례화 트랙 = 완결(2026-07-27·Wave 1~5 완주)**. 전 기록(분해 채택본·게이트 Q-1~Q-7 확정 표·Wave별 Advisor 독립 검증·OQ 판정) = 트랙 원장 앵커 `git show af57be0:docs/proportionality-track-ledger.md` · 커밋 사슬 `cc446cc`→`e802317`(8건)+경계 4건. 현행 정본 = `.claude/CLAUDE.md` 레인 분기 절·`lane-registry.json`·binding §5.9·solution-design-binding §7A.2-S/L·discovery-binding §8.3·delegation-protocol §2.2/§3.2. 실전 실증 좌표 = B-1·잔여 미해소 8건 = B-2 승격분. (편성 정정 기록: SD 스킵 브리지는 전제가 아니었고[성숙 경로] 스킵 경로는 폐기 방향 확정[Q-4] — 종전 목록의 "SD 스킵 브리지"·"SD manifest 배선 3건" 항목은 이 트랙에서 소화·재정의됨.)
-1. **커버리지 강제**(θ≠커버리지 — 경량 인터뷰 20문의 실효 전제: 문항 축이 스킬 body 하드코딩이라 예산 축소가 문항 수를 직접 못 줄임[W4 실측]) → 2. **표준 레인 seed 단일파일 가정 해소**(manifest 발견 2 잔존분) → 3. **Q·R 기계 강제** → 4. **§DC-8(a)·02 개정** → 5. **상류 바인딩 2차** → 6. **04 개정 트랙**(SD 스킵 폐기 실행 — Q-4 방향 기확정·경량 레인 실전 실증 후 착수).
+~~1. 커버리지 강제~~ **= 완결(2026-07-29 갱신(26)·Wave 0~4)** → 1. **표준 레인 seed 단일파일 가정 해소**(manifest 발견 2 잔존분) → 2. **Q·R 기계 강제** → 3. **§DC-8(a)·02 개정** → 4. **상류 바인딩 2차** → 5. **04 개정 트랙**(SD 스킵 폐기 실행 — Q-4 방향 기확정·경량 레인 실전 실증 후 착수).
+
+(커버리지 트랙 이월 3건 = ① 실 인터뷰 왕복 실증[B-1] ② 외부 소비 프로젝트 기존 Contract 의 원장 소급 여부[프로젝트별 판단] ③ Discovery 실행 호스팅 실재화 시 훅 백스톱 → **엔진 게이트 승격** 재심[Wave 3 후보 ③ — 형태 A 에서는 규약 층이라 불채택].)
 
 (갱신(22)에서 목록 소화 2건: 경량 정비 묶음 = 해소(§A) · .claude md 슬림화 실행 = 트랙 완결이라 제거 — 근거 = 메모리 `uaf-claude-md-slimming-backlog`·병합 푸시 90ca19c..a8f0219.)
 
@@ -53,7 +67,6 @@
 
 ### B-2. 미해소 하네스 결함 (순위 = §A 다음 착수 목록)
 
-- **커버리지 강제** — 인터뷰 필수 축 기계 강제 0(θ≠커버리지 역설). 상세 = 메모리 `uaf-coverage-enforcement-gap`.
 - **SD manifest 배선 3건** — manifest 스키마↔코드 해석 모순·seed 단일파일 가정. 메모리 `uaf-design-manifest-path-defect`.
 - **SD 스킵 브리지** — Solution Design 스킵↔구현 게이트 정면 충돌·브리지 코드 0. 메모리 `uaf-solution-design-skip-gap`.
 - **백로그 Q·R 기계 강제** — 현재 절차 층만(Q = seed 제약↔브리프 실행 AC 대조 미도입 · R = 정적 CP2 의 done AC 간 동적 상충 무검출). 정본 = `docs/post-tuning-improvement-backlog.md` §Q·§R 「강제 지점」 행.

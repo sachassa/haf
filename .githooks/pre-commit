@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+# pre-commit — 커밋 시점 재퇴적 방어.
+# SessionStart 가드 2종(md 예산·이력 재퇴적)과 같은 검사를 커밋 직전에 실행하되,
+# 여기서는 감지·지시가 아니라 커밋 자체를 차단한다(경고는 무시될 수 있으나 차단은 못 지나간다).
+# 배선 = git config core.hooksPath .githooks (클론마다 1회 필요 — 생존 확인은
+# .claude/hooks/githooks-wiring-guard.sh 가 SessionStart 에서 수행한다).
+# fail-open: 가드 파일 부재·가드 내부 오류는 차단하지 않는다(자기-DoS 방지).
+# 확정 위반(가드 발화 출력)만 차단한다.
+# 우회 = git commit --no-verify + 커밋 메시지에 사유 기록(책임 있는 자율 (b) — 이탈 시 사유).
+set -u
+
+FAIL=0
+
+for GUARD in .claude/hooks/md-budget-guard.sh .claude/hooks/history-reaccum-guard.sh; do
+  [ -f "$GUARD" ] || continue
+  OUT=$(sh "$GUARD" 2>/dev/null) || continue
+  if [ -n "$OUT" ]; then
+    printf '%s\n\n' "$OUT"
+    FAIL=1
+  fi
+done
+
+if [ "$FAIL" -eq 1 ]; then
+  printf '[pre-commit 차단] 위 가드 발화를 해소한 뒤 다시 커밋하라.\n'
+  printf '정당한 예외만 git commit --no-verify 로 우회하고, 커밋 메시지에 사유를 남긴다.\n'
+  exit 1
+fi
+exit 0

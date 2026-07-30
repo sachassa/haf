@@ -31,6 +31,13 @@
             "command": "bash .claude/hooks/history-reaccum-guard.sh",
             "timeout": 20,
             "statusMessage": "이력 재퇴적 가드"
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "bash .claude/hooks/githooks-wiring-guard.sh",
+            "timeout": 5,
+            "statusMessage": "커밋 훅 배선 생존 확인"
           }
         ]
       }

@@ -20,6 +20,22 @@ for GUARD in .claude/hooks/md-budget-guard.sh .claude/hooks/history-reaccum-guar
   fi
 done
 
+# 이진 원칙 커밋 검사 — 비도구 경로(IDE 직접 편집 등)로 들어온 md 문면 방어.
+# 스코프·계약·미이관 사유 = binary_staged_check.py 헤더. python 부재 시 조용히 skip.
+BSC=".claude/hooks/binary_staged_check.py"
+if [ -f "$BSC" ]; then
+  PY=""
+  if command -v python >/dev/null 2>&1; then PY="python"
+  elif command -v python3 >/dev/null 2>&1; then PY="python3"; fi
+  if [ -n "$PY" ]; then
+    OUT=$(PYTHONIOENCODING=utf-8 "$PY" "$BSC" 2>/dev/null) || OUT=""
+    if [ -n "$OUT" ]; then
+      printf '%s\n\n' "$OUT"
+      FAIL=1
+    fi
+  fi
+fi
+
 if [ "$FAIL" -eq 1 ]; then
   printf '[pre-commit 차단] 위 가드 발화를 해소한 뒤 다시 커밋하라.\n'
   printf '정당한 예외만 git commit --no-verify 로 우회하고, 커밋 메시지에 사유를 남긴다.\n'

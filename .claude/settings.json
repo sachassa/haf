@@ -73,6 +73,13 @@
             "command": "PYTHONIOENCODING=utf-8 python discovery/adapters/claude/pretooluse_coverage_guard.py",
             "timeout": 15,
             "statusMessage": "커버리지 백스톱(축 4 미심문 Contract 차단)"
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "PYTHONIOENCODING=utf-8 python .claude/hooks/memory_index_guard.py",
+            "timeout": 10,
+            "statusMessage": "메모리 색인 예산 차단"
           }
         ]
       }

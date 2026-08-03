@@ -1,0 +1,14 @@
+{
+  "gateKind": "user_decision_required",
+  "gate_id": "gate-unit-ytstt-gatefix-plan",
+  "lane": "lightweight",
+  "laneOverrideReason": null,
+  "note": "yt-stt 실측 보고에서 Advisor 가 잔여 항목 11건을 제시하고 착수 순위를 추천(① 게이트 체커 영구 실패 해소 ② 사용자 실행 진입점 신설)했다. 사용자가 그 순서를 채택했다. 채택이 분해 초안(GATEFIX-CLI-BRIEF.md)의 문면화보다 시간상 앞섰다 — 사용자가 승인한 것은 착수 범위·순서이며, 브리프는 그 확정 범위를 위임 가능한 형태로 옮긴 것이다. 이 선후 관계를 은폐하지 않고 기록한다. 레인 판별 = lane_resolve.py --root C:/my-claude-project/yt-stt 방출 lane=lightweight · basis=no-touchpoint · touchedCount=0.",
+  "presentedBy": "Advisor",
+  "resolutionEventAt": 4,
+  "resolvedByActor": "human",
+  "response": "추천 순서대로 진행해",
+  "runId": "impl-yt-stt-gatefix-cli-lite",
+  "scopedQuestion": "yt-stt 실측 보고의 잔여 항목 중 무엇부터 착수하는가 — Advisor 추천 = (1) 게이트 체커 시점 의존으로 인한 영구 실패 해소 (2) 사용자 실행 진입점 신설",
+  "simulated": false
+}

@@ -1,0 +1,53 @@
+{
+  "completion": "all-passed",
+  "dependencies": [],
+  "goal": "yt-stt(소비 프로젝트) M4-a 이후 차단 2건 해소 — (A) 게이트 체커의 시점 의존 단언으로 인한 영구 실패, (B) 사용자용 실행 진입점 부재. 레인 = lightweight(접점 0 · lane_resolve.py basis=no-touchpoint)이며 조율 주체 = Advisor 직접 위임(엔진 디스패치 0)이다. 원장 0건 금지는 표준 레인과 동일하게 적용되며 본 원장은 form-A 수기 append 다.",
+  "tasks": [
+    {
+      "capability": "cap-ytstt-gatefix-decompose",
+      "delegation": {
+        "constraints": "정본(Contract·docs·스키마) 수정 0(제안까지만). 계획 자기 채택 금지 — 착수 확정 권위는 사용자.",
+        "context": [
+          "yt-stt 실측 보고 후속 — Advisor 가 추천한 착수 순서(A 게이트 시점 의존 해소 → B 실행 진입점)의 분해 초안",
+          "lane=lightweight · laneOverrideReason=null",
+          "Planner-role 분해를 Advisor 가 직접 수행(이탈) — 사유 = 초안 입력이 Advisor 자신의 실측 스윕 결과이고 단위가 2개로 고정돼 별도 Planner 왕복의 산출 증분이 0이다. 책임 있는 자율 (b) 사유 기록 경로.",
+          "브리프 정본 = GATEFIX-CLI-BRIEF.md"
+        ],
+        "done": "위 done 필드와 동일",
+        "from": "Advisor",
+        "input": "yt-stt 저장소 실측(게이트 체커 10개 실행 · scripts 트리 진입점 검색) · 기존 pipeline 모듈 8종 AST 판독",
+        "output": "GATEFIX-CLI-BRIEF.md",
+        "task": "위 task 필드와 동일",
+        "to": "Advisor"
+      },
+      "done": [
+        "브리프에 단위 2개의 소유 경계가 서로 겹치지 않게 명시돼 있다",
+        "각 단위에 검사 가능한 형태의 done 과 제약이 존재한다",
+        "과거 결함 재발 경로(함정 경고)가 브리프에 실려 있다"
+      ],
+      "dependsOn": [],
+      "id": "ytstt-gatefix-plan",
+      "interfaceContract": {
+        "consumes": [
+          "scripts/m2/gate_check_m2.py",
+          "scripts/m3/gate_check_m3.py",
+          "scripts/m1/pipeline_m1.py",
+          "scripts/m2/pipeline_m2.py",
+          "scripts/m3/pipeline_m3.py",
+          "scripts/m4a/pipeline_m4a.py"
+        ],
+        "produces": [
+          "GATEFIX-CLI-BRIEF.md"
+        ]
+      },
+      "model": "opus",
+      "ownedBoundary": [
+        "GATEFIX-CLI-BRIEF.md",
+        ".claude/lane.json"
+      ],
+      "role": "Advisor",
+      "task": "yt-stt 차단 2건(게이트 시점 의존 · 실행 진입점 부재)의 분해 초안을 산출한다 — 단위 경계·done·제약·함정 경고를 담은 위임 브리프",
+      "unitType": "proposal"
+    }
+  ]
+}

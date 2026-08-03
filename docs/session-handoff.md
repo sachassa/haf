@@ -8,7 +8,9 @@
 
 ---
 
-## §A. 현행 상태 (갱신 2026-07-30(27))
+## §A. 현행 상태 (갱신 2026-08-03(28))
+
+**갱신(28) 첫 경량 레인 실운용 — yt-stt 차단 2건 해소(2026-08-03 · yt-stt `dfc426e`).** ① 실 표본에 대한 **절대 부재 단언 3곳**(m3 6·7항·m2 보호 경계 항)이 게이트 1종을 영구 실패(exit 1)시키고 있었다 → 게이트 실행 전·후 **축자 불변 대조**로 재정초(시점 의존 제거·검출력 보존 — 메모리 `tool-scope-guard-diff-vs-verbatim` 2번째 실사례). ② 사용자용 실행 진입점 부재 → `scripts/run.py` 신설(주소 하나로 수집→팩트→STT→교정 준비·LLM 필요 지점에서 정지). **레인 = lightweight**(`lane_resolve.py` `basis=no-touchpoint`)·마커 물리화·**경량 원장 실기록**(run `impl-yt-stt-gatefix-cli-lite` · events 16·revisions 3·artifacts 11 · `verify_run.py` findings 0) → **B-1 경량 레인 좌표 다수 소화**(잔여 = 절감 폭 실측·경량 인터뷰·`--allocation-file` CLI run). `uaf-verified:` Advisor 독립 검증(Worker 검사기 미사용) A 9/9·B 12/12 · 게이트 10종 exit 0(착수 시점 9/10) · `out/` 121파일 해시 불변. **스윕 범위** = yt-stt `scripts/`·게이트 10종·원장 러너이며 실 수집·실 large-v3 는 범위 밖. **브리프 결함 9건 전부 Advisor 귀속·Worker 코드 결함 0**(메모리 `feedback-delegation-brief-defect-attribution` 재적중).
 
 **갱신(27) 커밋 시점 재퇴적 방어 배선(2026-07-30).** 가드 2종(md 예산·이력 재퇴적)은 SessionStart 경고뿐이라 무시하면 초과 상태가 그대로 커밋될 수 있었다. `.githooks/pre-commit` 신설 — 같은 가드 2종을 커밋 직전 실행해 발화 시 커밋 차단(fail-open·확정 위반만 차단·우회 = `--no-verify`+커밋 메시지 사유). 배선 = `core.hooksPath .githooks`(클론당 1회 로컬 설정 — 배선 사망은 침묵하므로 SessionStart `githooks-wiring-guard.sh` 가법·`settings.json` 배선). `uaf-verified:` 실호출 검증 — 핸드오프 실초과(29,782B) 상태에서 빈 커밋 시도 = 가드 발화·EXIT=1·HEAD 불변 확인, 통과 케이스 = 본 파일 예산 내 재정리 후의 본 커밋 자체. 부수 = 본 파일 §6 제자리 갱신(완결 트랙 갱신(20)~(25) 서사를 앵커 압축). 스윕 범위 = 커밋 훅 부재 확인(프로젝트·로컬·사용자 settings + `core.hooksPath`·`.git/hooks`). **후속 확장(같은 날·사용자 지적 "경고는 못 거른다")** = ① 커밋 시점 비정형 검사 `binary_staged_check.py`(pre-commit 3번째 검사 — 스테이징 diff **추가 행**에 이진 원칙 어휘·근거 마커 검사·어휘 정본 = binary_state_guard import·백로그 형식 검사는 Write 훅만 소유) ② 메모리 색인 예산을 경고→쓰기 차단 승격 `memory_index_guard.py`(PreToolUse — 6,000B 초과로 키우는 Write/Edit 거부·축소는 항상 허용). `uaf-verified:` 실호출 — 셸 생성 금지 문면 md 커밋 차단(EXIT=1·HEAD 불변)·실 Edit 도구 호출 deny 발화(미드세션 배선 유효)·단위 3케이스(증가 거부·축소 통과·초과 Write 거부).
 
@@ -102,7 +104,7 @@
 ### B-6. 제품 트랙 잔여 (상세 정본 = 메모리)
 
 - **auto-percenty** — 미결 판단 8건(Contract v1 발행 시 run 이월·카드 제시 대상) · 웨이브 실전 ≤30상품 · A/B 라이브 실측 · 원격 없음(푸시 대기). ⛔ 만지기 전 `auto-percenty/START-HERE.md` 필독. 메모리 `uaf-product-auto-percenty`.
-- **yt-stt** — M4-b 판단(선행 근거 = 잔여 오독 8건 실물) · `OQ-M4-A`·`OQ-M1-A` 미해소(합격선 발명 금지) · RISK-9·10·11 미해결 · F3′ dedup(fix-5) · JS 런타임 제품 반영 · `duration=0` realtime 게이트 무력 · `out/` 표본 미커밋 판단. 메모리 `uaf-product-yt-stt`.
+- **yt-stt** — M4-b 판단(선행 근거 = 잔여 오독 8건 실물) · M5·M6 미착수 · `OQ-M4-A`·`OQ-M1-A` 미해소(합격선 발명 금지) · RISK-9·10·11 미해결 · F3′ dedup(fix-5) · JS 런타임 제품 반영 · `duration=0` realtime 게이트 무력 · `out/` 표본 미커밋 판단(사용자 결정 2026-08-03 = 그대로 둔다) · 갱신(28) 신설 미결 3(`--lang` 이 M1 자막 언어 미도달 · M3 `skipped` 영상의 교정 대상 미정의 · 제목 조회의 비공개 함수 의존) · **원격 푸시 대기**(사용자 결정 2026-08-03 = 커밋만). 메모리 `uaf-product-yt-stt`.
 - **복원 불가 기록**: yt-stt 영향 감사 미결정 20건은 집계 숫자만 잔존한다(위임 산출 유실 금지 불변의 근거 사례).
 
 ---

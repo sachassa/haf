@@ -1,0 +1,8 @@
+[VERIFY] impl-yt-stt-gatefix-cli-lite -> impl-yt-stt-gatefix-cli-lite.verify.json  status=pass (pass=4 fail=0 skip=1)
+    OK ledger_hygiene       
+    OK revision_integrity   
+    .. plan_schema          
+    OK delegation           
+    OK artifact_counts      
+[OVERALL] PASS (1 run)
+VERIFY_EXIT=0

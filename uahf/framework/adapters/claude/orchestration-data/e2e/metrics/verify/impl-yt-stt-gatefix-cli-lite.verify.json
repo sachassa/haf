@@ -1,0 +1,66 @@
+{
+  "checks": [
+    {
+      "check": "ledger_hygiene",
+      "detail": {
+        "cycles": 9,
+        "event_count": 16,
+        "refs_without_kind_at": [],
+        "simulated_false": 0,
+        "simulated_true": 0,
+        "simulation_annotations": 0
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "revision_integrity",
+      "detail": {
+        "final_task_count": 4,
+        "kinds": [
+          "task_added"
+        ],
+        "revision_count": 3
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "plan_schema",
+      "detail": "stage-plan.json·impl-plan.json 부재(plan 산출 run 아님)",
+      "findings": [],
+      "status": "skip"
+    },
+    {
+      "check": "delegation",
+      "detail": {
+        "tasks_checked": 4
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "artifact_counts",
+      "detail": {
+        "approval_states": [
+          "draft",
+          "verified"
+        ],
+        "artifact_count": 11,
+        "declaration_count": 11,
+        "distinct_id_version": 11,
+        "record_count": 11
+      },
+      "findings": [],
+      "status": "pass"
+    }
+  ],
+  "run_dir": "C:\\my-claude-project\\universal-agentic-framework\\uahf\\framework\\adapters\\claude\\orchestration-data\\runs\\impl-yt-stt-gatefix-cli-lite",
+  "run_id": "impl-yt-stt-gatefix-cli-lite",
+  "status": "pass",
+  "summary": {
+    "fail": 0,
+    "pass": 4,
+    "skip": 1
+  }
+}

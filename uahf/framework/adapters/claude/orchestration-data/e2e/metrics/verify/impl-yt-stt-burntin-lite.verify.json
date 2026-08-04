@@ -1,0 +1,58 @@
+{
+  "checks": [
+    {
+      "check": "ledger_hygiene",
+      "detail": {
+        "cycles": 8,
+        "event_count": 15,
+        "refs_without_kind_at": [],
+        "simulated_false": 0,
+        "simulated_true": 0,
+        "simulation_annotations": 0
+      },
+      "findings": [],
+      "status": "pass"
+    },
+    {
+      "check": "revision_integrity",
+      "detail": "graph.json 부재",
+      "findings": [],
+      "status": "skip"
+    },
+    {
+      "check": "plan_schema",
+      "detail": "stage-plan.json·impl-plan.json 부재(plan 산출 run 아님)",
+      "findings": [],
+      "status": "skip"
+    },
+    {
+      "check": "delegation",
+      "detail": "graph.json 부재",
+      "findings": [],
+      "status": "skip"
+    },
+    {
+      "check": "artifact_counts",
+      "detail": {
+        "approval_states": [
+          "draft",
+          "verified"
+        ],
+        "artifact_count": 5,
+        "declaration_count": 5,
+        "distinct_id_version": 5,
+        "record_count": 5
+      },
+      "findings": [],
+      "status": "pass"
+    }
+  ],
+  "run_dir": "C:\\my-claude-project\\universal-agentic-framework\\uahf\\framework\\adapters\\claude\\orchestration-data\\runs\\impl-yt-stt-burntin-lite",
+  "run_id": "impl-yt-stt-burntin-lite",
+  "status": "pass",
+  "summary": {
+    "fail": 0,
+    "pass": 2,
+    "skip": 3
+  }
+}

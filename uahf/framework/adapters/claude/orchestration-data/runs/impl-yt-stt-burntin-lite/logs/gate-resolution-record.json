@@ -1,0 +1,12 @@
+{
+  "gate-unit-ytstt-burntin-plan": {
+    "gate_id": "gate-unit-ytstt-burntin-plan",
+    "resolvedBy": "user",
+    "resolvedAt": "2026-08-04T04:00:00Z",
+    "question": "번인 자막을 근거로 되살릴 것인가 · 어느 등급으로 쓸 것인가 · 어디까지 읽을 것인가",
+    "response": "D1 복원 · D2 등재 수동 자막과 동급 · D3 광역 규칙 무수정 · D4 지점 우선·짧으면 전량",
+    "ref": {
+      "kind": "gate-resolution-provenance"
+    }
+  }
+}

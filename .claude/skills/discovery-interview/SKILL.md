@@ -46,7 +46,9 @@ replaceable: true
 | **WHAT** 활동 | `what-activities` | 각 행위자가 무엇을 하나 + 시스템이 무엇을 하나 | Requirement |
 | **WHEN·WHERE** | `when-where-context` | 언제·어디서 쓰나 | Requirement |
 | **RULE** 규칙 | `rule-business-logic` | 업무 규칙·조건·계산·승인 | Requirement |
-| **구조·전달 방향** | `structure-delivery-direction` | 전달 플랫폼(앱/웹/데스크톱 실행) · 자동화(크롤링·배치) 필요 여부 · 외부 API 연동 필요 여부 · 외부 연동·주요 데이터 개념 (전부 방향까지, 명세는 하류) | Architecture |
+| **구조·전달 방향** | `structure-delivery-direction` | 전달 플랫폼(앱/웹/데스크톱 실행) · 자동화(크롤링·배치) 필요 여부 · 외부 API 연동 필요 여부 (전부 방향까지, 명세는 하류) | Architecture |
+| **DATA** 주요 데이터·저장 | `data-and-storage` | 무엇을 보관하나 · 어디에 두나(DB / 파일 / 객체 저장소) · 대용량(이미지·영상)을 DB에 넣나 밖에 두나 · 보관 기간·백업 (방향까지, 스키마는 하류) | Architecture |
+| **STACK** 기술·실행 환경 | `tech-stack-environment` | 무엇으로 만드나(언어·프레임워크·DB 제품) · 어디서 도나(로컬 / 서버 / 클라우드, 컨테이너 여부) · **비용 상한** · 그 배치를 강제하는 제약(IP 차단·오프라인 등) | Constraint |
 | **EXCEPTION** 예외 | `exception-handling` | 실패·중복·타임아웃·반려·재처리 | Risk |
 | **QUALITY·OPERATION** | `quality-operation` | 성능·보안·감사·백업·운영·배치 (NFR) | Constraint |
 | *화면·기능·입력·출력·ERD·API 명세·Wireframe* | — | *상세 설계 산출물* | *하류(Solution Design)* |

@@ -40,6 +40,16 @@
       "evidenceGrade": "user-stated"
     },
     {
+      "id": "data-and-storage",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
+      "id": "tech-stack-environment",
+      "status": "interrogated",
+      "evidenceGrade": "user-stated"
+    },
+    {
       "id": "exception-handling",
       "status": "interrogated",
       "evidenceGrade": "user-stated"

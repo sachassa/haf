@@ -60,6 +60,15 @@ coverage:
     - { id: rule-business-logic,       label: "RULE 규칙",       dimension: requirement,  highImpact: false }
     # 존재 게이트 — 전달 플랫폼·자동화(크롤링·배치)·외부 API 연동 필요 여부는 실현 가능성·법적 위험을 좌우한다.
     - { id: structure-delivery-direction, label: "구조·전달 방향", dimension: architecture, highImpact: true }
+    # 축 분리 근거(2026-08-05) — structure-delivery-direction 하나가 네 항목(전달 플랫폼·자동화·외부 연동·
+    #   주요 데이터 개념)을 담고 있어 셋만 심문하고 축 전체를 interrogated 로 올리는 부분 심문이 실측으로
+    #   발생했다. 체커는 축 단위 3값만 대조하므로 하위 항목 누락을 잡지 못한다(coverage-ledger.schema.md
+    #   「내용 진위는 게이트 몫이다」의 한계 지점). 누락 빈발 항목을 독립 축으로 승격해 축 단위 검사가
+    #   그대로 잡도록 한다 — 체커·스키마 변경 0(가법).
+    - { id: data-and-storage,          label: "DATA 주요 데이터·저장", dimension: architecture, highImpact: false }
+    # 존재 게이트 — 실행 환경·비용 상한은 실현 가능성을 좌우한다(실측: "서버 비용 0" 제약이 저장소·DB·
+    #   배치 위치를 모두 결정한 사례). 제외 시 즉시 표면화 대상.
+    - { id: tech-stack-environment,    label: "STACK 기술·실행 환경", dimension: constraint,   highImpact: true }
     - { id: exception-handling,        label: "EXCEPTION 예외",  dimension: risk,         highImpact: false }
     - { id: quality-operation,         label: "QUALITY·OPERATION", dimension: constraint, highImpact: false }
 
